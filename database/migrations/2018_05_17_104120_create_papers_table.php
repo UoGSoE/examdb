@@ -20,6 +20,7 @@ class CreatePapersTable extends Migration
             $table->string('mimetype');
             $table->string('category')->default('main');
             $table->bigInteger('size');
+            $table->boolean('approved_setter')->default(false);
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->unsignedInteger('course_id');

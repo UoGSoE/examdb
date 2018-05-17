@@ -8,6 +8,10 @@ class Paper extends Model
 {
     protected $guarded = [];
 
+    protected $casts = [
+        'approved_setter' => 'boolean',
+    ];
+
     const VALID_CATEGORIES = ['main', 'resit'];
 
     public function course()
@@ -37,5 +41,15 @@ class Paper extends Model
             'category' => $commentType,
             'comment' => $comment,
         ]);
+    }
+
+    public function setterApproves()
+    {
+        $this->update(['approved_setter' => true]);
+    }
+
+    public function isApprovedBySetter()
+    {
+        return $this->approved_setter;
     }
 }

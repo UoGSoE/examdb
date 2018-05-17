@@ -45,6 +45,10 @@ class SetterTest extends TestCase
         $staff = create(User::class);
         $course1 = create(Course::class);
         $staff->markAsSetter($course1);
+        $mainPaper = create(Paper::class, ['course_id' => $course1->id, 'category' => 'main']);
+        $resitPaper = create(Paper::class, ['course_id' => $course1->id, 'category' => 'resit']);
+        $mainSolution = create(Solution::class, ['course_id' => $course1->id, 'category' => 'main']);
+        $resitSolution = create(Solution::class, ['course_id' => $course1->id, 'category' => 'resit']);
 
         $response = $this->actingAs($staff)->get(route('course.show', $course1->id));
 
@@ -191,21 +195,31 @@ class SetterTest extends TestCase
     }
 
     /** @test */
-    public function a_user_can_view_all_main_exam_materials_for_a_course()
+    public function a_setter_can_approve_a_paper()
     {
+        $user = create(User::class);
+        $paper = create(Paper::class);
+        $this->assertFalse($paper->fresh()->isApprovedBySetter());
 
+        $response = $this->actingAs($user)->post(route('paper.approve', $paper));
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('course.show', $paper->course->id));
+        $this->assertTrue($paper->fresh()->isApprovedBySetter());
     }
 
     /** @test */
-    public function a_user_can_view_all_resit_exam_materials_for_a_course()
+    public function a_setter_can_unapprove_a_paper()
     {
+        $user = create(User::class);
+        $paper = create(Paper::class, ['approved_setter' => true]);
+        $this->assertTrue($paper->fresh()->isApprovedBySetter());
 
-    }
+        $response = $this->actingAs($user)->post(route('paper.unapprove', $paper));
 
-    /** @test */
-    public function a_setter_can_approve_or_unapprove_a_main_paper()
-    {
-
+        $response->assertStatus(302);
+        $response->assertRedirect(route('course.show', $paper->course->id));
+        $this->assertFalse($paper->fresh()->isApprovedBySetter());
     }
 
     /** @test */
