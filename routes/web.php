@@ -26,3 +26,4 @@ Route::post('/course/{course}/solution', 'SolutionController@store')->name('cour
 Route::post('/paper/{paper}/comment', 'PaperCommentController@store')->name('paper.comment');
 Route::post('/solution/{solution}/comment', 'SolutionCommentController@store')->name('solution.comment');
 Route::post('/paper/{paper}/approve', 'PaperApprovalController@store')->name('paper.approve');
+Route::post('/paper/{paper}/unapprove', 'PaperApprovalController@destroy')->name('paper.unapprove');

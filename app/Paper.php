@@ -48,6 +48,11 @@ class Paper extends Model
         $this->update(['approved_setter' => true]);
     }
 
+    public function setterUnapproves()
+    {
+        $this->update(['approved_setter' => false]);
+    }
+
     public function isApprovedBySetter()
     {
         return $this->approved_setter;

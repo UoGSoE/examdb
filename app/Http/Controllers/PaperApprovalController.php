@@ -19,4 +19,17 @@ class PaperApprovalController extends Controller
 
         return redirect()->route('course.show', $paper->course_id);
     }
+
+    public function destroy(Paper $paper)
+    {
+        $paper->setterUnapproves();
+
+        if (request()->wantsJson()) {
+            return response()->json([
+                'message' => 'Paper Unapproved',
+            ]);
+        }
+
+        return redirect()->route('course.show', $paper->course_id);
+    }
 }
