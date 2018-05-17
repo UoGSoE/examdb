@@ -21,3 +21,7 @@ Route::get('/', function () {
 });
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/course/{course}', 'CourseController@show')->name('course.show');
+Route::post('/course/{course}/paper', 'PaperController@store')->name('course.paper.store');
+Route::post('/course/{course}/solution', 'SolutionController@store')->name('course.solution.store');
+Route::post('/paper/{paper}/comment', 'PaperCommentController@store')->name('paper.comment');
+Route::post('/solution/{solution}/comment', 'SolutionCommentController@store')->name('solution.comment');
