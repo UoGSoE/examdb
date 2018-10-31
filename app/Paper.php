@@ -34,11 +34,10 @@ class Paper extends Model
         return $query->where('category', '=', 'resit');
     }
 
-    public function addComment($commentType, $comment)
+    public function addComment($comment)
     {
         $this->comments()->create([
             'user_id' => auth()->id(),
-            'category' => $commentType,
             'comment' => $comment,
         ]);
     }

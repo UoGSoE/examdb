@@ -78,10 +78,14 @@ body {
 }
 
 .fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
+  transition: opacity .3s;
+    animation: box-pop 0.3s;
+
+
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
+    animation: box-pop 0.3s reverse;
 }
 
         .loginbox {
@@ -120,3 +124,24 @@ body {
             translate: scale(1);
           }
         }
+
+.uploader-enter-active {
+  animation: boxPop 0.3s;
+}
+.uploader-leave-active {
+  animation: boxPop 0.2s reverse;
+}
+.uploader-enter, .uploader-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+  @keyframes box-pop {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

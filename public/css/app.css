@@ -17585,13 +17585,16 @@ body {
 
 .fade-enter-active,
 .fade-leave-active {
-  -webkit-transition: opacity .5s;
-  transition: opacity .5s;
+  -webkit-transition: opacity .3s;
+  transition: opacity .3s;
+  -webkit-animation: box-pop 0.3s;
+          animation: box-pop 0.3s;
 }
 
 .fade-enter,
 .fade-leave-to {
   opacity: 0;
+  animation: box-pop 0.3s reverse;
 }
 
 .loginbox {
@@ -17647,6 +17650,54 @@ body {
   100% {
     opacity: 1;
     translate: scale(1);
+  }
+}
+
+.uploader-enter-active {
+  -webkit-animation: boxPop 0.3s;
+          animation: boxPop 0.3s;
+}
+
+.uploader-leave-active {
+  animation: boxPop 0.2s reverse;
+}
+
+.uploader-enter,
+.uploader-leave-to {
+  opacity: 0;
+}
+
+@-webkit-keyframes box-pop {
+  0% {
+    -webkit-transform: scale(0);
+            transform: scale(0);
+  }
+
+  50% {
+    -webkit-transform: scale(1.2);
+            transform: scale(1.2);
+  }
+
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+}
+
+@keyframes box-pop {
+  0% {
+    -webkit-transform: scale(0);
+            transform: scale(0);
+  }
+
+  50% {
+    -webkit-transform: scale(1.2);
+            transform: scale(1.2);
+  }
+
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
   }
 }
 

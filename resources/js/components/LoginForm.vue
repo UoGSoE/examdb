@@ -50,7 +50,8 @@ export default {
       username: "",
       password: "",
       busy: false,
-      errorMessage: ""
+      errorMessage: "",
+      successMessage: ""
     };
   },
 

@@ -39,7 +39,7 @@ class Course extends Model
         return $this->solutions()->resit();
     }
 
-    public function addPaper($category, UploadedFile $file)
+    public function addPaper(string $category, string $subcategory, UploadedFile $file) : Paper
     {
         if (!in_array($category, Paper::VALID_CATEGORIES)) {
             throw new \InvalidArgumentException('Invalid category');

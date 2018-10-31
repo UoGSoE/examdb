@@ -24,6 +24,7 @@
         "bulma": "^0.7.2",
         "portal-vue": "^1.4.0",
         "vee-validate": "^2.1.0-beta.11",
+        "vue-clickaway": "^2.2.2",
         "vue-popperjs": "^1.6.1"
     }
 }

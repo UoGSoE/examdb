@@ -13,19 +13,18 @@ class PaperController extends Controller
     {
         $request->validate([
             'paper' => 'required|file',
-            'category' => ['required', Rule::in(Paper::VALID_CATEGORIES)],
+            'category' => 'required',
+            'subcategory' => 'required',
         ]);
 
-        $paper = $course->addPaper($request->category, $request->file('paper'));
+        $paper = $course->addPaper($request->category, $request->subcategory, $request->file('paper'));
 
-        if ($request->filled('comment_category')) {
-            $paper->addComment($request->comment_category, $request->comment);
+        if ($request->filled('comment')) {
+            $paper->addComment($request->comment);
         }
 
         if ($request->wantsJson()) {
-            return response()->json([
-                'message' => 'Paper added',
-            ]);
+            return response()->json($paper, 201);
         }
 
         return redirect()->route('course.show', $course);
