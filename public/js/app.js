@@ -13795,7 +13795,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.busy = true;
       var data = this.getFormData();
       axios.post(route("course.paper.store", this.course.id), data).then(function (response) {
-        console.log(response.data);
+        _this.busy = false;
+        _this.show = false;
         _this.$emit("added", response.data);
       }).catch(function (error) {
         console.log(error);

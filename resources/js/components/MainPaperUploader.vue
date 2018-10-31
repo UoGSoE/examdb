@@ -92,7 +92,8 @@ export default {
       axios
         .post(route("course.paper.store", this.course.id), data)
         .then(response => {
-          console.log(response.data);
+          this.busy = false;
+          this.show = false;
           this.$emit("added", response.data);
         })
         .catch(error => {
