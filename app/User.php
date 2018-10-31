@@ -20,6 +20,11 @@ class User extends Authenticatable
         'is_admin' => 'boolean',
     ];
 
+    public function courses()
+    {
+        return $this->belongsToMany(Course::class)->withPivot('is_setter', 'is_moderator', 'is_external');
+    }
+
     public function setting()
     {
         return $this->belongsToMany(Course::class, 'course_setters', 'user_id', 'course_id');
@@ -32,12 +37,22 @@ class User extends Authenticatable
 
     public function isSetterFor(Course $course)
     {
-        return !! $this->setting()->where('course_id', '=', $course->id)->first();
+        return !!$this->setting()->where('course_id', '=', $course->id)->first();
     }
 
     public function isAdmin()
     {
         return $this->is_admin;
+    }
+
+    public function isExternal()
+    {
+        return strpos('@', $this->username) !== false;
+    }
+
+    public function isInternal()
+    {
+        return !$this->isExternal();
     }
 
     public function generateLoginUrl()

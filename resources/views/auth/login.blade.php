@@ -14,7 +14,7 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
     <!-- Routes -->
-    {{-- uses https://github.com/tightenco/ziggy --}}
+    @routes
 
     @stack('head')
 </head>

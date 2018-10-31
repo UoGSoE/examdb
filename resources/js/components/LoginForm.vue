@@ -8,11 +8,15 @@
                     <div class="login-header">
                         <h1 class="title is-1">ExamDB Login</h1>
                     </div>
-                        <article style="background: #FF7777; color: white; text-align: center;" class="p-8" v-show="false">
-                            <b>Incorrect username or password</b>
-                        </article>
+                    <article style="background: #FF7777; color: white; text-align: center;" class="p-8" v-show="errorMessage">
+                        <b>{{ errorMessage }}</b>
+                    </article>
+                    <transition name="fade" mode="out-in">
+                    <article key="1" style="background: hsl(0, 0%, 100%); color: hsl(0, 0%, 21%); text-align: center;" class="p-8" v-if="successMessage">
+                        {{ successMessage }}
+                    </article>
 
-                    <form method="POST" action="/login" class=" p-8 ">
+                    <form key="2" method="POST" action="/login" class=" p-8 " v-if="!successMessage">
                         <div class="field">
                         <label class="label">Username <span class="has-text-grey has-text-weight-light">(or email for Externals)</span></label>
                         <p class="control">
@@ -29,9 +33,10 @@
                         </transition>
                         <hr />
                         <div class="field">
-                            <button class="button is-info is-fullwidth" v-html="loginButtonText"></button>
+                            <button class="button is-info is-fullwidth" :class="{'is-loading': busy}" v-html="loginButtonText" @click.prevent="login"></button>
                         </div>
                     </form>
+                    </transition>
                 </div>
             </div>
 
@@ -43,7 +48,9 @@ export default {
   data() {
     return {
       username: "",
-      password: ""
+      password: "",
+      busy: false,
+      errorMessage: ""
     };
   },
 
@@ -67,6 +74,40 @@ export default {
     }
   },
 
-  methods: {}
+  methods: {
+    login() {
+      this.busy = true;
+
+      if (this.isExternal) {
+        this.loginExternal();
+        return;
+      }
+
+      axios
+        .post("/login", { username: this.username, password: this.password })
+        .then(response => {
+          console.log(response);
+        })
+        .catch(error => {
+          console.log(error);
+          this.errorMessage = "Invalid username or password";
+        });
+    },
+
+    loginExternal() {
+      axios
+        .post(route("external-generate-login"), { email: this.username })
+        .then(response => {
+          console.log(response);
+          this.busy = false;
+          this.successMessage =
+            "Please check your email - you should recieve a secure login link shortly";
+        })
+        .catch(error => {
+          console.log(error);
+          this.errorMessage = "There was an unexpected error...";
+        });
+    }
+  }
 };
 </script>

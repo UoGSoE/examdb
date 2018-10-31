@@ -41,7 +41,7 @@ class Course extends Model
 
     public function addPaper($category, UploadedFile $file)
     {
-        if (! in_array($category, Paper::VALID_CATEGORIES)) {
+        if (!in_array($category, Paper::VALID_CATEGORIES)) {
             throw new \InvalidArgumentException('Invalid category');
         }
 
@@ -74,7 +74,6 @@ class Course extends Model
             'size' => $file->getSize(),
         ]);
     }
-
 
     public function getFullNameAttribute()
     {

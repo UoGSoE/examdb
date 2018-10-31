@@ -15,14 +15,23 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <!-- Routes -->
+    @routes
 </head>
 <body>
-    <div id="app">
-            @yield('content')
-    </div>
+    @include('layouts.navbar')
 
-    <div id="footer">
-        Hello
+    <section class="section">
+        <div id="app" class="container">
+            @yield('content')
+        </div>
+    </section>
+
+    <div id="footer" class="footer">
+        <div class="content has-text-centered">
+            University of Glasgow, School of Engineering Exam Database
+        </div>
     </div>
 </body>
 </html>

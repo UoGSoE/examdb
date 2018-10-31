@@ -14,12 +14,20 @@ class ExternalLoginController extends Controller
     public function sendLoginEmail(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|exists:users'
+            'email' => 'required|email'
         ]);
 
-        $user = User::where('email', '=', $request->email)->firstOrFail();
+        $user = User::where('username', '=', strtolower($request->email))->first();
 
-        Mail::to($user)->queue(new ExternalLoginUrl($user));
+        if ($user) {
+            Mail::to($user)->queue(new ExternalLoginUrl($user));
+        }
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'Login attempted'
+            ], 200);
+        }
 
         return redirect()->route('home')->with('success', 'Login email has been sent. Please check your email for your login URL.');
     }
