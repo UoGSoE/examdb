@@ -20,6 +20,8 @@ class User extends Authenticatable
         'is_admin' => 'boolean',
     ];
 
+    protected $appends = ['full_name'];
+
     public function courses()
     {
         return $this->belongsToMany(Course::class)->withPivot('is_setter', 'is_moderator', 'is_external');
@@ -63,4 +65,10 @@ class User extends Authenticatable
             ['user' => $this->id]
         );
     }
+
+    public function getFullNameAttribute()
+    {
+        return $this->forenames . ' ' . $this->surname;
+    }
+
 }

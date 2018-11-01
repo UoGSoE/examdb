@@ -13,6 +13,10 @@ class CourseController extends Controller
 
         return view('course.show', [
             'course' => $course,
+            'papers' => collect([
+                'main' => $course->mainPapers()->with(['user', 'comments'])->latest()->get(),
+                'resit' => $course->resitPapers()->with(['user', 'comments'])->latest()->get(),
+            ]),
         ]);
     }
 }

@@ -29,38 +29,46 @@
         </div>
       </div>
         <transition-group name="flash" tag="span">
-            <article class="media" v-for="paper in papers.main" :key="paper.id">
-            <figure class="media-left">
-                <span class="icon is-large">
-                    <i :class="paper.icon + ' fa-3x'"></i>
-                </span>
-            </figure>
-            <div class="media-content">
-                <div class="content">
-                <p>
-                <strong>{{ paper.original_filename }}</strong> <small>@johnsmith</small> <small>{{ paper.created_at }}</small>
-                <br>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare magna eros, eu pellentesque tortor vestibulum ut. Maecenas non massa sem. Etiam finibus odio quis feugiat facilisis.
-                </p>
+            <article class="media" v-for="paper in thePapers.main" :key="paper.id">
+                <figure class="media-left">
+                    <a :href="getDownloadRoute(paper)">
+                        <span class="icon is-large">
+                            <i :class="paper.icon + ' fa-3x'"></i>
+                        </span>
+                    </a>
+                </figure>
+                <div class="media-content">
+                    <div class="content">
+                        <p>
+                            <a :href="getDownloadRoute(paper)">
+                                <strong>{{ paper.original_filename }}</strong>
+                            </a>
+                            <small>{{ paper.user.full_name }}</small>
+                            <small>{{ paper.formatted_date }}</small>
+                            <br>
+                            <span v-if="paper.comments.length > 0">
+                                {{ paper.comments[0].comment }}
+                            </span>
+                        </p>
+                    </div>
+                    <nav class="level is-mobile">
+                        <div class="level-left">
+                            <a class="level-item">
+                                <span class="icon is-small"><i class="fas fa-reply"></i></span>
+                            </a>
+                            <a class="level-item">
+                                <span class="icon is-small"><i class="fas fa-retweet"></i></span>
+                            </a>
+                            <a class="level-item">
+                                <span class="icon is-small"><i class="fas fa-heart"></i></span>
+                            </a>
+                        </div>
+                    </nav>
                 </div>
-                <nav class="level is-mobile">
-                <div class="level-left">
-                <a class="level-item">
-                <span class="icon is-small"><i class="fas fa-reply"></i></span>
-                </a>
-                <a class="level-item">
-                <span class="icon is-small"><i class="fas fa-retweet"></i></span>
-                </a>
-                <a class="level-item">
-                <span class="icon is-small"><i class="fas fa-heart"></i></span>
-                </a>
+                <div class="media-right">
+                    <button class="delete"></button>
                 </div>
-                </nav>
-            </div>
-            <div class="media-right">
-                <button class="delete"></button>
-            </div>
-        </article>
+            </article>
         </transition-group>
     </div>
     <div class="column">
@@ -71,19 +79,19 @@
 </template>
 <script>
 export default {
-  props: ["course", "subcategories"],
+  props: ["course", "papers", "subcategories"],
   data() {
     return {
-      papers: {
-        main: [],
-        resit: []
-      }
+      thePapers: this.papers
     };
   },
   methods: {
     paperAdded(paper) {
       console.log(paper);
-      this.papers[paper.category].unshift(paper);
+      this.thePapers[paper.category].unshift(paper);
+    },
+    getDownloadRoute(paper) {
+      return route("paper.show", paper.id);
     }
   }
 };

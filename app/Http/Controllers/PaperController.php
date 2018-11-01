@@ -6,6 +6,7 @@ use App\Paper;
 use App\Course;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
 
 class PaperController extends Controller
 {
@@ -28,5 +29,10 @@ class PaperController extends Controller
         }
 
         return redirect()->route('course.show', $course);
+    }
+
+    public function show(Paper $paper)
+    {
+        return Storage::disk('exampapers')->download($paper->filename, $paper->original_filename);
     }
 }

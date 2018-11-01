@@ -12,9 +12,14 @@ class Paper extends Model
         'approved_setter' => 'boolean',
     ];
 
-    protected $appends = ['icon'];
+    protected $appends = ['icon', 'formatted_date'];
 
     const VALID_CATEGORIES = ['main', 'resit'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function course()
     {
@@ -109,4 +114,8 @@ class Paper extends Model
         return false;
     }
 
+    public function getFormattedDateAttribute()
+    {
+        return $this->created_at->format('d/m/Y H:i');
+    }
 }

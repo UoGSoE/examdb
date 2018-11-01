@@ -28,4 +28,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/solution/{solution}/comment', 'SolutionCommentController@store')->name('solution.comment');
     Route::post('/paper/{paper}/approve', 'PaperApprovalController@store')->name('paper.approve');
     Route::post('/paper/{paper}/unapprove', 'PaperApprovalController@destroy')->name('paper.unapprove');
+
+    Route::get('/paper/{paper}', 'PaperController@show')->name('paper.show');
 });

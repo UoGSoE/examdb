@@ -14265,22 +14265,30 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ["course", "subcategories"],
+  props: ["course", "papers", "subcategories"],
   data: function data() {
     return {
-      papers: {
-        main: [],
-        resit: []
-      }
+      thePapers: this.papers
     };
   },
 
   methods: {
     paperAdded: function paperAdded(paper) {
       console.log(paper);
-      this.papers[paper.category].unshift(paper);
+      this.thePapers[paper.category].unshift(paper);
+    },
+    getDownloadRoute: function getDownloadRoute(paper) {
+      return route("paper.show", paper.id);
     }
   }
 });
@@ -14330,27 +14338,44 @@ var render = function() {
           _c(
             "transition-group",
             { attrs: { name: "flash", tag: "span" } },
-            _vm._l(_vm.papers.main, function(paper) {
+            _vm._l(_vm.thePapers.main, function(paper) {
               return _c("article", { key: paper.id, staticClass: "media" }, [
                 _c("figure", { staticClass: "media-left" }, [
-                  _c("span", { staticClass: "icon is-large" }, [
-                    _c("i", { class: paper.icon + " fa-3x" })
+                  _c("a", { attrs: { href: _vm.getDownloadRoute(paper) } }, [
+                    _c("span", { staticClass: "icon is-large" }, [
+                      _c("i", { class: paper.icon + " fa-3x" })
+                    ])
                   ])
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "media-content" }, [
                   _c("div", { staticClass: "content" }, [
                     _c("p", [
-                      _c("strong", [_vm._v(_vm._s(paper.original_filename))]),
+                      _c(
+                        "a",
+                        { attrs: { href: _vm.getDownloadRoute(paper) } },
+                        [
+                          _c("strong", [
+                            _vm._v(_vm._s(paper.original_filename))
+                          ])
+                        ]
+                      ),
                       _vm._v(" "),
-                      _c("small", [_vm._v("@johnsmith")]),
+                      _c("small", [_vm._v(_vm._s(paper.user.full_name))]),
                       _vm._v(" "),
-                      _c("small", [_vm._v(_vm._s(paper.created_at))]),
+                      _c("small", [_vm._v(_vm._s(paper.formatted_date))]),
                       _vm._v(" "),
                       _c("br"),
-                      _vm._v(
-                        "\n                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare magna eros, eu pellentesque tortor vestibulum ut. Maecenas non massa sem. Etiam finibus odio quis feugiat facilisis.\n                "
-                      )
+                      _vm._v(" "),
+                      paper.comments.length > 0
+                        ? _c("span", [
+                            _vm._v(
+                              "\n                                " +
+                                _vm._s(paper.comments[0].comment) +
+                                "\n                            "
+                            )
+                          ])
+                        : _vm._e()
                     ])
                   ]),
                   _vm._v(" "),
