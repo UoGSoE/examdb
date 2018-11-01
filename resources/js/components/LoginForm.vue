@@ -87,10 +87,9 @@ export default {
       axios
         .post("/login", { username: this.username, password: this.password })
         .then(response => {
-          console.log(response);
+          window.location.replace(route("home"));
         })
         .catch(error => {
-          console.log(error);
           this.errorMessage = "Invalid username or password";
         });
     },
@@ -99,13 +98,11 @@ export default {
       axios
         .post(route("external-generate-login"), { email: this.username })
         .then(response => {
-          console.log(response);
           this.busy = false;
           this.successMessage =
             "Please check your email - you should recieve a secure login link shortly";
         })
         .catch(error => {
-          console.log(error);
           this.errorMessage = "There was an unexpected error...";
         });
     }

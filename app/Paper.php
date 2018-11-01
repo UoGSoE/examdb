@@ -12,7 +12,7 @@ class Paper extends Model
         'approved_setter' => 'boolean',
     ];
 
-    protected $appends = ['icon', 'formatted_date'];
+    protected $appends = ['icon', 'formatted_date', 'diff_for_humans'];
 
     const VALID_CATEGORIES = ['main', 'resit'];
 
@@ -117,5 +117,10 @@ class Paper extends Model
     public function getFormattedDateAttribute()
     {
         return $this->created_at->format('d/m/Y H:i');
+    }
+
+    public function getDiffForHumansAttribute()
+    {
+        return $this->created_at->diffForHumans();
     }
 }

@@ -10,7 +10,7 @@
                 <span>&nbsp;Moderating</span>
             </h3>
             <ul>
-                @foreach (auth()->user()->courses()->wherePivot('is_moderator', true)->get() as $course)
+                @foreach ($moderatedCourses as $course)
                     <li>
                         <a href="{{ route('course.show', $course->id) }}">
                             {{ $course->code }} {{ $course->title }}
@@ -25,7 +25,7 @@
                 <span>&nbsp;Setting</span>
             </h3>
             <ul>
-                @foreach (auth()->user()->courses()->wherePivot('is_setter', true)->get() as $course)
+                @foreach ($setterCourses as $course)
                     <li>
                         <a href="{{ route('course.show', $course->id) }}">
                             {{ $course->code }} {{ $course->title }}

@@ -27,19 +27,25 @@ class User extends Authenticatable
         return $this->belongsToMany(Course::class)->withPivot('is_setter', 'is_moderator', 'is_external');
     }
 
-    public function setting()
-    {
-        return $this->belongsToMany(Course::class, 'course_setters', 'user_id', 'course_id');
-    }
-
     public function markAsSetter(Course $course)
     {
-        $this->setting()->attach($course);
+        $this->courses()->syncWithoutDetaching([$course->id]);
+        $this->courses()->updateExistingPivot($course->id, ['is_setter' => true]);
     }
 
-    public function isSetterFor(Course $course)
+    public function isSetterFor(Course $course) : bool
     {
-        return !!$this->setting()->where('course_id', '=', $course->id)->first();
+        return $this->courses()->where('course_user.id', '=', $course->id)->wherePivot('is_setter', true)->count() > 0;
+    }
+
+    public function isModeratorFor(Course $course) : bool
+    {
+        return $this->courses()->where('course_user.id', '=', $course->id)->wherePivot('is_moderator', true)->count() > 0;
+    }
+
+    public function isExternalFor(Course $course) : bool
+    {
+        return $this->courses()->where('course_user.id', '=', $course->id)->wherePivot('is_external', true)->count() > 0;
     }
 
     public function isAdmin()

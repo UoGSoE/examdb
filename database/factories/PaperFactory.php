@@ -10,7 +10,7 @@ $factory->define(App\Paper::class, function (Faker $faker) {
         'original_filename' => $faker->unique()->word . '.pdf',
         'mimetype' => 'application/pdf',
         'category' => 'main',
-        'approved_setter' => false,
+        'subcategory' => 'Pre-Internally Moderated Paper',
         'size' => $faker->randomNumber(5),
         'user_id' => function () {
             return create(User::class)->id;

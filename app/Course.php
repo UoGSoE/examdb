@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class Course extends Model
 {
@@ -45,10 +46,14 @@ class Course extends Model
             throw new \InvalidArgumentException('Invalid category');
         }
 
-        $filename = $file->store("papers/{$this->id}/{$category}", 'exampapers');
+        $randomName = str_random(64);
+        $filename = "papers/{$this->id}/{$category}/{$randomName}.dat";
+        Storage::disk('exampapers')->put($filename, encrypt($file->get()));
+        // $filename = $file->store("papers/{$this->id}/{$category}", 'exampapers');
 
         return $this->papers()->create([
             'category' => $category,
+            'subcategory' => $subcategory,
             'user_id' => auth()->id(),
             'filename' => $filename,
             'original_filename' => $file->getClientOriginalName(),
@@ -78,5 +83,10 @@ class Course extends Model
     public function getFullNameAttribute()
     {
         return $this->code . ' ' . $this->title;
+    }
+
+    public function getUserApprovedAttribute()
+    {
+        return false;
     }
 }

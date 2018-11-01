@@ -19,6 +19,9 @@ Vue.component('login-form', require('./components/LoginForm.vue'));
 Vue.component('main-paper-uploader', require('./components/MainPaperUploader.vue'));
 Vue.component('course-viewer', require('./components/CourseViewer.vue'));
 
+import PortalVue from 'portal-vue'
+Vue.use(PortalVue)
+
 const app = new Vue({
     el: '#app'
 });

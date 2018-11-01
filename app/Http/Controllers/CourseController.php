@@ -11,6 +11,8 @@ class CourseController extends Controller
     {
         $this->authorize('show', $course);
 
+        $course->append('user_approved');
+
         return view('course.show', [
             'course' => $course,
             'papers' => collect([

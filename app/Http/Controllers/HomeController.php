@@ -25,7 +25,9 @@ class HomeController extends Controller
     public function index()
     {
         return view('home', [
-            'setting' => Auth::user()->setting,
+            'moderatedCourses' => auth()->user()->courses()->wherePivot('is_moderator', true)->get(),
+            'setterCourses' => auth()->user()->courses()->wherePivot('is_setter', true)->get(),
+            'externalCourses' => auth()->user()->courses()->wherePivot('is_external', true)->get(),
         ]);
     }
 }

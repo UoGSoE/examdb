@@ -25,6 +25,9 @@
     <section class="section">
         <div id="app" class="container">
             @yield('content')
+
+            <portal-target name="portal-modal">
+            </portal-target>
         </div>
     </section>
 

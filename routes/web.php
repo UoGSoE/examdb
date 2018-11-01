@@ -17,9 +17,7 @@ Route::post('/external-login', 'Auth\ExternalLoginController@sendLoginEmail')->n
 Route::get('/external-login/{user}', 'Auth\ExternalLoginController@login')->name('external-login')->middleware('signed');
 
 Route::group(['middleware' => 'auth'], function () {
-    Route::get('/', function () {
-        return view('welcome');
-    });
+    Route::redirect('/', '/home', 301);
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/course/{course}', 'CourseController@show')->name('course.show');
     Route::post('/course/{course}/paper', 'PaperController@store')->name('course.paper.store');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Paper;
 use App\Course;
+use App\Events\PaperAdded;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
@@ -24,6 +25,11 @@ class PaperController extends Controller
             $paper->addComment($request->comment);
         }
 
+        event(new PaperAdded($paper, $request->user()));
+
+        $paper->load('user');
+        $paper->load('comments');
+
         if ($request->wantsJson()) {
             return response()->json($paper, 201);
         }
@@ -33,6 +39,12 @@ class PaperController extends Controller
 
     public function show(Paper $paper)
     {
-        return Storage::disk('exampapers')->download($paper->filename, $paper->original_filename);
+        $encryptedContent = Storage::disk('exampapers')->get($paper->filename);
+        $decryptedContent = decrypt($encryptedContent);
+
+        return response()->streamDownload(function () use ($decryptedContent) {
+            echo $decryptedContent;
+        }, $paper->original_filename, ['Content-Type', $paper->mimetype]);
+        //return Storage::disk('exampapers')->download($paper->filename, $paper->original_filename);
     }
 }
