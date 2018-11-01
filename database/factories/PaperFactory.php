@@ -7,7 +7,7 @@ use App\Course;
 $factory->define(App\Paper::class, function (Faker $faker) {
     return [
         'filename' => $faker->unique()->word . '.pdf',
-        'originalFilename' => $faker->unique()->word . '.pdf',
+        'original_filename' => $faker->unique()->word . '.pdf',
         'mimetype' => 'application/pdf',
         'category' => 'main',
         'approved_setter' => false,

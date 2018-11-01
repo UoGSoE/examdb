@@ -12,6 +12,8 @@ class Paper extends Model
         'approved_setter' => 'boolean',
     ];
 
+    protected $appends = ['icon'];
+
     const VALID_CATEGORIES = ['main', 'resit'];
 
     public function course()
@@ -56,4 +58,55 @@ class Paper extends Model
     {
         return $this->approved_setter;
     }
+
+    public function getIconAttribute()
+    {
+        if ($this->isAPdf()) {
+            return "far fa-file-pdf";
+        }
+
+        if ($this->isAWordDocument()) {
+            return "far fa-file-word";
+        }
+
+        if ($this->isAZip()) {
+            return "far fa-file-archive";
+        }
+
+        return "far fa-file";
+    }
+
+    protected function isAPdf()
+    {
+        if ($this->mimetype === 'application/pdf') {
+            return true;
+        }
+        if (preg_match('/.pdf$/i', $this->original_filename) === 1) {
+            return true;
+        }
+        return false;
+    }
+
+    protected function isAWordDocument()
+    {
+        if ($this->mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+            return true;
+        }
+        if (preg_match('/.doc(?x)$/i', $this->original_filename) === 1) {
+            return true;
+        }
+        return false;
+    }
+
+    protected function isAZip()
+    {
+        if ($this->mimetype === 'application/zip') {
+            return true;
+        }
+        if (preg_match('/.zip$/i', $this->original_filename) === 1) {
+            return true;
+        }
+        return false;
+    }
+
 }

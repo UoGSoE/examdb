@@ -51,7 +51,7 @@ class Course extends Model
             'category' => $category,
             'user_id' => auth()->id(),
             'filename' => $filename,
-            'originalFilename' => $file->getClientOriginalName(),
+            'original_filename' => $file->getClientOriginalName(),
             'mimetype' => $file->getClientMimeType(),
             'size' => $file->getSize(),
         ]);

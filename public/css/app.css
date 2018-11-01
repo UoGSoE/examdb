@@ -17583,6 +17583,19 @@ body {
   padding-top: 0.5rem;
 }
 
+.flash-enter-active,
+.flash-leave-active {
+  background-color: white;
+  -webkit-transition: background-color .7s;
+  transition: background-color .7s;
+}
+
+.flash-enter,
+.flash-leave-to {
+  opacity: 0;
+  background-color: #00d1b2;
+}
+
 .fade-enter-active,
 .fade-leave-active {
   -webkit-transition: opacity .3s;

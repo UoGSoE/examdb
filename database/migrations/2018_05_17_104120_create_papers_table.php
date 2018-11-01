@@ -16,7 +16,7 @@ class CreatePapersTable extends Migration
         Schema::create('papers', function (Blueprint $table) {
             $table->increments('id');
             $table->string('filename');
-            $table->string('originalFilename');
+            $table->string('original_filename');
             $table->string('mimetype');
             $table->string('category')->default('main');
             $table->bigInteger('size');

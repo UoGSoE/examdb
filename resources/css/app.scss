@@ -77,6 +77,15 @@ body {
   padding-top: 0.5rem;
 }
 
+.flash-enter-active, .flash-leave-active {
+  background-color: hsl(0, 0%, 100%);
+  transition: background-color .7s;
+}
+.flash-enter, .flash-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  background-color: hsl(171, 100%, 41%);
+}
+
 .fade-enter-active, .fade-leave-active {
   transition: opacity .3s;
     animation: box-pop 0.3s;

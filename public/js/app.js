@@ -14237,6 +14237,34 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["course", "subcategories"],
@@ -14271,47 +14299,93 @@ var render = function() {
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "columns" }, [
-      _c("div", { staticClass: "column" }, [
-        _c("div", { staticClass: "level" }, [
-          _c("div", { staticClass: "level-left" }, [
-            _vm._m(0),
-            _vm._v(" "),
-            _c(
-              "span",
-              { staticClass: "level-item" },
-              [
-                _c("main-paper-uploader", {
-                  attrs: {
-                    course: _vm.course,
-                    category: "main",
-                    subcategories: _vm.subcategories.main
-                  },
-                  on: { added: _vm.paperAdded }
-                })
-              ],
-              1
-            ),
-            _vm._v(" "),
-            _vm._m(1)
-          ])
-        ]),
-        _vm._v(" "),
-        _c(
-          "ul",
-          _vm._l(_vm.papers.main, function(paper) {
-            return _c("li", { key: paper.id }, [
-              _vm._v(
-                "\n                    " +
-                  _vm._s(paper.filename) +
-                  "\n                    "
+      _c(
+        "div",
+        { staticClass: "column" },
+        [
+          _c("div", { staticClass: "level" }, [
+            _c("div", { staticClass: "level-left" }, [
+              _vm._m(0),
+              _vm._v(" "),
+              _c(
+                "span",
+                { staticClass: "level-item" },
+                [
+                  _c("main-paper-uploader", {
+                    attrs: {
+                      course: _vm.course,
+                      category: "main",
+                      subcategories: _vm.subcategories.main
+                    },
+                    on: { added: _vm.paperAdded }
+                  })
+                ],
+                1
               ),
-              _c("span", { staticClass: "has-text-grey-light" }, [
-                _vm._v(_vm._s(paper.created_at))
-              ])
+              _vm._v(" "),
+              _vm._m(1)
             ])
-          })
-        )
-      ]),
+          ]),
+          _vm._v(" "),
+          _c(
+            "transition-group",
+            { attrs: { name: "flash", tag: "span" } },
+            _vm._l(_vm.papers.main, function(paper) {
+              return _c("article", { key: paper.id, staticClass: "media" }, [
+                _c("figure", { staticClass: "media-left" }, [
+                  _c("span", { staticClass: "icon is-large" }, [
+                    _c("i", { class: paper.icon + " fa-3x" })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "media-content" }, [
+                  _c("div", { staticClass: "content" }, [
+                    _c("p", [
+                      _c("strong", [_vm._v(_vm._s(paper.original_filename))]),
+                      _vm._v(" "),
+                      _c("small", [_vm._v("@johnsmith")]),
+                      _vm._v(" "),
+                      _c("small", [_vm._v(_vm._s(paper.created_at))]),
+                      _vm._v(" "),
+                      _c("br"),
+                      _vm._v(
+                        "\n                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare magna eros, eu pellentesque tortor vestibulum ut. Maecenas non massa sem. Etiam finibus odio quis feugiat facilisis.\n                "
+                      )
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("nav", { staticClass: "level is-mobile" }, [
+                    _c("div", { staticClass: "level-left" }, [
+                      _c("a", { staticClass: "level-item" }, [
+                        _c("span", { staticClass: "icon is-small" }, [
+                          _c("i", { staticClass: "fas fa-reply" })
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("a", { staticClass: "level-item" }, [
+                        _c("span", { staticClass: "icon is-small" }, [
+                          _c("i", { staticClass: "fas fa-retweet" })
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("a", { staticClass: "level-item" }, [
+                        _c("span", { staticClass: "icon is-small" }, [
+                          _c("i", { staticClass: "fas fa-heart" })
+                        ])
+                      ])
+                    ])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "media-right" }, [
+                  _c("button", { staticClass: "delete" })
+                ])
+              ])
+            })
+          )
+        ],
+        1
+      ),
       _vm._v(" "),
       _vm._m(2)
     ])
@@ -14324,9 +14398,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("span", { staticClass: "level-item" }, [
       _c("h3", { staticClass: "title has-text-grey" }, [
-        _vm._v(
-          "\n                            Main Exam\n                        "
-        )
+        _vm._v("\n              Main Exam\n            ")
       ])
     ])
   },
