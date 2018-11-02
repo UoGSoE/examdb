@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Events\PaperApproved;
+use App\Events\PaperUnapproved;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -90,6 +91,27 @@ class Course extends Model
         throw new \DomainException('User is not associated with this course');
     }
 
+    public function paperUnapprovedBy(User $user, string $category)
+    {
+        if ($user->isSetterFor($this)) {
+            $this->update(["setter_approved_{$category}" => false]);
+            event(new PaperUnapproved($this, $user, $category));
+            return;
+        }
+        if ($user->isModeratorFor($this)) {
+            $this->update(["moderator_approved_{$category}" => false]);
+            event(new PaperUnapproved($this, $user, $category));
+            return;
+        }
+        if ($user->isExternalFor($this)) {
+            $this->update(["external_approved_{$category}" => false]);
+            event(new PaperUnapproved($this, $user, $category));
+            return;
+        }
+
+        throw new \DomainException('User is not associated with this course');
+    }
+
     public function isApprovedBySetter(string $category) : bool
     {
         $key = "setter_approved_{$category}";
@@ -106,7 +128,7 @@ class Course extends Model
             $key = "moderator_approved_{$category}";
             return $this->$key;
         }
-        if ($user->isSetterFor($this)) {
+        if ($user->isExternalFor($this)) {
             $key = "external_approved_{$category}";
             return $this->$key;
         }

@@ -36,7 +36,19 @@
         </div>
     @else
         <div class="column">
-            <h3 class="title is-3 has-text-grey">External</h3>
+            <h3 class="title is-3 has-text-grey">
+                <span class="icon has-text-grey-lighter"><i class="fas fa-book-open"></i></span>
+                <span>&nbsp;External</span>
+            </h3>
+            <ul>
+                @foreach ($externalCourses as $course)
+                    <li>
+                        <a href="{{ route('course.show', $course->id) }}">
+                            {{ $course->code }} {{ $course->title }}
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
         </div>
     @endif
 </div>

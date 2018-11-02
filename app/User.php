@@ -33,19 +33,25 @@ class User extends Authenticatable
         $this->courses()->updateExistingPivot($course->id, ['is_setter' => true]);
     }
 
+    public function markAsExternal(Course $course)
+    {
+        $this->courses()->syncWithoutDetaching([$course->id]);
+        $this->courses()->updateExistingPivot($course->id, ['is_external' => true]);
+    }
+
     public function isSetterFor(Course $course) : bool
     {
-        return $this->courses()->where('course_user.id', '=', $course->id)->wherePivot('is_setter', true)->count() > 0;
+        return $this->courses()->where('course_user.course_id', '=', $course->id)->wherePivot('is_setter', true)->count() > 0;
     }
 
     public function isModeratorFor(Course $course) : bool
     {
-        return $this->courses()->where('course_user.id', '=', $course->id)->wherePivot('is_moderator', true)->count() > 0;
+        return $this->courses()->where('course_user.course_id', '=', $course->id)->wherePivot('is_moderator', true)->count() > 0;
     }
 
     public function isExternalFor(Course $course) : bool
     {
-        return $this->courses()->where('course_user.id', '=', $course->id)->wherePivot('is_external', true)->count() > 0;
+        return $this->courses()->where('course_user.course_id', '=', $course->id)->wherePivot('is_external', true)->count() > 0;
     }
 
     public function isAdmin()
@@ -55,7 +61,7 @@ class User extends Authenticatable
 
     public function isExternal()
     {
-        return strpos('@', $this->username) !== false;
+        return strpos($this->username, '@') !== false;
     }
 
     public function isInternal()

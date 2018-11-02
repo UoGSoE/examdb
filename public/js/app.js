@@ -15066,7 +15066,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   data: function data() {
     return {
       showModal: false,
-      paperToDelete: null
+      paperToDelete: null,
+      user_id: window.user_id
     };
   },
 
@@ -15162,16 +15163,18 @@ var render = function() {
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "media-right" }, [
-              _c("button", {
-                staticClass: "delete",
-                attrs: { title: "Delete Paper" },
-                on: {
-                  click: function($event) {
-                    $event.preventDefault()
-                    _vm.openModal(paper)
-                  }
-                }
-              })
+              paper.user_id == _vm.user_id
+                ? _c("button", {
+                    staticClass: "delete",
+                    attrs: { title: "Delete Paper" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.openModal(paper)
+                      }
+                    }
+                  })
+                : _vm._e()
             ])
           ])
         })
@@ -15347,6 +15350,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["course", "subcategories", "category"],
@@ -15357,6 +15376,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       return value.charAt(0).toUpperCase() + value.slice(1);
     }
   },
+  data: function data() {
+    return {
+      is_local: !window.is_external,
+      is_external: window.is_external
+    };
+  },
+
   methods: {
     approvalButtonText: function approvalButtonText(category) {
       var key = "user_approved_" + category;
@@ -15397,63 +15423,100 @@ var render = function() {
         ])
       ]),
       _vm._v(" "),
-      _c(
-        "span",
-        { staticClass: "level-item" },
-        [
-          _c("main-paper-uploader", {
-            attrs: {
-              course: _vm.course,
-              category: "main",
-              subcategories: _vm.subcategories.main
-            },
-            on: { added: _vm.paperAdded }
-          })
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "span",
-        { staticClass: "level-item" },
-        [
-          _c(
-            "main-paper-uploader",
-            {
-              attrs: {
-                course: _vm.course,
-                category: "main",
-                subcategories: _vm.subcategories.solution
-              },
-              on: { added: _vm.paperAdded }
-            },
+      _vm.is_local
+        ? _c(
+            "span",
+            { staticClass: "level-item" },
             [
-              _c("template", { slot: "button-content" }, [
-                _c("span", { staticClass: "icon has-text-success" }, [
-                  _c("i", { staticClass: "far fa-check-circle" })
-                ]),
-                _vm._v(" "),
-                _c("span", [_vm._v("Add Solution")])
-              ])
+              _c("main-paper-uploader", {
+                attrs: {
+                  course: _vm.course,
+                  category: "main",
+                  subcategories: _vm.subcategories.main
+                },
+                on: { added: _vm.paperAdded }
+              })
             ],
-            2
+            1
           )
-        ],
-        1
-      ),
+        : _vm._e(),
       _vm._v(" "),
-      _c("span", { staticClass: "level-item" }, [
-        _c("button", {
-          staticClass: "button",
-          domProps: { innerHTML: _vm._s(_vm.approvalButtonText("main")) },
-          on: {
-            click: function($event) {
-              $event.preventDefault()
-              _vm.toggleApproval("main")
-            }
-          }
-        })
-      ])
+      _vm.is_local
+        ? _c(
+            "span",
+            { staticClass: "level-item" },
+            [
+              _c(
+                "main-paper-uploader",
+                {
+                  attrs: {
+                    course: _vm.course,
+                    category: "main",
+                    subcategories: _vm.subcategories.solution
+                  },
+                  on: { added: _vm.paperAdded }
+                },
+                [
+                  _c("template", { slot: "button-content" }, [
+                    _c("span", { staticClass: "icon has-text-success" }, [
+                      _c("i", { staticClass: "far fa-check-circle" })
+                    ]),
+                    _vm._v(" "),
+                    _c("span", [_vm._v("Add Solution")])
+                  ])
+                ],
+                2
+              )
+            ],
+            1
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.is_external
+        ? _c(
+            "span",
+            { staticClass: "level-item" },
+            [
+              _c(
+                "main-paper-uploader",
+                {
+                  attrs: {
+                    course: _vm.course,
+                    category: "main",
+                    subcategories: _vm.subcategories.external
+                  },
+                  on: { added: _vm.paperAdded }
+                },
+                [
+                  _c("template", { slot: "button-content" }, [
+                    _c("span", { staticClass: "icon has-text-success" }, [
+                      _c("i", { staticClass: "far fa-check-circle" })
+                    ]),
+                    _vm._v(" "),
+                    _c("span", [_vm._v("Add Comments")])
+                  ])
+                ],
+                2
+              )
+            ],
+            1
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.is_local
+        ? _c("span", { staticClass: "level-item" }, [
+            _c("button", {
+              staticClass: "button",
+              domProps: { innerHTML: _vm._s(_vm.approvalButtonText("main")) },
+              on: {
+                click: function($event) {
+                  $event.preventDefault()
+                  _vm.toggleApproval("main")
+                }
+              }
+            })
+          ])
+        : _vm._e()
     ])
   ])
 }

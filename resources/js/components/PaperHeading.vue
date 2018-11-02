@@ -8,7 +8,7 @@
                 </h3>
             </span>
 
-            <span class="level-item">
+            <span class="level-item" v-if="is_local">
                 <main-paper-uploader
                     :course="course"
                     category="main"
@@ -18,7 +18,7 @@
                 </main-paper-uploader>
             </span>
 
-            <span class="level-item">
+            <span class="level-item" v-if="is_local">
                 <main-paper-uploader
                     :course="course"
                     category="main"
@@ -34,7 +34,23 @@
                 </main-paper-uploader>
             </span>
 
-        <span class="level-item">
+            <span class="level-item" v-if="is_external">
+                <main-paper-uploader
+                    :course="course"
+                    category="main"
+                    :subcategories='subcategories.external'
+                    @added="paperAdded"
+                >
+                    <template slot="button-content">
+                        <span class="icon has-text-success">
+                        <i class="far fa-check-circle"></i>
+                        </span>
+                        <span>Add Comments</span>
+                    </template>
+                </main-paper-uploader>
+            </span>
+
+        <span class="level-item" v-if="is_local">
             <button class="button" @click.prevent="toggleApproval('main')" v-html="approvalButtonText('main')">
             </button>
         </span>
@@ -51,6 +67,12 @@ export default {
       value = value.toString();
       return value.charAt(0).toUpperCase() + value.slice(1);
     }
+  },
+  data() {
+    return {
+      is_local: !window.is_external,
+      is_external: window.is_external
+    };
   },
   methods: {
     approvalButtonText(category) {

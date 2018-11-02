@@ -21,13 +21,11 @@ class CommentTest extends TestCase
         login($user);
         $paper = create(Paper::class);
 
-        $paper->addComment('1st type', '1st comment');
-        $paper->addComment('2nd type', '2nd comment');
+        $paper->addComment('1st comment');
+        $paper->addComment('2nd comment');
 
         $this->assertCount(2, $paper->comments);
-        $this->assertEquals('1st type', $paper->comments[0]->category);
         $this->assertEquals('1st comment', $paper->comments[0]->comment);
-        $this->assertEquals('2nd type', $paper->comments[1]->category);
         $this->assertEquals('2nd comment', $paper->comments[1]->comment);
     }
 

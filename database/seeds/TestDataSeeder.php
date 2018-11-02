@@ -20,14 +20,20 @@ class TestDataSeeder extends Seeder
         ]);
         factory(User::class, 5)->create();
         factory(User::class, 5)->states('external')->create();
+        $external = factory(User::class)->states('external')->create([
+            'username' => 'jenny@example.com',
+            'email' => 'jenny@example.com'
+        ]);
 
         $courses = factory(Course::class, 10)->create();
         foreach ($courses as $course) {
             $admin->courses()->attach($course->id, ['is_setter' => true]);
+            $external->courses()->attach($course->id, ['is_external' => true]);
         }
         $courses = factory(Course::class, 5)->create();
         foreach ($courses as $course) {
             $admin->courses()->attach($course->id, ['is_moderator' => true]);
+            $external->courses()->attach($course->id, ['is_external' => true]);
         }
     }
 }

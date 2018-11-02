@@ -144,7 +144,7 @@ class SetterTest extends TestCase
     }
 
     /** @test */
-    public function a_setter_can_approve_a_paper()
+    public function a_setter_can_approve_a_paper_for_a_course()
     {
         $this->withoutExceptionHandling();
         $user = create(User::class);
@@ -168,30 +168,59 @@ class SetterTest extends TestCase
     }
 
     /** @test */
-    public function a_setter_can_unapprove_a_paper()
+    public function a_setter_can_unapprove_a_paper_for_a_course()
     {
-        $this->fail('TODO');
+        $this->withoutExceptionHandling();
         $user = create(User::class);
-        $paper = create(Paper::class, ['approved_setter' => true]);
-        $this->assertTrue($paper->fresh()->isApprovedBySetter());
+        $paper = create(Paper::class, ['category' => 'main']);
+        $user->markAsSetter($paper->course);
+        $paper->course->paperApprovedBy($user, 'main');
+        $this->assertTrue($paper->course->fresh()->isApprovedBySetter('main'));
 
-        $response = $this->actingAs($user)->post(route('paper.unapprove', $paper));
+        $response = $this->actingAs($user)->postJson(route('paper.unapprove', [$paper->course, 'main']));
 
-        $response->assertStatus(302);
-        $response->assertRedirect(route('course.show', $paper->course->id));
-        $this->assertFalse($paper->fresh()->isApprovedBySetter());
+        $response->assertStatus(200);
+        $this->assertFalse($paper->course->fresh()->isApprovedBySetter('main'));
+
+        // and check we recorded this in the activity/audit log
+        tap(Activity::all()->last(), function ($log) use ($user, $paper) {
+            $this->assertTrue($log->causer->is($user));
+            $this->assertEquals(
+                "Unapproved {$paper->category} paper for {$paper->course->code}",
+                $log->description
+            );
+        });
+    }
+
+    /** @test */
+    public function a_setter_cant_approve_or_unapprove_of_a_paper_for_a_course_they_are_not_on()
+    {
+        $user = create(User::class);
+        $paper = create(Paper::class);
+
+        $response = $this->actingAs($user)->postJson(route('paper.unapprove', [$paper->course, 'main']));
+
+        $response->assertStatus(403);
+
+        $response = $this->actingAs($user)->postJson(route('paper.approve', [$paper->course, 'main']));
+
+        $response->assertStatus(403);
     }
 
     /** @test */
     public function a_setter_can_delete_their_own_paper()
     {
+        Storage::fake('exampapers');
         $user = create(User::class);
         $paper = create(Paper::class, ['user_id' => $user->id]);
+        Storage::disk('exampapers')->put($paper->filename, 'hello');
+        $this->assertTrue(Storage::disk('exampapers')->exists($paper->filename));
 
         $response = $this->actingAs($user)->deleteJson(route('paper.delete', $paper));
 
         $response->assertStatus(200);
         $this->assertDatabaseMissing('papers', ['id' => $paper->id]);
+        $this->assertFalse(Storage::disk('exampapers')->exists($paper->filename));
     }
 
     /** @test */

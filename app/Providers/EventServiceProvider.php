@@ -23,6 +23,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\PaperApproved' => [
             'App\Listeners\PaperWasApproved'
         ],
+        'App\Events\PaperUnapproved' => [
+            'App\Listeners\PaperWasUnapproved'
+        ],
     ];
 
     /**

@@ -23,6 +23,14 @@ return [
             "External Examiner Solution Comments",
             "Response To External Examiner (Solutions)",
             "Solutions For Archive",
-        ]
-    ]
+        ],
+        'external' => [
+            'main' => [
+                "External Examiner Comments",
+            ],
+            'solution' => [
+                "External Examiner Solution Comments",
+            ],
+        ],
+    ],
 ];

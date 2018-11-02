@@ -54,6 +54,7 @@ class PaperController extends Controller
 
         $course = $paper->course;
 
+        Storage::disk('exampapers')->delete($paper->filename);
         $paper->delete();
 
         return response()->json([

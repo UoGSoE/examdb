@@ -9,6 +9,8 @@ class PaperApprovalController extends Controller
 {
     public function store(Course $course, string $category, Request $request)
     {
+        $this->authorize('update', $course);
+
         $course->paperApprovedBy($request->user(), $category);
 
         if (request()->wantsJson()) {
@@ -17,12 +19,14 @@ class PaperApprovalController extends Controller
             ]);
         }
 
-        return redirect()->route('course.show', $paper->course_id);
+        return redirect()->route('course.show', $course);
     }
 
-    public function destroy(Paper $paper)
+    public function destroy(Course $course, string $category, Request $request)
     {
-        $paper->setterUnapproves();
+        $this->authorize('update', $course);
+
+        $course->paperUnapprovedBy($request->user(), $category);
 
         if (request()->wantsJson()) {
             return response()->json([
@@ -30,6 +34,6 @@ class PaperApprovalController extends Controller
             ]);
         }
 
-        return redirect()->route('course.show', $paper->course_id);
+        return redirect()->route('course.show', $course);
     }
 }

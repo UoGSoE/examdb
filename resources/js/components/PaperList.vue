@@ -31,7 +31,7 @@
                     </div>
                 </div>
                 <div class="media-right">
-                    <button class="delete" title="Delete Paper" @click.prevent="openModal(paper)"></button>
+                    <button class="delete" title="Delete Paper" @click.prevent="openModal(paper)" v-if="paper.user_id == user_id"></button>
                 </div>
             </article>
         </transition-group>
@@ -62,7 +62,8 @@ export default {
   data() {
     return {
       showModal: false,
-      paperToDelete: null
+      paperToDelete: null,
+      user_id: window.user_id
     };
   },
   methods: {

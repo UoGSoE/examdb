@@ -16,6 +16,10 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
+    <script>
+        window.user_id = {{ Auth::id() }};
+        window.is_external = {{ Auth::check() && Auth::user()->isExternal() ? 1 : 0 }};
+    </script>
     <!-- Routes -->
     @routes
 </head>
