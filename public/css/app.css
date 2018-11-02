@@ -17612,8 +17612,9 @@ body {
 .flash-enter-active,
 .flash-leave-active {
   background-color: white;
-  -webkit-transition: background-color .7s;
-  transition: background-color .7s;
+  -webkit-transition: all .7s;
+  transition: all .7s;
+  opacity: 100%;
 }
 
 .flash-enter,

@@ -47,4 +47,18 @@ class PaperController extends Controller
         }, $paper->original_filename, ['Content-Type', $paper->mimetype]);
         //return Storage::disk('exampapers')->download($paper->filename, $paper->original_filename);
     }
+
+    public function destroy(Paper $paper)
+    {
+        $course = $paper->course;
+
+        $paper->delete();
+
+        return response()->json([
+            'papers' => collect([
+                'main' => $course->mainPapers()->with(['user', 'comments'])->latest()->get(),
+                'resit' => $course->resitPapers()->with(['user', 'comments'])->latest()->get(),
+            ]),
+        ]);
+    }
 }

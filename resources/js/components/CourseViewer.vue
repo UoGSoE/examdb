@@ -5,9 +5,9 @@
   <div class="columns">
     <div class="column">
 
-      <paper-heading :course="course" :subcategories="subcategories.main" category="main"></paper-heading>
+      <paper-heading :course="theCourse" :subcategories="subcategories" category="main" @paper-added="paperAdded"></paper-heading>
 
-      <paper-list :course="course" :papers="papers.main" category="main"></paper-list>
+      <paper-list :course="theCourse" :papers="thePapers.main" category="main" @paper-removed="paperRemoved"></paper-list>
 
     </div><!-- /main-papers -->
 
@@ -24,7 +24,6 @@ export default {
   data() {
     return {
       thePapers: this.papers,
-      showModal: false,
       theCourse: this.course
     };
   },
@@ -32,7 +31,6 @@ export default {
   methods: {
     approvalButtonText(category) {
       let key = `user_approved_${category}`;
-      console.log(key);
       if (this.theCourse[key]) {
         return `<span class="icon">
                       <i class="fas fa-thumbs-down"></i>
@@ -49,8 +47,19 @@ export default {
                 </span>`;
     },
     paperAdded(paper) {
-      console.log(paper);
-      this.thePapers[paper.category].unshift(paper);
+      let tempPapers = this.thePapers;
+      tempPapers[paper.category].unshift(paper);
+      this.thePapers = tempPapers;
+    },
+    paperRemoved(paper) {
+      axios
+        .delete(route("paper.delete", paper.id))
+        .then(response => {
+          this.thePapers = response.data.papers;
+        })
+        .catch(error => {
+          console.error(error);
+        });
     },
     getDownloadRoute(paper) {
       return route("paper.show", paper.id);

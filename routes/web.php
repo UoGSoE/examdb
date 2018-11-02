@@ -26,4 +26,5 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/course/{course}/unapprove/{category}', 'PaperApprovalController@destroy')->name('paper.unapprove');
 
     Route::get('/paper/{paper}', 'PaperController@show')->name('paper.show');
+    Route::delete('/paper/{paper}', 'PaperController@destroy')->name('paper.delete');
 });

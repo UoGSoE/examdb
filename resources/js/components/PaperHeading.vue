@@ -84,6 +84,9 @@ export default {
         .catch(error => {
           console.log(error);
         });
+    },
+    paperAdded(paper) {
+      this.$emit("paper-added", paper);
     }
   }
 };

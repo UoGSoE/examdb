@@ -14231,7 +14231,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   data: function data() {
     return {
       thePapers: this.papers,
-      showModal: false,
       theCourse: this.course
     };
   },
@@ -14240,15 +14239,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   methods: {
     approvalButtonText: function approvalButtonText(category) {
       var key = "user_approved_" + category;
-      console.log(key);
       if (this.theCourse[key]) {
         return "<span class=\"icon\">\n                      <i class=\"fas fa-thumbs-down\"></i>\n                  </span>\n                  <span>\n                      Unapprove\n                  </span>";
       }
       return "<span class=\"icon\">\n                    <i class=\"fas fa-thumbs-up\"></i>\n                </span>\n                <span>\n                    Approve\n                </span>";
     },
     paperAdded: function paperAdded(paper) {
-      console.log(paper);
-      this.thePapers[paper.category].unshift(paper);
+      var tempPapers = this.thePapers;
+      tempPapers[paper.category].unshift(paper);
+      this.thePapers = tempPapers;
+    },
+    paperRemoved: function paperRemoved(paper) {
+      var _this = this;
+
+      axios.delete(route("paper.delete", paper.id)).then(function (response) {
+        _this.thePapers = response.data.papers;
+      }).catch(function (error) {
+        console.error(error);
+      });
     },
     getDownloadRoute: function getDownloadRoute(paper) {
       return route("paper.show", paper.id);
@@ -14279,18 +14287,20 @@ var render = function() {
         [
           _c("paper-heading", {
             attrs: {
-              course: _vm.course,
-              subcategories: _vm.subcategories.main,
+              course: _vm.theCourse,
+              subcategories: _vm.subcategories,
               category: "main"
-            }
+            },
+            on: { "paper-added": _vm.paperAdded }
           }),
           _vm._v(" "),
           _c("paper-list", {
             attrs: {
-              course: _vm.course,
-              papers: _vm.papers.main,
+              course: _vm.theCourse,
+              papers: _vm.thePapers.main,
               category: "main"
-            }
+            },
+            on: { "paper-removed": _vm.paperRemoved }
           })
         ],
         1
@@ -15055,7 +15065,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   props: ["course", "papers", "category"],
   data: function data() {
     return {
-      showModal: false
+      showModal: false,
+      paperToDelete: null
     };
   },
 
@@ -15063,13 +15074,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     paperAdded: function paperAdded(paper) {
       this.$emit("paper-added", paper);
     },
-    paperRemoved: function paperRemoved(paper) {
-      this.$emit("paper-removed", paper);
+    paperRemoved: function paperRemoved() {
+      this.$emit("paper-removed", this.paperToDelete);
+      this.showModal = false;
+      this.paperToDelete = null;
     },
     getDownloadRoute: function getDownloadRoute(paper) {
       return route("paper.show", paper.id);
     },
+    openModal: function openModal(paper) {
+      this.paperToDelete = paper;
+      this.showModal = true;
+    },
     closeModal: function closeModal() {
+      this.paperToDelete = null;
       this.showModal = false;
     }
   }
@@ -15088,7 +15106,7 @@ var render = function() {
     [
       _c(
         "transition-group",
-        { attrs: { name: "flash", tag: "span" } },
+        { attrs: { name: "flash", mode: "in-out", tag: "span" } },
         _vm._l(_vm.papers, function(paper) {
           return _c("article", { key: paper.id, staticClass: "media" }, [
             _c("figure", { staticClass: "media-left has-text-centered" }, [
@@ -15123,7 +15141,7 @@ var render = function() {
                   _vm._v(" "),
                   _c("br"),
                   _vm._v(" "),
-                  paper.comments.length > 0
+                  paper.comments && paper.comments.length > 0
                     ? _c("span", [
                         _c("small", [
                           _c("strong", [_vm._v(_vm._s(paper.user.full_name))])
@@ -15150,7 +15168,7 @@ var render = function() {
                 on: {
                   click: function($event) {
                     $event.preventDefault()
-                    _vm.showModal = true
+                    _vm.openModal(paper)
                   }
                 }
               })
@@ -15191,9 +15209,14 @@ var render = function() {
                 ]),
                 _vm._v(" "),
                 _c("footer", { staticClass: "modal-card-foot" }, [
-                  _c("button", { staticClass: "button is-danger" }, [
-                    _vm._v("Yes")
-                  ]),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "button is-danger",
+                      on: { click: _vm.paperRemoved }
+                    },
+                    [_vm._v("Yes")]
+                  ),
                   _vm._v(" "),
                   _c(
                     "button",
@@ -15351,6 +15374,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }).catch(function (error) {
         console.log(error);
       });
+    },
+    paperAdded: function paperAdded(paper) {
+      this.$emit("paper-added", paper);
     }
   }
 });
