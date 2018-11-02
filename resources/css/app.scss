@@ -26,15 +26,16 @@ body {
   margin-top: 0.5rem;
   position: absolute;
   top: 2rem;
-  left: -180px;
-  width: 500px;
+  left: -80px;
+  width: 300px;
+  max-width: 300px;
   z-index: 1;
 }
-@media screen and (max-width: 600px) {
+@media screen and (min-width: 600px) {
   .paper-box {
-    // width: 300px;
-    // max-width: 300px;
-    left: -100px;
+    width: 500px;
+    max-width: 500px;
+    left: 0px;
   }
 }
 .shadow {
