@@ -2,13 +2,20 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Events\PaperApproved;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
 class Course extends Model
 {
     protected $guarded = [];
+
+    protected $casts = [
+        'setter_approved' => 'boolean',
+        'moderator_approved' => 'boolean',
+        'external_approved' => 'boolean',
+    ];
 
     public function papers()
     {
@@ -62,31 +69,53 @@ class Course extends Model
         ]);
     }
 
-    public function addSolution($category, UploadedFile $file)
+    public function paperApprovedBy(User $user, string $category)
     {
-        if (!in_array($category, Paper::VALID_CATEGORIES)) {
-            throw new \InvalidArgumentException('Invalid category');
+        if ($user->isSetterFor($this)) {
+            $this->update(["setter_approved_{$category}" => true]);
+            event(new PaperApproved($this, $user, $category));
+            return;
+        }
+        if ($user->isModeratorFor($this)) {
+            $this->update(["moderator_approved_{$category}" => true]);
+            event(new PaperApproved($this, $user, $category));
+            return;
+        }
+        if ($user->isExternalFor($this)) {
+            $this->update(["external_approved_{$category}" => true]);
+            event(new PaperApproved($this, $user, $category));
+            return;
         }
 
-        $filename = $file->store("solutions/{$this->id}/{$category}", 'exampapers');
+        throw new \DomainException('User is not associated with this course');
+    }
 
-        return $this->solutions()->create([
-            'category' => $category,
-            'user_id' => auth()->id(),
-            'filename' => $filename,
-            'originalFilename' => $file->getClientOriginalName(),
-            'mimetype' => $file->getClientMimeType(),
-            'size' => $file->getSize(),
-        ]);
+    public function isApprovedBySetter(string $category) : bool
+    {
+        $key = "setter_approved_{$category}";
+        return $this->$key;
+    }
+
+    public function isApprovedBy(User $user, string $category) : bool
+    {
+        if ($user->isSetterFor($this)) {
+            $key = "setter_approved_{$category}";
+            return $this->$key;
+        }
+        if ($user->isModeratorFor($this)) {
+            $key = "moderator_approved_{$category}";
+            return $this->$key;
+        }
+        if ($user->isSetterFor($this)) {
+            $key = "external_approved_{$category}";
+            return $this->$key;
+        }
+
+        throw new \DomainException('User is not associated with this course');
     }
 
     public function getFullNameAttribute()
     {
         return $this->code . ' ' . $this->title;
-    }
-
-    public function getUserApprovedAttribute()
-    {
-        return false;
     }
 }

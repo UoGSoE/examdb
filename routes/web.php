@@ -21,11 +21,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/course/{course}', 'CourseController@show')->name('course.show');
     Route::post('/course/{course}/paper', 'PaperController@store')->name('course.paper.store');
-    Route::post('/course/{course}/solution', 'SolutionController@store')->name('course.solution.store');
     Route::post('/paper/{paper}/comment', 'PaperCommentController@store')->name('paper.comment');
-    Route::post('/solution/{solution}/comment', 'SolutionCommentController@store')->name('solution.comment');
-    Route::post('/paper/{paper}/approve', 'PaperApprovalController@store')->name('paper.approve');
-    Route::post('/paper/{paper}/unapprove', 'PaperApprovalController@destroy')->name('paper.unapprove');
+    Route::post('/course/{course}/approve/{category}', 'PaperApprovalController@store')->name('paper.approve');
+    Route::post('/course/{course}/unapprove/{category}', 'PaperApprovalController@destroy')->name('paper.unapprove');
 
     Route::get('/paper/{paper}', 'PaperController@show')->name('paper.show');
 });

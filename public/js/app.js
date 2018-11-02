@@ -1087,7 +1087,8 @@ module.exports = __webpack_require__(41);
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_portal_vue__ = __webpack_require__(67);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_portal_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_portal_vue__);
-
+/* global require Vue */
+/*eslint no-undef: "warn"*/
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -1107,6 +1108,8 @@ window.Vue = __webpack_require__(32);
 Vue.component('login-form', __webpack_require__(35));
 Vue.component('main-paper-uploader', __webpack_require__(38));
 Vue.component('course-viewer', __webpack_require__(64));
+Vue.component('paper-list', __webpack_require__(68));
+Vue.component('paper-heading', __webpack_require__(71));
 
 
 Vue.use(__WEBPACK_IMPORTED_MODULE_0_portal_vue___default.a);
@@ -14222,119 +14225,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["course", "papers", "subcategories"],
   data: function data() {
     return {
       thePapers: this.papers,
-      showModal: false
+      showModal: false,
+      theCourse: this.course
     };
   },
 
-  computed: {
-    approvalButtonText: function approvalButtonText() {
-      if (this.course.user_approved) {
-        return "Approved";
-      }
-      return "Approve?";
-    }
-  },
+  computed: {},
   methods: {
+    approvalButtonText: function approvalButtonText(category) {
+      var key = "user_approved_" + category;
+      console.log(key);
+      if (this.theCourse[key]) {
+        return "<span class=\"icon\">\n                      <i class=\"fas fa-thumbs-down\"></i>\n                  </span>\n                  <span>\n                      Unapprove\n                  </span>";
+      }
+      return "<span class=\"icon\">\n                    <i class=\"fas fa-thumbs-up\"></i>\n                </span>\n                <span>\n                    Approve\n                </span>";
+    },
     paperAdded: function paperAdded(paper) {
       console.log(paper);
       this.thePapers[paper.category].unshift(paper);
@@ -14356,265 +14267,40 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c("h2", { staticClass: "title is-2 has-text-grey-dark" }, [
-        _vm._v(_vm._s(_vm.course.code) + " " + _vm._s(_vm.course.title))
-      ]),
+  return _c("div", [
+    _c("h2", { staticClass: "title is-2 has-text-grey-dark" }, [
+      _vm._v(_vm._s(_vm.theCourse.code) + " " + _vm._s(_vm.theCourse.title))
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "columns" }, [
+      _c(
+        "div",
+        { staticClass: "column" },
+        [
+          _c("paper-heading", {
+            attrs: {
+              course: _vm.course,
+              subcategories: _vm.subcategories.main,
+              category: "main"
+            }
+          }),
+          _vm._v(" "),
+          _c("paper-list", {
+            attrs: {
+              course: _vm.course,
+              papers: _vm.papers.main,
+              category: "main"
+            }
+          })
+        ],
+        1
+      ),
       _vm._v(" "),
-      _c("div", { staticClass: "columns" }, [
-        _c(
-          "div",
-          { staticClass: "column" },
-          [
-            _c("div", { staticClass: "level" }, [
-              _c("div", { staticClass: "level-left" }, [
-                _vm._m(0),
-                _vm._v(" "),
-                _c(
-                  "span",
-                  { staticClass: "level-item" },
-                  [
-                    _c("main-paper-uploader", {
-                      attrs: {
-                        course: _vm.course,
-                        category: "main",
-                        subcategories: _vm.subcategories.main
-                      },
-                      on: { added: _vm.paperAdded }
-                    })
-                  ],
-                  1
-                ),
-                _vm._v(" "),
-                _c(
-                  "span",
-                  { staticClass: "level-item" },
-                  [
-                    _c(
-                      "main-paper-uploader",
-                      {
-                        attrs: {
-                          course: _vm.course,
-                          category: "main",
-                          subcategories: _vm.subcategories.solution
-                        },
-                        on: { added: _vm.paperAdded }
-                      },
-                      [
-                        _c("template", { slot: "button-content" }, [
-                          _c("span", { staticClass: "icon has-text-success" }, [
-                            _c("i", { staticClass: "far fa-check-circle" })
-                          ]),
-                          _vm._v(" "),
-                          _c("span", [_vm._v("Add Solution")])
-                        ])
-                      ],
-                      2
-                    )
-                  ],
-                  1
-                ),
-                _vm._v(" "),
-                _c("span", { staticClass: "level-item" }, [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "button",
-                      class: {
-                        "is-outlined": !_vm.course.user_approved,
-                        "is-success": _vm.course.user_approved
-                      }
-                    },
-                    [
-                      _vm._m(1),
-                      _vm._v(" "),
-                      _c("span", [
-                        _vm._v(
-                          "\n                      " +
-                            _vm._s(_vm.approvalButtonText) +
-                            "\n                  "
-                        )
-                      ])
-                    ]
-                  )
-                ])
-              ])
-            ]),
-            _vm._v(" "),
-            _c(
-              "transition-group",
-              { attrs: { name: "flash", tag: "span" } },
-              _vm._l(_vm.thePapers.main, function(paper) {
-                return _c("article", { key: paper.id, staticClass: "media" }, [
-                  _c(
-                    "figure",
-                    { staticClass: "media-left has-text-centered" },
-                    [
-                      _c(
-                        "a",
-                        { attrs: { href: _vm.getDownloadRoute(paper) } },
-                        [
-                          _c("span", { staticClass: "icon is-large" }, [
-                            _c("i", { class: paper.icon + " fa-3x" })
-                          ])
-                        ]
-                      )
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "media-content" }, [
-                    _c("div", { staticClass: "content" }, [
-                      _c("p", [
-                        _c(
-                          "a",
-                          { attrs: { href: _vm.getDownloadRoute(paper) } },
-                          [
-                            _c("strong", [
-                              _vm._v(_vm._s(paper.original_filename))
-                            ])
-                          ]
-                        ),
-                        _vm._v(" "),
-                        _c("small", [
-                          _vm._v(
-                            _vm._s(paper.formatted_date) +
-                              " (" +
-                              _vm._s(paper.diff_for_humans) +
-                              ")"
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("br"),
-                        _vm._v(" "),
-                        _c("small", [
-                          _c("strong", [_vm._v(_vm._s(paper.subcategory))])
-                        ]),
-                        _vm._v(" "),
-                        _c("br"),
-                        _vm._v(" "),
-                        paper.comments.length > 0
-                          ? _c("span", [
-                              _c("small", [
-                                _c("strong", [
-                                  _vm._v(_vm._s(paper.user.full_name))
-                                ])
-                              ]),
-                              _vm._v(" "),
-                              _c("span", { staticClass: "icon is-small" }, [
-                                _c("i", { staticClass: "far fa-comment" })
-                              ]),
-                              _vm._v(
-                                "\n\n                                " +
-                                  _vm._s(paper.comments[0].comment) +
-                                  "\n                            "
-                              )
-                            ])
-                          : _vm._e()
-                      ])
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "media-right" }, [
-                    _c("button", {
-                      staticClass: "delete",
-                      attrs: { title: "Delete Paper" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          _vm.showModal = true
-                        }
-                      }
-                    })
-                  ])
-                ])
-              })
-            )
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _vm._m(2)
-      ]),
-      _vm._v(" "),
-      _vm.showModal
-        ? _c("portal", { attrs: { to: "portal-modal" } }, [
-            _c("div", { staticClass: "modal is-active" }, [
-              _c("div", { staticClass: "modal-background" }),
-              _vm._v(" "),
-              _c("div", { staticClass: "modal-card" }, [
-                _c("header", { staticClass: "modal-card-head" }, [
-                  _c("p", { staticClass: "modal-card-title" }, [
-                    _vm._v("Confirm deleting paper")
-                  ]),
-                  _vm._v(" "),
-                  _c("button", {
-                    staticClass: "delete",
-                    attrs: { "aria-label": "close" },
-                    on: {
-                      click: function($event) {
-                        $event.preventDefault()
-                        return _vm.closeModal($event)
-                      }
-                    }
-                  })
-                ]),
-                _vm._v(" "),
-                _c("section", { staticClass: "modal-card-body" }, [
-                  _vm._v("\n                Are you "),
-                  _c("strong", [_c("em", [_vm._v("sure")])]),
-                  _vm._v(" you want do delete this paper?  This "),
-                  _c("em", [_vm._v("cannot")]),
-                  _vm._v(" be undone!\n            ")
-                ]),
-                _vm._v(" "),
-                _c("footer", { staticClass: "modal-card-foot" }, [
-                  _c("button", { staticClass: "button is-danger" }, [
-                    _vm._v("Yes")
-                  ]),
-                  _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "button",
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          return _vm.closeModal($event)
-                        }
-                      }
-                    },
-                    [_vm._v("Cancel")]
-                  )
-                ])
-              ])
-            ])
-          ])
-        : _vm._e()
-    ],
-    1
-  )
+      _vm._m(0)
+    ])
+  ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("span", { staticClass: "level-item" }, [
-      _c("h3", { staticClass: "title has-text-grey" }, [
-        _vm._v("\n              Main\n            ")
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("span", { staticClass: "icon" }, [
-      _c("i", { staticClass: "fas fa-thumbs-up" })
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -15252,6 +14938,508 @@ return index;
 })));
 //# sourceMappingURL=portal-vue.js.map
 
+
+/***/ }),
+/* 68 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(9)
+/* script */
+var __vue_script__ = __webpack_require__(69)
+/* template */
+var __vue_template__ = __webpack_require__(70)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/PaperList.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-50ee056f", Component.options)
+  } else {
+    hotAPI.reload("data-v-50ee056f", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 69 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ["course", "papers", "category"],
+  data: function data() {
+    return {
+      showModal: false
+    };
+  },
+
+  methods: {
+    paperAdded: function paperAdded(paper) {
+      this.$emit("paper-added", paper);
+    },
+    paperRemoved: function paperRemoved(paper) {
+      this.$emit("paper-removed", paper);
+    },
+    getDownloadRoute: function getDownloadRoute(paper) {
+      return route("paper.show", paper.id);
+    },
+    closeModal: function closeModal() {
+      this.showModal = false;
+    }
+  }
+});
+
+/***/ }),
+/* 70 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c(
+        "transition-group",
+        { attrs: { name: "flash", tag: "span" } },
+        _vm._l(_vm.papers, function(paper) {
+          return _c("article", { key: paper.id, staticClass: "media" }, [
+            _c("figure", { staticClass: "media-left has-text-centered" }, [
+              _c("a", { attrs: { href: _vm.getDownloadRoute(paper) } }, [
+                _c("span", { staticClass: "icon is-large" }, [
+                  _c("i", { class: paper.icon + " fa-3x" })
+                ])
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "media-content" }, [
+              _c("div", { staticClass: "content" }, [
+                _c("p", [
+                  _c("a", { attrs: { href: _vm.getDownloadRoute(paper) } }, [
+                    _c("strong", [_vm._v(_vm._s(paper.original_filename))])
+                  ]),
+                  _vm._v(" "),
+                  _c("small", [
+                    _vm._v(
+                      _vm._s(paper.formatted_date) +
+                        " (" +
+                        _vm._s(paper.diff_for_humans) +
+                        ")"
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("br"),
+                  _vm._v(" "),
+                  _c("small", [
+                    _c("strong", [_vm._v(_vm._s(paper.subcategory))])
+                  ]),
+                  _vm._v(" "),
+                  _c("br"),
+                  _vm._v(" "),
+                  paper.comments.length > 0
+                    ? _c("span", [
+                        _c("small", [
+                          _c("strong", [_vm._v(_vm._s(paper.user.full_name))])
+                        ]),
+                        _vm._v(" "),
+                        _c("span", { staticClass: "icon is-small" }, [
+                          _c("i", { staticClass: "far fa-comment" })
+                        ]),
+                        _vm._v(
+                          "\n\n                            " +
+                            _vm._s(paper.comments[0].comment) +
+                            "\n                        "
+                        )
+                      ])
+                    : _vm._e()
+                ])
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "media-right" }, [
+              _c("button", {
+                staticClass: "delete",
+                attrs: { title: "Delete Paper" },
+                on: {
+                  click: function($event) {
+                    $event.preventDefault()
+                    _vm.showModal = true
+                  }
+                }
+              })
+            ])
+          ])
+        })
+      ),
+      _vm._v(" "),
+      _vm.showModal
+        ? _c("portal", { attrs: { to: "portal-modal" } }, [
+            _c("div", { staticClass: "modal is-active" }, [
+              _c("div", { staticClass: "modal-background" }),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-card" }, [
+                _c("header", { staticClass: "modal-card-head" }, [
+                  _c("p", { staticClass: "modal-card-title" }, [
+                    _vm._v("Confirm deleting paper")
+                  ]),
+                  _vm._v(" "),
+                  _c("button", {
+                    staticClass: "delete",
+                    attrs: { "aria-label": "close" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        return _vm.closeModal($event)
+                      }
+                    }
+                  })
+                ]),
+                _vm._v(" "),
+                _c("section", { staticClass: "modal-card-body" }, [
+                  _vm._v("\n                    Are you "),
+                  _c("strong", [_c("em", [_vm._v("sure")])]),
+                  _vm._v(" you want do delete this paper?  This "),
+                  _c("em", [_vm._v("cannot")]),
+                  _vm._v(" be undone!\n                ")
+                ]),
+                _vm._v(" "),
+                _c("footer", { staticClass: "modal-card-foot" }, [
+                  _c("button", { staticClass: "button is-danger" }, [
+                    _vm._v("Yes")
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "button",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.closeModal($event)
+                        }
+                      }
+                    },
+                    [_vm._v("Cancel")]
+                  )
+                ])
+              ])
+            ])
+          ])
+        : _vm._e()
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-50ee056f", module.exports)
+  }
+}
+
+/***/ }),
+/* 71 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(9)
+/* script */
+var __vue_script__ = __webpack_require__(72)
+/* template */
+var __vue_template__ = __webpack_require__(73)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/PaperHeading.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-1488f07e", Component.options)
+  } else {
+    hotAPI.reload("data-v-1488f07e", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 72 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ["course", "subcategories", "category"],
+  filters: {
+    capitalize: function capitalize(value) {
+      if (!value) return "";
+      value = value.toString();
+      return value.charAt(0).toUpperCase() + value.slice(1);
+    }
+  },
+  methods: {
+    approvalButtonText: function approvalButtonText(category) {
+      var key = "user_approved_" + category;
+      if (this.course[key]) {
+        return "<span class=\"icon\">\n                      <i class=\"fas fa-thumbs-down\"></i>\n                  </span>\n                  <span>\n                      Unapprove\n                  </span>";
+      }
+      return "<span class=\"icon\">\n                    <i class=\"fas fa-thumbs-up\"></i>\n                </span>\n                <span>\n                    Approve\n                </span>";
+    },
+    toggleApproval: function toggleApproval(category) {
+      axios.post(route("paper.approve", {
+        course: this.theCourse.id,
+        category: category
+      })).then(function (response) {
+        console.log(response);
+      }).catch(function (error) {
+        console.log(error);
+      });
+    }
+  }
+});
+
+/***/ }),
+/* 73 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "level" }, [
+    _c("div", { staticClass: "level-left" }, [
+      _c("span", { staticClass: "level-item" }, [
+        _c("h3", { staticClass: "title has-text-grey" }, [
+          _c("span", [_vm._v(_vm._s(_vm._f("capitalize")(_vm.category)))])
+        ])
+      ]),
+      _vm._v(" "),
+      _c(
+        "span",
+        { staticClass: "level-item" },
+        [
+          _c("main-paper-uploader", {
+            attrs: {
+              course: _vm.course,
+              category: "main",
+              subcategories: _vm.subcategories.main
+            },
+            on: { added: _vm.paperAdded }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "span",
+        { staticClass: "level-item" },
+        [
+          _c(
+            "main-paper-uploader",
+            {
+              attrs: {
+                course: _vm.course,
+                category: "main",
+                subcategories: _vm.subcategories.solution
+              },
+              on: { added: _vm.paperAdded }
+            },
+            [
+              _c("template", { slot: "button-content" }, [
+                _c("span", { staticClass: "icon has-text-success" }, [
+                  _c("i", { staticClass: "far fa-check-circle" })
+                ]),
+                _vm._v(" "),
+                _c("span", [_vm._v("Add Solution")])
+              ])
+            ],
+            2
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c("span", { staticClass: "level-item" }, [
+        _c("button", {
+          staticClass: "button",
+          domProps: { innerHTML: _vm._s(_vm.approvalButtonText("main")) },
+          on: {
+            click: function($event) {
+              $event.preventDefault()
+              _vm.toggleApproval("main")
+            }
+          }
+        })
+      ])
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-1488f07e", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

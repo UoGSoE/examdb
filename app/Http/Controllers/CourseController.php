@@ -11,7 +11,8 @@ class CourseController extends Controller
     {
         $this->authorize('show', $course);
 
-        $course->append('user_approved');
+        $course->user_approved_main = $course->isApprovedBy(request()->user(), 'main');
+        $course->user_approved_resit = $course->isApprovedBy(request()->user(), 'resit');
 
         return view('course.show', [
             'course' => $course,

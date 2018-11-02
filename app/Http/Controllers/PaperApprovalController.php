@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Paper;
+use App\Course;
 
 class PaperApprovalController extends Controller
 {
-    public function store(Paper $paper)
+    public function store(Course $course, string $category, Request $request)
     {
-        $paper->setterApproves();
+        $course->paperApprovedBy($request->user(), $category);
 
         if (request()->wantsJson()) {
             return response()->json([

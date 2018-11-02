@@ -146,15 +146,25 @@ class SetterTest extends TestCase
     /** @test */
     public function a_setter_can_approve_a_paper()
     {
+        $this->withoutExceptionHandling();
         $user = create(User::class);
-        $paper = create(Paper::class);
-        $this->assertFalse($paper->fresh()->isApprovedBySetter());
+        $paper = create(Paper::class, ['category' => 'main']);
+        $user->markAsSetter($paper->course);
+        $this->assertFalse($paper->course->fresh()->isApprovedBySetter('main'));
 
-        $response = $this->actingAs($user)->post(route('paper.approve', $paper));
+        $response = $this->actingAs($user)->postJson(route('paper.approve', [$paper->course, 'main']));
 
-        $response->assertStatus(302);
-        $response->assertRedirect(route('course.show', $paper->course->id));
-        $this->assertTrue($paper->fresh()->isApprovedBySetter());
+        $response->assertStatus(200);
+        $this->assertTrue($paper->course->fresh()->isApprovedBySetter('main'));
+
+        // and check we recorded this in the activity/audit log
+        tap(Activity::all()->last(), function ($log) use ($user, $paper) {
+            $this->assertTrue($log->causer->is($user));
+            $this->assertEquals(
+                "Approved {$paper->category} paper for {$paper->course->code}",
+                $log->description
+            );
+        });
     }
 
     /** @test */

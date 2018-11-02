@@ -15,7 +15,7 @@ class ExternalUsersLoginTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function when_an_external_logs_in_they_are_emailed_a_time_limited_signed_login_url()
+    public function an_external_can_be_emailed_a_time_limited_signed_login_url()
     {
         $this->withoutExceptionHandling();
         Mail::fake();

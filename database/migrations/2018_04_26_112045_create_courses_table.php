@@ -17,9 +17,12 @@ class CreateCoursesTable extends Migration
             $table->increments('id');
             $table->string('code')->unique();
             $table->string('title');
-            $table->boolean('setter_approved')->default(false);
-            $table->boolean('moderator_approved')->default(false);
-            $table->boolean('external_approved')->default(false);
+            $table->boolean('setter_approved_main')->default(false);
+            $table->boolean('moderator_approved_main')->default(false);
+            $table->boolean('external_approved_main')->default(false);
+            $table->boolean('setter_approved_resit')->default(false);
+            $table->boolean('moderator_approved_resit')->default(false);
+            $table->boolean('external_approved_resit')->default(false);
             $table->timestamps();
         });
     }

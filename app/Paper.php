@@ -49,19 +49,9 @@ class Paper extends Model
         ]);
     }
 
-    public function setterApproves()
+    public function approvedBy(User $user)
     {
-        $this->update(['approved_setter' => true]);
-    }
-
-    public function setterUnapproves()
-    {
-        $this->update(['approved_setter' => false]);
-    }
-
-    public function isApprovedBySetter()
-    {
-        return $this->approved_setter;
+        $this->course->paperApprovedBy($user, $this->category);
     }
 
     public function getIconAttribute()

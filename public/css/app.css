@@ -17565,6 +17565,14 @@ body {
   padding: 2em;
 }
 
+.pl-1 {
+  padding-left: 0.25em;
+}
+
+.pl-2 {
+  padding-left: 0.5em;
+}
+
 .pl-4 {
   padding-left: 1em;
 }
