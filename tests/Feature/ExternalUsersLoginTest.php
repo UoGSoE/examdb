@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ExternalLoginUrl;
+use Spatie\Activitylog\Models\Activity;
 
 class ExternalUsersLoginTest extends TestCase
 {
@@ -29,6 +30,31 @@ class ExternalUsersLoginTest extends TestCase
         Mail::assertQueued(ExternalLoginUrl::class, function ($mail) use ($external) {
             return $mail->hasTo($external->email);
         });
+        // and check we recorded this in the activity/audit log
+        tap(Activity::all()->last(), function ($log) use ($external) {
+            $this->assertTrue($log->causer->is($external));
+            $this->assertEquals('External asked for login url', $log->description);
+        });
+    }
+
+    /** @test */
+    public function when_an_email_is_entered_that_doesnt_match_an_external_then_no_email_is_sent()
+    {
+        $this->withoutExceptionHandling();
+        Mail::fake();
+
+        $response = $this->post(route('external-generate-login'), [
+            'email' => 'blah@example.com',
+        ]);
+
+        $response->assertRedirect(route('home'));
+        $response->assertSessionHas('success');
+        Mail::assertNotQueued(ExternalLoginUrl::class);
+
+        // and check we recorded this in the activity/audit log
+        tap(Activity::all()->last(), function ($log) {
+            $this->assertEquals('External asked for login url - but no matching email address blah@example.com', $log->description);
+        });
     }
 
     /** @test */
@@ -41,6 +67,12 @@ class ExternalUsersLoginTest extends TestCase
 
         $response->assertRedirect(route('home'));
         $this->assertAuthenticatedAs($external);
+
+        // and check we recorded this in the activity/audit log
+        tap(Activity::all()->last(), function ($log) use ($external) {
+            $this->assertTrue($log->causer->is($external));
+            $this->assertEquals('External logged in', $log->description);
+        });
     }
 
     /** @test */
