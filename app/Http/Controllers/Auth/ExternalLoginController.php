@@ -40,7 +40,6 @@ class ExternalLoginController extends Controller
     {
         Auth::login($user);
 
-        activity()->causedBy($user)->log('External logged in');
 
         return redirect()->route('home');
     }

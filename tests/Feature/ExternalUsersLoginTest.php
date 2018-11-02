@@ -71,7 +71,7 @@ class ExternalUsersLoginTest extends TestCase
         // and check we recorded this in the activity/audit log
         tap(Activity::all()->last(), function ($log) use ($external) {
             $this->assertTrue($log->causer->is($external));
-            $this->assertEquals('External logged in', $log->description);
+            $this->assertEquals('Logged in from IP 127.0.0.1', $log->description);
         });
     }
 
@@ -86,6 +86,11 @@ class ExternalUsersLoginTest extends TestCase
 
         $response->assertStatus(403);
         $this->assertFalse(\Auth::check());
+
+        // and check we recorded this in the activity/audit log
+        tap(Activity::all()->last(), function ($log) use ($external) {
+            $this->assertEquals('External tried to use a expired or invalid login url from IP 127.0.0.1', $log->description);
+        });
     }
 
     /** @test */
@@ -97,5 +102,10 @@ class ExternalUsersLoginTest extends TestCase
 
         $response->assertStatus(403);
         $this->assertFalse(\Auth::check());
+
+        // and check we recorded this in the activity/audit log
+        tap(Activity::all()->last(), function ($log) use ($external) {
+            $this->assertEquals('External tried to use a expired or invalid login url from IP 127.0.0.1', $log->description);
+        });
     }
 }

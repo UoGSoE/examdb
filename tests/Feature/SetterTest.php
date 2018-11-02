@@ -3,14 +3,15 @@
 namespace Tests\Feature;
 
 use App\User;
+use App\Paper;
 use App\Course;
+use App\Solution;
 use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Activitylog\Models\Activity;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Paper;
-use App\Solution;
 
 class SetterTest extends TestCase
 {
@@ -89,12 +90,20 @@ class SetterTest extends TestCase
         $this->assertCount(1, $course->papers);
         $this->assertCount(1, $course->papers->first()->comments);
         Storage::disk('exampapers')->assertExists($course->papers->first()->filename);
-        tap($course->papers->first(), function ($paper) use ($staff, $course) {
-            $this->assertEquals('main', $paper->category);
-            $this->assertEquals('fred', $paper->subcategory);
-            $this->assertEquals('Whatever', $paper->comments->first()->comment);
-            $this->assertTrue($paper->user->is($staff));
-            $this->assertTrue($paper->course->is($course));
+        $paper = $course->papers->first();
+        $this->assertEquals('main', $paper->category);
+        $this->assertEquals('fred', $paper->subcategory);
+        $this->assertEquals('Whatever', $paper->comments->first()->comment);
+        $this->assertTrue($paper->user->is($staff));
+        $this->assertTrue($paper->course->is($course));
+
+        // and check we recorded this in the activity/audit log
+        tap(Activity::all()->last(), function ($log) use ($staff, $paper) {
+            $this->assertTrue($log->causer->is($staff));
+            $this->assertEquals(
+                "Uploaded a paper ({$paper->course->code} - {$paper->category} / {$paper->subcategory})",
+                $log->description
+            );
         });
     }
 
@@ -118,12 +127,19 @@ class SetterTest extends TestCase
         $this->assertCount(1, $course->papers);
         $this->assertCount(1, $course->papers->first()->comments);
         Storage::disk('exampapers')->assertExists($course->papers->first()->filename);
-        tap($course->papers->first(), function ($paper) use ($staff, $course) {
-            $this->assertEquals('resit', $paper->category);
-            $this->assertEquals('fred', $paper->subcategory);
-            $this->assertEquals('Whatever', $paper->comments->first()->comment);
-            $this->assertTrue($paper->user->is($staff));
-            $this->assertTrue($paper->course->is($course));
+        $paper = $course->papers->first();
+        $this->assertEquals('resit', $paper->category);
+        $this->assertEquals('fred', $paper->subcategory);
+        $this->assertEquals('Whatever', $paper->comments->first()->comment);
+        $this->assertTrue($paper->user->is($staff));
+        $this->assertTrue($paper->course->is($course));
+        // and check we recorded this in the activity/audit log
+        tap(Activity::all()->last(), function ($log) use ($staff, $paper) {
+            $this->assertTrue($log->causer->is($staff));
+            $this->assertEquals(
+                "Uploaded a paper ({$paper->course->code} - {$paper->category} / {$paper->subcategory})",
+                $log->description
+            );
         });
     }
 

@@ -35,6 +35,12 @@ class Handler extends ExceptionHandler
     public function report(Exception $exception)
     {
         parent::report($exception);
+
+        if ($exception instanceof \Illuminate\Routing\Exceptions\InvalidSignatureException) {
+            activity()->log(
+                "External tried to use a expired or invalid login url from IP " . request()->ip()
+            );
+        }
     }
 
     /**
