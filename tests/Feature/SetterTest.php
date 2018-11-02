@@ -170,6 +170,7 @@ class SetterTest extends TestCase
     /** @test */
     public function a_setter_can_unapprove_a_paper()
     {
+        $this->fail('TODO');
         $user = create(User::class);
         $paper = create(Paper::class, ['approved_setter' => true]);
         $this->assertTrue($paper->fresh()->isApprovedBySetter());
@@ -182,8 +183,26 @@ class SetterTest extends TestCase
     }
 
     /** @test */
-    public function an_admin_can_do_anything_regarding_setting()
+    public function a_setter_can_delete_their_own_paper()
     {
+        $user = create(User::class);
+        $paper = create(Paper::class, ['user_id' => $user->id]);
 
+        $response = $this->actingAs($user)->deleteJson(route('paper.delete', $paper));
+
+        $response->assertStatus(200);
+        $this->assertDatabaseMissing('papers', ['id' => $paper->id]);
+    }
+
+    /** @test */
+    public function a_setter_cant_delete_someone_elses_paper()
+    {
+        $user = create(User::class);
+        $paper = create(Paper::class);
+
+        $response = $this->actingAs($user)->deleteJson(route('paper.delete', $paper));
+
+        $response->assertStatus(403);
+        $this->assertDatabaseHas('papers', ['id' => $paper->id]);
     }
 }

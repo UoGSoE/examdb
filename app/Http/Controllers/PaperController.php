@@ -50,6 +50,8 @@ class PaperController extends Controller
 
     public function destroy(Paper $paper)
     {
+        $this->authorize('delete', $paper);
+
         $course = $paper->course;
 
         $paper->delete();
