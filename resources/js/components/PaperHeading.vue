@@ -5,6 +5,13 @@
             <span class="level-item">
                 <h3 class="title has-text-grey">
                     <span>{{ category | capitalize }}</span>
+                    <transition name="fade" mode="in-out">
+                        <span v-show="course.user_approved_main" title="Approved" key="approved">
+                            <span class="icon has-text-success">
+                                <i class="fas fa-check"></i>
+                            </span>
+                        </span>
+                    </transition>
                 </h3>
             </span>
 
@@ -38,14 +45,30 @@
                 <main-paper-uploader
                     :course="course"
                     category="main"
-                    :subcategories='subcategories.external'
+                    :subcategories='subcategories.external.main'
                     @added="paperAdded"
                 >
                     <template slot="button-content">
                         <span class="icon has-text-success">
                         <i class="far fa-check-circle"></i>
                         </span>
-                        <span>Add Comments</span>
+                        <span>Add Main Comments</span>
+                    </template>
+                </main-paper-uploader>
+            </span>
+
+            <span class="level-item" v-if="is_external">
+                <main-paper-uploader
+                    :course="course"
+                    category="main"
+                    :subcategories='subcategories.external.solution'
+                    @added="paperAdded"
+                >
+                    <template slot="button-content">
+                        <span class="icon has-text-success">
+                        <i class="far fa-check-circle"></i>
+                        </span>
+                        <span>Add Solution Comments</span>
                     </template>
                 </main-paper-uploader>
             </span>
@@ -93,15 +116,20 @@ export default {
                 </span>`;
     },
     toggleApproval(category) {
+      let routeName = "paper.approve";
+      let key = `user_approved_${category}`;
+      if (this.course[key]) {
+        routeName = "paper.unapprove";
+      }
       axios
         .post(
-          route("paper.approve", {
-            course: this.theCourse.id,
+          route(routeName, {
+            course: this.course.id,
             category: category
           })
         )
         .then(response => {
-          console.log(response);
+          this.$emit("approval-toggled", response.data.course);
         })
         .catch(error => {
           console.log(error);

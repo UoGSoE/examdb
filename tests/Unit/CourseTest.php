@@ -22,8 +22,8 @@ class CourseTest extends TestCase
         login($user);
         $course = create(Course::class);
 
-        $course->addPaper('main', UploadedFile::fake()->create('main_paper_1.pdf', 1));
-        $course->addPaper('main', UploadedFile::fake()->create('main_paper_2.pdf', 1));
+        $course->addPaper('main', 'blah de blah', UploadedFile::fake()->create('main_paper_1.pdf'));
+        $course->addPaper('main', 'something', UploadedFile::fake()->create('main_paper_2.pdf'));
 
         $this->assertCount(2, $course->mainPapers);
         Storage::disk('exampapers')->assertExists($course->mainPapers[0]->filename);
@@ -38,8 +38,8 @@ class CourseTest extends TestCase
         login($user);
         $course = create(Course::class);
 
-        $course->addPaper('resit', UploadedFile::fake()->create('resit_paper_1.pdf', 1));
-        $course->addPaper('resit', UploadedFile::fake()->create('resit_paper_2.pdf', 1));
+        $course->addPaper('resit', 'something or other', UploadedFile::fake()->create('resit_paper_1.pdf'));
+        $course->addPaper('resit', 'some other thing', UploadedFile::fake()->create('resit_paper_2.pdf'));
 
         $this->assertCount(2, $course->resitPapers);
         Storage::disk('exampapers')->assertExists($course->resitPapers[0]->filename);

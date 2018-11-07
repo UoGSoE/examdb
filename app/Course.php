@@ -18,6 +18,16 @@ class Course extends Model
         'external_approved' => 'boolean',
     ];
 
+    public function moderators()
+    {
+        return $this->belongsToMany(User::class, 'course_user')->wherePivot('is_moderator', true);
+    }
+
+    public function setters()
+    {
+        return $this->belongsToMany(User::class, 'course_user')->wherePivot('is_setter', true);
+    }
+
     public function papers()
     {
         return $this->hasMany(Paper::class);
@@ -118,6 +128,12 @@ class Course extends Model
         return $this->$key;
     }
 
+    public function isApprovedByModerator(string $category) : bool
+    {
+        $key = "moderator_approved_{$category}";
+        return $this->$key;
+    }
+
     public function isApprovedBy(User $user, string $category) : bool
     {
         if ($user->isSetterFor($this)) {
@@ -134,6 +150,22 @@ class Course extends Model
         }
 
         throw new \DomainException('User is not associated with this course');
+    }
+
+    public function getUserApprovedMainAttribute(? User $user) : bool
+    {
+        if (!$user) {
+            $user = auth()->user();
+        }
+        return $this->isApprovedBy($user, 'main');
+    }
+
+    public function getUserApprovedResitAttribute(? User $user) : bool
+    {
+        if (!$user) {
+            $user = auth()->user();
+        }
+        return $this->isApprovedBy($user, 'resit');
     }
 
     public function getFullNameAttribute()

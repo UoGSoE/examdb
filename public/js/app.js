@@ -14225,6 +14225,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["course", "papers", "subcategories"],
@@ -14263,6 +14265,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     closeModal: function closeModal() {
       this.showModal = false;
+    },
+    approvalToggled: function approvalToggled(course) {
+      this.theCourse = course;
     }
   }
 });
@@ -14277,7 +14282,13 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", [
     _c("h2", { staticClass: "title is-2 has-text-grey-dark" }, [
-      _vm._v(_vm._s(_vm.theCourse.code) + " " + _vm._s(_vm.theCourse.title))
+      _vm._v(
+        "\n    " +
+          _vm._s(_vm.theCourse.code) +
+          " " +
+          _vm._s(_vm.theCourse.title) +
+          "\n  "
+      )
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "columns" }, [
@@ -14291,7 +14302,10 @@ var render = function() {
               subcategories: _vm.subcategories,
               category: "main"
             },
-            on: { "paper-added": _vm.paperAdded }
+            on: {
+              "paper-added": _vm.paperAdded,
+              "approval-toggled": _vm.approvalToggled
+            }
           }),
           _vm._v(" "),
           _c("paper-list", {
@@ -15366,6 +15380,29 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["course", "subcategories", "category"],
@@ -15392,11 +15429,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       return "<span class=\"icon\">\n                    <i class=\"fas fa-thumbs-up\"></i>\n                </span>\n                <span>\n                    Approve\n                </span>";
     },
     toggleApproval: function toggleApproval(category) {
-      axios.post(route("paper.approve", {
-        course: this.theCourse.id,
+      var _this = this;
+
+      var routeName = "paper.approve";
+      var key = "user_approved_" + category;
+      if (this.course[key]) {
+        routeName = "paper.unapprove";
+      }
+      axios.post(route(routeName, {
+        course: this.course.id,
         category: category
       })).then(function (response) {
-        console.log(response);
+        _this.$emit("approval-toggled", response.data.course);
       }).catch(function (error) {
         console.log(error);
       });
@@ -15418,9 +15462,37 @@ var render = function() {
   return _c("div", { staticClass: "level" }, [
     _c("div", { staticClass: "level-left" }, [
       _c("span", { staticClass: "level-item" }, [
-        _c("h3", { staticClass: "title has-text-grey" }, [
-          _c("span", [_vm._v(_vm._s(_vm._f("capitalize")(_vm.category)))])
-        ])
+        _c(
+          "h3",
+          { staticClass: "title has-text-grey" },
+          [
+            _c("span", [_vm._v(_vm._s(_vm._f("capitalize")(_vm.category)))]),
+            _vm._v(" "),
+            _c("transition", { attrs: { name: "fade", mode: "in-out" } }, [
+              _c(
+                "span",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.course.user_approved_main,
+                      expression: "course.user_approved_main"
+                    }
+                  ],
+                  key: "approved",
+                  attrs: { title: "Approved" }
+                },
+                [
+                  _c("span", { staticClass: "icon has-text-success" }, [
+                    _c("i", { staticClass: "fas fa-check" })
+                  ])
+                ]
+              )
+            ])
+          ],
+          1
+        )
       ]),
       _vm._v(" "),
       _vm.is_local
@@ -15483,7 +15555,7 @@ var render = function() {
                   attrs: {
                     course: _vm.course,
                     category: "main",
-                    subcategories: _vm.subcategories.external
+                    subcategories: _vm.subcategories.external.main
                   },
                   on: { added: _vm.paperAdded }
                 },
@@ -15493,7 +15565,38 @@ var render = function() {
                       _c("i", { staticClass: "far fa-check-circle" })
                     ]),
                     _vm._v(" "),
-                    _c("span", [_vm._v("Add Comments")])
+                    _c("span", [_vm._v("Add Main Comments")])
+                  ])
+                ],
+                2
+              )
+            ],
+            1
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.is_external
+        ? _c(
+            "span",
+            { staticClass: "level-item" },
+            [
+              _c(
+                "main-paper-uploader",
+                {
+                  attrs: {
+                    course: _vm.course,
+                    category: "main",
+                    subcategories: _vm.subcategories.external.solution
+                  },
+                  on: { added: _vm.paperAdded }
+                },
+                [
+                  _c("template", { slot: "button-content" }, [
+                    _c("span", { staticClass: "icon has-text-success" }, [
+                      _c("i", { staticClass: "far fa-check-circle" })
+                    ]),
+                    _vm._v(" "),
+                    _c("span", [_vm._v("Add Solution Comments")])
                   ])
                 ],
                 2

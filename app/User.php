@@ -30,13 +30,19 @@ class User extends Authenticatable
     public function markAsSetter(Course $course)
     {
         $this->courses()->syncWithoutDetaching([$course->id]);
-        $this->courses()->updateExistingPivot($course->id, ['is_setter' => true]);
+        $this->courses()->updateExistingPivot($course->id, ['is_setter' => true, 'is_moderator' => false, 'is_external' => false]);
+    }
+
+    public function markAsModerator(Course $course)
+    {
+        $this->courses()->syncWithoutDetaching([$course->id]);
+        $this->courses()->updateExistingPivot($course->id, ['is_setter' => false, 'is_moderator' => true, 'is_external' => false]);
     }
 
     public function markAsExternal(Course $course)
     {
         $this->courses()->syncWithoutDetaching([$course->id]);
-        $this->courses()->updateExistingPivot($course->id, ['is_external' => true]);
+        $this->courses()->updateExistingPivot($course->id, ['is_setter' => false, 'is_moderator' => false, 'is_external' => true]);
     }
 
     public function isSetterFor(Course $course) : bool

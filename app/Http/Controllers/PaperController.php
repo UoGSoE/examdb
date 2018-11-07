@@ -39,8 +39,16 @@ class PaperController extends Controller
 
     public function show(Paper $paper)
     {
+        $this->authorize('view', $paper);
+
         $encryptedContent = Storage::disk('exampapers')->get($paper->filename);
         $decryptedContent = decrypt($encryptedContent);
+
+        activity()
+            ->causedBy(request()->user())
+            ->log(
+                "Downloaded {$paper->category} paper '{$paper->original_filename}' for {$paper->course->code}"
+            );
 
         return response()->streamDownload(function () use ($decryptedContent) {
             echo $decryptedContent;

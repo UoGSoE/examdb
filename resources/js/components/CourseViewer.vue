@@ -1,11 +1,13 @@
 <template>
 <div>
-  <h2 class="title is-2 has-text-grey-dark">{{ theCourse.code }} {{ theCourse.title }}</h2>
+  <h2 class="title is-2 has-text-grey-dark">
+    {{ theCourse.code }} {{ theCourse.title }}
+  </h2>
 
   <div class="columns">
     <div class="column">
 
-      <paper-heading :course="theCourse" :subcategories="subcategories" category="main" @paper-added="paperAdded"></paper-heading>
+      <paper-heading :course="theCourse" :subcategories="subcategories" category="main" @paper-added="paperAdded" @approval-toggled="approvalToggled"></paper-heading>
 
       <paper-list :course="theCourse" :papers="thePapers.main" category="main" @paper-removed="paperRemoved"></paper-list>
 
@@ -66,6 +68,9 @@ export default {
     },
     closeModal() {
       this.showModal = false;
+    },
+    approvalToggled(course) {
+      this.theCourse = course;
     }
   }
 };

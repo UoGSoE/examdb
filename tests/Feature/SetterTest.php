@@ -8,8 +8,12 @@ use App\Course;
 use App\Solution;
 use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
+use App\Mail\NotifyModeratorAboutUpload;
+use App\Mail\NotifyModeratorAboutApproval;
+use App\Mail\NotifyModeratorAboutUnapproval;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -73,11 +77,16 @@ class SetterTest extends TestCase
     /** @test */
     public function a_user_can_add_a_main_paper_and_comment_to_a_course()
     {
+        Mail::fake();
         $this->withoutExceptionHandling();
         Storage::fake('exampapers');
         $staff = create(User::class);
         $course = create(Course::class);
         $staff->markAsSetter($course);
+        $moderator1 = create(User::class);
+        $moderator2 = create(User::class);
+        $moderator1->markAsModerator($course);
+        $moderator2->markAsModerator($course);
 
         $response = $this->actingAs($staff)->postJson(route('course.paper.store', $course->id), [
             'paper' => UploadedFile::fake()->create('main_paper_1.pdf', 1),
@@ -105,16 +114,31 @@ class SetterTest extends TestCase
                 $log->description
             );
         });
+
+        // check an email was sent to each moderator about the new upload
+        Mail::assertQueued(NotifyModeratorAboutUpload::class, 2);
+        Mail::assertQueued(NotifyModeratorAboutUpload::class, function ($mail) use ($moderator1) {
+            return $mail->hasTo($moderator1->email);
+        });
+        Mail::assertQueued(NotifyModeratorAboutUpload::class, function ($mail) use ($moderator2) {
+            return $mail->hasTo($moderator2->email);
+        });
     }
 
     /** @test */
     public function a_user_can_add_a_resit_paper_and_comment_to_a_course()
     {
         $this->withoutExceptionHandling();
+
+        Mail::fake();
         Storage::fake('exampapers');
-        $staff = create(User::class);
         $course = create(Course::class);
+        $staff = create(User::class);
         $staff->markAsSetter($course);
+        $moderator1 = create(User::class);
+        $moderator2 = create(User::class);
+        $moderator1->markAsModerator($course);
+        $moderator2->markAsModerator($course);
 
         $response = $this->actingAs($staff)->postJson(route('course.paper.store', $course->id), [
             'paper' => UploadedFile::fake()->create('main_paper_1.pdf', 1),
@@ -141,15 +165,28 @@ class SetterTest extends TestCase
                 $log->description
             );
         });
+
+        // check an email was sent to each moderator about the new upload
+        Mail::assertQueued(NotifyModeratorAboutUpload::class, 2);
+        Mail::assertQueued(NotifyModeratorAboutUpload::class, function ($mail) use ($moderator1) {
+            return $mail->hasTo($moderator1->email);
+        });
+        Mail::assertQueued(NotifyModeratorAboutUpload::class, function ($mail) use ($moderator2) {
+            return $mail->hasTo($moderator2->email);
+        });
     }
 
     /** @test */
     public function a_setter_can_approve_a_paper_for_a_course()
     {
         $this->withoutExceptionHandling();
+        Mail::fake();
         $user = create(User::class);
         $paper = create(Paper::class, ['category' => 'main']);
         $user->markAsSetter($paper->course);
+        $moderator = create(User::class);
+        $moderator->markAsModerator($paper->course);
+
         $this->assertFalse($paper->course->fresh()->isApprovedBySetter('main'));
 
         $response = $this->actingAs($user)->postJson(route('paper.approve', [$paper->course, 'main']));
@@ -165,16 +202,25 @@ class SetterTest extends TestCase
                 $log->description
             );
         });
+
+        // and check the moderator was notified
+        Mail::assertQueued(NotifyModeratorAboutApproval::class, function ($mail) use ($moderator) {
+            return $mail->hasTo($moderator->email);
+        });
     }
 
     /** @test */
     public function a_setter_can_unapprove_a_paper_for_a_course()
     {
         $this->withoutExceptionHandling();
+        Mail::fake();
         $user = create(User::class);
         $paper = create(Paper::class, ['category' => 'main']);
         $user->markAsSetter($paper->course);
         $paper->course->paperApprovedBy($user, 'main');
+        $moderator = create(User::class);
+        $moderator->markAsModerator($paper->course);
+
         $this->assertTrue($paper->course->fresh()->isApprovedBySetter('main'));
 
         $response = $this->actingAs($user)->postJson(route('paper.unapprove', [$paper->course, 'main']));
@@ -189,6 +235,11 @@ class SetterTest extends TestCase
                 "Unapproved {$paper->category} paper for {$paper->course->code}",
                 $log->description
             );
+        });
+
+        // and check the moderator was notified
+        Mail::assertQueued(NotifyModeratorAboutUnapproval::class, function ($mail) use ($moderator) {
+            return $mail->hasTo($moderator->email);
         });
     }
 
@@ -233,5 +284,42 @@ class SetterTest extends TestCase
 
         $response->assertStatus(403);
         $this->assertDatabaseHas('papers', ['id' => $paper->id]);
+    }
+
+    /** @test */
+    public function a_setter_can_download_any_paper_for_a_course_they_are_on()
+    {
+        $this->withoutExceptionHandling();
+        Storage::fake('exampapers');
+        $user = create(User::class);
+        $paper = create(Paper::class, ['user_id' => $user->id]);
+        $user->markAsSetter($paper->course);
+        Storage::disk('exampapers')->put($paper->filename, encrypt('hello'));
+
+        $response = $this->actingAs($user)->get(route('paper.show', $paper));
+
+        $response->assertStatus(200);
+
+        // and check we recorded this in the activity/audit log
+        tap(Activity::all()->last(), function ($log) use ($user, $paper) {
+            $this->assertTrue($log->causer->is($user));
+            $this->assertEquals(
+                "Downloaded {$paper->category} paper '{$paper->original_filename}' for {$paper->course->code}",
+                $log->description
+            );
+        });
+    }
+
+    /** @test */
+    public function a_setter_cant_download_any_paper_for_a_course_they_are_not_on()
+    {
+        Storage::fake('exampapers');
+        $user = create(User::class);
+        $paper = create(Paper::class, ['user_id' => $user->id]);
+        Storage::disk('exampapers')->put($paper->filename, encrypt('hello'));
+
+        $response = $this->actingAs($user)->get(route('paper.show', $paper));
+
+        $response->assertStatus(403);
     }
 }

@@ -13,9 +13,13 @@ class PaperApprovalController extends Controller
 
         $course->paperApprovedBy($request->user(), $category);
 
+        $course->append('user_approved_main');
+        $course->append('user_approved_resit');
+
         if (request()->wantsJson()) {
             return response()->json([
                 'message' => 'Paper Approved',
+                'course' => $course,
             ]);
         }
 
@@ -28,9 +32,13 @@ class PaperApprovalController extends Controller
 
         $course->paperUnapprovedBy($request->user(), $category);
 
+        $course->append('user_approved_main');
+        $course->append('user_approved_resit');
+
         if (request()->wantsJson()) {
             return response()->json([
                 'message' => 'Paper Unapproved',
+                'course' => $course,
             ]);
         }
 

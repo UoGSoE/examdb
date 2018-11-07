@@ -8,9 +8,11 @@ use App\Course;
 use App\Solution;
 use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
 use Illuminate\Foundation\Testing\WithFaker;
+use App\Mail\NotifyLocalsAboutExternalComments;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ExternalsTest extends TestCase
@@ -18,7 +20,7 @@ class ExternalsTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function a_user_can_see_all_the_courses_they_are_a_setter_for()
+    public function a_user_can_see_all_the_courses_they_are_an_external_for()
     {
         $staff = factory(User::class)->states('external')->create();
         $course1 = create(Course::class);
@@ -75,11 +77,20 @@ class ExternalsTest extends TestCase
     {
         $this->withoutExceptionHandling();
         Storage::fake('exampapers');
-        $staff = factory(User::class)->states('external')->create();
+        Mail::fake();
+        $external = factory(User::class)->states('external')->create();
         $course = create(Course::class);
-        $staff->markAsSetter($course);
+        $external->markAsExternal($course);
+        $setter1 = create(User::class);
+        $setter1->markAsSetter($course);
+        $setter2 = create(User::class);
+        $setter2->markAsSetter($course);
+        $moderator1 = create(User::class);
+        $moderator2 = create(User::class);
+        $moderator1->markAsModerator($course);
+        $moderator2->markAsModerator($course);
 
-        $response = $this->actingAs($staff)->postJson(route('course.paper.store', $course->id), [
+        $response = $this->actingAs($external)->postJson(route('course.paper.store', $course->id), [
             'paper' => UploadedFile::fake()->create('main_paper_1.pdf', 1),
             'category' => 'main',
             'subcategory' => 'fred',
@@ -94,16 +105,31 @@ class ExternalsTest extends TestCase
         $this->assertEquals('main', $paper->category);
         $this->assertEquals('fred', $paper->subcategory);
         $this->assertEquals('Whatever', $paper->comments->first()->comment);
-        $this->assertTrue($paper->user->is($staff));
+        $this->assertTrue($paper->user->is($external));
         $this->assertTrue($paper->course->is($course));
 
         // and check we recorded this in the activity/audit log
-        tap(Activity::all()->last(), function ($log) use ($staff, $paper) {
-            $this->assertTrue($log->causer->is($staff));
+        tap(Activity::all()->last(), function ($log) use ($external, $paper) {
+            $this->assertTrue($log->causer->is($external));
             $this->assertEquals(
                 "Uploaded a paper ({$paper->course->code} - {$paper->category} / {$paper->subcategory})",
                 $log->description
             );
+        });
+
+        // check an email was sent to each local setter & moderator about the new upload
+        Mail::assertQueued(NotifyLocalsAboutExternalComments::class, 4);
+        Mail::assertQueued(NotifyLocalsAboutExternalComments::class, function ($mail) use ($setter1) {
+            return $mail->hasTo($setter1->email);
+        });
+        Mail::assertQueued(NotifyLocalsAboutExternalComments::class, function ($mail) use ($setter2) {
+            return $mail->hasTo($setter2->email);
+        });
+        Mail::assertQueued(NotifyLocalsAboutExternalComments::class, function ($mail) use ($moderator1) {
+            return $mail->hasTo($moderator1->email);
+        });
+        Mail::assertQueued(NotifyLocalsAboutExternalComments::class, function ($mail) use ($moderator2) {
+            return $mail->hasTo($moderator2->email);
         });
     }
 
@@ -174,5 +200,42 @@ class ExternalsTest extends TestCase
         $response->assertStatus(403);
         $this->assertDatabaseHas('papers', ['id' => $paper->id]);
         $this->assertTrue(Storage::disk('exampapers')->exists($paper->filename));
+    }
+
+    /** @test */
+    public function an_external_can_download_any_paper_for_a_course_they_are_on()
+    {
+        $this->withoutExceptionHandling();
+        Storage::fake('exampapers');
+        $user = create(User::class);
+        $paper = create(Paper::class, ['user_id' => $user->id]);
+        $user->markAsExternal($paper->course);
+        Storage::disk('exampapers')->put($paper->filename, encrypt('hello'));
+
+        $response = $this->actingAs($user)->get(route('paper.show', $paper));
+
+        $response->assertStatus(200);
+
+        // and check we recorded this in the activity/audit log
+        tap(Activity::all()->last(), function ($log) use ($user, $paper) {
+            $this->assertTrue($log->causer->is($user));
+            $this->assertEquals(
+                "Downloaded {$paper->category} paper '{$paper->original_filename}' for {$paper->course->code}",
+                $log->description
+            );
+        });
+    }
+
+    /** @test */
+    public function an_external_cant_download_any_paper_for_a_course_they_are_not_on()
+    {
+        Storage::fake('exampapers');
+        $user = create(User::class);
+        $paper = create(Paper::class, ['user_id' => $user->id]);
+        Storage::disk('exampapers')->put($paper->filename, encrypt('hello'));
+
+        $response = $this->actingAs($user)->get(route('paper.show', $paper));
+
+        $response->assertStatus(403);
     }
 }

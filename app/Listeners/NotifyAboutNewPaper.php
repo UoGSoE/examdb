@@ -3,8 +3,12 @@
 namespace App\Listeners;
 
 use App\Events\PaperAdded;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NotifySetterAboutUpload;
+use App\Mail\NotifyModeratorAboutUpload;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Mail\NotifyLocalsAboutExternalComments;
 
 class NotifyAboutNewPaper
 {
@@ -26,15 +30,23 @@ class NotifyAboutNewPaper
      */
     public function handle(PaperAdded $event)
     {
-        return true;
-        if ($event->user->isSetterFor($event->course)) {
-            // notify moderator(s)
+        if ($event->user->isSetterFor($event->paper->course)) {
+            $event->paper->course->moderators->each(function ($moderator) use ($event) {
+                Mail::to($moderator)->queue(new NotifyModeratorAboutUpload($event->paper));
+            });
         }
-        if ($event->user->isModeratorFor($event->course)) {
-            // notify setter(s)
+        if ($event->user->isModeratorFor($event->paper->course)) {
+            $event->paper->course->setters->each(function ($setter) use ($event) {
+                Mail::to($setter)->queue(new NotifySetterAboutUpload($event->paper));
+            });
         }
-        if ($event->user->isExternal()) {
-            // notify moderator(s) and setter(s)
+        if ($event->user->isExternalFor($event->paper->course)) {
+            $event->paper->course->setters->each(function ($setter) use ($event) {
+                Mail::to($setter)->queue(new NotifyLocalsAboutExternalComments($event->paper));
+            });
+            $event->paper->course->moderators->each(function ($moderator) use ($event) {
+                Mail::to($moderator)->queue(new NotifyLocalsAboutExternalComments($event->paper));
+            });
         }
     }
 }
