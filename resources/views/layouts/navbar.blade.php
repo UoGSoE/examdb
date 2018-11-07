@@ -26,7 +26,7 @@
           <a class="navbar-item">
             Users
           </a>
-          <a class="navbar-item">
+          <a class="navbar-item" href="{{ route('course.index') }}">
             Courses
           </a>
           <hr class="navbar-divider">

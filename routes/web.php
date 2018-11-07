@@ -30,5 +30,6 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['middleware' => 'admin', 'prefix' => '/admin'], function () {
         Route::get('log', 'Admin\ActivityLogController@index')->name('activity.index');
+        Route::get('course', 'Admin\CourseController@index')->name('course.index');
     });
 });

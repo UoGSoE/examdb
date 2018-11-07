@@ -28,6 +28,11 @@ class Course extends Model
         return $this->belongsToMany(User::class, 'course_user')->wherePivot('is_setter', true);
     }
 
+    public function externals()
+    {
+        return $this->belongsToMany(User::class, 'course_user')->wherePivot('is_external', true);
+    }
+
     public function papers()
     {
         return $this->hasMany(Paper::class);
