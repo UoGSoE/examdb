@@ -28,4 +28,7 @@
         @endforeach
     </tbody>
 </table>
+
+{{ $logs->links('vendor.pagination.bulma') }}
+
 @endsection

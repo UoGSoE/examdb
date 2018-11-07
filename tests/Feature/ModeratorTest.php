@@ -272,6 +272,15 @@ class ModeratorTest extends TestCase
         $response->assertStatus(200);
         $this->assertDatabaseMissing('papers', ['id' => $paper->id]);
         $this->assertFalse(Storage::disk('exampapers')->exists($paper->filename));
+
+        // and check we recorded this in the activity/audit log
+        tap(Activity::all()->last(), function ($log) use ($user, $paper) {
+            $this->assertTrue($log->causer->is($user));
+            $this->assertEquals(
+                "Deleted {$paper->category} paper '{$paper->original_filename}' for {$paper->course->code}",
+                $log->description
+            );
+        });
     }
 
     /** @test */

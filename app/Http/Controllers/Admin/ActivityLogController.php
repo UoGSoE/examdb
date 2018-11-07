@@ -11,7 +11,7 @@ class ActivityLogController extends Controller
     public function index()
     {
         return view('admin.activity.index', [
-            'logs' => Activity::with('causer')->latest()->get(),
+            'logs' => Activity::with('causer')->latest()->paginate(100),
         ]);
     }
 }

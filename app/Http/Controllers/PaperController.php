@@ -65,6 +65,12 @@ class PaperController extends Controller
         Storage::disk('exampapers')->delete($paper->filename);
         $paper->delete();
 
+        activity()
+            ->causedBy(request()->user())
+            ->log(
+                "Deleted {$paper->category} paper '{$paper->original_filename}' for {$paper->course->code}"
+            );
+
         return response()->json([
             'papers' => collect([
                 'main' => $course->mainPapers()->with(['user', 'comments'])->latest()->get(),
