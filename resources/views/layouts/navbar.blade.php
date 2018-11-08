@@ -29,6 +29,9 @@
           <a class="navbar-item" href="{{ route('course.index') }}">
             Courses
           </a>
+          <a class="navbar-item" href="{{ route('paper.index') }}">
+            Papers
+          </a>
           <hr class="navbar-divider">
           <a class="navbar-item">
             Archives

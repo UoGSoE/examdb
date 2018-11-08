@@ -32,6 +32,7 @@ class PaperWasUnapproved
         activity()->causedBy($event->user)->log(
             "Unapproved {$event->category} paper for {$event->course->code}"
         );
+
         if ($event->user->isSetterFor($event->course)) {
             $event->course->moderators->each(function ($moderator) use ($event) {
                 Mail::to($moderator)->queue(new NotifyModeratorAboutUnapproval($event->course, $event->category));

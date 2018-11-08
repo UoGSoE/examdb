@@ -18,6 +18,11 @@ class Course extends Model
         'external_approved' => 'boolean',
     ];
 
+    public function staff()
+    {
+        return $this->belongsToMany(User::class, 'course_user', 'user_id')->withPivot('is_moderator', 'is_setter', 'is_external');
+    }
+
     public function moderators()
     {
         return $this->belongsToMany(User::class, 'course_user')->wherePivot('is_moderator', true);
@@ -176,5 +181,18 @@ class Course extends Model
     public function getFullNameAttribute()
     {
         return $this->code . ' ' . $this->title;
+    }
+
+    public function datePaperAdded(string $category, string $subcategory) : string
+    {
+        $paper = $this->papers
+            ->where('category', $category)
+            ->where('subcategory', $subcategory)
+            ->sortBy('created_at')
+            ->last();
+        if (!$paper) {
+            return '';
+        }
+        return $paper->created_at->format('d/m/Y');
     }
 }
