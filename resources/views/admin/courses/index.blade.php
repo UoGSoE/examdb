@@ -26,12 +26,12 @@
                 <td>
                     <div class="field has-addons">
                         <p class="control">
-                            <span class="icon {{ $course->isApprovedBySetter('main') ? 'has-text-success' : 'has-text-grey-light' }}">
+                            <span class="icon {{ $course->isApprovedBySetter('main') ? 'has-text-info' : 'has-text-grey-light' }}">
                                 <i class="fas fa-user"></i>
                             </span>
                         </p>
                         <p class="control">
-                            <span class="icon {{ $course->isApprovedByModerator('main') ? 'has-text-success' : 'has-text-grey-light' }}">
+                            <span class="icon {{ $course->isApprovedByModerator('main') ? 'has-text-info' : 'has-text-grey-light' }}">
                                 <i class="fas fa-user-graduate"></i>
                             </span>
                         </p>

@@ -23,7 +23,7 @@
           <a class="navbar-item" href="{{ route('activity.index') }}">
             Logs
           </a>
-          <a class="navbar-item">
+          <a class="navbar-item" href="{{ route('user.index') }}">
             Users
           </a>
           <a class="navbar-item" href="{{ route('course.index') }}">
