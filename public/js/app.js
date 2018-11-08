@@ -1110,6 +1110,8 @@ Vue.component('main-paper-uploader', __webpack_require__(38));
 Vue.component('course-viewer', __webpack_require__(64));
 Vue.component('paper-list', __webpack_require__(68));
 Vue.component('paper-heading', __webpack_require__(71));
+Vue.component('add-local-user', __webpack_require__(74));
+Vue.component('add-external-user', __webpack_require__(77));
 
 
 Vue.use(__WEBPACK_IMPORTED_MODULE_0_portal_vue___default.a);
@@ -15630,6 +15632,837 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-1488f07e", module.exports)
+  }
+}
+
+/***/ }),
+/* 74 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(9)
+/* script */
+var __vue_script__ = __webpack_require__(75)
+/* template */
+var __vue_template__ = __webpack_require__(76)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/AddLocalUser.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-0171afa0", Component.options)
+  } else {
+    hotAPI.reload("data-v-0171afa0", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 75 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_clickaway__ = __webpack_require__(63);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_clickaway___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_clickaway__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  mixins: [__WEBPACK_IMPORTED_MODULE_0_vue_clickaway__["mixin"]],
+
+  data: function data() {
+    return {
+      showPopupBox: false,
+      busy: false,
+      searching: false,
+      user: {
+        username: "",
+        email: "",
+        forenames: "",
+        surname: "",
+        lookedUp: false
+      }
+    };
+  },
+
+
+  computed: {},
+
+  methods: {
+    openPopup: function openPopup() {
+      this.showPopupBox = true;
+    },
+    closePopup: function closePopup() {
+      this.showPopupBox = false;
+    },
+    submit: function submit() {
+      console.log(this.user);
+      this.busy = true;
+      axios.post(route("user.store"), this.user).then(function (response) {
+        location.reload();
+      }).catch(function (error) {
+        console.log(error);
+      });
+    }
+  }
+});
+
+/***/ }),
+/* 76 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      directives: [
+        {
+          name: "on-clickaway",
+          rawName: "v-on-clickaway",
+          value: _vm.closePopup,
+          expression: "closePopup"
+        }
+      ],
+      staticStyle: { position: "relative" }
+    },
+    [
+      _c(
+        "button",
+        {
+          staticClass: "button",
+          on: {
+            click: function($event) {
+              $event.preventDefault()
+              return _vm.openPopup($event)
+            }
+          }
+        },
+        [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("span", [_vm._v("\n            Add Local\n        ")])
+        ]
+      ),
+      _vm._v(" "),
+      _c("transition", { attrs: { name: "fade", mode: "in-out" } }, [
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.showPopupBox,
+                expression: "showPopupBox"
+              }
+            ],
+            staticClass: "box shadow-lg paper-box"
+          },
+          [
+            _c(
+              "form",
+              [
+                _c(
+                  "label",
+                  { staticClass: "label", attrs: { for: "username" } },
+                  [_vm._v("Username (GUID)")]
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "field has-addons" }, [
+                  _c("div", { staticClass: "control" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.user.username,
+                          expression: "user.username"
+                        }
+                      ],
+                      staticClass: "input",
+                      attrs: { type: "text", id: "username" },
+                      domProps: { value: _vm.user.username },
+                      on: {
+                        input: [
+                          function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(_vm.user, "username", $event.target.value)
+                          },
+                          function($event) {
+                            _vm.user.lookedUp = false
+                          }
+                        ]
+                      }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "control" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "button is-info",
+                        class: { "is-loading": _vm.searching },
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            _vm.user.lookedUp = true
+                          }
+                        }
+                      },
+                      [
+                        _c("span", { staticClass: "icon" }, [
+                          _c("i", { staticClass: "fas fa-search" })
+                        ])
+                      ]
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c(
+                  "transition",
+                  { attrs: { name: "plain-flash", mode: "in-out" } },
+                  [
+                    _c(
+                      "div",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: _vm.user.lookedUp,
+                            expression: "user.lookedUp"
+                          }
+                        ]
+                      },
+                      [
+                        _c("div", { staticClass: "field" }, [
+                          _c("div", { staticClass: "control" }, [
+                            _c(
+                              "label",
+                              { staticClass: "label", attrs: { for: "email" } },
+                              [_vm._v("Email")]
+                            ),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.user.email,
+                                  expression: "user.email"
+                                }
+                              ],
+                              staticClass: "input",
+                              attrs: { type: "email", id: "email" },
+                              domProps: { value: _vm.user.email },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    _vm.user,
+                                    "email",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            })
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "field" }, [
+                          _c("div", { staticClass: "control" }, [
+                            _c(
+                              "label",
+                              {
+                                staticClass: "label",
+                                attrs: { for: "forenames" }
+                              },
+                              [_vm._v("Forenames")]
+                            ),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.user.forenames,
+                                  expression: "user.forenames"
+                                }
+                              ],
+                              staticClass: "input",
+                              attrs: { type: "forenames", id: "forenames" },
+                              domProps: { value: _vm.user.forenames },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    _vm.user,
+                                    "forenames",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            })
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "field" }, [
+                          _c("div", { staticClass: "control" }, [
+                            _c(
+                              "label",
+                              {
+                                staticClass: "label",
+                                attrs: { for: "surname" }
+                              },
+                              [_vm._v("Surname")]
+                            ),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.user.surname,
+                                  expression: "user.surname"
+                                }
+                              ],
+                              staticClass: "input",
+                              attrs: { type: "surname", id: "surname" },
+                              domProps: { value: _vm.user.surname },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    _vm.user,
+                                    "surname",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            })
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "field" }, [
+                          _c("div", { staticClass: "control" }, [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "button is-info is-fullwidth",
+                                class: { "is-loading": _vm.busy },
+                                attrs: { disabled: !_vm.user.lookedUp },
+                                on: {
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    return _vm.submit($event)
+                                  }
+                                }
+                              },
+                              [
+                                _c("span", { staticClass: "icon" }, [
+                                  _c("i", { staticClass: "fas fa-plus-circle" })
+                                ]),
+                                _vm._v(" "),
+                                _c("span", [
+                                  _vm._v(
+                                    "\n                                        Add User\n                                    "
+                                  )
+                                ])
+                              ]
+                            )
+                          ])
+                        ])
+                      ]
+                    )
+                  ]
+                )
+              ],
+              1
+            )
+          ]
+        )
+      ])
+    ],
+    1
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon" }, [
+      _c("i", { staticClass: "fas fa-user-plus" })
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-0171afa0", module.exports)
+  }
+}
+
+/***/ }),
+/* 77 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(9)
+/* script */
+var __vue_script__ = __webpack_require__(78)
+/* template */
+var __vue_template__ = __webpack_require__(79)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/AddExternalUser.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-847d7b48", Component.options)
+  } else {
+    hotAPI.reload("data-v-847d7b48", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 78 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_clickaway__ = __webpack_require__(63);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_clickaway___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_clickaway__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  mixins: [__WEBPACK_IMPORTED_MODULE_0_vue_clickaway__["mixin"]],
+
+  data: function data() {
+    return {
+      showPopupBox: false,
+      busy: false,
+      user: {
+        username: "",
+        email: "",
+        forenames: "",
+        surname: "",
+        lookedUp: false
+      }
+    };
+  },
+
+
+  computed: {
+    emailInvalid: function emailInvalid() {
+      return this.user.email.match(/[a-z0-9]+@[a-z0-9]+\.[a-z0-9][a-z0-9]+/i) === null;
+    }
+  },
+
+  methods: {
+    openPopup: function openPopup() {
+      this.showPopupBox = true;
+    },
+    closePopup: function closePopup() {
+      this.showPopupBox = false;
+    },
+    submit: function submit() {
+      this.user.username = this.user.email;
+      this.busy = true;
+      console.log(this.user);
+      axios.post(route("user.store"), this.user).then(function (response) {
+        location.reload();
+      }).catch(function (error) {
+        console.log(error);
+      });
+    }
+  }
+});
+
+/***/ }),
+/* 79 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      directives: [
+        {
+          name: "on-clickaway",
+          rawName: "v-on-clickaway",
+          value: _vm.closePopup,
+          expression: "closePopup"
+        }
+      ],
+      staticStyle: { position: "relative" }
+    },
+    [
+      _c(
+        "button",
+        {
+          staticClass: "button",
+          on: {
+            click: function($event) {
+              $event.preventDefault()
+              return _vm.openPopup($event)
+            }
+          }
+        },
+        [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("span", [_vm._v("\n            Add External\n        ")])
+        ]
+      ),
+      _vm._v(" "),
+      _c("transition", { attrs: { name: "fade", mode: "in-out" } }, [
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.showPopupBox,
+                expression: "showPopupBox"
+              }
+            ],
+            staticClass: "box shadow-lg paper-box"
+          },
+          [
+            _c("form", [
+              _c("div", { staticClass: "field" }, [
+                _c("label", { staticClass: "label", attrs: { for: "email" } }, [
+                  _vm._v("Email Address")
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "control" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.user.email,
+                        expression: "user.email"
+                      }
+                    ],
+                    staticClass: "input",
+                    attrs: { type: "email", id: "email" },
+                    domProps: { value: _vm.user.email },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.user, "email", $event.target.value)
+                      }
+                    }
+                  })
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "field" }, [
+                _c("div", { staticClass: "control" }, [
+                  _c(
+                    "label",
+                    { staticClass: "label", attrs: { for: "forenames" } },
+                    [_vm._v("Forenames")]
+                  ),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.user.forenames,
+                        expression: "user.forenames"
+                      }
+                    ],
+                    staticClass: "input",
+                    attrs: { type: "forenames", id: "forenames" },
+                    domProps: { value: _vm.user.forenames },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.user, "forenames", $event.target.value)
+                      }
+                    }
+                  })
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "field" }, [
+                _c("div", { staticClass: "control" }, [
+                  _c(
+                    "label",
+                    { staticClass: "label", attrs: { for: "surname" } },
+                    [_vm._v("Surname")]
+                  ),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.user.surname,
+                        expression: "user.surname"
+                      }
+                    ],
+                    staticClass: "input",
+                    attrs: { type: "surname", id: "surname" },
+                    domProps: { value: _vm.user.surname },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.user, "surname", $event.target.value)
+                      }
+                    }
+                  })
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "field" }, [
+                _c("div", { staticClass: "control" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "button is-info is-fullwidth",
+                      class: { "is-loading": _vm.busy },
+                      attrs: { disabled: _vm.emailInvalid },
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.submit($event)
+                        }
+                      }
+                    },
+                    [
+                      _c("span", { staticClass: "icon" }, [
+                        _c("i", { staticClass: "fas fa-plus-circle" })
+                      ]),
+                      _vm._v(" "),
+                      _c("span", [
+                        _vm._v(
+                          "\n                                    Add User\n                                "
+                        )
+                      ])
+                    ]
+                  )
+                ])
+              ])
+            ])
+          ]
+        )
+      ])
+    ],
+    1
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon" }, [
+      _c("i", { staticClass: "fas fa-user-plus" })
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-847d7b48", module.exports)
   }
 }
 

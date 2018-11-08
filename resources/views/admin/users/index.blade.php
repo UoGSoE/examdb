@@ -4,6 +4,8 @@
 
 <h3 class="title is-3">
     Current Users
+    <add-local-user></add-local-user>
+    <add-external-user></add-external-user>
 </h3>
 
 <table class="table is-striped is-fullwidth is-hoverable">

@@ -25,4 +25,14 @@ class ActivityLogTest extends TestCase
         $response->assertSee('Ate some crisps');
         $response->assertSee('Had some juice');
     }
+
+    /** @test */
+    public function regular_users_cant_see_the_activity_log_page()
+    {
+        $admin = create(User::class, ['is_admin' => false]);
+
+        $response = $this->actingAs($admin)->get(route('activity.index'));
+
+        $response->assertStatus(403);
+    }
 }

@@ -99,6 +99,14 @@ body {
   padding-top: 0.5rem;
 }
 
+.plain-flash-enter-active, .plain-flash-leave-active {
+  transition: all .7s;
+  opacity: 100%;
+}
+.plain-flash-enter, .plain-flash-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+
 .flash-enter-active, .flash-leave-active {
   background-color: hsl(0, 0%, 100%);
   transition: all .7s;

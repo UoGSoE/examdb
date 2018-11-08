@@ -18,6 +18,8 @@ class User extends Authenticatable
 
     protected $casts = [
         'is_admin' => 'boolean',
+        'is_staff' => 'boolean',
+        'is_external' => 'boolean',
     ];
 
     protected $appends = ['full_name'];

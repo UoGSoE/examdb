@@ -17609,6 +17609,18 @@ body {
   padding-top: 0.5rem;
 }
 
+.plain-flash-enter-active,
+.plain-flash-leave-active {
+  -webkit-transition: all .7s;
+  transition: all .7s;
+  opacity: 100%;
+}
+
+.plain-flash-enter,
+.plain-flash-leave-to {
+  opacity: 0;
+}
+
 .flash-enter-active,
 .flash-leave-active {
   background-color: white;

@@ -33,5 +33,6 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('course', 'Admin\CourseController@index')->name('course.index');
         Route::get('paper', 'Admin\PaperController@index')->name('paper.index');
         Route::get('user', 'Admin\UserController@index')->name('user.index');
+        Route::post('user', 'Admin\UserController@store')->name('user.store');
     });
 });
