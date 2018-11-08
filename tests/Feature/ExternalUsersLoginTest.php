@@ -38,6 +38,29 @@ class ExternalUsersLoginTest extends TestCase
     }
 
     /** @test */
+    public function when_an_external_asks_for_a_login_url_the_email_address_is_case_insensitive()
+    {
+        $this->withoutExceptionHandling();
+        Mail::fake();
+        $external = factory(User::class)->states('external')->create(['username' => 'external@example.com']);
+
+        $response = $this->post(route('external-generate-login'), [
+            'email' => 'EXTERNAL@EXAMPLE.COM',
+        ]);
+
+        $response->assertRedirect(route('home'));
+        $response->assertSessionHas('success');
+        Mail::assertQueued(ExternalLoginUrl::class, function ($mail) use ($external) {
+            return $mail->hasTo($external->email);
+        });
+        // and check we recorded this in the activity/audit log
+        tap(Activity::all()->last(), function ($log) use ($external) {
+            $this->assertTrue($log->causer->is($external));
+            $this->assertEquals('External asked for login url', $log->description);
+        });
+    }
+
+    /** @test */
     public function when_an_email_is_entered_that_doesnt_match_an_external_then_no_email_is_sent()
     {
         $this->withoutExceptionHandling();

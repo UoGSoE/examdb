@@ -16250,7 +16250,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     submit: function submit() {
       this.user.username = this.user.email;
       this.busy = true;
-      console.log(this.user);
       axios.post(route("user.store"), this.user).then(function (response) {
         location.reload();
       }).catch(function (error) {

@@ -86,7 +86,6 @@ export default {
     submit() {
       this.user.username = this.user.email;
       this.busy = true;
-      console.log(this.user);
       axios
         .post(route("user.store"), this.user)
         .then(response => {
