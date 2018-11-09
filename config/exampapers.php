@@ -2,6 +2,7 @@
 
 return [
     'login_link_minutes' => 60,
+    'check_passwords' => env('PASSWORD_CHECK', false),
     'paper_subcategories' => [
         'main' => [
             "Pre-Internally Moderated Paper",

@@ -20,6 +20,9 @@ class EventServiceProvider extends ServiceProvider
         'Illuminate\Auth\Events\Login' => [
             'App\Listeners\UserLoggedIn'
         ],
+        'Illuminate\Auth\Events\Attempting' => [
+            'App\Listeners\DispachPasswordChecker',
+        ],
         'App\Events\PaperApproved' => [
             'App\Listeners\PaperWasApproved'
         ],
