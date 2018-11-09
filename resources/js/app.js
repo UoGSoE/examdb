@@ -23,6 +23,7 @@ Vue.component('paper-list', require('./components/PaperList.vue'));
 Vue.component('paper-heading', require('./components/PaperHeading.vue'));
 Vue.component('add-local-user', require('./components/AddLocalUser.vue'));
 Vue.component('add-external-user', require('./components/AddExternalUser.vue'));
+Vue.component('staff-course-editor', require('./components/StaffCourseEditor.vue'));
 
 import PortalVue from 'portal-vue'
 Vue.use(PortalVue)

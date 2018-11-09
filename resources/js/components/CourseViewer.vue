@@ -4,6 +4,11 @@
     {{ theCourse.code }} {{ theCourse.title }}
   </h2>
 
+  <span v-if="user.is_admin">
+    <staff-course-editor v-if="user.is_admin"></staff-course-editor>
+    <hr />
+  </span>
+
   <div class="columns">
     <div class="column">
 
@@ -22,7 +27,7 @@
 </template>
 <script>
 export default {
-  props: ["course", "papers", "subcategories"],
+  props: ["course", "papers", "subcategories", "user"],
   data() {
     return {
       thePapers: this.papers,
