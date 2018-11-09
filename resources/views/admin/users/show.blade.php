@@ -79,7 +79,7 @@
 
 <hr />
 
-<h4 class="title is-4">
+<h4 class="title is-4 has-text-grey">
     Activity Logs
 </h4>
 
