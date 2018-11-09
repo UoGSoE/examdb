@@ -13,7 +13,11 @@
                     {{ $log->created_at->format('d/m/Y H:i') }}
                 </td>
                 <td>
-                    {{ optional($log->causer)->full_name }}
+                    @if ($log->causer)
+                        <a href="{{ route('user.show', $log->causer) }}">
+                            {{ $log->causer->full_name }}
+                        </a>
+                    @endif
                 </td>
                 <td>
                     {{ $log->description }}

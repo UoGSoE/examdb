@@ -17,6 +17,8 @@ class UserController extends Controller
 
     public function show(User $user)
     {
+        $user->load('logs.causer');
+
         return view('admin.users.show', [
             'user' => $user,
         ]);
