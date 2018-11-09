@@ -5,7 +5,7 @@
   </h2>
 
   <span v-if="user.is_admin">
-    <staff-course-editor v-if="user.is_admin" :staff="staff" :externals="externals"></staff-course-editor>
+    <staff-course-editor v-if="user.is_admin" :staff="staff" :externals="externals" :course="theCourse"></staff-course-editor>
     <hr />
   </span>
 

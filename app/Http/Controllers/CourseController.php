@@ -14,6 +14,9 @@ class CourseController extends Controller
 
         $course->append('user_approved_main');
         $course->append('user_approved_resit');
+        $course->load('setters');
+        $course->load('moderators');
+        $course->load('externals');
 
         return view('course.show', [
             'course' => $course,

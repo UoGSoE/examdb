@@ -14310,7 +14310,11 @@ var render = function() {
           [
             _vm.user.is_admin
               ? _c("staff-course-editor", {
-                  attrs: { staff: _vm.staff, externals: _vm.externals }
+                  attrs: {
+                    staff: _vm.staff,
+                    externals: _vm.externals,
+                    course: _vm.theCourse
+                  }
                 })
               : _vm._e(),
             _vm._v(" "),
@@ -16567,15 +16571,70 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ["staff", "externals"],
+  props: ["staff", "externals", "course"],
   data: function data() {
     return {
       courseSetters: [],
       courseModerators: [],
-      courseExternals: []
+      courseExternals: [],
+      busy: false,
+      error: ""
     };
+  },
+  mounted: function mounted() {
+    this.courseSetters = this.course.setters.map(this.extractSelectValues);
+    this.courseModerators = this.course.moderators.map(this.extractSelectValues);
+    this.courseExternals = this.course.externals.map(this.extractSelectValues);
+  },
+
+  methods: {
+    extractSelectValues: function extractSelectValues(user) {
+      return {
+        value: user.id,
+        label: user.full_name + " (" + user.username + ")"
+      };
+    },
+    update: function update() {
+      var _this = this;
+
+      this.busy = true;
+      this.error = "";
+      axios.post(route("course.users.update", this.course.id), {
+        setters: this.courseSetters.map(function (setter) {
+          return setter.value;
+        }),
+        moderators: this.courseModerators.map(function (moderator) {
+          return moderator.value;
+        }),
+        externals: this.courseExternals.map(function (external) {
+          return external.value;
+        })
+      }).then(function (response) {
+        _this.busy = false;
+      }).catch(function (error) {
+        console.error(error);
+        _this.error = "Error updating staff list";
+      });
+    }
   }
 });
 
@@ -16587,75 +16646,117 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "columns" }, [
-    _c(
-      "div",
-      { staticClass: "column" },
-      [
-        _c("h4", { staticClass: "title is-4" }, [
-          _vm._v("\n            Setters\n        ")
-        ]),
-        _vm._v(" "),
-        _c("v-select", {
-          attrs: { multiple: "", options: _vm.staff },
-          model: {
-            value: _vm.courseSetters,
-            callback: function($$v) {
-              _vm.courseSetters = $$v
-            },
-            expression: "courseSetters"
-          }
-        })
-      ],
-      1
-    ),
+  return _c("div", [
+    _c("div", { staticClass: "columns" }, [
+      _c(
+        "div",
+        { staticClass: "column" },
+        [
+          _c("h4", { staticClass: "title is-4 has-text-grey" }, [
+            _vm._v("\n                Setters\n            ")
+          ]),
+          _vm._v(" "),
+          _c("v-select", {
+            attrs: { multiple: "", options: _vm.staff },
+            model: {
+              value: _vm.courseSetters,
+              callback: function($$v) {
+                _vm.courseSetters = $$v
+              },
+              expression: "courseSetters"
+            }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "column" },
+        [
+          _c("h4", { staticClass: "title is-4 has-text-grey" }, [
+            _vm._v("\n                Moderators\n            ")
+          ]),
+          _vm._v(" "),
+          _c("v-select", {
+            attrs: { multiple: "", options: _vm.staff },
+            model: {
+              value: _vm.courseModerators,
+              callback: function($$v) {
+                _vm.courseModerators = $$v
+              },
+              expression: "courseModerators"
+            }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "column" },
+        [
+          _c("h4", { staticClass: "title is-4 has-text-grey" }, [
+            _vm._v("\n                Externals\n            ")
+          ]),
+          _vm._v(" "),
+          _c("v-select", {
+            attrs: { multiple: "", options: _vm.externals },
+            model: {
+              value: _vm.courseExternals,
+              callback: function($$v) {
+                _vm.courseExternals = $$v
+              },
+              expression: "courseExternals"
+            }
+          })
+        ],
+        1
+      )
+    ]),
     _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "column" },
-      [
-        _c("h4", { staticClass: "title is-4" }, [
-          _vm._v("\n            Moderators\n        ")
-        ]),
-        _vm._v(" "),
-        _c("v-select", {
-          attrs: { multiple: "", options: _vm.staff },
-          model: {
-            value: _vm.courseModerators,
-            callback: function($$v) {
-              _vm.courseModerators = $$v
-            },
-            expression: "courseModerators"
-          }
-        })
-      ],
-      1
-    ),
+    _c("div", { staticClass: "field" }, [
+      _c("div", { staticClass: "control" }, [
+        _c(
+          "button",
+          {
+            staticClass: "button",
+            class: { "is-loading": _vm.busy },
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                return _vm.update($event)
+              }
+            }
+          },
+          [
+            _vm._m(0),
+            _vm._v(" "),
+            _c("span", [
+              _vm._v("\n                    Update\n                ")
+            ])
+          ]
+        )
+      ])
+    ]),
     _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "column" },
-      [
-        _c("h4", { staticClass: "title is-4" }, [
-          _vm._v("\n            Externals\n        ")
-        ]),
-        _vm._v(" "),
-        _c("v-select", {
-          attrs: { multiple: "", options: _vm.externals },
-          model: {
-            value: _vm.courseExternals,
-            callback: function($$v) {
-              _vm.courseExternals = $$v
-            },
-            expression: "courseExternals"
-          }
-        })
-      ],
-      1
-    )
+    _vm.error
+      ? _c("p", { staticClass: "has-text-danger" }, [
+          _vm._v("\n        " + _vm._s(_vm.error) + "\n    ")
+        ])
+      : _vm._e()
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon" }, [
+      _c("i", { staticClass: "fas fa-sync-alt" })
+    ])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
