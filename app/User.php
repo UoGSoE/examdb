@@ -29,6 +29,26 @@ class User extends Authenticatable
         return $this->belongsToMany(Course::class)->withPivot('is_setter', 'is_moderator', 'is_external');
     }
 
+    public static function getStaffForVueSelect()
+    {
+        return static::where('is_external', '=', false)->orderBy('surname')->get()->map(function ($user) {
+            return [
+                'label' => $user->full_name . " ({$user->username})",
+                'value' => $user->id,
+            ];
+        });
+    }
+
+    public static function getExternalsForVueSelect()
+    {
+        return static::where('is_external', '=', true)->orderBy('surname')->get()->map(function ($user) {
+            return [
+                'label' => $user->full_name . " ({$user->username})",
+                'value' => $user->id,
+            ];
+        });
+    }
+
     public function markAsSetter(Course $course)
     {
         $this->courses()->syncWithoutDetaching([$course->id]);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use App\Course;
 use Illuminate\Http\Request;
 
@@ -20,6 +21,8 @@ class CourseController extends Controller
                 'main' => $course->mainPapers()->with(['user', 'comments'])->latest()->get(),
                 'resit' => $course->resitPapers()->with(['user', 'comments'])->latest()->get(),
             ]),
+            'staff' => User::getStaffForVueSelect(),
+            'externals' => User::getExternalsForVueSelect(),
         ]);
     }
 }

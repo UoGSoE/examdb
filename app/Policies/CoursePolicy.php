@@ -10,7 +10,7 @@ class CoursePolicy
 {
     use HandlesAuthorization;
 
-    public function before($user)
+    public function before($user, $ability)
     {
         if ($user->isAdmin()) {
             return true;

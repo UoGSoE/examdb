@@ -14,30 +14,32 @@
   <div id="navbarBasicExample" class="navbar-menu">
     <div class="navbar-start">
 
-      <div class="navbar-item has-dropdown is-hoverable">
-        <a class="navbar-link">
-          Admin
-        </a>
+      @admin
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link">
+            Admin
+          </a>
 
-        <div class="navbar-dropdown">
-          <a class="navbar-item" href="{{ route('activity.index') }}">
-            Logs
-          </a>
-          <a class="navbar-item" href="{{ route('user.index') }}">
-            Users
-          </a>
-          <a class="navbar-item" href="{{ route('course.index') }}">
-            Courses
-          </a>
-          <a class="navbar-item" href="{{ route('paper.index') }}">
-            Papers
-          </a>
-          <hr class="navbar-divider">
-          <a class="navbar-item">
-            Archives
-          </a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="{{ route('activity.index') }}">
+              Logs
+            </a>
+            <a class="navbar-item" href="{{ route('user.index') }}">
+              Users
+            </a>
+            <a class="navbar-item" href="{{ route('course.index') }}">
+              Courses
+            </a>
+            <a class="navbar-item" href="{{ route('paper.index') }}">
+              Papers
+            </a>
+            <hr class="navbar-divider">
+            <a class="navbar-item">
+              Archives
+            </a>
+          </div>
         </div>
-      </div>
+      @endadmin
     </div>
 
     <div class="navbar-end">
@@ -45,7 +47,7 @@
         <div class="buttons">
             <form method="POST" action="/logout">
                 @csrf
-                <button class="button">Log Out</button>
+                <button class="button is-dark">Log Out {{ auth()->user()->full_name }}</button>
             </form>
         </div>
       </div>

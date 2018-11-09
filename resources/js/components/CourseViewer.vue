@@ -5,7 +5,7 @@
   </h2>
 
   <span v-if="user.is_admin">
-    <staff-course-editor v-if="user.is_admin"></staff-course-editor>
+    <staff-course-editor v-if="user.is_admin" :staff="staff" :externals="externals"></staff-course-editor>
     <hr />
   </span>
 
@@ -27,7 +27,7 @@
 </template>
 <script>
 export default {
-  props: ["course", "papers", "subcategories", "user"],
+  props: ["course", "papers", "subcategories", "user", "staff", "externals"],
   data() {
     return {
       thePapers: this.papers,

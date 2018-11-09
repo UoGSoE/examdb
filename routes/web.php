@@ -34,5 +34,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('paper', 'Admin\PaperController@index')->name('paper.index');
         Route::get('user', 'Admin\UserController@index')->name('user.index');
         Route::post('user', 'Admin\UserController@store')->name('user.store');
+        Route::post('user/{user}/impersonate', 'Admin\ImpersonationController@store')->name('impersonate.start');
     });
+    Route::post('impersonate-stop', 'Admin\ImpersonationController@destroy')->name('impersonate.stop');
 });

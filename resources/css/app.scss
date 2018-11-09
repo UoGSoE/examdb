@@ -10,16 +10,33 @@ $fa-font-path: '~@fortawesome/fontawesome-free/webfonts';
   display: none;
 }
 
-body {
+#layout {
     display: flex;
+    min-height: 100vh;
     flex-direction: column;
 }
 
 #app {
-    flex: 1 0 auto;
+    flex: 1;
 }
 #footer {
-    flex-shrink: 0;
+}
+
+.impersonation-box {
+  position:fixed;
+  bottom: 20px;
+  right: 20px;
+  animation: impersonation-pulse 1s alternate infinite;
+  border: 2px solid;
+}
+
+@keyframes impersonation-pulse {
+  0% {
+    border-color: hsl(348, 100%, 100%);
+  }
+  100% {
+    border-color: hsl(348, 100%, 61%);
+  }
 }
 
 .paper-box {

@@ -21,7 +21,9 @@
         @foreach ($courses as $course)
             <tr>
                 <td>
-                    {{ $course->code }}
+                    <a href="{{ route('course.show', $course) }}">
+                        {{ $course->code }}
+                    </a>
                 </td>
                 <td>
                     <div class="field has-addons">

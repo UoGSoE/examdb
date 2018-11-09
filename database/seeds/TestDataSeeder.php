@@ -18,6 +18,16 @@ class TestDataSeeder extends Seeder
             'password' => bcrypt('secret'),
             'is_admin' => true,
         ]);
+        $setter = factory(User::class)->create([
+            'username' => 'setter',
+            'password' => bcrypt('secret'),
+            'is_admin' => false,
+        ]);
+        $moderator = factory(User::class)->create([
+            'username' => 'moderator',
+            'password' => bcrypt('secret'),
+            'is_admin' => false,
+        ]);
         factory(User::class, 5)->create();
         factory(User::class, 5)->states('external')->create();
         $external = factory(User::class)->states('external')->create([
@@ -27,12 +37,14 @@ class TestDataSeeder extends Seeder
 
         $courses = factory(Course::class, 10)->create();
         foreach ($courses as $course) {
-            $admin->courses()->attach($course->id, ['is_setter' => true]);
+            $setter->courses()->attach($course->id, ['is_setter' => true]);
+            $moderator->courses()->attach($course->id, ['is_moderator' => true]);
             $external->courses()->attach($course->id, ['is_external' => true]);
         }
         $courses = factory(Course::class, 5)->create();
         foreach ($courses as $course) {
-            $admin->courses()->attach($course->id, ['is_moderator' => true]);
+            $setter->courses()->attach($course->id, ['is_moderator' => true]);
+            $moderator->courses()->attach($course->id, ['is_setter' => true]);
             $external->courses()->attach($course->id, ['is_external' => true]);
         }
     }

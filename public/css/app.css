@@ -17498,10 +17498,11 @@ readers do not read off random characters that represent icons */
   display: none;
 }
 
-body {
+#layout {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  min-height: 100vh;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
@@ -17510,13 +17511,37 @@ body {
 
 #app {
   -webkit-box-flex: 1;
-      -ms-flex: 1 0 auto;
-          flex: 1 0 auto;
+      -ms-flex: 1;
+          flex: 1;
 }
 
-#footer {
-  -ms-flex-negative: 0;
-      flex-shrink: 0;
+.impersonation-box {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  -webkit-animation: impersonation-pulse 1s alternate infinite;
+          animation: impersonation-pulse 1s alternate infinite;
+  border: 2px solid;
+}
+
+@-webkit-keyframes impersonation-pulse {
+  0% {
+    border-color: white;
+  }
+
+  100% {
+    border-color: #ff3860;
+  }
+}
+
+@keyframes impersonation-pulse {
+  0% {
+    border-color: white;
+  }
+
+  100% {
+    border-color: #ff3860;
+  }
 }
 
 .paper-box {

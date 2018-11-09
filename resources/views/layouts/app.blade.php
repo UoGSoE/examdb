@@ -24,21 +24,35 @@
     @routes
 </head>
 <body>
+    <div id="layout">
     @include('layouts.navbar')
 
-    <section class="section">
-        <div id="app" class="container">
+    <section class="section" id="app">
+        <div class="container">
             @yield('content')
 
             <portal-target name="portal-modal">
             </portal-target>
         </div>
+
+        @if (session('original_id'))
+            <div class="box impersonation-box shadow-lg">
+                <form method="POST" action="{{ route('impersonate.stop') }}">
+                    @csrf
+                    <button class="button is-outlined">Stop impersonating</button>
+                </form>
+            </div>
+        @endif
+
     </section>
 
     <div id="footer" class="footer">
         <div class="content has-text-centered">
             University of Glasgow, School of Engineering Exam Database
         </div>
+    </div>
+
+
     </div>
 </body>
 </html>

@@ -31,7 +31,7 @@
                         </div>
                         <div class="field">
                             <div class="control">
-                                <button class="button is-info is-fullwidth" :class="{'is-loading': busy}" :disabled="emailInvalid" @click.prevent="submit">
+                                <button class="button is-info is-fullwidth" :class="{'is-loading': busy}" :disabled="fieldsInvalid" @click.prevent="submit">
                                     <span class="icon">
                                         <i class="fas fa-plus-circle"></i>
                                     </span>
@@ -68,10 +68,12 @@ export default {
   },
 
   computed: {
-    emailInvalid() {
+    fieldsInvalid() {
       return (
         this.user.email.match(/[a-z0-9]+@[a-z0-9]+\.[a-z0-9][a-z0-9]+/i) ===
-        null
+          null ||
+        this.user.forenames.match(/[a-z]/i) === null ||
+        this.user.surname.match(/[a-z]/i) === null
       );
     }
   },

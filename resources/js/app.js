@@ -28,6 +28,9 @@ Vue.component('staff-course-editor', require('./components/StaffCourseEditor.vue
 import PortalVue from 'portal-vue'
 Vue.use(PortalVue)
 
+import vSelect from 'vue-select'
+Vue.component('v-select', vSelect)
+
 const app = new Vue({
     el: '#app'
 });

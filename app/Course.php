@@ -159,6 +159,10 @@ class Course extends Model
             return $this->$key;
         }
 
+        if ($user->isAdmin()) {
+            return false;
+        }
+
         throw new \DomainException('User is not associated with this course');
     }
 

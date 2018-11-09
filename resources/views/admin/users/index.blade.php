@@ -2,11 +2,21 @@
 
 @section('content')
 
-<h3 class="title is-3">
-    Current Users
-    <add-local-user></add-local-user>
-    <add-external-user></add-external-user>
-</h3>
+<div class="level">
+    <div class="level-left">
+        <span class="level-item">
+            <h3 class="title is-3">
+                Current Users
+            </h3>
+        </span>
+        <span class="level-item">
+            <add-local-user></add-local-user>
+        </span>
+        <span class="level-item">
+            <add-external-user></add-external-user>
+        </span>
+    </div>
+</div>
 
 <table class="table is-striped is-fullwidth is-hoverable">
     <thead>
@@ -20,6 +30,7 @@
             <th>
                 Email
             </th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -32,6 +43,11 @@
                         </span>
                     @endif
                     {{ $user->full_name }}
+                    @if ($user->isAdmin())
+                        <span class="tag is-dark" title="Admin">
+                            Admin
+                        </span>
+                    @endif
                 </td>
                 <td>
                     {{ $user->username }}
@@ -40,6 +56,14 @@
                     <a href="mailto:user->email">
                         {{ $user->email }}
                     </a>
+                </td>
+                <td>
+                    <form method="POST" action="{{ route('impersonate.start', $user) }}">
+                        @csrf
+                        <button class="button is-small">
+                            Impersonate
+                        </button>
+                    </form>
                 </td>
             </tr>
         @endforeach
