@@ -37,17 +37,19 @@
         @foreach ($users as $user)
             <tr>
                 <td>
-                    @if ($user->isExternal())
-                        <span class="icon has-text-info" title="External">
-                            <i class="fas fa-globe-americas"></i>
-                        </span>
-                    @endif
-                    {{ $user->full_name }}
-                    @if ($user->isAdmin())
-                        <span class="tag is-dark" title="Admin">
-                            Admin
-                        </span>
-                    @endif
+                    <a href="{{ route('user.show', $user) }}">
+                        @if ($user->isExternal())
+                            <span class="icon has-text-info" title="External">
+                                <i class="fas fa-globe-americas"></i>
+                            </span>
+                        @endif
+                        {{ $user->full_name }}
+                        @if ($user->isAdmin())
+                            <span class="tag is-dark" title="Admin">
+                                Admin
+                            </span>
+                        @endif
+                    </a>
                 </td>
                 <td>
                     {{ $user->username }}

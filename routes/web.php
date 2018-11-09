@@ -33,6 +33,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('course', 'Admin\CourseController@index')->name('course.index');
         Route::get('paper', 'Admin\PaperController@index')->name('paper.index');
         Route::get('user', 'Admin\UserController@index')->name('user.index');
+        Route::get('user/{user}', 'Admin\UserController@show')->name('user.show');
         Route::post('user', 'Admin\UserController@store')->name('user.store');
         Route::post('user/{user}/impersonate', 'Admin\ImpersonationController@store')->name('impersonate.start');
         Route::post('course/{course}/users', 'Admin\CourseUsersController@update')->name('course.users.update');

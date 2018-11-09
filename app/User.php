@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\URL;
+use Spatie\Activitylog\Models\Activity;
 
 class User extends Authenticatable
 {
@@ -27,6 +28,11 @@ class User extends Authenticatable
     public function courses()
     {
         return $this->belongsToMany(Course::class)->withPivot('is_setter', 'is_moderator', 'is_external');
+    }
+
+    public function logs()
+    {
+        return $this->hasMany(Activity::class, 'causer_id');
     }
 
     public static function getStaffForVueSelect()
