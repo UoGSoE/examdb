@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateCoursesTable extends Migration
 {
@@ -17,6 +17,7 @@ class CreateCoursesTable extends Migration
             $table->increments('id');
             $table->string('code')->unique();
             $table->string('title');
+            $table->boolean('is_active')->default(true);
             $table->boolean('setter_approved_main')->default(false);
             $table->boolean('moderator_approved_main')->default(false);
             $table->boolean('external_approved_main')->default(false);

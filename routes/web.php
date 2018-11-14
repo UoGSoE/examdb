@@ -11,7 +11,6 @@
 |
  */
 
-
 Auth::routes();
 Route::post('/external-login', 'Auth\ExternalLoginController@sendLoginEmail')->name('external-generate-login');
 Route::get('/external-login/{user}', 'Auth\ExternalLoginController@login')->name('external-login')->middleware('signed');
@@ -37,6 +36,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('user', 'Admin\UserController@store')->name('user.store');
         Route::post('user/{user}/impersonate', 'Admin\ImpersonationController@store')->name('impersonate.start');
         Route::post('course/{course}/users', 'Admin\CourseUsersController@update')->name('course.users.update');
+        Route::post('wlm/import', 'Admin\WlmImportController@update')->name('wlm.import');
     });
     Route::post('impersonate-stop', 'Admin\ImpersonationController@destroy')->name('impersonate.stop');
 });

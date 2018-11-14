@@ -24,12 +24,25 @@ Vue.component('paper-heading', require('./components/PaperHeading.vue'));
 Vue.component('add-local-user', require('./components/AddLocalUser.vue'));
 Vue.component('add-external-user', require('./components/AddExternalUser.vue'));
 Vue.component('staff-course-editor', require('./components/StaffCourseEditor.vue'));
+Vue.component('wlm-importer', require('./components/WlmImporter.vue'));
 
 import PortalVue from 'portal-vue'
 Vue.use(PortalVue)
 
 import vSelect from 'vue-select'
 Vue.component('v-select', vSelect)
+
+Echo.private('notifications')
+    .listen('WlmImportComplete', (e) => {
+        Vue.toasted.show('WLM Data Imported Successfully!');
+    });
+
+import Toasted from 'vue-toasted';
+Vue.use(Toasted, {
+    theme: "primary",
+    position: "bottom-right",
+    duration: 5000
+});
 
 const app = new Vue({
     el: '#app'
