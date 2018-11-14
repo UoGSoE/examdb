@@ -44,6 +44,13 @@ Vue.use(Toasted, {
     duration: 5000
 });
 
+import * as Sentry from '@sentry/browser'
+
+Sentry.init({
+    dsn: process.env.MIX_SENTRY_DSN,
+    integrations: [new Sentry.Integrations.Vue({ Vue })]
+})
+
 const app = new Vue({
     el: '#app'
 });

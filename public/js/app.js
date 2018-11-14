@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 12);
+/******/ 	return __webpack_require__(__webpack_require__.s = 22);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,8 +70,8 @@
 "use strict";
 
 
-var bind = __webpack_require__(6);
-var isBuffer = __webpack_require__(17);
+var bind = __webpack_require__(14);
+var isBuffer = __webpack_require__(27);
 
 /*global toString:true*/
 
@@ -487,10 +487,674 @@ module.exports = function normalizeComponent (
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var misc_1 = __webpack_require__(4);
+// TODO: Implement different loggers for different environments
+var global = misc_1.getGlobalObject();
+/** JSDoc */
+var Logger = /** @class */ (function () {
+    /** JSDoc */
+    function Logger() {
+        this.enabled = false;
+    }
+    /** JSDoc */
+    Logger.prototype.disable = function () {
+        this.enabled = false;
+    };
+    /** JSDoc */
+    Logger.prototype.enable = function () {
+        this.enabled = true;
+    };
+    /** JSDoc */
+    Logger.prototype.log = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        if (!this.enabled) {
+            return;
+        }
+        misc_1.consoleSandbox(function () {
+            global.console.log("Sentry Logger [Log]: " + args.join(' ')); // tslint:disable-line:no-console
+        });
+    };
+    /** JSDoc */
+    Logger.prototype.warn = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        if (!this.enabled) {
+            return;
+        }
+        misc_1.consoleSandbox(function () {
+            global.console.warn("Sentry Logger [Warn]: " + args.join(' ')); // tslint:disable-line:no-console
+        });
+    };
+    /** JSDoc */
+    Logger.prototype.error = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        if (!this.enabled) {
+            return;
+        }
+        misc_1.consoleSandbox(function () {
+            global.console.error("Sentry Logger [Error]: " + args.join(' ')); // tslint:disable-line:no-console
+        });
+    };
+    return Logger;
+}());
+var logger = new Logger();
+exports.logger = logger;
+//# sourceMappingURL=logger.js.map
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var scope_1 = __webpack_require__(19);
+exports.addGlobalEventProcessor = scope_1.addGlobalEventProcessor;
+exports.Scope = scope_1.Scope;
+var hub_1 = __webpack_require__(81);
+exports.getCurrentHub = hub_1.getCurrentHub;
+exports.getHubFromCarrier = hub_1.getHubFromCarrier;
+exports.getMainCarrier = hub_1.getMainCarrier;
+exports.Hub = hub_1.Hub;
+exports.setHubOnCarrier = hub_1.setHubOnCarrier;
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process, global) {
+Object.defineProperty(exports, "__esModule", { value: true });
+var is_1 = __webpack_require__(6);
+/**
+ * Requires a module which is protected against bundler minification.
+ *
+ * @param request The module path to resolve
+ */
+function dynamicRequire(mod, request) {
+    return mod.require(request);
+}
+exports.dynamicRequire = dynamicRequire;
+/**
+ * Checks whether we're in the Node.js or Browser environment
+ *
+ * @returns Answer to given question
+ */
+function isNodeEnv() {
+    // tslint:disable:strict-type-predicates
+    return Object.prototype.toString.call(typeof process !== 'undefined' ? process : 0) === '[object process]';
+}
+exports.isNodeEnv = isNodeEnv;
+/**
+ * Safely get global scope object
+ *
+ * @returns Global scope object
+ */
+// tslint:disable:strict-type-predicates
+function getGlobalObject() {
+    return isNodeEnv() ? global : typeof window !== 'undefined' ? window : typeof self !== 'undefined' ? self : {};
+}
+exports.getGlobalObject = getGlobalObject;
+/**
+ * UUID4 generator
+ *
+ * @returns string Generated UUID4.
+ */
+function uuid4() {
+    var global = getGlobalObject();
+    var crypto = global.crypto || global.msCrypto;
+    if (!(crypto === void 0) && crypto.getRandomValues) {
+        // Use window.crypto API if available
+        var arr = new Uint16Array(8);
+        crypto.getRandomValues(arr);
+        // set 4 in byte 7
+        // tslint:disable-next-line:no-bitwise
+        arr[3] = (arr[3] & 0xfff) | 0x4000;
+        // set 2 most significant bits of byte 9 to '10'
+        // tslint:disable-next-line:no-bitwise
+        arr[4] = (arr[4] & 0x3fff) | 0x8000;
+        var pad = function (num) {
+            var v = num.toString(16);
+            while (v.length < 4) {
+                v = "0" + v;
+            }
+            return v;
+        };
+        return (pad(arr[0]) + pad(arr[1]) + pad(arr[2]) + pad(arr[3]) + pad(arr[4]) + pad(arr[5]) + pad(arr[6]) + pad(arr[7]));
+    }
+    else {
+        // http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript/2117523#2117523
+        return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            // tslint:disable-next-line:no-bitwise
+            var r = (Math.random() * 16) | 0;
+            // tslint:disable-next-line:no-bitwise
+            var v = c === 'x' ? r : (r & 0x3) | 0x8;
+            return v.toString(16);
+        });
+    }
+}
+exports.uuid4 = uuid4;
+/**
+ * Given a child DOM element, returns a query-selector statement describing that
+ * and its ancestors
+ * e.g. [HTMLElement] => body > div > input#foo.btn[name=baz]
+ * @returns generated DOM path
+ */
+function htmlTreeAsString(elem) {
+    var currentElem = elem;
+    var MAX_TRAVERSE_HEIGHT = 5;
+    var MAX_OUTPUT_LEN = 80;
+    var out = [];
+    var height = 0;
+    var len = 0;
+    var separator = ' > ';
+    var sepLength = separator.length;
+    var nextStr;
+    while (currentElem && height++ < MAX_TRAVERSE_HEIGHT) {
+        nextStr = htmlElementAsString(currentElem);
+        // bail out if
+        // - nextStr is the 'html' element
+        // - the length of the string that would be created exceeds MAX_OUTPUT_LEN
+        //   (ignore this limit if we are on the first iteration)
+        if (nextStr === 'html' || (height > 1 && len + out.length * sepLength + nextStr.length >= MAX_OUTPUT_LEN)) {
+            break;
+        }
+        out.push(nextStr);
+        len += nextStr.length;
+        currentElem = currentElem.parentNode;
+    }
+    return out.reverse().join(separator);
+}
+exports.htmlTreeAsString = htmlTreeAsString;
+/**
+ * Returns a simple, query-selector representation of a DOM element
+ * e.g. [HTMLElement] => input#foo.btn[name=baz]
+ * @returns generated DOM path
+ */
+function htmlElementAsString(elem) {
+    var out = [];
+    var className;
+    var classes;
+    var key;
+    var attr;
+    var i;
+    if (!elem || !elem.tagName) {
+        return '';
+    }
+    out.push(elem.tagName.toLowerCase());
+    if (elem.id) {
+        out.push("#" + elem.id);
+    }
+    className = elem.className;
+    if (className && is_1.isString(className)) {
+        classes = className.split(/\s+/);
+        for (i = 0; i < classes.length; i++) {
+            out.push("." + classes[i]);
+        }
+    }
+    var attrWhitelist = ['type', 'name', 'title', 'alt'];
+    for (i = 0; i < attrWhitelist.length; i++) {
+        key = attrWhitelist[i];
+        attr = elem.getAttribute(key);
+        if (attr) {
+            out.push("[" + key + "=\"" + attr + "\"]");
+        }
+    }
+    return out.join('');
+}
+exports.htmlElementAsString = htmlElementAsString;
+/**
+ * Parses string form of URL into an object
+ * // borrowed from https://tools.ietf.org/html/rfc3986#appendix-B
+ * // intentionally using regex and not <a/> href parsing trick because React Native and other
+ * // environments where DOM might not be available
+ * @returns parsed URL object
+ */
+function parseUrl(url) {
+    if (!url) {
+        return {};
+    }
+    var match = url.match(/^(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/);
+    if (!match) {
+        return {};
+    }
+    // coerce to undefined values to empty string so we don't get 'undefined'
+    var query = match[6] || '';
+    var fragment = match[8] || '';
+    return {
+        host: match[4],
+        path: match[5],
+        protocol: match[2],
+        relative: match[5] + query + fragment,
+    };
+}
+exports.parseUrl = parseUrl;
+/**
+ * Extracts either message or type+value from an event that can be used for user-facing logs
+ * @returns event's description
+ */
+function getEventDescription(event) {
+    if (event.message) {
+        return event.message;
+    }
+    else if (event.exception && event.exception.values && event.exception.values[0]) {
+        var exception = event.exception.values[0];
+        if (exception.type && exception.value) {
+            return exception.type + ": " + exception.value;
+        }
+        else {
+            return exception.type || exception.value || event.event_id || '<unknown>';
+        }
+    }
+    else {
+        return event.event_id || '<unknown>';
+    }
+}
+exports.getEventDescription = getEventDescription;
+/** JSDoc */
+function consoleSandbox(callback) {
+    var global = getGlobalObject();
+    var levels = ['debug', 'info', 'warn', 'error', 'log'];
+    if (!('console' in global)) {
+        return callback();
+    }
+    var originalConsole = global.console;
+    var wrappedLevels = {};
+    // Restore all wrapped console methods
+    levels.forEach(function (level) {
+        if (level in global.console && originalConsole[level].__sentry__) {
+            wrappedLevels[level] = originalConsole[level].__sentry_wrapped__;
+            originalConsole[level] = originalConsole[level].__sentry_original__;
+        }
+    });
+    // Perform callback manipulations
+    var result = callback();
+    // Revert restoration to wrapped state
+    Object.keys(wrappedLevels).forEach(function (level) {
+        originalConsole[level] = wrappedLevels[level];
+    });
+    return result;
+}
+exports.consoleSandbox = consoleSandbox;
+//# sourceMappingURL=misc.js.map
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(5)))
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Checks whether given value's type is one of a few Error or Error-like
+ * {@link isError}.
+ *
+ * @param wat A value to be checked.
+ * @returns A boolean representing the result.
+ */
+function isError(wat) {
+    switch (Object.prototype.toString.call(wat)) {
+        case '[object Error]':
+            return true;
+        case '[object Exception]':
+            return true;
+        case '[object DOMException]':
+            return true;
+        default:
+            return wat instanceof Error;
+    }
+}
+exports.isError = isError;
+/**
+ * Checks whether given value's type is ErrorEvent
+ * {@link isErrorEvent}.
+ *
+ * @param wat A value to be checked.
+ * @returns A boolean representing the result.
+ */
+function isErrorEvent(wat) {
+    return Object.prototype.toString.call(wat) === '[object ErrorEvent]';
+}
+exports.isErrorEvent = isErrorEvent;
+/**
+ * Checks whether given value's type is DOMError
+ * {@link isDOMError}.
+ *
+ * @param wat A value to be checked.
+ * @returns A boolean representing the result.
+ */
+function isDOMError(wat) {
+    return Object.prototype.toString.call(wat) === '[object DOMError]';
+}
+exports.isDOMError = isDOMError;
+/**
+ * Checks whether given value's type is DOMException
+ * {@link isDOMException}.
+ *
+ * @param wat A value to be checked.
+ * @returns A boolean representing the result.
+ */
+function isDOMException(wat) {
+    return Object.prototype.toString.call(wat) === '[object DOMException]';
+}
+exports.isDOMException = isDOMException;
+/**
+ * Checks whether given value's type is an undefined
+ * {@link isUndefined}.
+ *
+ * @param wat A value to be checked.
+ * @returns A boolean representing the result.
+ */
+function isUndefined(wat) {
+    return wat === void 0;
+}
+exports.isUndefined = isUndefined;
+/**
+ * Checks whether given value's type is a function
+ * {@link isFunction}.
+ *
+ * @param wat A value to be checked.
+ * @returns A boolean representing the result.
+ */
+function isFunction(wat) {
+    return typeof wat === 'function';
+}
+exports.isFunction = isFunction;
+/**
+ * Checks whether given value's type is a string
+ * {@link isString}.
+ *
+ * @param wat A value to be checked.
+ * @returns A boolean representing the result.
+ */
+function isString(wat) {
+    return Object.prototype.toString.call(wat) === '[object String]';
+}
+exports.isString = isString;
+/**
+ * Checks whether given value's type is an array
+ * {@link isArray}.
+ *
+ * @param wat A value to be checked.
+ * @returns A boolean representing the result.
+ */
+function isArray(wat) {
+    return Object.prototype.toString.call(wat) === '[object Array]';
+}
+exports.isArray = isArray;
+/**
+ * Checks whether given value's type is an object literal
+ * {@link isPlainObject}.
+ *
+ * @param wat A value to be checked.
+ * @returns A boolean representing the result.
+ */
+function isPlainObject(wat) {
+    return Object.prototype.toString.call(wat) === '[object Object]';
+}
+exports.isPlainObject = isPlainObject;
+/**
+ * Checks whether given value's type is an regexp
+ * {@link isRegExp}.
+ *
+ * @param wat A value to be checked.
+ * @returns A boolean representing the result.
+ */
+function isRegExp(wat) {
+    return Object.prototype.toString.call(wat) === '[object RegExp]';
+}
+exports.isRegExp = isRegExp;
+/**
+ * Checks whether given value's type is a NaN
+ * {@link isNaN}.
+ *
+ * @param wat A value to be checked.
+ * @returns A boolean representing the result.
+ */
+function isNaN(wat) {
+    return wat !== wat;
+}
+exports.isNaN = isNaN;
+//# sourceMappingURL=is.js.map
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
 var utils = __webpack_require__(0);
-var normalizeHeaderName = __webpack_require__(19);
+var normalizeHeaderName = __webpack_require__(29);
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -506,10 +1170,10 @@ function getDefaultAdapter() {
   var adapter;
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(8);
+    adapter = __webpack_require__(15);
   } else if (typeof process !== 'undefined') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(8);
+    adapter = __webpack_require__(15);
   }
   return adapter;
 }
@@ -587,7 +1251,7 @@ module.exports = defaults;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ }),
-/* 3 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11550,43 +12214,16 @@ Vue.compile = compileToFunctions;
 
 module.exports = Vue;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(36).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(46).setImmediate))
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 5 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Vue = __webpack_require__(3);
+var Vue = __webpack_require__(9);
 Vue = 'default' in Vue ? Vue['default'] : Vue;
 
 var version = '2.2.2';
@@ -11669,7 +12306,474 @@ exports.directive = directive;
 exports.mixin = mixin;
 
 /***/ }),
-/* 6 */
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __values = (this && this.__values) || function (o) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator], i = 0;
+    if (m) return m.call(o);
+    return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var is_1 = __webpack_require__(6);
+/**
+ * Transforms Error object into an object literal with all it's attributes
+ * attached to it.
+ *
+ * Based on: https://github.com/ftlabs/js-abbreviate/blob/fa709e5f139e7770a71827b1893f22418097fbda/index.js#L95-L106
+ *
+ * @param error An Error containing all relevant information
+ * @returns An object with all error properties
+ */
+function objectifyError(error) {
+    // These properties are implemented as magical getters and don't show up in `for-in` loop
+    var err = {
+        message: error.message,
+        name: error.name,
+        stack: error.stack,
+    };
+    for (var i in error) {
+        if (Object.prototype.hasOwnProperty.call(error, i)) {
+            err[i] = error[i];
+        }
+    }
+    return err;
+}
+var NAN_VALUE = '[NaN]';
+var UNDEFINED_VALUE = '[undefined]';
+/**
+ * Serializer function used as 2nd argument to JSON.serialize in `serialize()` util function.
+ */
+function serializer() {
+    var stack = [];
+    var keys = [];
+    var cycleReplacer = function (_, value) {
+        if (stack[0] === value) {
+            return '[Circular ~]';
+        }
+        return "[Circular ~." + keys.slice(0, stack.indexOf(value)).join('.') + "]";
+    };
+    return function (key, value) {
+        var currentValue = value;
+        // NaN and undefined are not JSON.parseable, but we want to preserve this information
+        if (is_1.isNaN(value)) {
+            currentValue = NAN_VALUE;
+        }
+        else if (is_1.isUndefined(value)) {
+            currentValue = UNDEFINED_VALUE;
+        }
+        if (stack.length > 0) {
+            var thisPos = stack.indexOf(this);
+            if (thisPos !== -1) {
+                stack.splice(thisPos + 1);
+                keys.splice(thisPos, Infinity, key);
+            }
+            else {
+                stack.push(this);
+                keys.push(key);
+            }
+            if (stack.indexOf(currentValue) !== -1) {
+                currentValue = cycleReplacer.call(this, key, currentValue);
+            }
+        }
+        else {
+            stack.push(currentValue);
+        }
+        return currentValue instanceof Error ? objectifyError(currentValue) : currentValue;
+    };
+}
+/**
+ * Reviver function used as 2nd argument to JSON.parse in `deserialize()` util function.
+ */
+function reviver(_key, value) {
+    // NaN and undefined are not JSON.parseable, but we want to preserve this information
+    if (value === NAN_VALUE) {
+        return NaN;
+    }
+    if (value === UNDEFINED_VALUE) {
+        return undefined;
+    }
+    return value;
+}
+/**
+ * Serializes the given object into a string.
+ * Like JSON.stringify, but doesn't throw on circular references.
+ * Based on a `json-stringify-safe` package and modified to handle Errors serialization.
+ *
+ * The object must be serializable, i.e.:
+ *  - Only primitive types are allowed (object, array, number, string, boolean)
+ *  - Its depth should be considerably low for performance reasons
+ *
+ * @param object A JSON-serializable object.
+ * @returns A string containing the serialized object.
+ */
+function serialize(object) {
+    return JSON.stringify(object, serializer());
+}
+exports.serialize = serialize;
+/**
+ * Deserializes an object from a string previously serialized with
+ * {@link serialize}.
+ *
+ * @param str A serialized object.
+ * @returns The deserialized object.
+ */
+function deserialize(str) {
+    return JSON.parse(str, reviver);
+}
+exports.deserialize = deserialize;
+/**
+ * Creates a deep copy of the given object.
+ *
+ * The object must be serializable, i.e.:
+ *  - It must not contain any cycles
+ *  - Only primitive types are allowed (object, array, number, string, boolean)
+ *  - Its depth should be considerably low for performance reasons
+ *
+ * @param object A JSON-serializable object.
+ * @returns The object clone.
+ */
+function clone(object) {
+    return deserialize(serialize(object));
+}
+exports.clone = clone;
+/**
+ * Wrap a given object method with a higher-order function
+ *
+ * @param source An object that contains a method to be wrapped.
+ * @param name A name of method to be wrapped.
+ * @param replacement A function that should be used to wrap a given method.
+ * @returns void
+ */
+function fill(source, name, replacement) {
+    if (!(name in source) || source[name].__sentry__) {
+        return;
+    }
+    var original = source[name];
+    var wrapped = replacement(original);
+    wrapped.__sentry__ = true;
+    wrapped.__sentry_original__ = original;
+    wrapped.__sentry_wrapped__ = wrapped;
+    source[name] = wrapped;
+}
+exports.fill = fill;
+/**
+ * Encodes given object into url-friendly format
+ *
+ * @param object An object that contains serializable values
+ * @returns string Encoded
+ */
+function urlEncode(object) {
+    return Object.keys(object)
+        .map(
+    // tslint:disable-next-line:no-unsafe-any
+    function (key) { return encodeURIComponent(key) + "=" + encodeURIComponent(object[key]); })
+        .join('&');
+}
+exports.urlEncode = urlEncode;
+// Default Node.js REPL depth
+var MAX_SERIALIZE_EXCEPTION_DEPTH = 3;
+// TODO: Or is it 200kb? 🤔 — Kamil
+// NOTE: Yes, it is
+// 50kB, as 100kB is max payload size, so half sounds reasonable
+var MAX_SERIALIZE_EXCEPTION_SIZE = 50 * 1024;
+var MAX_SERIALIZE_KEYS_LENGTH = 40;
+/** JSDoc */
+function utf8Length(value) {
+    // tslint:disable-next-line:no-bitwise
+    return ~-encodeURI(value).split(/%..|./).length;
+}
+/** JSDoc */
+function jsonSize(value) {
+    return utf8Length(JSON.stringify(value));
+}
+/** JSDoc */
+function serializeValue(value) {
+    var maxLength = 40;
+    if (typeof value === 'string') {
+        return value.length <= maxLength ? value : value.substr(0, maxLength - 1) + "\u2026";
+    }
+    else if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'undefined') {
+        return value;
+    }
+    else if (is_1.isNaN(value)) {
+        // NaN and undefined are not JSON.parseable, but we want to preserve this information
+        return '[NaN]';
+    }
+    else if (is_1.isUndefined(value)) {
+        return '[undefined]';
+    }
+    var type = Object.prototype.toString.call(value);
+    // Node.js REPL notation
+    if (type === '[object Object]') {
+        return '[Object]';
+    }
+    if (type === '[object Array]') {
+        return '[Array]';
+    }
+    if (type === '[object Function]') {
+        var name_1 = value.name;
+        return name_1 ? "[Function: " + name_1 + "]" : '[Function]';
+    }
+    return value;
+}
+/** JSDoc */
+function serializeObject(value, depth) {
+    if (depth === 0) {
+        return serializeValue(value);
+    }
+    if (is_1.isPlainObject(value)) {
+        var serialized_1 = {};
+        var val_1 = value;
+        Object.keys(val_1).forEach(function (key) {
+            serialized_1[key] = serializeObject(val_1[key], depth - 1);
+        });
+        return serialized_1;
+    }
+    else if (Array.isArray(value)) {
+        var val = value;
+        return val.map(function (v) { return serializeObject(v, depth - 1); });
+    }
+    return serializeValue(value);
+}
+exports.serializeObject = serializeObject;
+/** JSDoc */
+function limitObjectDepthToSize(object, depth, maxSize) {
+    if (depth === void 0) { depth = MAX_SERIALIZE_EXCEPTION_DEPTH; }
+    if (maxSize === void 0) { maxSize = MAX_SERIALIZE_EXCEPTION_SIZE; }
+    var serialized = serializeObject(object, depth);
+    if (jsonSize(serialize(serialized)) > maxSize) {
+        return limitObjectDepthToSize(object, depth - 1);
+    }
+    return serialized;
+}
+exports.limitObjectDepthToSize = limitObjectDepthToSize;
+/** JSDoc */
+function serializeKeysToEventMessage(keys, maxLength) {
+    if (maxLength === void 0) { maxLength = MAX_SERIALIZE_KEYS_LENGTH; }
+    if (!keys.length) {
+        return '[object has no keys]';
+    }
+    if (keys[0].length >= maxLength) {
+        return keys[0];
+    }
+    for (var includedKeys = keys.length; includedKeys > 0; includedKeys--) {
+        var serialized = keys.slice(0, includedKeys).join(', ');
+        if (serialized.length > maxLength) {
+            continue;
+        }
+        if (includedKeys === keys.length) {
+            return serialized;
+        }
+        return serialized + "\u2026";
+    }
+    return '';
+}
+exports.serializeKeysToEventMessage = serializeKeysToEventMessage;
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign#Polyfill
+/** JSDoc */
+function assign(target) {
+    var args = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        args[_i - 1] = arguments[_i];
+    }
+    var e_1, _a;
+    if (target === null || target === undefined) {
+        throw new TypeError('Cannot convert undefined or null to object');
+    }
+    var to = Object(target);
+    try {
+        for (var args_1 = __values(args), args_1_1 = args_1.next(); !args_1_1.done; args_1_1 = args_1.next()) {
+            var source = args_1_1.value;
+            if (source !== null) {
+                for (var nextKey in source) {
+                    if (Object.prototype.hasOwnProperty.call(source, nextKey)) {
+                        to[nextKey] = source[nextKey];
+                    }
+                }
+            }
+        }
+    }
+    catch (e_1_1) { e_1 = { error: e_1_1 }; }
+    finally {
+        try {
+            if (args_1_1 && !args_1_1.done && (_a = args_1.return)) _a.call(args_1);
+        }
+        finally { if (e_1) throw e_1.error; }
+    }
+    return to;
+}
+exports.assign = assign;
+//# sourceMappingURL=object.js.map
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __values = (this && this.__values) || function (o) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator], i = 0;
+    if (m) return m.call(o);
+    return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var is_1 = __webpack_require__(6);
+var object_1 = __webpack_require__(11);
+var error_1 = __webpack_require__(13);
+/** Regular expression used to parse a Dsn. */
+var DSN_REGEX = /^(?:(\w+):)\/\/(?:(\w+)(?::(\w+))?@)([\w\.-]+)(?::(\d+))?\/(.+)/;
+/** The Sentry Dsn, identifying a Sentry instance and project. */
+var Dsn = /** @class */ (function () {
+    /** Creates a new Dsn component */
+    function Dsn(from) {
+        if (typeof from === 'string') {
+            this.fromString(from);
+        }
+        else {
+            this.fromComponents(from);
+        }
+        this.validate();
+    }
+    /**
+     * Renders the string representation of this Dsn.
+     *
+     * By default, this will render the public representation without the password
+     * component. To get the deprecated private representation, set `withPassword`
+     * to true.
+     *
+     * @param withPassword When set to true, the password will be included.
+     */
+    Dsn.prototype.toString = function (withPassword) {
+        if (withPassword === void 0) { withPassword = false; }
+        // tslint:disable-next-line:no-this-assignment
+        var _a = this, host = _a.host, path = _a.path, pass = _a.pass, port = _a.port, projectId = _a.projectId, protocol = _a.protocol, user = _a.user;
+        return (protocol + "://" + user + (withPassword && pass ? ":" + pass : '') +
+            ("@" + host + (port ? ":" + port : '') + "/" + (path ? path + "/" : path) + projectId));
+    };
+    /** Parses a string into this Dsn. */
+    Dsn.prototype.fromString = function (str) {
+        var match = DSN_REGEX.exec(str);
+        if (!match) {
+            throw new error_1.SentryError('Invalid Dsn');
+        }
+        var _a = __read(match.slice(1), 6), protocol = _a[0], user = _a[1], _b = _a[2], pass = _b === void 0 ? '' : _b, host = _a[3], _c = _a[4], port = _c === void 0 ? '' : _c, lastPath = _a[5];
+        var path = '';
+        var projectId = lastPath;
+        var split = projectId.split('/');
+        if (split.length > 1) {
+            path = split.slice(0, -1).join('/');
+            projectId = split.pop();
+        }
+        object_1.assign(this, { host: host, pass: pass, path: path, projectId: projectId, port: port, protocol: protocol, user: user });
+    };
+    /** Maps Dsn components into this instance. */
+    Dsn.prototype.fromComponents = function (components) {
+        this.protocol = components.protocol;
+        this.user = components.user;
+        this.pass = components.pass || '';
+        this.host = components.host;
+        this.port = components.port || '';
+        this.path = components.path || '';
+        this.projectId = components.projectId;
+    };
+    /** Validates this Dsn and throws on error. */
+    Dsn.prototype.validate = function () {
+        var e_1, _a;
+        try {
+            for (var _b = __values(['protocol', 'user', 'host', 'projectId']), _c = _b.next(); !_c.done; _c = _b.next()) {
+                var component = _c.value;
+                if (!this[component]) {
+                    throw new error_1.SentryError("Invalid Dsn: Missing " + component);
+                }
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        if (this.protocol !== 'http' && this.protocol !== 'https') {
+            throw new error_1.SentryError("Invalid Dsn: Unsupported protocol \"" + this.protocol + "\"");
+        }
+        if (this.port && is_1.isNaN(parseInt(this.port, 10))) {
+            throw new error_1.SentryError("Invalid Dsn: Invalid port number \"" + this.port + "\"");
+        }
+    };
+    return Dsn;
+}());
+exports.Dsn = Dsn;
+//# sourceMappingURL=dsn.js.map
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+/** An error emitted by Sentry SDKs and related utilities. */
+var SentryError = /** @class */ (function (_super) {
+    __extends(SentryError, _super);
+    function SentryError(message) {
+        var _newTarget = this.constructor;
+        var _this = _super.call(this, message) || this;
+        _this.message = message;
+        // tslint:disable:no-unsafe-any
+        _this.name = _newTarget.prototype.constructor.name;
+        Object.setPrototypeOf(_this, _newTarget.prototype);
+        return _this;
+    }
+    return SentryError;
+}(Error));
+exports.SentryError = SentryError;
+//# sourceMappingURL=error.js.map
+
+/***/ }),
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11687,209 +12791,19 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
-/* 7 */
-/***/ (function(module, exports) {
-
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-
-/***/ }),
-/* 8 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(0);
-var settle = __webpack_require__(20);
-var buildURL = __webpack_require__(22);
-var parseHeaders = __webpack_require__(23);
-var isURLSameOrigin = __webpack_require__(24);
-var createError = __webpack_require__(9);
-var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(25);
+var settle = __webpack_require__(30);
+var buildURL = __webpack_require__(32);
+var parseHeaders = __webpack_require__(33);
+var isURLSameOrigin = __webpack_require__(34);
+var createError = __webpack_require__(16);
+var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(35);
 
 module.exports = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -11986,7 +12900,7 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(26);
+      var cookies = __webpack_require__(36);
 
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -12064,13 +12978,13 @@ module.exports = function xhrAdapter(config) {
 
 
 /***/ }),
-/* 9 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var enhanceError = __webpack_require__(21);
+var enhanceError = __webpack_require__(31);
 
 /**
  * Create an Error with the specified message, config, error code, request and response.
@@ -12089,7 +13003,7 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 10 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12101,7 +13015,7 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 11 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12127,25 +13041,599 @@ module.exports = Cancel;
 
 
 /***/ }),
-/* 12 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(13);
-module.exports = __webpack_require__(67);
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
+};
+var __values = (this && this.__values) || function (o) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator], i = 0;
+    if (m) return m.call(o);
+    return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var misc_1 = __webpack_require__(4);
+var object_1 = __webpack_require__(11);
+/**
+ * Holds additional event information. {@link Scope.applyToEvent} will be
+ * called by the client before an event will be sent.
+ */
+var Scope = /** @class */ (function () {
+    function Scope() {
+        /** Flag if notifiying is happening. */
+        this.notifyingListeners = false;
+        /** Callback for client to receive scope changes. */
+        this.scopeListeners = [];
+        /** Callback list that will be called after {@link applyToEvent}. */
+        this.eventProcessors = [];
+        /** Array of breadcrumbs. */
+        this.breadcrumbs = [];
+        /** User */
+        this.user = {};
+        /** Tags */
+        this.tags = {};
+        /** Extra */
+        this.extra = {};
+    }
+    /** Add internal on change listener. */
+    Scope.prototype.addScopeListener = function (callback) {
+        this.scopeListeners.push(callback);
+    };
+    /** Add new event processor that will be called after {@link applyToEvent}. */
+    Scope.prototype.addEventProcessor = function (callback) {
+        this.eventProcessors.push(callback);
+        return this;
+    };
+    /**
+     * This will be called on every set call.
+     */
+    Scope.prototype.notifyScopeListeners = function () {
+        var _this = this;
+        if (!this.notifyingListeners) {
+            this.notifyingListeners = true;
+            setTimeout(function () {
+                _this.scopeListeners.forEach(function (callback) {
+                    callback(_this);
+                });
+                _this.notifyingListeners = false;
+            }, 0);
+        }
+    };
+    /**
+     * This will be called after {@link applyToEvent} is finished.
+     */
+    Scope.prototype.notifyEventProcessors = function (event, hint) {
+        return __awaiter(this, void 0, void 0, function () {
+            var e_1, _a, processedEvent, _b, _c, processor, e_2, e_1_1;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0:
+                        processedEvent = event;
+                        _d.label = 1;
+                    case 1:
+                        _d.trys.push([1, 8, 9, 10]);
+                        _b = __values(__spread(getGlobalEventProcessors(), this.eventProcessors)), _c = _b.next();
+                        _d.label = 2;
+                    case 2:
+                        if (!!_c.done) return [3 /*break*/, 7];
+                        processor = _c.value;
+                        _d.label = 3;
+                    case 3:
+                        _d.trys.push([3, 5, , 6]);
+                        return [4 /*yield*/, processor(__assign({}, processedEvent), hint)];
+                    case 4:
+                        processedEvent = _d.sent();
+                        if (processedEvent === null) {
+                            return [2 /*return*/, null];
+                        }
+                        return [3 /*break*/, 6];
+                    case 5:
+                        e_2 = _d.sent();
+                        return [3 /*break*/, 6];
+                    case 6:
+                        _c = _b.next();
+                        return [3 /*break*/, 2];
+                    case 7: return [3 /*break*/, 10];
+                    case 8:
+                        e_1_1 = _d.sent();
+                        e_1 = { error: e_1_1 };
+                        return [3 /*break*/, 10];
+                    case 9:
+                        try {
+                            if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+                        }
+                        finally { if (e_1) throw e_1.error; }
+                        return [7 /*endfinally*/];
+                    case 10: return [2 /*return*/, processedEvent];
+                }
+            });
+        });
+    };
+    /**
+     * Updates user context information for future events.
+     * @param user User context object to merge into current context.
+     */
+    Scope.prototype.setUser = function (user) {
+        this.user = user;
+        this.notifyScopeListeners();
+        return this;
+    };
+    /**
+     * Updates tags context information for future events.
+     * @param tags Tags context object to merge into current context.
+     */
+    Scope.prototype.setTag = function (key, value) {
+        var _a;
+        this.tags = __assign({}, this.tags, (_a = {}, _a[key] = value, _a));
+        this.notifyScopeListeners();
+        return this;
+    };
+    /**
+     * Updates extra context information for future events.
+     * @param extra context object to merge into current context.
+     */
+    Scope.prototype.setExtra = function (key, extra) {
+        var _a;
+        this.extra = __assign({}, this.extra, (_a = {}, _a[key] = extra, _a));
+        this.notifyScopeListeners();
+        return this;
+    };
+    /**
+     * Sets the fingerprint on the scope to send with the events.
+     * @param fingerprint string[] to group events in Sentry.
+     */
+    Scope.prototype.setFingerprint = function (fingerprint) {
+        this.fingerprint = fingerprint;
+        this.notifyScopeListeners();
+        return this;
+    };
+    /**
+     * Sets the level on the scope for future events.
+     * @param level string {@link Severity}
+     */
+    Scope.prototype.setLevel = function (level) {
+        this.level = level;
+        this.notifyScopeListeners();
+        return this;
+    };
+    /**
+     * Inherit values from the parent scope.
+     * @param scope to clone.
+     */
+    Scope.clone = function (scope) {
+        var newScope = new Scope();
+        object_1.assign(newScope, scope, {
+            scopeListeners: [],
+        });
+        if (scope) {
+            newScope.extra = object_1.assign(scope.extra);
+            newScope.tags = object_1.assign(scope.tags);
+            newScope.breadcrumbs = __spread(scope.breadcrumbs);
+            newScope.eventProcessors = __spread(scope.eventProcessors);
+        }
+        return newScope;
+    };
+    /** Clears the current scope and resets its properties. */
+    Scope.prototype.clear = function () {
+        this.breadcrumbs = [];
+        this.tags = {};
+        this.extra = {};
+        this.user = {};
+        this.level = undefined;
+        this.fingerprint = undefined;
+        this.notifyScopeListeners();
+    };
+    /**
+     * Sets the breadcrumbs in the scope
+     * @param breadcrumbs Breadcrumb
+     * @param maxBreadcrumbs number of max breadcrumbs to merged into event.
+     */
+    Scope.prototype.addBreadcrumb = function (breadcrumb, maxBreadcrumbs) {
+        this.breadcrumbs =
+            maxBreadcrumbs !== undefined && maxBreadcrumbs >= 0
+                ? __spread(this.breadcrumbs, [breadcrumb]).slice(-maxBreadcrumbs)
+                : __spread(this.breadcrumbs, [breadcrumb]);
+        this.notifyScopeListeners();
+    };
+    /**
+     * Applies the current context and fingerprint to the event.
+     * Note that breadcrumbs will be added by the client.
+     * Also if the event has already breadcrumbs on it, we do not merge them.
+     * @param event SentryEvent
+     * @param hint May contain additional informartion about the original exception.
+     * @param maxBreadcrumbs number of max breadcrumbs to merged into event.
+     */
+    Scope.prototype.applyToEvent = function (event, hint, maxBreadcrumbs) {
+        return __awaiter(this, void 0, void 0, function () {
+            var hasNoBreadcrumbs;
+            return __generator(this, function (_a) {
+                if (this.extra && Object.keys(this.extra).length) {
+                    event.extra = __assign({}, this.extra, event.extra);
+                }
+                if (this.tags && Object.keys(this.tags).length) {
+                    event.tags = __assign({}, this.tags, event.tags);
+                }
+                if (this.user && Object.keys(this.user).length) {
+                    event.user = __assign({}, this.user, event.user);
+                }
+                if (this.fingerprint && event.fingerprint === undefined) {
+                    event.fingerprint = this.fingerprint;
+                }
+                if (this.level) {
+                    event.level = this.level;
+                }
+                hasNoBreadcrumbs = !event.breadcrumbs || event.breadcrumbs.length === 0;
+                if (hasNoBreadcrumbs && this.breadcrumbs.length > 0) {
+                    event.breadcrumbs =
+                        maxBreadcrumbs !== undefined && maxBreadcrumbs >= 0
+                            ? this.breadcrumbs.slice(-maxBreadcrumbs)
+                            : this.breadcrumbs;
+                }
+                return [2 /*return*/, this.notifyEventProcessors(event, hint)];
+            });
+        });
+    };
+    return Scope;
+}());
+exports.Scope = Scope;
+/**
+ * Retruns the global event processors.
+ */
+function getGlobalEventProcessors() {
+    var global = misc_1.getGlobalObject();
+    global.__SENTRY__ = global.__SENTRY__ || {};
+    global.__SENTRY__.globalEventProcessors = global.__SENTRY__.globalEventProcessors || [];
+    return global.__SENTRY__.globalEventProcessors;
+}
+/**
+ * Add a EventProcessor to be kept globally.
+ * @param callback EventProcessor to add
+ */
+function addGlobalEventProcessor(callback) {
+    getGlobalEventProcessors().push(callback);
+}
+exports.addGlobalEventProcessor = addGlobalEventProcessor;
+//# sourceMappingURL=scope.js.map
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __values = (this && this.__values) || function (o) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator], i = 0;
+    if (m) return m.call(o);
+    return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var is_1 = __webpack_require__(6);
+/**
+ * Encodes given object into url-friendly format
+ *
+ * @param str An object that contains serializable values
+ * @param max Maximum number of characters in truncated string
+ * @returns string Encoded
+ */
+function truncate(str, max) {
+    if (max === void 0) { max = 0; }
+    if (max === 0 || !is_1.isString(str)) {
+        return str;
+    }
+    return str.length <= max ? str : str.substr(0, max) + "\u2026";
+}
+exports.truncate = truncate;
+/**
+ * This is basically just `trim_line` from
+ * https://github.com/getsentry/sentry/blob/master/src/sentry/lang/javascript/processor.py#L67
+ *
+ * @param str An object that contains serializable values
+ * @param max Maximum number of characters in truncated string
+ * @returns string Encoded
+ */
+function snipLine(line, colno) {
+    var newLine = line;
+    var ll = newLine.length;
+    if (ll <= 150) {
+        return newLine;
+    }
+    if (colno > ll) {
+        colno = ll; // tslint:disable-line:no-parameter-reassignment
+    }
+    var start = Math.max(colno - 60, 0);
+    if (start < 5) {
+        start = 0;
+    }
+    var end = Math.min(start + 140, ll);
+    if (end > ll - 5) {
+        end = ll;
+    }
+    if (end === ll) {
+        start = Math.max(end - 140, 0);
+    }
+    newLine = newLine.slice(start, end);
+    if (start > 0) {
+        newLine = "'{snip} " + newLine;
+    }
+    if (end < ll) {
+        newLine += ' {snip}';
+    }
+    return newLine;
+}
+exports.snipLine = snipLine;
+/**
+ * Join values in array
+ * @param input array of values to be joined together
+ * @param delimiter string to be placed in-between values
+ * @returns Joined values
+ */
+function safeJoin(input, delimiter) {
+    var e_1, _a;
+    if (!Array.isArray(input)) {
+        return '';
+    }
+    var output = [];
+    try {
+        for (var input_1 = __values(input), input_1_1 = input_1.next(); !input_1_1.done; input_1_1 = input_1.next()) {
+            var value = input_1_1.value;
+            try {
+                output.push(String(value));
+            }
+            catch (e) {
+                output.push('[value cannot be serialized]');
+            }
+        }
+    }
+    catch (e_1_1) { e_1 = { error: e_1_1 }; }
+    finally {
+        try {
+            if (input_1_1 && !input_1_1.done && (_a = input_1.return)) _a.call(input_1);
+        }
+        finally { if (e_1) throw e_1.error; }
+    }
+    return output.join(delimiter);
+}
+exports.safeJoin = safeJoin;
+/**
+ * Checks if given value is included in the target
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/includes#Polyfill
+ * @param target source string
+ * @param search string to be looked for
+ * @returns An answer
+ */
+function includes(target, search) {
+    if (search.length > target.length) {
+        return false;
+    }
+    else {
+        return target.indexOf(search) !== -1;
+    }
+}
+exports.includes = includes;
+//# sourceMappingURL=string.js.map
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+/** A simple queue that holds promises. */
+var RequestBuffer = /** @class */ (function () {
+    function RequestBuffer() {
+        /** Internal set of queued Promises */
+        this.buffer = [];
+    }
+    /**
+     * Add a promise to the queue.
+     *
+     * @param task Can be any Promise<T>
+     * @returns The original promise.
+     */
+    RequestBuffer.prototype.add = function (task) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                if (this.buffer.indexOf(task) === -1) {
+                    this.buffer.push(task);
+                }
+                task.then(function () { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+                    return [2 /*return*/, this.remove(task)];
+                }); }); }).catch(function () { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+                    return [2 /*return*/, this.remove(task)];
+                }); }); });
+                return [2 /*return*/, task];
+            });
+        });
+    };
+    /**
+     * Remove a promise to the queue.
+     *
+     * @param task Can be any Promise<T>
+     * @returns Removed promise.
+     */
+    RequestBuffer.prototype.remove = function (task) {
+        return __awaiter(this, void 0, void 0, function () {
+            var removedTask;
+            return __generator(this, function (_a) {
+                removedTask = this.buffer.splice(this.buffer.indexOf(task), 1)[0];
+                return [2 /*return*/, removedTask];
+            });
+        });
+    };
+    /**
+     * This function returns the number of unresolved promises in the queue.
+     */
+    RequestBuffer.prototype.length = function () {
+        return this.buffer.length;
+    };
+    /**
+     * This will drain the whole queue, returns true if queue is empty or drained.
+     * If timeout is provided and the queue takes longer to drain, the promise still resolves but with false.
+     *
+     * @param timeout Number in ms to wait until it resolves with false.
+     */
+    RequestBuffer.prototype.drain = function (timeout) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                return [2 /*return*/, new Promise(function (resolve) {
+                        var capturedSetTimeout = setTimeout(function () {
+                            if (timeout && timeout > 0) {
+                                resolve(false);
+                            }
+                        }, timeout);
+                        Promise.all(_this.buffer)
+                            .then(function () {
+                            clearTimeout(capturedSetTimeout);
+                            resolve(true);
+                        })
+                            .catch(function () {
+                            resolve(true);
+                        });
+                    })];
+            });
+        });
+    };
+    return RequestBuffer;
+}());
+exports.RequestBuffer = RequestBuffer;
+//# sourceMappingURL=requestbuffer.js.map
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(23);
+module.exports = __webpack_require__(99);
 
 
 /***/ }),
-/* 13 */
+/* 23 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_portal_vue__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_portal_vue__ = __webpack_require__(75);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_portal_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_portal_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_select__ = __webpack_require__(66);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_select__ = __webpack_require__(76);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_select___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_select__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vue_toasted__ = __webpack_require__(89);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vue_toasted__ = __webpack_require__(77);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vue_toasted___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_vue_toasted__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__sentry_browser__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__sentry_browser___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__sentry_browser__);
 /* global require Vue */
 /*eslint no-undef: "warn"*/
 /**
@@ -12154,9 +13642,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-__webpack_require__(14);
+__webpack_require__(24);
 
-window.Vue = __webpack_require__(3);
+window.Vue = __webpack_require__(9);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -12164,15 +13652,15 @@ window.Vue = __webpack_require__(3);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('login-form', __webpack_require__(38));
-Vue.component('main-paper-uploader', __webpack_require__(41));
-Vue.component('course-viewer', __webpack_require__(44));
-Vue.component('paper-list', __webpack_require__(47));
-Vue.component('paper-heading', __webpack_require__(50));
-Vue.component('add-local-user', __webpack_require__(53));
-Vue.component('add-external-user', __webpack_require__(56));
-Vue.component('staff-course-editor', __webpack_require__(59));
-Vue.component('wlm-importer', __webpack_require__(62));
+Vue.component('login-form', __webpack_require__(48));
+Vue.component('main-paper-uploader', __webpack_require__(51));
+Vue.component('course-viewer', __webpack_require__(54));
+Vue.component('paper-list', __webpack_require__(57));
+Vue.component('paper-heading', __webpack_require__(60));
+Vue.component('add-local-user', __webpack_require__(63));
+Vue.component('add-external-user', __webpack_require__(66));
+Vue.component('staff-course-editor', __webpack_require__(69));
+Vue.component('wlm-importer', __webpack_require__(72));
 
 
 Vue.use(__WEBPACK_IMPORTED_MODULE_0_portal_vue___default.a);
@@ -12191,17 +13679,24 @@ Vue.use(__WEBPACK_IMPORTED_MODULE_2_vue_toasted___default.a, {
     duration: 5000
 });
 
+
+
+__WEBPACK_IMPORTED_MODULE_3__sentry_browser__["init"]({
+    dsn: "http://99b0b1e95aba4814b02980a50f00f047:0ca0b8a297c340fc9fcfd03725785e8b@ultravixen.elec.gla.ac.uk:9111/5",
+    integrations: [new __WEBPACK_IMPORTED_MODULE_3__sentry_browser__["Integrations"].Vue({ Vue: Vue })]
+});
+
 var app = new Vue({
     el: '#app'
 });
 
 /***/ }),
-/* 14 */
+/* 24 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_echo__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_echo__ = __webpack_require__(44);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_echo___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_laravel_echo__);
 
 // window._ = require('lodash');
@@ -12225,7 +13720,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-window.axios = __webpack_require__(15);
+window.axios = __webpack_require__(25);
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
@@ -12251,7 +13746,7 @@ if (token) {
 
 
 
-window.Pusher = __webpack_require__(35);
+window.Pusher = __webpack_require__(45);
 
 window.Echo = new __WEBPACK_IMPORTED_MODULE_0_laravel_echo___default.a({
   broadcaster: 'pusher',
@@ -12261,22 +13756,22 @@ window.Echo = new __WEBPACK_IMPORTED_MODULE_0_laravel_echo___default.a({
 });
 
 /***/ }),
-/* 15 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(16);
+module.exports = __webpack_require__(26);
 
 /***/ }),
-/* 16 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(0);
-var bind = __webpack_require__(6);
-var Axios = __webpack_require__(18);
-var defaults = __webpack_require__(2);
+var bind = __webpack_require__(14);
+var Axios = __webpack_require__(28);
+var defaults = __webpack_require__(8);
 
 /**
  * Create an instance of Axios
@@ -12309,15 +13804,15 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(11);
-axios.CancelToken = __webpack_require__(32);
-axios.isCancel = __webpack_require__(10);
+axios.Cancel = __webpack_require__(18);
+axios.CancelToken = __webpack_require__(42);
+axios.isCancel = __webpack_require__(17);
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(33);
+axios.spread = __webpack_require__(43);
 
 module.exports = axios;
 
@@ -12326,7 +13821,7 @@ module.exports.default = axios;
 
 
 /***/ }),
-/* 17 */
+/* 27 */
 /***/ (function(module, exports) {
 
 /*!
@@ -12353,16 +13848,16 @@ function isSlowBuffer (obj) {
 
 
 /***/ }),
-/* 18 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var defaults = __webpack_require__(2);
+var defaults = __webpack_require__(8);
 var utils = __webpack_require__(0);
-var InterceptorManager = __webpack_require__(27);
-var dispatchRequest = __webpack_require__(28);
+var InterceptorManager = __webpack_require__(37);
+var dispatchRequest = __webpack_require__(38);
 
 /**
  * Create a new instance of Axios
@@ -12439,7 +13934,7 @@ module.exports = Axios;
 
 
 /***/ }),
-/* 19 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12458,13 +13953,13 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 
 /***/ }),
-/* 20 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var createError = __webpack_require__(9);
+var createError = __webpack_require__(16);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -12491,7 +13986,7 @@ module.exports = function settle(resolve, reject, response) {
 
 
 /***/ }),
-/* 21 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12519,7 +14014,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
 
 
 /***/ }),
-/* 22 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12592,7 +14087,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
 
 /***/ }),
-/* 23 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12652,7 +14147,7 @@ module.exports = function parseHeaders(headers) {
 
 
 /***/ }),
-/* 24 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12727,7 +14222,7 @@ module.exports = (
 
 
 /***/ }),
-/* 25 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12770,7 +14265,7 @@ module.exports = btoa;
 
 
 /***/ }),
-/* 26 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12830,7 +14325,7 @@ module.exports = (
 
 
 /***/ }),
-/* 27 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12889,18 +14384,18 @@ module.exports = InterceptorManager;
 
 
 /***/ }),
-/* 28 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(0);
-var transformData = __webpack_require__(29);
-var isCancel = __webpack_require__(10);
-var defaults = __webpack_require__(2);
-var isAbsoluteURL = __webpack_require__(30);
-var combineURLs = __webpack_require__(31);
+var transformData = __webpack_require__(39);
+var isCancel = __webpack_require__(17);
+var defaults = __webpack_require__(8);
+var isAbsoluteURL = __webpack_require__(40);
+var combineURLs = __webpack_require__(41);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -12982,7 +14477,7 @@ module.exports = function dispatchRequest(config) {
 
 
 /***/ }),
-/* 29 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13009,7 +14504,7 @@ module.exports = function transformData(data, headers, fns) {
 
 
 /***/ }),
-/* 30 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13030,7 +14525,7 @@ module.exports = function isAbsoluteURL(url) {
 
 
 /***/ }),
-/* 31 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13051,13 +14546,13 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 
 /***/ }),
-/* 32 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Cancel = __webpack_require__(11);
+var Cancel = __webpack_require__(18);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -13115,7 +14610,7 @@ module.exports = CancelToken;
 
 
 /***/ }),
-/* 33 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13149,7 +14644,7 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 34 */
+/* 44 */
 /***/ (function(module, exports) {
 
 var asyncGenerator = function () {
@@ -14091,7 +15586,7 @@ var Echo = function () {
 module.exports = Echo;
 
 /***/ }),
-/* 35 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -22937,7 +24432,7 @@ return /******/ (function(modules) { // webpackBootstrap
 ;
 
 /***/ }),
-/* 36 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
@@ -22993,7 +24488,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(37);
+__webpack_require__(47);
 // On some exotic environments, it's not clear which object `setimmediate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -23004,10 +24499,10 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
                          (typeof global !== "undefined" && global.clearImmediate) ||
                          (this && this.clearImmediate);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
-/* 37 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -23197,18 +24692,18 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(7)))
 
 /***/ }),
-/* 38 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(39)
+var __vue_script__ = __webpack_require__(49)
 /* template */
-var __vue_template__ = __webpack_require__(40)
+var __vue_template__ = __webpack_require__(50)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -23247,7 +24742,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 39 */
+/* 49 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -23353,7 +24848,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 40 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -23556,15 +25051,15 @@ if (false) {
 }
 
 /***/ }),
-/* 41 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(42)
+var __vue_script__ = __webpack_require__(52)
 /* template */
-var __vue_template__ = __webpack_require__(43)
+var __vue_template__ = __webpack_require__(53)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -23603,12 +25098,12 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 42 */
+/* 52 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_clickaway__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_clickaway__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_clickaway___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_clickaway__);
 //
 //
@@ -23728,7 +25223,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 43 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -23940,15 +25435,15 @@ if (false) {
 }
 
 /***/ }),
-/* 44 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(45)
+var __vue_script__ = __webpack_require__(55)
 /* template */
-var __vue_template__ = __webpack_require__(46)
+var __vue_template__ = __webpack_require__(56)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -23987,7 +25482,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 45 */
+/* 55 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -24065,7 +25560,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 46 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -24156,15 +25651,15 @@ if (false) {
 }
 
 /***/ }),
-/* 47 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(48)
+var __vue_script__ = __webpack_require__(58)
 /* template */
-var __vue_template__ = __webpack_require__(49)
+var __vue_template__ = __webpack_require__(59)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -24203,7 +25698,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 48 */
+/* 58 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -24301,7 +25796,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 49 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -24460,15 +25955,15 @@ if (false) {
 }
 
 /***/ }),
-/* 50 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(51)
+var __vue_script__ = __webpack_require__(61)
 /* template */
-var __vue_template__ = __webpack_require__(52)
+var __vue_template__ = __webpack_require__(62)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -24507,7 +26002,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 51 */
+/* 61 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -24644,7 +26139,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 52 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -24826,15 +26321,15 @@ if (false) {
 }
 
 /***/ }),
-/* 53 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(54)
+var __vue_script__ = __webpack_require__(64)
 /* template */
-var __vue_template__ = __webpack_require__(55)
+var __vue_template__ = __webpack_require__(65)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -24873,12 +26368,12 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 54 */
+/* 64 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_clickaway__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_clickaway__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_clickaway___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_clickaway__);
 //
 //
@@ -24991,7 +26486,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 55 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -25300,15 +26795,15 @@ if (false) {
 }
 
 /***/ }),
-/* 56 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(57)
+var __vue_script__ = __webpack_require__(67)
 /* template */
-var __vue_template__ = __webpack_require__(58)
+var __vue_template__ = __webpack_require__(68)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -25347,12 +26842,12 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 57 */
+/* 67 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_clickaway__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_clickaway__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_clickaway___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_clickaway__);
 //
 //
@@ -25450,7 +26945,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 58 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -25656,15 +27151,15 @@ if (false) {
 }
 
 /***/ }),
-/* 59 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(60)
+var __vue_script__ = __webpack_require__(70)
 /* template */
-var __vue_template__ = __webpack_require__(61)
+var __vue_template__ = __webpack_require__(71)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -25703,7 +27198,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 60 */
+/* 70 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -25798,7 +27293,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 61 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -25926,15 +27421,15 @@ if (false) {
 }
 
 /***/ }),
-/* 62 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(63)
+var __vue_script__ = __webpack_require__(73)
 /* template */
-var __vue_template__ = __webpack_require__(64)
+var __vue_template__ = __webpack_require__(74)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -25973,7 +27468,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 63 */
+/* 73 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -26006,6 +27501,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       var _this = this;
 
       this.busy = true;
+      throw "Hello!";
       axios.post(route("wlm.import")).then(function (response) {
         setTimeout(function () {
           _this.buttonText = "Import started";
@@ -26022,7 +27518,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 64 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -26073,7 +27569,7 @@ if (false) {
 }
 
 /***/ }),
-/* 65 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -26084,7 +27580,7 @@ if (false) {
   */
   
 (function (global, factory) {
-	 true ? module.exports = factory(__webpack_require__(3)) :
+	 true ? module.exports = factory(__webpack_require__(9)) :
 	typeof define === 'function' && define.amd ? define(['vue'], factory) :
 	(global.PortalVue = factory(global.Vue));
 }(this, (function (Vue) { 'use strict';
@@ -26693,7 +28189,7 @@ return index;
 
 
 /***/ }),
-/* 66 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 !function(t,e){ true?module.exports=e():"function"==typeof define&&define.amd?define([],e):"object"==typeof exports?exports.VueSelect=e():t.VueSelect=e()}(this,function(){return function(t){function e(o){if(n[o])return n[o].exports;var r=n[o]={exports:{},id:o,loaded:!1};return t[o].call(r.exports,r,r.exports,e),r.loaded=!0,r.exports}var n={};return e.m=t,e.c=n,e.p="/",e(0)}([function(t,e,n){"use strict";function o(t){return t&&t.__esModule?t:{default:t}}Object.defineProperty(e,"__esModule",{value:!0}),e.mixins=e.VueSelect=void 0;var r=n(85),i=o(r),s=n(42),a=o(s);e.default=i.default,e.VueSelect=i.default,e.mixins=a.default},function(t,e){var n=t.exports="undefined"!=typeof window&&window.Math==Math?window:"undefined"!=typeof self&&self.Math==Math?self:Function("return this")();"number"==typeof __g&&(__g=n)},function(t,e){var n=t.exports={version:"2.5.3"};"number"==typeof __e&&(__e=n)},function(t,e,n){t.exports=!n(9)(function(){return 7!=Object.defineProperty({},"a",{get:function(){return 7}}).a})},function(t,e){var n={}.hasOwnProperty;t.exports=function(t,e){return n.call(t,e)}},function(t,e,n){var o=n(11),r=n(33),i=n(25),s=Object.defineProperty;e.f=n(3)?Object.defineProperty:function(t,e,n){if(o(t),e=i(e,!0),o(n),r)try{return s(t,e,n)}catch(t){}if("get"in n||"set"in n)throw TypeError("Accessors not supported!");return"value"in n&&(t[e]=n.value),t}},function(t,e,n){var o=n(5),r=n(14);t.exports=n(3)?function(t,e,n){return o.f(t,e,r(1,n))}:function(t,e,n){return t[e]=n,t}},function(t,e,n){var o=n(61),r=n(16);t.exports=function(t){return o(r(t))}},function(t,e,n){var o=n(23)("wks"),r=n(15),i=n(1).Symbol,s="function"==typeof i,a=t.exports=function(t){return o[t]||(o[t]=s&&i[t]||(s?i:r)("Symbol."+t))};a.store=o},function(t,e){t.exports=function(t){try{return!!t()}catch(t){return!0}}},function(t,e){t.exports=function(t){return"object"==typeof t?null!==t:"function"==typeof t}},function(t,e,n){var o=n(10);t.exports=function(t){if(!o(t))throw TypeError(t+" is not an object!");return t}},function(t,e,n){var o=n(1),r=n(2),i=n(58),s=n(6),a="prototype",u=function(t,e,n){var l,c,f,p=t&u.F,d=t&u.G,h=t&u.S,b=t&u.P,v=t&u.B,g=t&u.W,y=d?r:r[e]||(r[e]={}),m=y[a],x=d?o:h?o[e]:(o[e]||{})[a];d&&(n=e);for(l in n)c=!p&&x&&void 0!==x[l],c&&l in y||(f=c?x[l]:n[l],y[l]=d&&"function"!=typeof x[l]?n[l]:v&&c?i(f,o):g&&x[l]==f?function(t){var e=function(e,n,o){if(this instanceof t){switch(arguments.length){case 0:return new t;case 1:return new t(e);case 2:return new t(e,n)}return new t(e,n,o)}return t.apply(this,arguments)};return e[a]=t[a],e}(f):b&&"function"==typeof f?i(Function.call,f):f,b&&((y.virtual||(y.virtual={}))[l]=f,t&u.R&&m&&!m[l]&&s(m,l,f)))};u.F=1,u.G=2,u.S=4,u.P=8,u.B=16,u.W=32,u.U=64,u.R=128,t.exports=u},function(t,e,n){var o=n(38),r=n(17);t.exports=Object.keys||function(t){return o(t,r)}},function(t,e){t.exports=function(t,e){return{enumerable:!(1&t),configurable:!(2&t),writable:!(4&t),value:e}}},function(t,e){var n=0,o=Math.random();t.exports=function(t){return"Symbol(".concat(void 0===t?"":t,")_",(++n+o).toString(36))}},function(t,e){t.exports=function(t){if(void 0==t)throw TypeError("Can't call method on  "+t);return t}},function(t,e){t.exports="constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf".split(",")},function(t,e){t.exports={}},function(t,e){t.exports=!0},function(t,e){e.f={}.propertyIsEnumerable},function(t,e,n){var o=n(5).f,r=n(4),i=n(8)("toStringTag");t.exports=function(t,e,n){t&&!r(t=n?t:t.prototype,i)&&o(t,i,{configurable:!0,value:e})}},function(t,e,n){var o=n(23)("keys"),r=n(15);t.exports=function(t){return o[t]||(o[t]=r(t))}},function(t,e,n){var o=n(1),r="__core-js_shared__",i=o[r]||(o[r]={});t.exports=function(t){return i[t]||(i[t]={})}},function(t,e){var n=Math.ceil,o=Math.floor;t.exports=function(t){return isNaN(t=+t)?0:(t>0?o:n)(t)}},function(t,e,n){var o=n(10);t.exports=function(t,e){if(!o(t))return t;var n,r;if(e&&"function"==typeof(n=t.toString)&&!o(r=n.call(t)))return r;if("function"==typeof(n=t.valueOf)&&!o(r=n.call(t)))return r;if(!e&&"function"==typeof(n=t.toString)&&!o(r=n.call(t)))return r;throw TypeError("Can't convert object to primitive value")}},function(t,e,n){var o=n(1),r=n(2),i=n(19),s=n(27),a=n(5).f;t.exports=function(t){var e=r.Symbol||(r.Symbol=i?{}:o.Symbol||{});"_"==t.charAt(0)||t in e||a(e,t,{value:s.f(t)})}},function(t,e,n){e.f=n(8)},function(t,e){"use strict";t.exports={props:{loading:{type:Boolean,default:!1},onSearch:{type:Function,default:function(t,e){}}},data:function(){return{mutableLoading:!1}},watch:{search:function(){this.search.length>0&&(this.onSearch(this.search,this.toggleLoading),this.$emit("search",this.search,this.toggleLoading))},loading:function(t){this.mutableLoading=t}},methods:{toggleLoading:function(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:null;return null==t?this.mutableLoading=!this.mutableLoading:this.mutableLoading=t}}}},function(t,e){"use strict";t.exports={watch:{typeAheadPointer:function(){this.maybeAdjustScroll()}},methods:{maybeAdjustScroll:function(){var t=this.pixelsToPointerTop(),e=this.pixelsToPointerBottom();return t<=this.viewport().top?this.scrollTo(t):e>=this.viewport().bottom?this.scrollTo(this.viewport().top+this.pointerHeight()):void 0},pixelsToPointerTop:function t(){var t=0;if(this.$refs.dropdownMenu)for(var e=0;e<this.typeAheadPointer;e++)t+=this.$refs.dropdownMenu.children[e].offsetHeight;return t},pixelsToPointerBottom:function(){return this.pixelsToPointerTop()+this.pointerHeight()},pointerHeight:function(){var t=!!this.$refs.dropdownMenu&&this.$refs.dropdownMenu.children[this.typeAheadPointer];return t?t.offsetHeight:0},viewport:function(){return{top:this.$refs.dropdownMenu?this.$refs.dropdownMenu.scrollTop:0,bottom:this.$refs.dropdownMenu?this.$refs.dropdownMenu.offsetHeight+this.$refs.dropdownMenu.scrollTop:0}},scrollTo:function(t){return this.$refs.dropdownMenu?this.$refs.dropdownMenu.scrollTop=t:null}}}},function(t,e){"use strict";t.exports={data:function(){return{typeAheadPointer:-1}},watch:{filteredOptions:function(){this.typeAheadPointer=0}},methods:{typeAheadUp:function(){this.typeAheadPointer>0&&(this.typeAheadPointer--,this.maybeAdjustScroll&&this.maybeAdjustScroll())},typeAheadDown:function(){this.typeAheadPointer<this.filteredOptions.length-1&&(this.typeAheadPointer++,this.maybeAdjustScroll&&this.maybeAdjustScroll())},typeAheadSelect:function(){this.filteredOptions[this.typeAheadPointer]?this.select(this.filteredOptions[this.typeAheadPointer]):this.taggable&&this.search.length&&this.select(this.search),this.clearSearchOnSelect&&(this.search="")}}}},function(t,e){var n={}.toString;t.exports=function(t){return n.call(t).slice(8,-1)}},function(t,e,n){var o=n(10),r=n(1).document,i=o(r)&&o(r.createElement);t.exports=function(t){return i?r.createElement(t):{}}},function(t,e,n){t.exports=!n(3)&&!n(9)(function(){return 7!=Object.defineProperty(n(32)("div"),"a",{get:function(){return 7}}).a})},function(t,e,n){"use strict";var o=n(19),r=n(12),i=n(39),s=n(6),a=n(4),u=n(18),l=n(63),c=n(21),f=n(69),p=n(8)("iterator"),d=!([].keys&&"next"in[].keys()),h="@@iterator",b="keys",v="values",g=function(){return this};t.exports=function(t,e,n,y,m,x,w){l(n,e,y);var S,O,_,j=function(t){if(!d&&t in C)return C[t];switch(t){case b:return function(){return new n(this,t)};case v:return function(){return new n(this,t)}}return function(){return new n(this,t)}},k=e+" Iterator",P=m==v,A=!1,C=t.prototype,M=C[p]||C[h]||m&&C[m],L=!d&&M||j(m),T=m?P?j("entries"):L:void 0,E="Array"==e?C.entries||M:M;if(E&&(_=f(E.call(new t)),_!==Object.prototype&&_.next&&(c(_,k,!0),o||a(_,p)||s(_,p,g))),P&&M&&M.name!==v&&(A=!0,L=function(){return M.call(this)}),o&&!w||!d&&!A&&C[p]||s(C,p,L),u[e]=L,u[k]=g,m)if(S={values:P?L:j(v),keys:x?L:j(b),entries:T},w)for(O in S)O in C||i(C,O,S[O]);else r(r.P+r.F*(d||A),e,S);return S}},function(t,e,n){var o=n(11),r=n(66),i=n(17),s=n(22)("IE_PROTO"),a=function(){},u="prototype",l=function(){var t,e=n(32)("iframe"),o=i.length,r="<",s=">";for(e.style.display="none",n(60).appendChild(e),e.src="javascript:",t=e.contentWindow.document,t.open(),t.write(r+"script"+s+"document.F=Object"+r+"/script"+s),t.close(),l=t.F;o--;)delete l[u][i[o]];return l()};t.exports=Object.create||function(t,e){var n;return null!==t?(a[u]=o(t),n=new a,a[u]=null,n[s]=t):n=l(),void 0===e?n:r(n,e)}},function(t,e,n){var o=n(38),r=n(17).concat("length","prototype");e.f=Object.getOwnPropertyNames||function(t){return o(t,r)}},function(t,e){e.f=Object.getOwnPropertySymbols},function(t,e,n){var o=n(4),r=n(7),i=n(57)(!1),s=n(22)("IE_PROTO");t.exports=function(t,e){var n,a=r(t),u=0,l=[];for(n in a)n!=s&&o(a,n)&&l.push(n);for(;e.length>u;)o(a,n=e[u++])&&(~i(l,n)||l.push(n));return l}},function(t,e,n){t.exports=n(6)},function(t,e,n){var o=n(16);t.exports=function(t){return Object(o(t))}},function(t,e,n){"use strict";function o(t){return t&&t.__esModule?t:{default:t}}Object.defineProperty(e,"__esModule",{value:!0});var r=n(45),i=o(r),s=n(48),a=o(s),u=n(43),l=o(u),c=n(49),f=o(c),p=n(29),d=o(p),h=n(30),b=o(h),v=n(28),g=o(v);e.default={mixins:[d.default,b.default,g.default],props:{value:{default:null},options:{type:Array,default:function(){return[]}},disabled:{type:Boolean,default:!1},clearable:{type:Boolean,default:!0},maxHeight:{type:String,default:"400px"},searchable:{type:Boolean,default:!0},multiple:{type:Boolean,default:!1},placeholder:{type:String,default:""},transition:{type:String,default:"fade"},clearSearchOnSelect:{type:Boolean,default:!0},closeOnSelect:{type:Boolean,default:!0},label:{type:String,default:"label"},index:{type:String,default:null},getOptionLabel:{type:Function,default:function(t){return this.index&&(t=this.findOptionByIndexValue(t)),"object"===("undefined"==typeof t?"undefined":(0,f.default)(t))?t.hasOwnProperty(this.label)?t[this.label]:console.warn('[vue-select warn]: Label key "option.'+this.label+'" does not'+(" exist in options object "+(0,l.default)(t)+".\n")+"http://sagalbot.github.io/vue-select/#ex-labels"):t}},onChange:{type:Function,default:function(t){this.$emit("input",t)}},onTab:{type:Function,default:function(){this.selectOnTab&&this.typeAheadSelect()}},taggable:{type:Boolean,default:!1},tabindex:{type:Number,default:null},pushTags:{type:Boolean,default:!1},filterable:{type:Boolean,default:!0},filterBy:{type:Function,default:function(t,e,n){return(e||"").toLowerCase().indexOf(n.toLowerCase())>-1}},filter:{type:Function,default:function(t,e){var n=this;return t.filter(function(t){var o=n.getOptionLabel(t);return"number"==typeof o&&(o=o.toString()),n.filterBy(t,o,e)})}},createOption:{type:Function,default:function(t){return"object"===(0,f.default)(this.mutableOptions[0])&&(t=(0,a.default)({},this.label,t)),this.$emit("option:created",t),t}},resetOnOptionsChange:{type:Boolean,default:!1},noDrop:{type:Boolean,default:!1},inputId:{type:String},dir:{type:String,default:"auto"},selectOnTab:{type:Boolean,default:!1}},data:function(){return{search:"",open:!1,mutableValue:null,mutableOptions:[]}},watch:{value:function(t){this.mutableValue=t},mutableValue:function(t,e){this.multiple?this.onChange?this.onChange(t):null:this.onChange&&t!==e?this.onChange(t):null},options:function(t){this.mutableOptions=t},mutableOptions:function(){!this.taggable&&this.resetOnOptionsChange&&(this.mutableValue=this.multiple?[]:null)},multiple:function(t){this.mutableValue=t?[]:null}},created:function(){this.mutableValue=this.value,this.mutableOptions=this.options.slice(0),this.mutableLoading=this.loading,this.$on("option:created",this.maybePushTag)},methods:{select:function(t){if(!this.isOptionSelected(t)){if(this.taggable&&!this.optionExists(t)&&(t=this.createOption(t)),this.index){if(!t.hasOwnProperty(this.index))return console.warn('[vue-select warn]: Index key "option.'+this.index+'" does not'+(" exist in options object "+(0,l.default)(t)+"."));t=t[this.index]}this.multiple&&!this.mutableValue?this.mutableValue=[t]:this.multiple?this.mutableValue.push(t):this.mutableValue=t}this.onAfterSelect(t)},deselect:function(t){var e=this;if(this.multiple){var n=-1;this.mutableValue.forEach(function(o){(o===t||e.index&&o===t[e.index]||"object"===("undefined"==typeof o?"undefined":(0,f.default)(o))&&o[e.label]===t[e.label])&&(n=o)});var o=this.mutableValue.indexOf(n);this.mutableValue.splice(o,1)}else this.mutableValue=null},clearSelection:function(){this.mutableValue=this.multiple?[]:null},onAfterSelect:function(t){this.closeOnSelect&&(this.open=!this.open,this.$refs.search.blur()),this.clearSearchOnSelect&&(this.search="")},toggleDropdown:function(t){(t.target===this.$refs.openIndicator||t.target===this.$refs.search||t.target===this.$refs.toggle||t.target.classList.contains("selected-tag")||t.target===this.$el)&&(this.open?this.$refs.search.blur():this.disabled||(this.open=!0,this.$refs.search.focus()))},isOptionSelected:function(t){var e=this,n=!1;return this.valueAsArray.forEach(function(o){"object"===("undefined"==typeof o?"undefined":(0,f.default)(o))?n=e.optionObjectComparator(o,t):o!==t&&o!==t[e.index]||(n=!0)}),n},optionObjectComparator:function(t,e){return!(!this.index||t!==e[this.index])||(t[this.label]===e[this.label]||t[this.label]===e||!(!this.index||t[this.index]!==e[this.index]))},findOptionByIndexValue:function(t){var e=this;return this.options.forEach(function(n){(0,l.default)(n[e.index])===(0,l.default)(t)&&(t=n)}),t},onEscape:function(){this.search.length?this.search="":this.$refs.search.blur()},onSearchBlur:function(){this.mousedown&&!this.searching?this.mousedown=!1:(this.clearSearchOnBlur&&(this.search=""),this.open=!1,this.$emit("search:blur"))},onSearchFocus:function(){this.open=!0,this.$emit("search:focus")},maybeDeleteValue:function(){if(!this.$refs.search.value.length&&this.mutableValue)return this.multiple?this.mutableValue.pop():this.mutableValue=null},optionExists:function(t){var e=this,n=!1;return this.mutableOptions.forEach(function(o){"object"===("undefined"==typeof o?"undefined":(0,f.default)(o))&&o[e.label]===t?n=!0:o===t&&(n=!0)}),n},maybePushTag:function(t){this.pushTags&&this.mutableOptions.push(t)},onMousedown:function(){this.mousedown=!0}},computed:{dropdownClasses:function(){return{open:this.dropdownOpen,single:!this.multiple,searching:this.searching,searchable:this.searchable,unsearchable:!this.searchable,loading:this.mutableLoading,rtl:"rtl"===this.dir,disabled:this.disabled}},clearSearchOnBlur:function(){return this.clearSearchOnSelect&&!this.multiple},searching:function(){return!!this.search},dropdownOpen:function(){return!this.noDrop&&(this.open&&!this.mutableLoading)},searchPlaceholder:function(){if(this.isValueEmpty&&this.placeholder)return this.placeholder},filteredOptions:function(){if(!this.filterable&&!this.taggable)return this.mutableOptions.slice();var t=this.search.length?this.filter(this.mutableOptions,this.search,this):this.mutableOptions;return this.taggable&&this.search.length&&!this.optionExists(this.search)&&t.unshift(this.search),t},isValueEmpty:function(){return!this.mutableValue||("object"===(0,f.default)(this.mutableValue)?!(0,i.default)(this.mutableValue).length:!this.valueAsArray.length)},valueAsArray:function(){return this.multiple&&this.mutableValue?this.mutableValue:this.mutableValue?[].concat(this.mutableValue):[]},showClearButton:function(){return!this.multiple&&this.clearable&&!this.open&&null!=this.mutableValue}}}},function(t,e,n){"use strict";function o(t){return t&&t.__esModule?t:{default:t}}Object.defineProperty(e,"__esModule",{value:!0});var r=n(28),i=o(r),s=n(30),a=o(s),u=n(29),l=o(u);e.default={ajax:i.default,pointer:a.default,pointerScroll:l.default}},function(t,e,n){t.exports={default:n(50),__esModule:!0}},function(t,e,n){t.exports={default:n(51),__esModule:!0}},function(t,e,n){t.exports={default:n(52),__esModule:!0}},function(t,e,n){t.exports={default:n(53),__esModule:!0}},function(t,e,n){t.exports={default:n(54),__esModule:!0}},function(t,e,n){"use strict";function o(t){return t&&t.__esModule?t:{default:t}}e.__esModule=!0;var r=n(44),i=o(r);e.default=function(t,e,n){return e in t?(0,i.default)(t,e,{value:n,enumerable:!0,configurable:!0,writable:!0}):t[e]=n,t}},function(t,e,n){"use strict";function o(t){return t&&t.__esModule?t:{default:t}}e.__esModule=!0;var r=n(47),i=o(r),s=n(46),a=o(s),u="function"==typeof a.default&&"symbol"==typeof i.default?function(t){return typeof t}:function(t){return t&&"function"==typeof a.default&&t.constructor===a.default&&t!==a.default.prototype?"symbol":typeof t};e.default="function"==typeof a.default&&"symbol"===u(i.default)?function(t){return"undefined"==typeof t?"undefined":u(t)}:function(t){return t&&"function"==typeof a.default&&t.constructor===a.default&&t!==a.default.prototype?"symbol":"undefined"==typeof t?"undefined":u(t)}},function(t,e,n){var o=n(2),r=o.JSON||(o.JSON={stringify:JSON.stringify});t.exports=function(t){return r.stringify.apply(r,arguments)}},function(t,e,n){n(75);var o=n(2).Object;t.exports=function(t,e,n){return o.defineProperty(t,e,n)}},function(t,e,n){n(76),t.exports=n(2).Object.keys},function(t,e,n){n(79),n(77),n(80),n(81),t.exports=n(2).Symbol},function(t,e,n){n(78),n(82),t.exports=n(27).f("iterator")},function(t,e){t.exports=function(t){if("function"!=typeof t)throw TypeError(t+" is not a function!");return t}},function(t,e){t.exports=function(){}},function(t,e,n){var o=n(7),r=n(73),i=n(72);t.exports=function(t){return function(e,n,s){var a,u=o(e),l=r(u.length),c=i(s,l);if(t&&n!=n){for(;l>c;)if(a=u[c++],a!=a)return!0}else for(;l>c;c++)if((t||c in u)&&u[c]===n)return t||c||0;return!t&&-1}}},function(t,e,n){var o=n(55);t.exports=function(t,e,n){if(o(t),void 0===e)return t;switch(n){case 1:return function(n){return t.call(e,n)};case 2:return function(n,o){return t.call(e,n,o)};case 3:return function(n,o,r){return t.call(e,n,o,r)}}return function(){return t.apply(e,arguments)}}},function(t,e,n){var o=n(13),r=n(37),i=n(20);t.exports=function(t){var e=o(t),n=r.f;if(n)for(var s,a=n(t),u=i.f,l=0;a.length>l;)u.call(t,s=a[l++])&&e.push(s);return e}},function(t,e,n){var o=n(1).document;t.exports=o&&o.documentElement},function(t,e,n){var o=n(31);t.exports=Object("z").propertyIsEnumerable(0)?Object:function(t){return"String"==o(t)?t.split(""):Object(t)}},function(t,e,n){var o=n(31);t.exports=Array.isArray||function(t){return"Array"==o(t)}},function(t,e,n){"use strict";var o=n(35),r=n(14),i=n(21),s={};n(6)(s,n(8)("iterator"),function(){return this}),t.exports=function(t,e,n){t.prototype=o(s,{next:r(1,n)}),i(t,e+" Iterator")}},function(t,e){t.exports=function(t,e){return{value:e,done:!!t}}},function(t,e,n){var o=n(15)("meta"),r=n(10),i=n(4),s=n(5).f,a=0,u=Object.isExtensible||function(){return!0},l=!n(9)(function(){return u(Object.preventExtensions({}))}),c=function(t){s(t,o,{value:{i:"O"+ ++a,w:{}}})},f=function(t,e){if(!r(t))return"symbol"==typeof t?t:("string"==typeof t?"S":"P")+t;if(!i(t,o)){if(!u(t))return"F";if(!e)return"E";c(t)}return t[o].i},p=function(t,e){if(!i(t,o)){if(!u(t))return!0;if(!e)return!1;c(t)}return t[o].w},d=function(t){return l&&h.NEED&&u(t)&&!i(t,o)&&c(t),t},h=t.exports={KEY:o,NEED:!1,fastKey:f,getWeak:p,onFreeze:d}},function(t,e,n){var o=n(5),r=n(11),i=n(13);t.exports=n(3)?Object.defineProperties:function(t,e){r(t);for(var n,s=i(e),a=s.length,u=0;a>u;)o.f(t,n=s[u++],e[n]);return t}},function(t,e,n){var o=n(20),r=n(14),i=n(7),s=n(25),a=n(4),u=n(33),l=Object.getOwnPropertyDescriptor;e.f=n(3)?l:function(t,e){if(t=i(t),e=s(e,!0),u)try{return l(t,e)}catch(t){}if(a(t,e))return r(!o.f.call(t,e),t[e])}},function(t,e,n){var o=n(7),r=n(36).f,i={}.toString,s="object"==typeof window&&window&&Object.getOwnPropertyNames?Object.getOwnPropertyNames(window):[],a=function(t){try{return r(t)}catch(t){return s.slice()}};t.exports.f=function(t){return s&&"[object Window]"==i.call(t)?a(t):r(o(t))}},function(t,e,n){var o=n(4),r=n(40),i=n(22)("IE_PROTO"),s=Object.prototype;t.exports=Object.getPrototypeOf||function(t){return t=r(t),o(t,i)?t[i]:"function"==typeof t.constructor&&t instanceof t.constructor?t.constructor.prototype:t instanceof Object?s:null}},function(t,e,n){var o=n(12),r=n(2),i=n(9);t.exports=function(t,e){var n=(r.Object||{})[t]||Object[t],s={};s[t]=e(n),o(o.S+o.F*i(function(){n(1)}),"Object",s)}},function(t,e,n){var o=n(24),r=n(16);t.exports=function(t){return function(e,n){var i,s,a=String(r(e)),u=o(n),l=a.length;return u<0||u>=l?t?"":void 0:(i=a.charCodeAt(u),i<55296||i>56319||u+1===l||(s=a.charCodeAt(u+1))<56320||s>57343?t?a.charAt(u):i:t?a.slice(u,u+2):(i-55296<<10)+(s-56320)+65536)}}},function(t,e,n){var o=n(24),r=Math.max,i=Math.min;t.exports=function(t,e){return t=o(t),t<0?r(t+e,0):i(t,e)}},function(t,e,n){var o=n(24),r=Math.min;t.exports=function(t){return t>0?r(o(t),9007199254740991):0}},function(t,e,n){"use strict";var o=n(56),r=n(64),i=n(18),s=n(7);t.exports=n(34)(Array,"Array",function(t,e){this._t=s(t),this._i=0,this._k=e},function(){var t=this._t,e=this._k,n=this._i++;return!t||n>=t.length?(this._t=void 0,r(1)):"keys"==e?r(0,n):"values"==e?r(0,t[n]):r(0,[n,t[n]])},"values"),i.Arguments=i.Array,o("keys"),o("values"),o("entries")},function(t,e,n){var o=n(12);o(o.S+o.F*!n(3),"Object",{defineProperty:n(5).f})},function(t,e,n){var o=n(40),r=n(13);n(70)("keys",function(){return function(t){return r(o(t))}})},function(t,e){},function(t,e,n){"use strict";var o=n(71)(!0);n(34)(String,"String",function(t){this._t=String(t),this._i=0},function(){var t,e=this._t,n=this._i;return n>=e.length?{value:void 0,done:!0}:(t=o(e,n),this._i+=t.length,{value:t,done:!1})})},function(t,e,n){"use strict";var o=n(1),r=n(4),i=n(3),s=n(12),a=n(39),u=n(65).KEY,l=n(9),c=n(23),f=n(21),p=n(15),d=n(8),h=n(27),b=n(26),v=n(59),g=n(62),y=n(11),m=n(10),x=n(7),w=n(25),S=n(14),O=n(35),_=n(68),j=n(67),k=n(5),P=n(13),A=j.f,C=k.f,M=_.f,L=o.Symbol,T=o.JSON,E=T&&T.stringify,V="prototype",B=d("_hidden"),F=d("toPrimitive"),N={}.propertyIsEnumerable,$=c("symbol-registry"),D=c("symbols"),I=c("op-symbols"),R=Object[V],z="function"==typeof L,H=o.QObject,G=!H||!H[V]||!H[V].findChild,J=i&&l(function(){return 7!=O(C({},"a",{get:function(){return C(this,"a",{value:7}).a}})).a})?function(t,e,n){var o=A(R,e);o&&delete R[e],C(t,e,n),o&&t!==R&&C(R,e,o)}:C,U=function(t){var e=D[t]=O(L[V]);return e._k=t,e},W=z&&"symbol"==typeof L.iterator?function(t){return"symbol"==typeof t}:function(t){return t instanceof L},K=function(t,e,n){return t===R&&K(I,e,n),y(t),e=w(e,!0),y(n),r(D,e)?(n.enumerable?(r(t,B)&&t[B][e]&&(t[B][e]=!1),n=O(n,{enumerable:S(0,!1)})):(r(t,B)||C(t,B,S(1,{})),t[B][e]=!0),J(t,e,n)):C(t,e,n)},Y=function(t,e){y(t);for(var n,o=v(e=x(e)),r=0,i=o.length;i>r;)K(t,n=o[r++],e[n]);return t},q=function(t,e){return void 0===e?O(t):Y(O(t),e)},Q=function(t){var e=N.call(this,t=w(t,!0));return!(this===R&&r(D,t)&&!r(I,t))&&(!(e||!r(this,t)||!r(D,t)||r(this,B)&&this[B][t])||e)},Z=function(t,e){if(t=x(t),e=w(e,!0),t!==R||!r(D,e)||r(I,e)){var n=A(t,e);return!n||!r(D,e)||r(t,B)&&t[B][e]||(n.enumerable=!0),n}},X=function(t){for(var e,n=M(x(t)),o=[],i=0;n.length>i;)r(D,e=n[i++])||e==B||e==u||o.push(e);return o},tt=function(t){for(var e,n=t===R,o=M(n?I:x(t)),i=[],s=0;o.length>s;)!r(D,e=o[s++])||n&&!r(R,e)||i.push(D[e]);return i};z||(L=function(){if(this instanceof L)throw TypeError("Symbol is not a constructor!");var t=p(arguments.length>0?arguments[0]:void 0),e=function(n){this===R&&e.call(I,n),r(this,B)&&r(this[B],t)&&(this[B][t]=!1),J(this,t,S(1,n))};return i&&G&&J(R,t,{configurable:!0,set:e}),U(t)},a(L[V],"toString",function(){return this._k}),j.f=Z,k.f=K,n(36).f=_.f=X,n(20).f=Q,n(37).f=tt,i&&!n(19)&&a(R,"propertyIsEnumerable",Q,!0),h.f=function(t){return U(d(t))}),s(s.G+s.W+s.F*!z,{Symbol:L});for(var et="hasInstance,isConcatSpreadable,iterator,match,replace,search,species,split,toPrimitive,toStringTag,unscopables".split(","),nt=0;et.length>nt;)d(et[nt++]);for(var ot=P(d.store),rt=0;ot.length>rt;)b(ot[rt++]);s(s.S+s.F*!z,"Symbol",{for:function(t){return r($,t+="")?$[t]:$[t]=L(t)},keyFor:function(t){if(!W(t))throw TypeError(t+" is not a symbol!");for(var e in $)if($[e]===t)return e},useSetter:function(){G=!0},useSimple:function(){G=!1}}),s(s.S+s.F*!z,"Object",{create:q,defineProperty:K,defineProperties:Y,getOwnPropertyDescriptor:Z,getOwnPropertyNames:X,getOwnPropertySymbols:tt}),T&&s(s.S+s.F*(!z||l(function(){var t=L();return"[null]"!=E([t])||"{}"!=E({a:t})||"{}"!=E(Object(t))})),"JSON",{stringify:function(t){for(var e,n,o=[t],r=1;arguments.length>r;)o.push(arguments[r++]);if(n=e=o[1],(m(e)||void 0!==t)&&!W(t))return g(e)||(e=function(t,e){if("function"==typeof n&&(e=n.call(this,t,e)),!W(e))return e}),o[1]=e,E.apply(T,o)}}),L[V][F]||n(6)(L[V],F,L[V].valueOf),f(L,"Symbol"),f(Math,"Math",!0),f(o.JSON,"JSON",!0)},function(t,e,n){n(26)("asyncIterator")},function(t,e,n){n(26)("observable")},function(t,e,n){n(74);for(var o=n(1),r=n(6),i=n(18),s=n(8)("toStringTag"),a="CSSRuleList,CSSStyleDeclaration,CSSValueList,ClientRectList,DOMRectList,DOMStringList,DOMTokenList,DataTransferItemList,FileList,HTMLAllCollection,HTMLCollection,HTMLFormElement,HTMLSelectElement,MediaList,MimeTypeArray,NamedNodeMap,NodeList,PaintRequestList,Plugin,PluginArray,SVGLengthList,SVGNumberList,SVGPathSegList,SVGPointList,SVGStringList,SVGTransformList,SourceBufferList,StyleSheetList,TextTrackCueList,TextTrackList,TouchList".split(","),u=0;u<a.length;u++){var l=a[u],c=o[l],f=c&&c.prototype;f&&!f[s]&&r(f,s,l),i[l]=i.Array}},function(t,e,n){e=t.exports=n(84)(),e.push([t.id,'.v-select{position:relative;font-family:inherit}.v-select,.v-select *{box-sizing:border-box}.v-select[dir=rtl] .vs__actions{padding:0 3px 0 6px}.v-select[dir=rtl] .dropdown-toggle .clear{margin-left:6px;margin-right:0}.v-select[dir=rtl] .selected-tag .close{margin-left:0;margin-right:2px}.v-select[dir=rtl] .dropdown-menu{text-align:right}.v-select .open-indicator{display:flex;align-items:center;cursor:pointer;pointer-events:all;opacity:1;width:12px}.v-select .open-indicator,.v-select .open-indicator:before{transition:all .15s cubic-bezier(1,-.115,.975,.855);transition-timing-function:cubic-bezier(1,-.115,.975,.855)}.v-select .open-indicator:before{border-color:rgba(60,60,60,.5);border-style:solid;border-width:3px 3px 0 0;content:"";display:inline-block;height:10px;width:10px;vertical-align:text-top;transform:rotate(133deg);box-sizing:inherit}.v-select.open .open-indicator:before{transform:rotate(315deg)}.v-select.loading .open-indicator{opacity:0}.v-select .dropdown-toggle{-webkit-appearance:none;-moz-appearance:none;appearance:none;display:flex;padding:0 0 4px;background:none;border:1px solid rgba(60,60,60,.26);border-radius:4px;white-space:normal}.v-select .vs__selected-options{display:flex;flex-basis:100%;flex-grow:1;flex-wrap:wrap;padding:0 2px;position:relative}.v-select .vs__actions{display:flex;align-items:stretch;padding:0 6px 0 3px}.v-select .dropdown-toggle .clear{font-size:23px;font-weight:700;line-height:1;color:rgba(60,60,60,.5);padding:0;border:0;background-color:transparent;cursor:pointer;margin-right:6px}.v-select.searchable .dropdown-toggle{cursor:text}.v-select.unsearchable .dropdown-toggle{cursor:pointer}.v-select.open .dropdown-toggle{border-bottom-color:transparent;border-bottom-left-radius:0;border-bottom-right-radius:0}.v-select .dropdown-menu{display:block;position:absolute;top:100%;left:0;z-index:1000;min-width:160px;padding:5px 0;margin:0;width:100%;overflow-y:scroll;border:1px solid rgba(0,0,0,.26);box-shadow:0 3px 6px 0 rgba(0,0,0,.15);border-top:none;border-radius:0 0 4px 4px;text-align:left;list-style:none;background:#fff}.v-select .no-options{text-align:center}.v-select .selected-tag{display:flex;align-items:center;background-color:#f0f0f0;border:1px solid #ccc;border-radius:4px;color:#333;line-height:1.42857143;margin:4px 2px 0;padding:0 .25em;transition:opacity .25s}.v-select.single .selected-tag{background-color:transparent;border-color:transparent}.v-select.single.open .selected-tag{position:absolute;opacity:.4}.v-select.single.searching .selected-tag{display:none}.v-select .selected-tag .close{margin-left:2px;font-size:1.25em;appearance:none;padding:0;cursor:pointer;background:0 0;border:0;font-weight:700;line-height:1;color:#000;text-shadow:0 1px 0 #fff;filter:alpha(opacity=20);opacity:.2}.v-select.single.searching:not(.open):not(.loading) input[type=search]{opacity:.2}.v-select input[type=search]::-webkit-search-cancel-button,.v-select input[type=search]::-webkit-search-decoration,.v-select input[type=search]::-webkit-search-results-button,.v-select input[type=search]::-webkit-search-results-decoration{display:none}.v-select input[type=search]::-ms-clear{display:none}.v-select input[type=search],.v-select input[type=search]:focus{appearance:none;-webkit-appearance:none;-moz-appearance:none;line-height:1.42857143;font-size:1em;display:inline-block;border:1px solid transparent;border-left:none;outline:none;margin:4px 0 0;padding:0 7px;max-width:100%;background:none;box-shadow:none;flex-grow:1;width:0}.v-select.unsearchable input[type=search]{opacity:0}.v-select.unsearchable input[type=search]:hover{cursor:pointer}.v-select li{line-height:1.42857143}.v-select li>a{display:block;padding:3px 20px;clear:both;color:#333;white-space:nowrap}.v-select li:hover{cursor:pointer}.v-select .dropdown-menu .active>a{color:#333;background:rgba(50,50,50,.1)}.v-select .dropdown-menu>.highlight>a{background:#5897fb;color:#fff}.v-select .highlight:not(:last-child){margin-bottom:0}.v-select .spinner{align-self:center;opacity:0;font-size:5px;text-indent:-9999em;overflow:hidden;border-top:.9em solid hsla(0,0%,39%,.1);border-right:.9em solid hsla(0,0%,39%,.1);border-bottom:.9em solid hsla(0,0%,39%,.1);border-left:.9em solid rgba(60,60,60,.45);transform:translateZ(0);animation:vSelectSpinner 1.1s infinite linear;transition:opacity .1s}.v-select .spinner,.v-select .spinner:after{border-radius:50%;width:5em;height:5em}.v-select.disabled .dropdown-toggle,.v-select.disabled .dropdown-toggle .clear,.v-select.disabled .dropdown-toggle input,.v-select.disabled .open-indicator,.v-select.disabled .selected-tag .close{cursor:not-allowed;background-color:#f8f8f8}.v-select.loading .spinner{opacity:1}@-webkit-keyframes vSelectSpinner{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}@keyframes vSelectSpinner{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}.fade-enter-active,.fade-leave-active{transition:opacity .15s cubic-bezier(1,.5,.8,1)}.fade-enter,.fade-leave-to{opacity:0}',""])},function(t,e){t.exports=function(){var t=[];return t.toString=function(){for(var t=[],e=0;e<this.length;e++){var n=this[e];n[2]?t.push("@media "+n[2]+"{"+n[1]+"}"):t.push(n[1])}return t.join("")},t.i=function(e,n){"string"==typeof e&&(e=[[null,e,""]]);for(var o={},r=0;r<this.length;r++){var i=this[r][0];"number"==typeof i&&(o[i]=!0)}for(r=0;r<e.length;r++){var s=e[r];"number"==typeof s[0]&&o[s[0]]||(n&&!s[2]?s[2]=n:n&&(s[2]="("+s[2]+") and ("+n+")"),t.push(s))}},t}},function(t,e,n){n(89);var o=n(86)(n(41),n(87),null,null);t.exports=o.exports},function(t,e){t.exports=function(t,e,n,o){var r,i=t=t||{},s=typeof t.default;"object"!==s&&"function"!==s||(r=t,i=t.default);var a="function"==typeof i?i.options:i;if(e&&(a.render=e.render,a.staticRenderFns=e.staticRenderFns),n&&(a._scopeId=n),o){var u=a.computed||(a.computed={});Object.keys(o).forEach(function(t){var e=o[t];u[t]=function(){return e}})}return{esModule:r,exports:i,options:a}}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"dropdown v-select",class:t.dropdownClasses,attrs:{dir:t.dir}},[n("div",{ref:"toggle",staticClass:"dropdown-toggle",on:{mousedown:function(e){e.preventDefault(),t.toggleDropdown(e)}}},[n("div",{ref:"selectedOptions",staticClass:"vs__selected-options"},[t._l(t.valueAsArray,function(e){return t._t("selected-option-container",[n("span",{key:e.index,staticClass:"selected-tag"},[t._t("selected-option",[t._v("\n            "+t._s(t.getOptionLabel(e))+"\n          ")],null,"object"==typeof e?e:(o={},
@@ -26701,37 +28197,7121 @@ o[t.label]=e,o)),t._v(" "),t.multiple?n("button",{staticClass:"close",attrs:{dis
 //# sourceMappingURL=vue-select.js.map
 
 /***/ }),
-/* 67 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 68 */,
-/* 69 */,
-/* 70 */,
-/* 71 */,
-/* 72 */,
-/* 73 */,
-/* 74 */,
-/* 75 */,
-/* 76 */,
-/* 77 */,
-/* 78 */,
-/* 79 */,
-/* 80 */,
-/* 81 */,
-/* 82 */,
-/* 83 */,
-/* 84 */,
-/* 85 */,
-/* 86 */,
-/* 87 */,
-/* 88 */,
-/* 89 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 !function(t,e){if(true)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var n=e();for(var r in n)("object"==typeof exports?exports:t)[r]=n[r]}}(this,function(){return function(t){function e(r){if(n[r])return n[r].exports;var i=n[r]={i:r,l:!1,exports:{}};return t[r].call(i.exports,i,i.exports,e),i.l=!0,i.exports}var n={};return e.m=t,e.c=n,e.i=function(t){return t},e.d=function(t,n,r){e.o(t,n)||Object.defineProperty(t,n,{configurable:!1,enumerable:!0,get:r})},e.n=function(t){var n=t&&t.__esModule?function(){return t.default}:function(){return t};return e.d(n,"a",n),n},e.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},e.p="/dist/",e(e.s=6)}([function(t,e,n){"use strict";function r(){d=!1}function i(t){if(!t)return void(f!==m&&(f=m,r()));if(t!==f){if(t.length!==m.length)throw new Error("Custom alphabet for shortid must be "+m.length+" unique characters. You submitted "+t.length+" characters: "+t);var e=t.split("").filter(function(t,e,n){return e!==n.lastIndexOf(t)});if(e.length)throw new Error("Custom alphabet for shortid must be "+m.length+" unique characters. These characters were not unique: "+e.join(", "));f=t,r()}}function o(t){return i(t),f}function a(t){h.seed(t),p!==t&&(r(),p=t)}function s(){f||i(m);for(var t,e=f.split(""),n=[],r=h.nextValue();e.length>0;)r=h.nextValue(),t=Math.floor(r*e.length),n.push(e.splice(t,1)[0]);return n.join("")}function c(){return d||(d=s())}function u(t){return c()[t]}function l(){return f||m}var f,p,d,h=n(19),m="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-";t.exports={get:l,characters:o,seed:a,lookup:u,shuffled:c}},function(t,e,n){"use strict";var r=n(5),i=n.n(r);e.a={animateIn:function(t){i()({targets:t,translateY:"-35px",opacity:1,duration:300,easing:"easeOutCubic"})},animateOut:function(t,e){i()({targets:t,opacity:0,marginTop:"-40px",duration:300,easing:"easeOutExpo",complete:e})},animateOutBottom:function(t,e){i()({targets:t,opacity:0,marginBottom:"-40px",duration:300,easing:"easeOutExpo",complete:e})},animateReset:function(t){i()({targets:t,left:0,opacity:1,duration:300,easing:"easeOutExpo"})},animatePanning:function(t,e,n){i()({targets:t,duration:10,easing:"easeOutQuad",left:e,opacity:n})},animatePanEnd:function(t,e){i()({targets:t,opacity:0,duration:300,easing:"easeOutExpo",complete:e})},clearAnimation:function(t){var e=i.a.timeline();t.forEach(function(t){e.add({targets:t.el,opacity:0,right:"-40px",duration:300,offset:"-=150",easing:"easeOutExpo",complete:function(){t.remove()}})})}}},function(t,e,n){"use strict";t.exports=n(16)},function(t,e,n){"use strict";n.d(e,"a",function(){return s});var r=n(8),i=n(1),o="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t},a=n(2);n(11).polyfill();var s=function t(e){var n=this;return this.id=a.generate(),this.options=e,this.cached_options={},this.global={},this.groups=[],this.toasts=[],u(this),this.group=function(e){e||(e={}),e.globalToasts||(e.globalToasts={}),Object.assign(e.globalToasts,n.global);var r=new t(e);return n.groups.push(r),r},this.register=function(t,e,r){return r=r||{},l(n,t,e,r)},this.show=function(t,e){return c(n,t,e)},this.success=function(t,e){return e=e||{},e.type="success",c(n,t,e)},this.info=function(t,e){return e=e||{},e.type="info",c(n,t,e)},this.error=function(t,e){return e=e||{},e.type="error",c(n,t,e)},this.remove=function(t){n.toasts=n.toasts.filter(function(e){return e.el.hash!==t.hash}),t.parentNode&&t.parentNode.removeChild(t)},this.clear=function(t){return i.a.clearAnimation(n.toasts,function(){t&&t()}),n.toasts=[],!0},this},c=function(t,e,i){i=i||{};var a=null;if("object"!==(void 0===i?"undefined":o(i)))return console.error("Options should be a type of object. given : "+i),null;t.options.singleton&&t.toasts.length>0&&(t.cached_options=i,t.toasts[t.toasts.length-1].goAway(0));var s=Object.assign({},t.options);return Object.assign(s,i),a=n.i(r.a)(t,e,s),t.toasts.push(a),a},u=function(t){var e=t.options.globalToasts,n=function(e,n){return"string"==typeof n&&t[n]?t[n].apply(t,[e,{}]):c(t,e,n)};e&&(t.global={},Object.keys(e).forEach(function(r){t.global[r]=function(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{};return e[r].apply(null,[t,n])}}))},l=function(t,e,n,r){t.options.globalToasts||(t.options.globalToasts={}),t.options.globalToasts[e]=function(t,e){var i=null;return"string"==typeof n&&(i=n),"function"==typeof n&&(i=n(t)),e(i,r)},u(t)}},function(t,e,n){n(22);var r=n(21)(null,null,null,null);t.exports=r.exports},function(t,e,n){(function(n){var r,i,o,a={scope:{}};a.defineProperty="function"==typeof Object.defineProperties?Object.defineProperty:function(t,e,n){if(n.get||n.set)throw new TypeError("ES3 does not support getters and setters.");t!=Array.prototype&&t!=Object.prototype&&(t[e]=n.value)},a.getGlobal=function(t){return"undefined"!=typeof window&&window===t?t:void 0!==n&&null!=n?n:t},a.global=a.getGlobal(this),a.SYMBOL_PREFIX="jscomp_symbol_",a.initSymbol=function(){a.initSymbol=function(){},a.global.Symbol||(a.global.Symbol=a.Symbol)},a.symbolCounter_=0,a.Symbol=function(t){return a.SYMBOL_PREFIX+(t||"")+a.symbolCounter_++},a.initSymbolIterator=function(){a.initSymbol();var t=a.global.Symbol.iterator;t||(t=a.global.Symbol.iterator=a.global.Symbol("iterator")),"function"!=typeof Array.prototype[t]&&a.defineProperty(Array.prototype,t,{configurable:!0,writable:!0,value:function(){return a.arrayIterator(this)}}),a.initSymbolIterator=function(){}},a.arrayIterator=function(t){var e=0;return a.iteratorPrototype(function(){return e<t.length?{done:!1,value:t[e++]}:{done:!0}})},a.iteratorPrototype=function(t){return a.initSymbolIterator(),t={next:t},t[a.global.Symbol.iterator]=function(){return this},t},a.array=a.array||{},a.iteratorFromArray=function(t,e){a.initSymbolIterator(),t instanceof String&&(t+="");var n=0,r={next:function(){if(n<t.length){var i=n++;return{value:e(i,t[i]),done:!1}}return r.next=function(){return{done:!0,value:void 0}},r.next()}};return r[Symbol.iterator]=function(){return r},r},a.polyfill=function(t,e,n,r){if(e){for(n=a.global,t=t.split("."),r=0;r<t.length-1;r++){var i=t[r];i in n||(n[i]={}),n=n[i]}t=t[t.length-1],r=n[t],e=e(r),e!=r&&null!=e&&a.defineProperty(n,t,{configurable:!0,writable:!0,value:e})}},a.polyfill("Array.prototype.keys",function(t){return t||function(){return a.iteratorFromArray(this,function(t){return t})}},"es6-impl","es3");var s=this;!function(n,a){i=[],r=a,void 0!==(o="function"==typeof r?r.apply(e,i):r)&&(t.exports=o)}(0,function(){function t(t){if(!R.col(t))try{return document.querySelectorAll(t)}catch(t){}}function e(t,e){for(var n=t.length,r=2<=arguments.length?arguments[1]:void 0,i=[],o=0;o<n;o++)if(o in t){var a=t[o];e.call(r,a,o,t)&&i.push(a)}return i}function n(t){return t.reduce(function(t,e){return t.concat(R.arr(e)?n(e):e)},[])}function r(e){return R.arr(e)?e:(R.str(e)&&(e=t(e)||e),e instanceof NodeList||e instanceof HTMLCollection?[].slice.call(e):[e])}function i(t,e){return t.some(function(t){return t===e})}function o(t){var e,n={};for(e in t)n[e]=t[e];return n}function a(t,e){var n,r=o(t);for(n in t)r[n]=e.hasOwnProperty(n)?e[n]:t[n];return r}function c(t,e){var n,r=o(t);for(n in e)r[n]=R.und(t[n])?e[n]:t[n];return r}function u(t){t=t.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i,function(t,e,n,r){return e+e+n+n+r+r});var e=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(t);t=parseInt(e[1],16);var n=parseInt(e[2],16),e=parseInt(e[3],16);return"rgba("+t+","+n+","+e+",1)"}function l(t){function e(t,e,n){return 0>n&&(n+=1),1<n&&--n,n<1/6?t+6*(e-t)*n:.5>n?e:n<2/3?t+(e-t)*(2/3-n)*6:t}var n=/hsl\((\d+),\s*([\d.]+)%,\s*([\d.]+)%\)/g.exec(t)||/hsla\((\d+),\s*([\d.]+)%,\s*([\d.]+)%,\s*([\d.]+)\)/g.exec(t);t=parseInt(n[1])/360;var r=parseInt(n[2])/100,i=parseInt(n[3])/100,n=n[4]||1;if(0==r)i=r=t=i;else{var o=.5>i?i*(1+r):i+r-i*r,a=2*i-o,i=e(a,o,t+1/3),r=e(a,o,t);t=e(a,o,t-1/3)}return"rgba("+255*i+","+255*r+","+255*t+","+n+")"}function f(t){if(t=/([\+\-]?[0-9#\.]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/.exec(t))return t[2]}function p(t){return-1<t.indexOf("translate")||"perspective"===t?"px":-1<t.indexOf("rotate")||-1<t.indexOf("skew")?"deg":void 0}function d(t,e){return R.fnc(t)?t(e.target,e.id,e.total):t}function h(t,e){if(e in t.style)return getComputedStyle(t).getPropertyValue(e.replace(/([a-z])([A-Z])/g,"$1-$2").toLowerCase())||"0"}function m(t,e){return R.dom(t)&&i(D,e)?"transform":R.dom(t)&&(t.getAttribute(e)||R.svg(t)&&t[e])?"attribute":R.dom(t)&&"transform"!==e&&h(t,e)?"css":null!=t[e]?"object":void 0}function v(t,n){var r=p(n),r=-1<n.indexOf("scale")?1:0+r;if(!(t=t.style.transform))return r;for(var i=[],o=[],a=[],s=/(\w+)\((.+?)\)/g;i=s.exec(t);)o.push(i[1]),a.push(i[2]);return t=e(a,function(t,e){return o[e]===n}),t.length?t[0]:r}function g(t,e){switch(m(t,e)){case"transform":return v(t,e);case"css":return h(t,e);case"attribute":return t.getAttribute(e)}return t[e]||0}function y(t,e){var n=/^(\*=|\+=|-=)/.exec(t);if(!n)return t;var r=f(t)||0;switch(e=parseFloat(e),t=parseFloat(t.replace(n[0],"")),n[0][0]){case"+":return e+t+r;case"-":return e-t+r;case"*":return e*t+r}}function b(t,e){return Math.sqrt(Math.pow(e.x-t.x,2)+Math.pow(e.y-t.y,2))}function x(t){t=t.points;for(var e,n=0,r=0;r<t.numberOfItems;r++){var i=t.getItem(r);0<r&&(n+=b(e,i)),e=i}return n}function T(t){if(t.getTotalLength)return t.getTotalLength();switch(t.tagName.toLowerCase()){case"circle":return 2*Math.PI*t.getAttribute("r");case"rect":return 2*t.getAttribute("width")+2*t.getAttribute("height");case"line":return b({x:t.getAttribute("x1"),y:t.getAttribute("y1")},{x:t.getAttribute("x2"),y:t.getAttribute("y2")});case"polyline":return x(t);case"polygon":var e=t.points;return x(t)+b(e.getItem(e.numberOfItems-1),e.getItem(0))}}function w(t,e){function n(n){return n=void 0===n?0:n,t.el.getPointAtLength(1<=e+n?e+n:0)}var r=n(),i=n(-1),o=n(1);switch(t.property){case"x":return r.x;case"y":return r.y;case"angle":return 180*Math.atan2(o.y-i.y,o.x-i.x)/Math.PI}}function E(t,e){var n,r=/-?\d*\.?\d+/g;if(n=R.pth(t)?t.totalLength:t,R.col(n))if(R.rgb(n)){var i=/rgb\((\d+,\s*[\d]+,\s*[\d]+)\)/g.exec(n);n=i?"rgba("+i[1]+",1)":n}else n=R.hex(n)?u(n):R.hsl(n)?l(n):void 0;else i=(i=f(n))?n.substr(0,n.length-i.length):n,n=e&&!/\s/g.test(n)?i+e:i;return n+="",{original:n,numbers:n.match(r)?n.match(r).map(Number):[0],strings:R.str(t)||e?n.split(r):[]}}function C(t){return t=t?n(R.arr(t)?t.map(r):r(t)):[],e(t,function(t,e,n){return n.indexOf(t)===e})}function S(t){var e=C(t);return e.map(function(t,n){return{target:t,id:n,total:e.length}})}function O(t,e){var n=o(e);if(R.arr(t)){var i=t.length;2!==i||R.obj(t[0])?R.fnc(e.duration)||(n.duration=e.duration/i):t={value:t}}return r(t).map(function(t,n){return n=n?0:e.delay,t=R.obj(t)&&!R.pth(t)?t:{value:t},R.und(t.delay)&&(t.delay=n),t}).map(function(t){return c(t,n)})}function A(t,e){var n,r={};for(n in t){var i=d(t[n],e);R.arr(i)&&(i=i.map(function(t){return d(t,e)}),1===i.length&&(i=i[0])),r[n]=i}return r.duration=parseFloat(r.duration),r.delay=parseFloat(r.delay),r}function I(t){return R.arr(t)?F.apply(this,t):z[t]}function M(t,e){var n;return t.tweens.map(function(r){r=A(r,e);var i=r.value,o=g(e.target,t.name),a=n?n.to.original:o,a=R.arr(i)?i[0]:a,s=y(R.arr(i)?i[1]:i,a),o=f(s)||f(a)||f(o);return r.from=E(a,o),r.to=E(s,o),r.start=n?n.end:t.offset,r.end=r.start+r.delay+r.duration,r.easing=I(r.easing),r.elasticity=(1e3-Math.min(Math.max(r.elasticity,1),999))/1e3,r.isPath=R.pth(i),r.isColor=R.col(r.from.original),r.isColor&&(r.round=1),n=r})}function P(t,r){return e(n(t.map(function(t){return r.map(function(e){var n=m(t.target,e.name);if(n){var r=M(e,t);e={type:n,property:e.name,animatable:t,tweens:r,duration:r[r.length-1].end,delay:r[0].delay}}else e=void 0;return e})})),function(t){return!R.und(t)})}function L(t,e,n,r){var i="delay"===t;return e.length?(i?Math.min:Math.max).apply(Math,e.map(function(e){return e[t]})):i?r.delay:n.offset+r.delay+r.duration}function k(t){var e,n=a(_,t),r=a(X,t),i=S(t.targets),o=[],s=c(n,r);for(e in t)s.hasOwnProperty(e)||"targets"===e||o.push({name:e,offset:s.offset,tweens:O(t[e],r)});return t=P(i,o),c(n,{children:[],animatables:i,animations:t,duration:L("duration",t,n,r),delay:L("delay",t,n,r)})}function j(t){function n(){return window.Promise&&new Promise(function(t){return f=t})}function r(t){return d.reversed?d.duration-t:t}function i(t){for(var n=0,r={},i=d.animations,o=i.length;n<o;){var a=i[n],s=a.animatable,c=a.tweens,u=c.length-1,l=c[u];u&&(l=e(c,function(e){return t<e.end})[0]||l);for(var c=Math.min(Math.max(t-l.start-l.delay,0),l.duration)/l.duration,f=isNaN(c)?1:l.easing(c,l.elasticity),c=l.to.strings,p=l.round,u=[],m=void 0,m=l.to.numbers.length,v=0;v<m;v++){var g=void 0,g=l.to.numbers[v],y=l.from.numbers[v],g=l.isPath?w(l.value,f*g):y+f*(g-y);p&&(l.isColor&&2<v||(g=Math.round(g*p)/p)),u.push(g)}if(l=c.length)for(m=c[0],f=0;f<l;f++)p=c[f+1],v=u[f],isNaN(v)||(m=p?m+(v+p):m+(v+" "));else m=u[0];Y[a.type](s.target,a.property,m,r,s.id),a.currentValue=m,n++}if(n=Object.keys(r).length)for(i=0;i<n;i++)N||(N=h(document.body,"transform")?"transform":"-webkit-transform"),d.animatables[i].target.style[N]=r[i].join(" ");d.currentTime=t,d.progress=t/d.duration*100}function o(t){d[t]&&d[t](d)}function a(){d.remaining&&!0!==d.remaining&&d.remaining--}function s(t){var e=d.duration,s=d.offset,h=s+d.delay,m=d.currentTime,v=d.reversed,g=r(t);if(d.children.length){var y=d.children,b=y.length;if(g>=d.currentTime)for(var x=0;x<b;x++)y[x].seek(g);else for(;b--;)y[b].seek(g)}(g>=h||!e)&&(d.began||(d.began=!0,o("begin")),o("run")),g>s&&g<e?i(g):(g<=s&&0!==m&&(i(0),v&&a()),(g>=e&&m!==e||!e)&&(i(e),v||a())),o("update"),t>=e&&(d.remaining?(u=c,"alternate"===d.direction&&(d.reversed=!d.reversed)):(d.pause(),d.completed||(d.completed=!0,o("complete"),"Promise"in window&&(f(),p=n()))),l=0)}t=void 0===t?{}:t;var c,u,l=0,f=null,p=n(),d=k(t);return d.reset=function(){var t=d.direction,e=d.loop;for(d.currentTime=0,d.progress=0,d.paused=!0,d.began=!1,d.completed=!1,d.reversed="reverse"===t,d.remaining="alternate"===t&&1===e?2:e,i(0),t=d.children.length;t--;)d.children[t].reset()},d.tick=function(t){c=t,u||(u=c),s((l+c-u)*j.speed)},d.seek=function(t){s(r(t))},d.pause=function(){var t=q.indexOf(d);-1<t&&q.splice(t,1),d.paused=!0},d.play=function(){d.paused&&(d.paused=!1,u=0,l=r(d.currentTime),q.push(d),H||V())},d.reverse=function(){d.reversed=!d.reversed,u=0,l=r(d.currentTime)},d.restart=function(){d.pause(),d.reset(),d.play()},d.finished=p,d.reset(),d.autoplay&&d.play(),d}var N,_={update:void 0,begin:void 0,run:void 0,complete:void 0,loop:1,direction:"normal",autoplay:!0,offset:0},X={duration:1e3,delay:0,easing:"easeOutElastic",elasticity:500,round:0},D="translateX translateY translateZ rotate rotateX rotateY rotateZ scale scaleX scaleY scaleZ skewX skewY perspective".split(" "),R={arr:function(t){return Array.isArray(t)},obj:function(t){return-1<Object.prototype.toString.call(t).indexOf("Object")},pth:function(t){return R.obj(t)&&t.hasOwnProperty("totalLength")},svg:function(t){return t instanceof SVGElement},dom:function(t){return t.nodeType||R.svg(t)},str:function(t){return"string"==typeof t},fnc:function(t){return"function"==typeof t},und:function(t){return void 0===t},hex:function(t){return/(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(t)},rgb:function(t){return/^rgb/.test(t)},hsl:function(t){return/^hsl/.test(t)},col:function(t){return R.hex(t)||R.rgb(t)||R.hsl(t)}},F=function(){function t(t,e,n){return(((1-3*n+3*e)*t+(3*n-6*e))*t+3*e)*t}return function(e,n,r,i){if(0<=e&&1>=e&&0<=r&&1>=r){var o=new Float32Array(11);if(e!==n||r!==i)for(var a=0;11>a;++a)o[a]=t(.1*a,e,r);return function(a){if(e===n&&r===i)return a;if(0===a)return 0;if(1===a)return 1;for(var s=0,c=1;10!==c&&o[c]<=a;++c)s+=.1;--c;var c=s+(a-o[c])/(o[c+1]-o[c])*.1,u=3*(1-3*r+3*e)*c*c+2*(3*r-6*e)*c+3*e;if(.001<=u){for(s=0;4>s&&0!==(u=3*(1-3*r+3*e)*c*c+2*(3*r-6*e)*c+3*e);++s)var l=t(c,e,r)-a,c=c-l/u;a=c}else if(0===u)a=c;else{var c=s,s=s+.1,f=0;do{l=c+(s-c)/2,u=t(l,e,r)-a,0<u?s=l:c=l}while(1e-7<Math.abs(u)&&10>++f);a=l}return t(a,n,i)}}}}(),z=function(){function t(t,e){return 0===t||1===t?t:-Math.pow(2,10*(t-1))*Math.sin(2*(t-1-e/(2*Math.PI)*Math.asin(1))*Math.PI/e)}var e,n="Quad Cubic Quart Quint Sine Expo Circ Back Elastic".split(" "),r={In:[[.55,.085,.68,.53],[.55,.055,.675,.19],[.895,.03,.685,.22],[.755,.05,.855,.06],[.47,0,.745,.715],[.95,.05,.795,.035],[.6,.04,.98,.335],[.6,-.28,.735,.045],t],Out:[[.25,.46,.45,.94],[.215,.61,.355,1],[.165,.84,.44,1],[.23,1,.32,1],[.39,.575,.565,1],[.19,1,.22,1],[.075,.82,.165,1],[.175,.885,.32,1.275],function(e,n){return 1-t(1-e,n)}],InOut:[[.455,.03,.515,.955],[.645,.045,.355,1],[.77,0,.175,1],[.86,0,.07,1],[.445,.05,.55,.95],[1,0,0,1],[.785,.135,.15,.86],[.68,-.55,.265,1.55],function(e,n){return.5>e?t(2*e,n)/2:1-t(-2*e+2,n)/2}]},i={linear:F(.25,.25,.75,.75)},o={};for(e in r)o.type=e,r[o.type].forEach(function(t){return function(e,r){i["ease"+t.type+n[r]]=R.fnc(e)?e:F.apply(s,e)}}(o)),o={type:o.type};return i}(),Y={css:function(t,e,n){return t.style[e]=n},attribute:function(t,e,n){return t.setAttribute(e,n)},object:function(t,e,n){return t[e]=n},transform:function(t,e,n,r,i){r[i]||(r[i]=[]),r[i].push(e+"("+n+")")}},q=[],H=0,V=function(){function t(){H=requestAnimationFrame(e)}function e(e){var n=q.length;if(n){for(var r=0;r<n;)q[r]&&q[r].tick(e),r++;t()}else cancelAnimationFrame(H),H=0}return t}();return j.version="2.2.0",j.speed=1,j.running=q,j.remove=function(t){t=C(t);for(var e=q.length;e--;)for(var n=q[e],r=n.animations,o=r.length;o--;)i(t,r[o].animatable.target)&&(r.splice(o,1),r.length||n.pause())},j.getValue=g,j.path=function(e,n){var r=R.str(e)?t(e)[0]:e,i=n||100;return function(t){return{el:r,property:t,totalLength:T(r)*(i/100)}}},j.setDashoffset=function(t){var e=T(t);return t.setAttribute("stroke-dasharray",e),e},j.bezier=F,j.easings=z,j.timeline=function(t){var e=j(t);return e.pause(),e.duration=0,e.add=function(n){return e.children.forEach(function(t){t.began=!0,t.completed=!0}),r(n).forEach(function(n){var r=c(n,a(X,t||{}));r.targets=r.targets||t.targets,n=e.duration;var i=r.offset;r.autoplay=!1,r.direction=e.direction,r.offset=R.und(i)?n:y(i,n),e.began=!0,e.completed=!0,e.seek(r.offset),r=j(r),r.began=!0,r.completed=!0,r.duration>n&&(e.duration=r.duration),e.children.push(r)}),e.seek(0),e.reset(),e.autoplay&&e.restart(),e},e},j.random=function(t,e){return Math.floor(Math.random()*(e-t+1))+t},j})}).call(e,n(25))},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var r=n(3),i=n(4),o=n.n(i),a={install:function(t,e){e||(e={});var n=new r.a(e);t.component("toasted",o.a),t.toasted=t.prototype.$toasted=n}};"undefined"!=typeof window&&window.Vue&&(window.Toasted=a),e.default=a},function(t,e,n){"use strict";n.d(e,"a",function(){return c});var r=n(1),i=this,o="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t},a=function(t,e,n){return setTimeout(function(){if(n.cached_options.position&&n.cached_options.position.includes("bottom"))return void r.a.animateOutBottom(t,function(){n.remove(t)});r.a.animateOut(t,function(){n.remove(t)})},e),!0},s=function(t,e){return("object"===("undefined"==typeof HTMLElement?"undefined":o(HTMLElement))?e instanceof HTMLElement:e&&"object"===(void 0===e?"undefined":o(e))&&null!==e&&1===e.nodeType&&"string"==typeof e.nodeName)?t.appendChild(e):t.innerHTML=e,i},c=function(t,e){var n=!1;return{el:t,text:function(e){return s(t,e),this},goAway:function(){var r=arguments.length>0&&void 0!==arguments[0]?arguments[0]:800;return n=!0,a(t,r,e)},remove:function(){e.remove(t)},disposed:function(){return n}}}},function(t,e,n){"use strict";var r=n(12),i=n.n(r),o=n(1),a=n(7),s="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t},c=n(2),u={},l=null,f=function(t){return t.className=t.className||null,t.onComplete=t.onComplete||null,t.position=t.position||"top-right",t.duration=t.duration||null,t.theme=t.theme||"primary",t.type=t.type||"default",t.containerClass=t.containerClass||null,t.fullWidth=t.fullWidth||!1,t.icon=t.icon||null,t.action=t.action||null,t.fitToScreen=t.fitToScreen||null,t.closeOnSwipe=void 0===t.closeOnSwipe||t.closeOnSwipe,t.iconPack=t.iconPack||"material",t.className&&"string"==typeof t.className&&(t.className=t.className.split(" ")),t.className||(t.className=[]),t.theme&&t.className.push(t.theme.trim()),t.type&&t.className.push(t.type),t.containerClass&&"string"==typeof t.containerClass&&(t.containerClass=t.containerClass.split(" ")),t.containerClass||(t.containerClass=[]),t.position&&t.containerClass.push(t.position.trim()),t.fullWidth&&t.containerClass.push("full-width"),t.fitToScreen&&t.containerClass.push("fit-to-screen"),u=t,t},p=function(t,e){var r=document.createElement("div");if(r.classList.add("toasted"),r.hash=c.generate(),e.className&&e.className.forEach(function(t){r.classList.add(t)}),("object"===("undefined"==typeof HTMLElement?"undefined":s(HTMLElement))?t instanceof HTMLElement:t&&"object"===(void 0===t?"undefined":s(t))&&null!==t&&1===t.nodeType&&"string"==typeof t.nodeName)?r.appendChild(t):r.innerHTML=t,d(e,r),e.closeOnSwipe){var u=new i.a(r,{prevent_default:!1});u.on("pan",function(t){var e=t.deltaX;r.classList.contains("panning")||r.classList.add("panning");var n=1-Math.abs(e/80);n<0&&(n=0),o.a.animatePanning(r,e,n)}),u.on("panend",function(t){var n=t.deltaX;Math.abs(n)>80?o.a.animatePanEnd(r,function(){"function"==typeof e.onComplete&&e.onComplete(),r.parentNode&&l.remove(r)}):(r.classList.remove("panning"),o.a.animateReset(r))})}if(Array.isArray(e.action))e.action.forEach(function(t){var e=m(t,n.i(a.a)(r,l));e&&r.appendChild(e)});else if("object"===s(e.action)){var f=m(e.action,n.i(a.a)(r,l));f&&r.appendChild(f)}return r},d=function(t,e){if(t.icon){var n=document.createElement("i");switch(t.iconPack){case"fontawesome":n.classList.add("fa");var r=t.icon.name?t.icon.name:t.icon;r.includes("fa-")?n.classList.add(r.trim()):n.classList.add("fa-"+r.trim());break;case"mdi":n.classList.add("mdi");var i=t.icon.name?t.icon.name:t.icon;i.includes("mdi-")?n.classList.add(i.trim()):n.classList.add("mdi-"+i.trim());break;case"custom-class":var o=t.icon.name?t.icon.name:t.icon;"string"==typeof o?o.split(" ").forEach(function(t){n.classList.add(t)}):Array.isArray(o)&&o.forEach(function(t){n.classList.add(t.trim())});break;default:n.classList.add("material-icons"),n.textContent=t.icon.name?t.icon.name:t.icon}t.icon.after&&n.classList.add("after"),h(t,n,e)}},h=function(t,e,n){t.icon&&(t.icon.after&&t.icon.name?n.appendChild(e):(t.icon.name,n.insertBefore(e,n.firstChild)))},m=function(t,e){if(!t)return null;var n=document.createElement("a");if(n.classList.add("action"),n.classList.add("ripple"),t.text&&(n.text=t.text),t.href&&(n.href=t.href),t.icon){n.classList.add("icon");var r=document.createElement("i");switch(u.iconPack){case"fontawesome":r.classList.add("fa"),t.icon.includes("fa-")?r.classList.add(t.icon.trim()):r.classList.add("fa-"+t.icon.trim());break;case"mdi":r.classList.add("mdi"),t.icon.includes("mdi-")?r.classList.add(t.icon.trim()):r.classList.add("mdi-"+t.icon.trim());break;case"custom-class":"string"==typeof t.icon?t.icon.split(" ").forEach(function(t){n.classList.add(t)}):Array.isArray(t.icon)&&t.icon.forEach(function(t){n.classList.add(t.trim())});break;default:r.classList.add("material-icons"),r.textContent=t.icon}n.appendChild(r)}return t.class&&("string"==typeof t.class?t.class.split(" ").forEach(function(t){n.classList.add(t)}):Array.isArray(t.class)&&t.class.forEach(function(t){n.classList.add(t.trim())})),t.push&&n.addEventListener("click",function(n){if(n.preventDefault(),!u.router)return void console.warn("[vue-toasted] : Vue Router instance is not attached. please check the docs");u.router.push(t.push),t.push.dontClose||e.goAway(0)}),t.onClick&&"function"==typeof t.onClick&&n.addEventListener("click",function(n){t.onClick&&(n.preventDefault(),t.onClick(n,e))}),n};e.a=function(t,e,r){l=t,r=f(r);var i=document.getElementById(l.id);null===i&&(i=document.createElement("div"),i.id=l.id,document.body.appendChild(i)),r.containerClass.unshift("toasted-container"),i.className!==r.containerClass.join(" ")&&(i.className="",r.containerClass.forEach(function(t){i.classList.add(t)}));var s=p(e,r);e&&i.appendChild(s),s.style.opacity=0,o.a.animateIn(s);var c=r.duration,u=void 0;return null!==c&&(u=setInterval(function(){null===s.parentNode&&window.clearInterval(u),s.classList.contains("panning")||(c-=20),c<=0&&(o.a.animateOut(s,function(){"function"==typeof r.onComplete&&r.onComplete(),s.parentNode&&l.remove(s)}),window.clearInterval(u))},20)),n.i(a.a)(s,l)}},function(t,e,n){e=t.exports=n(10)(),e.push([t.i,".toasted{padding:0 20px}.toasted.rounded{border-radius:24px}.toasted.primary{border-radius:2px;min-height:38px;line-height:1.1em;background-color:#353535;padding:0 20px;font-size:15px;font-weight:300;color:#fff;box-shadow:0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.24)}.toasted.primary.success{background:#4caf50}.toasted.primary.error{background:#f44336}.toasted.primary.info{background:#3f51b5}.toasted.primary .action{color:#a1c2fa}.toasted.bubble{border-radius:30px;min-height:38px;line-height:1.1em;background-color:#ff7043;padding:0 20px;font-size:15px;font-weight:300;color:#fff;box-shadow:0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.24)}.toasted.bubble.success{background:#4caf50}.toasted.bubble.error{background:#f44336}.toasted.bubble.info{background:#3f51b5}.toasted.bubble .action{color:#8e2b0c}.toasted.outline{border-radius:30px;min-height:38px;line-height:1.1em;background-color:#fff;border:1px solid #676767;padding:0 20px;font-size:15px;color:#676767;box-shadow:0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.24);font-weight:700}.toasted.outline.success{color:#4caf50;border-color:#4caf50}.toasted.outline.error{color:#f44336;border-color:#f44336}.toasted.outline.info{color:#3f51b5;border-color:#3f51b5}.toasted.outline .action{color:#607d8b}.toasted-container{position:fixed;z-index:10000}.toasted-container,.toasted-container.full-width{display:-ms-flexbox;display:flex;-ms-flex-direction:column;flex-direction:column}.toasted-container.full-width{max-width:86%;width:100%}.toasted-container.full-width.fit-to-screen{min-width:100%}.toasted-container.full-width.fit-to-screen .toasted:first-child{margin-top:0}.toasted-container.full-width.fit-to-screen.top-right{top:0;right:0}.toasted-container.full-width.fit-to-screen.top-left{top:0;left:0}.toasted-container.full-width.fit-to-screen.top-center{top:0;left:0;-webkit-transform:translateX(0);transform:translateX(0)}.toasted-container.full-width.fit-to-screen.bottom-right{right:0;bottom:0}.toasted-container.full-width.fit-to-screen.bottom-left{left:0;bottom:0}.toasted-container.full-width.fit-to-screen.bottom-center{left:0;bottom:0;-webkit-transform:translateX(0);transform:translateX(0)}.toasted-container.top-right{top:10%;right:7%}.toasted-container.top-left{top:10%;left:7%}.toasted-container.top-center{top:10%;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%)}.toasted-container.bottom-right{right:5%;bottom:7%}.toasted-container.bottom-left{left:5%;bottom:7%}.toasted-container.bottom-center{left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);bottom:7%}.toasted-container.bottom-left .toasted,.toasted-container.top-left .toasted{float:left}.toasted-container.bottom-right .toasted,.toasted-container.top-right .toasted{float:right}.toasted-container .toasted{top:35px;width:auto;clear:both;margin-top:10px;position:relative;max-width:100%;height:auto;word-break:normal;display:-ms-flexbox;display:flex;-ms-flex-align:center;align-items:center;-ms-flex-pack:justify;justify-content:space-between;box-sizing:inherit}.toasted-container .toasted .fa,.toasted-container .toasted .material-icons,.toasted-container .toasted .mdi{margin-right:.5rem;margin-left:-.4rem}.toasted-container .toasted .fa.after,.toasted-container .toasted .material-icons.after,.toasted-container .toasted .mdi.after{margin-left:.5rem;margin-right:-.4rem}.toasted-container .toasted .action{text-decoration:none;font-size:.8rem;padding:8px;margin:5px -7px 5px 7px;border-radius:3px;text-transform:uppercase;letter-spacing:.03em;font-weight:600;cursor:pointer}.toasted-container .toasted .action.icon{padding:4px;display:-ms-flexbox;display:flex;-ms-flex-align:center;align-items:center;-ms-flex-pack:center;justify-content:center}.toasted-container .toasted .action.icon .fa,.toasted-container .toasted .action.icon .material-icons,.toasted-container .toasted .action.icon .mdi{margin-right:0;margin-left:4px}.toasted-container .toasted .action.icon:hover{text-decoration:none}.toasted-container .toasted .action:hover{text-decoration:underline}@media only screen and (max-width:600px){#toasted-container{min-width:100%}#toasted-container .toasted:first-child{margin-top:0}#toasted-container.top-right{top:0;right:0}#toasted-container.top-left{top:0;left:0}#toasted-container.top-center{top:0;left:0;-webkit-transform:translateX(0);transform:translateX(0)}#toasted-container.bottom-right{right:0;bottom:0}#toasted-container.bottom-left{left:0;bottom:0}#toasted-container.bottom-center{left:0;bottom:0;-webkit-transform:translateX(0);transform:translateX(0)}#toasted-container.bottom-center,#toasted-container.top-center{-ms-flex-align:stretch!important;align-items:stretch!important}#toasted-container.bottom-left .toasted,#toasted-container.bottom-right .toasted,#toasted-container.top-left .toasted,#toasted-container.top-right .toasted{float:none}#toasted-container .toasted{border-radius:0}}",""])},function(t,e){t.exports=function(){var t=[];return t.toString=function(){for(var t=[],e=0;e<this.length;e++){var n=this[e];n[2]?t.push("@media "+n[2]+"{"+n[1]+"}"):t.push(n[1])}return t.join("")},t.i=function(e,n){"string"==typeof e&&(e=[[null,e,""]]);for(var r={},i=0;i<this.length;i++){var o=this[i][0];"number"==typeof o&&(r[o]=!0)}for(i=0;i<e.length;i++){var a=e[i];"number"==typeof a[0]&&r[a[0]]||(n&&!a[2]?a[2]=n:n&&(a[2]="("+a[2]+") and ("+n+")"),t.push(a))}},t}},function(t,e,n){"use strict";function r(t,e){if(void 0===t||null===t)throw new TypeError("Cannot convert first argument to object");for(var n=Object(t),r=1;r<arguments.length;r++){var i=arguments[r];if(void 0!==i&&null!==i)for(var o=Object.keys(Object(i)),a=0,s=o.length;a<s;a++){var c=o[a],u=Object.getOwnPropertyDescriptor(i,c);void 0!==u&&u.enumerable&&(n[c]=i[c])}}return n}function i(){Object.assign||Object.defineProperty(Object,"assign",{enumerable:!1,configurable:!0,writable:!0,value:r})}t.exports={assign:r,polyfill:i}},function(t,e,n){var r;!function(i,o,a,s){"use strict";function c(t,e,n){return setTimeout(d(t,n),e)}function u(t,e,n){return!!Array.isArray(t)&&(l(t,n[e],n),!0)}function l(t,e,n){var r;if(t)if(t.forEach)t.forEach(e,n);else if(t.length!==s)for(r=0;r<t.length;)e.call(n,t[r],r,t),r++;else for(r in t)t.hasOwnProperty(r)&&e.call(n,t[r],r,t)}function f(t,e,n){var r="DEPRECATED METHOD: "+e+"\n"+n+" AT \n";return function(){var e=new Error("get-stack-trace"),n=e&&e.stack?e.stack.replace(/^[^\(]+?[\n$]/gm,"").replace(/^\s+at\s+/gm,"").replace(/^Object.<anonymous>\s*\(/gm,"{anonymous}()@"):"Unknown Stack Trace",o=i.console&&(i.console.warn||i.console.log);return o&&o.call(i.console,r,n),t.apply(this,arguments)}}function p(t,e,n){var r,i=e.prototype;r=t.prototype=Object.create(i),r.constructor=t,r._super=i,n&&ht(r,n)}function d(t,e){return function(){return t.apply(e,arguments)}}function h(t,e){return typeof t==gt?t.apply(e?e[0]||s:s,e):t}function m(t,e){return t===s?e:t}function v(t,e,n){l(x(e),function(e){t.addEventListener(e,n,!1)})}function g(t,e,n){l(x(e),function(e){t.removeEventListener(e,n,!1)})}function y(t,e){for(;t;){if(t==e)return!0;t=t.parentNode}return!1}function b(t,e){return t.indexOf(e)>-1}function x(t){return t.trim().split(/\s+/g)}function T(t,e,n){if(t.indexOf&&!n)return t.indexOf(e);for(var r=0;r<t.length;){if(n&&t[r][n]==e||!n&&t[r]===e)return r;r++}return-1}function w(t){return Array.prototype.slice.call(t,0)}function E(t,e,n){for(var r=[],i=[],o=0;o<t.length;){var a=e?t[o][e]:t[o];T(i,a)<0&&r.push(t[o]),i[o]=a,o++}return n&&(r=e?r.sort(function(t,n){return t[e]>n[e]}):r.sort()),r}function C(t,e){for(var n,r,i=e[0].toUpperCase()+e.slice(1),o=0;o<mt.length;){if(n=mt[o],(r=n?n+i:e)in t)return r;o++}return s}function S(){return Et++}function O(t){var e=t.ownerDocument||t;return e.defaultView||e.parentWindow||i}function A(t,e){var n=this;this.manager=t,this.callback=e,this.element=t.element,this.target=t.options.inputTarget,this.domHandler=function(e){h(t.options.enable,[t])&&n.handler(e)},this.init()}function I(t){var e=t.options.inputClass;return new(e||(Ot?q:At?W:St?B:Y))(t,M)}function M(t,e,n){var r=n.pointers.length,i=n.changedPointers.length,o=e&Mt&&r-i==0,a=e&(Lt|kt)&&r-i==0;n.isFirst=!!o,n.isFinal=!!a,o&&(t.session={}),n.eventType=e,P(t,n),t.emit("hammer.input",n),t.recognize(n),t.session.prevInput=n}function P(t,e){var n=t.session,r=e.pointers,i=r.length;n.firstInput||(n.firstInput=j(e)),i>1&&!n.firstMultiple?n.firstMultiple=j(e):1===i&&(n.firstMultiple=!1);var o=n.firstInput,a=n.firstMultiple,s=a?a.center:o.center,c=e.center=N(r);e.timeStamp=xt(),e.deltaTime=e.timeStamp-o.timeStamp,e.angle=R(s,c),e.distance=D(s,c),L(n,e),e.offsetDirection=X(e.deltaX,e.deltaY);var u=_(e.deltaTime,e.deltaX,e.deltaY);e.overallVelocityX=u.x,e.overallVelocityY=u.y,e.overallVelocity=bt(u.x)>bt(u.y)?u.x:u.y,e.scale=a?z(a.pointers,r):1,e.rotation=a?F(a.pointers,r):0,e.maxPointers=n.prevInput?e.pointers.length>n.prevInput.maxPointers?e.pointers.length:n.prevInput.maxPointers:e.pointers.length,k(n,e);var l=t.element;y(e.srcEvent.target,l)&&(l=e.srcEvent.target),e.target=l}function L(t,e){var n=e.center,r=t.offsetDelta||{},i=t.prevDelta||{},o=t.prevInput||{};e.eventType!==Mt&&o.eventType!==Lt||(i=t.prevDelta={x:o.deltaX||0,y:o.deltaY||0},r=t.offsetDelta={x:n.x,y:n.y}),e.deltaX=i.x+(n.x-r.x),e.deltaY=i.y+(n.y-r.y)}function k(t,e){var n,r,i,o,a=t.lastInterval||e,c=e.timeStamp-a.timeStamp;if(e.eventType!=kt&&(c>It||a.velocity===s)){var u=e.deltaX-a.deltaX,l=e.deltaY-a.deltaY,f=_(c,u,l);r=f.x,i=f.y,n=bt(f.x)>bt(f.y)?f.x:f.y,o=X(u,l),t.lastInterval=e}else n=a.velocity,r=a.velocityX,i=a.velocityY,o=a.direction;e.velocity=n,e.velocityX=r,e.velocityY=i,e.direction=o}function j(t){for(var e=[],n=0;n<t.pointers.length;)e[n]={clientX:yt(t.pointers[n].clientX),clientY:yt(t.pointers[n].clientY)},n++;return{timeStamp:xt(),pointers:e,center:N(e),deltaX:t.deltaX,deltaY:t.deltaY}}function N(t){var e=t.length;if(1===e)return{x:yt(t[0].clientX),y:yt(t[0].clientY)};for(var n=0,r=0,i=0;i<e;)n+=t[i].clientX,r+=t[i].clientY,i++;return{x:yt(n/e),y:yt(r/e)}}function _(t,e,n){return{x:e/t||0,y:n/t||0}}function X(t,e){return t===e?jt:bt(t)>=bt(e)?t<0?Nt:_t:e<0?Xt:Dt}function D(t,e,n){n||(n=Yt);var r=e[n[0]]-t[n[0]],i=e[n[1]]-t[n[1]];return Math.sqrt(r*r+i*i)}function R(t,e,n){n||(n=Yt);var r=e[n[0]]-t[n[0]],i=e[n[1]]-t[n[1]];return 180*Math.atan2(i,r)/Math.PI}function F(t,e){return R(e[1],e[0],qt)+R(t[1],t[0],qt)}function z(t,e){return D(e[0],e[1],qt)/D(t[0],t[1],qt)}function Y(){this.evEl=Vt,this.evWin=Wt,this.pressed=!1,A.apply(this,arguments)}function q(){this.evEl=$t,this.evWin=Gt,A.apply(this,arguments),this.store=this.manager.session.pointerEvents=[]}function H(){this.evTarget=Qt,this.evWin=Jt,this.started=!1,A.apply(this,arguments)}function V(t,e){var n=w(t.touches),r=w(t.changedTouches);return e&(Lt|kt)&&(n=E(n.concat(r),"identifier",!0)),[n,r]}function W(){this.evTarget=te,this.targetIds={},A.apply(this,arguments)}function U(t,e){var n=w(t.touches),r=this.targetIds;if(e&(Mt|Pt)&&1===n.length)return r[n[0].identifier]=!0,[n,n];var i,o,a=w(t.changedTouches),s=[],c=this.target;if(o=n.filter(function(t){return y(t.target,c)}),e===Mt)for(i=0;i<o.length;)r[o[i].identifier]=!0,i++;for(i=0;i<a.length;)r[a[i].identifier]&&s.push(a[i]),e&(Lt|kt)&&delete r[a[i].identifier],i++;return s.length?[E(o.concat(s),"identifier",!0),s]:void 0}function B(){A.apply(this,arguments);var t=d(this.handler,this);this.touch=new W(this.manager,t),this.mouse=new Y(this.manager,t),this.primaryTouch=null,this.lastTouches=[]}function $(t,e){t&Mt?(this.primaryTouch=e.changedPointers[0].identifier,G.call(this,e)):t&(Lt|kt)&&G.call(this,e)}function G(t){var e=t.changedPointers[0];if(e.identifier===this.primaryTouch){var n={x:e.clientX,y:e.clientY};this.lastTouches.push(n);var r=this.lastTouches,i=function(){var t=r.indexOf(n);t>-1&&r.splice(t,1)};setTimeout(i,ee)}}function Z(t){for(var e=t.srcEvent.clientX,n=t.srcEvent.clientY,r=0;r<this.lastTouches.length;r++){var i=this.lastTouches[r],o=Math.abs(e-i.x),a=Math.abs(n-i.y);if(o<=ne&&a<=ne)return!0}return!1}function Q(t,e){this.manager=t,this.set(e)}function J(t){if(b(t,se))return se;var e=b(t,ce),n=b(t,ue);return e&&n?se:e||n?e?ce:ue:b(t,ae)?ae:oe}function K(t){this.options=ht({},this.defaults,t||{}),this.id=S(),this.manager=null,this.options.enable=m(this.options.enable,!0),this.state=fe,this.simultaneous={},this.requireFail=[]}function tt(t){return t&ve?"cancel":t&he?"end":t&de?"move":t&pe?"start":""}function et(t){return t==Dt?"down":t==Xt?"up":t==Nt?"left":t==_t?"right":""}function nt(t,e){var n=e.manager;return n?n.get(t):t}function rt(){K.apply(this,arguments)}function it(){rt.apply(this,arguments),this.pX=null,this.pY=null}function ot(){rt.apply(this,arguments)}function at(){K.apply(this,arguments),this._timer=null,this._input=null}function st(){rt.apply(this,arguments)}function ct(){rt.apply(this,arguments)}function ut(){K.apply(this,arguments),this.pTime=!1,this.pCenter=!1,this._timer=null,this._input=null,this.count=0}function lt(t,e){return e=e||{},e.recognizers=m(e.recognizers,lt.defaults.preset),new ft(t,e)}function ft(t,e){this.options=ht({},lt.defaults,e||{}),this.options.inputTarget=this.options.inputTarget||t,this.handlers={},this.session={},this.recognizers=[],this.oldCssProps={},this.element=t,this.input=I(this),this.touchAction=new Q(this,this.options.touchAction),pt(this,!0),l(this.options.recognizers,function(t){var e=this.add(new t[0](t[1]));t[2]&&e.recognizeWith(t[2]),t[3]&&e.requireFailure(t[3])},this)}function pt(t,e){var n=t.element;if(n.style){var r;l(t.options.cssProps,function(i,o){r=C(n.style,o),e?(t.oldCssProps[r]=n.style[r],n.style[r]=i):n.style[r]=t.oldCssProps[r]||""}),e||(t.oldCssProps={})}}function dt(t,e){var n=o.createEvent("Event");n.initEvent(t,!0,!0),n.gesture=e,e.target.dispatchEvent(n)}var ht,mt=["","webkit","Moz","MS","ms","o"],vt=o.createElement("div"),gt="function",yt=Math.round,bt=Math.abs,xt=Date.now;ht="function"!=typeof Object.assign?function(t){if(t===s||null===t)throw new TypeError("Cannot convert undefined or null to object");for(var e=Object(t),n=1;n<arguments.length;n++){var r=arguments[n];if(r!==s&&null!==r)for(var i in r)r.hasOwnProperty(i)&&(e[i]=r[i])}return e}:Object.assign;var Tt=f(function(t,e,n){for(var r=Object.keys(e),i=0;i<r.length;)(!n||n&&t[r[i]]===s)&&(t[r[i]]=e[r[i]]),i++;return t},"extend","Use `assign`."),wt=f(function(t,e){return Tt(t,e,!0)},"merge","Use `assign`."),Et=1,Ct=/mobile|tablet|ip(ad|hone|od)|android/i,St="ontouchstart"in i,Ot=C(i,"PointerEvent")!==s,At=St&&Ct.test(navigator.userAgent),It=25,Mt=1,Pt=2,Lt=4,kt=8,jt=1,Nt=2,_t=4,Xt=8,Dt=16,Rt=Nt|_t,Ft=Xt|Dt,zt=Rt|Ft,Yt=["x","y"],qt=["clientX","clientY"];A.prototype={handler:function(){},init:function(){this.evEl&&v(this.element,this.evEl,this.domHandler),this.evTarget&&v(this.target,this.evTarget,this.domHandler),this.evWin&&v(O(this.element),this.evWin,this.domHandler)},destroy:function(){this.evEl&&g(this.element,this.evEl,this.domHandler),this.evTarget&&g(this.target,this.evTarget,this.domHandler),this.evWin&&g(O(this.element),this.evWin,this.domHandler)}};var Ht={mousedown:Mt,mousemove:Pt,mouseup:Lt},Vt="mousedown",Wt="mousemove mouseup";p(Y,A,{handler:function(t){var e=Ht[t.type];e&Mt&&0===t.button&&(this.pressed=!0),e&Pt&&1!==t.which&&(e=Lt),this.pressed&&(e&Lt&&(this.pressed=!1),this.callback(this.manager,e,{pointers:[t],changedPointers:[t],pointerType:"mouse",srcEvent:t}))}});var Ut={pointerdown:Mt,pointermove:Pt,pointerup:Lt,pointercancel:kt,pointerout:kt},Bt={2:"touch",3:"pen",4:"mouse",5:"kinect"},$t="pointerdown",Gt="pointermove pointerup pointercancel";i.MSPointerEvent&&!i.PointerEvent&&($t="MSPointerDown",Gt="MSPointerMove MSPointerUp MSPointerCancel"),p(q,A,{handler:function(t){var e=this.store,n=!1,r=t.type.toLowerCase().replace("ms",""),i=Ut[r],o=Bt[t.pointerType]||t.pointerType,a="touch"==o,s=T(e,t.pointerId,"pointerId");i&Mt&&(0===t.button||a)?s<0&&(e.push(t),s=e.length-1):i&(Lt|kt)&&(n=!0),s<0||(e[s]=t,this.callback(this.manager,i,{pointers:e,changedPointers:[t],pointerType:o,srcEvent:t}),n&&e.splice(s,1))}});var Zt={touchstart:Mt,touchmove:Pt,touchend:Lt,touchcancel:kt},Qt="touchstart",Jt="touchstart touchmove touchend touchcancel";p(H,A,{handler:function(t){var e=Zt[t.type];if(e===Mt&&(this.started=!0),this.started){var n=V.call(this,t,e);e&(Lt|kt)&&n[0].length-n[1].length==0&&(this.started=!1),this.callback(this.manager,e,{pointers:n[0],changedPointers:n[1],pointerType:"touch",srcEvent:t})}}});var Kt={touchstart:Mt,touchmove:Pt,touchend:Lt,touchcancel:kt},te="touchstart touchmove touchend touchcancel";p(W,A,{handler:function(t){var e=Kt[t.type],n=U.call(this,t,e);n&&this.callback(this.manager,e,{pointers:n[0],changedPointers:n[1],pointerType:"touch",srcEvent:t})}});var ee=2500,ne=25;p(B,A,{handler:function(t,e,n){var r="touch"==n.pointerType,i="mouse"==n.pointerType;if(!(i&&n.sourceCapabilities&&n.sourceCapabilities.firesTouchEvents)){if(r)$.call(this,e,n);else if(i&&Z.call(this,n))return;this.callback(t,e,n)}},destroy:function(){this.touch.destroy(),this.mouse.destroy()}});var re=C(vt.style,"touchAction"),ie=re!==s,oe="auto",ae="manipulation",se="none",ce="pan-x",ue="pan-y",le=function(){if(!ie)return!1;var t={},e=i.CSS&&i.CSS.supports;return["auto","manipulation","pan-y","pan-x","pan-x pan-y","none"].forEach(function(n){t[n]=!e||i.CSS.supports("touch-action",n)}),t}();Q.prototype={set:function(t){"compute"==t&&(t=this.compute()),ie&&this.manager.element.style&&le[t]&&(this.manager.element.style[re]=t),this.actions=t.toLowerCase().trim()},update:function(){this.set(this.manager.options.touchAction)},compute:function(){var t=[];return l(this.manager.recognizers,function(e){h(e.options.enable,[e])&&(t=t.concat(e.getTouchAction()))}),J(t.join(" "))},preventDefaults:function(t){var e=t.srcEvent,n=t.offsetDirection;if(this.manager.session.prevented)return void e.preventDefault();var r=this.actions,i=b(r,se)&&!le[se],o=b(r,ue)&&!le[ue],a=b(r,ce)&&!le[ce];if(i){var s=1===t.pointers.length,c=t.distance<2,u=t.deltaTime<250;if(s&&c&&u)return}return a&&o?void 0:i||o&&n&Rt||a&&n&Ft?this.preventSrc(e):void 0},preventSrc:function(t){this.manager.session.prevented=!0,t.preventDefault()}};var fe=1,pe=2,de=4,he=8,me=he,ve=16;K.prototype={defaults:{},set:function(t){return ht(this.options,t),this.manager&&this.manager.touchAction.update(),this},recognizeWith:function(t){if(u(t,"recognizeWith",this))return this;var e=this.simultaneous;return t=nt(t,this),e[t.id]||(e[t.id]=t,t.recognizeWith(this)),this},dropRecognizeWith:function(t){return u(t,"dropRecognizeWith",this)?this:(t=nt(t,this),delete this.simultaneous[t.id],this)},requireFailure:function(t){if(u(t,"requireFailure",this))return this;var e=this.requireFail;return t=nt(t,this),-1===T(e,t)&&(e.push(t),t.requireFailure(this)),this},dropRequireFailure:function(t){if(u(t,"dropRequireFailure",this))return this;t=nt(t,this);var e=T(this.requireFail,t);return e>-1&&this.requireFail.splice(e,1),this},hasRequireFailures:function(){return this.requireFail.length>0},canRecognizeWith:function(t){return!!this.simultaneous[t.id]},emit:function(t){function e(e){n.manager.emit(e,t)}var n=this,r=this.state;r<he&&e(n.options.event+tt(r)),e(n.options.event),t.additionalEvent&&e(t.additionalEvent),r>=he&&e(n.options.event+tt(r))},tryEmit:function(t){if(this.canEmit())return this.emit(t);this.state=32},canEmit:function(){for(var t=0;t<this.requireFail.length;){if(!(this.requireFail[t].state&(32|fe)))return!1;t++}return!0},recognize:function(t){var e=ht({},t);if(!h(this.options.enable,[this,e]))return this.reset(),void(this.state=32);this.state&(me|ve|32)&&(this.state=fe),this.state=this.process(e),this.state&(pe|de|he|ve)&&this.tryEmit(e)},process:function(t){},getTouchAction:function(){},reset:function(){}},p(rt,K,{defaults:{pointers:1},attrTest:function(t){var e=this.options.pointers;return 0===e||t.pointers.length===e},process:function(t){var e=this.state,n=t.eventType,r=e&(pe|de),i=this.attrTest(t);return r&&(n&kt||!i)?e|ve:r||i?n&Lt?e|he:e&pe?e|de:pe:32}}),p(it,rt,{defaults:{event:"pan",threshold:10,pointers:1,direction:zt},getTouchAction:function(){var t=this.options.direction,e=[];return t&Rt&&e.push(ue),t&Ft&&e.push(ce),e},directionTest:function(t){var e=this.options,n=!0,r=t.distance,i=t.direction,o=t.deltaX,a=t.deltaY;return i&e.direction||(e.direction&Rt?(i=0===o?jt:o<0?Nt:_t,n=o!=this.pX,r=Math.abs(t.deltaX)):(i=0===a?jt:a<0?Xt:Dt,n=a!=this.pY,r=Math.abs(t.deltaY))),t.direction=i,n&&r>e.threshold&&i&e.direction},attrTest:function(t){return rt.prototype.attrTest.call(this,t)&&(this.state&pe||!(this.state&pe)&&this.directionTest(t))},emit:function(t){this.pX=t.deltaX,this.pY=t.deltaY;var e=et(t.direction);e&&(t.additionalEvent=this.options.event+e),this._super.emit.call(this,t)}}),p(ot,rt,{defaults:{event:"pinch",threshold:0,pointers:2},getTouchAction:function(){return[se]},attrTest:function(t){return this._super.attrTest.call(this,t)&&(Math.abs(t.scale-1)>this.options.threshold||this.state&pe)},emit:function(t){if(1!==t.scale){var e=t.scale<1?"in":"out";t.additionalEvent=this.options.event+e}this._super.emit.call(this,t)}}),p(at,K,{defaults:{event:"press",pointers:1,time:251,threshold:9},getTouchAction:function(){return[oe]},process:function(t){var e=this.options,n=t.pointers.length===e.pointers,r=t.distance<e.threshold,i=t.deltaTime>e.time;if(this._input=t,!r||!n||t.eventType&(Lt|kt)&&!i)this.reset();else if(t.eventType&Mt)this.reset(),this._timer=c(function(){this.state=me,this.tryEmit()},e.time,this);else if(t.eventType&Lt)return me;return 32},reset:function(){clearTimeout(this._timer)},emit:function(t){this.state===me&&(t&&t.eventType&Lt?this.manager.emit(this.options.event+"up",t):(this._input.timeStamp=xt(),this.manager.emit(this.options.event,this._input)))}}),p(st,rt,{defaults:{event:"rotate",threshold:0,pointers:2},getTouchAction:function(){return[se]},attrTest:function(t){return this._super.attrTest.call(this,t)&&(Math.abs(t.rotation)>this.options.threshold||this.state&pe)}}),p(ct,rt,{defaults:{event:"swipe",threshold:10,velocity:.3,direction:Rt|Ft,pointers:1},getTouchAction:function(){return it.prototype.getTouchAction.call(this)},attrTest:function(t){var e,n=this.options.direction;return n&(Rt|Ft)?e=t.overallVelocity:n&Rt?e=t.overallVelocityX:n&Ft&&(e=t.overallVelocityY),this._super.attrTest.call(this,t)&&n&t.offsetDirection&&t.distance>this.options.threshold&&t.maxPointers==this.options.pointers&&bt(e)>this.options.velocity&&t.eventType&Lt},emit:function(t){var e=et(t.offsetDirection);e&&this.manager.emit(this.options.event+e,t),this.manager.emit(this.options.event,t)}}),p(ut,K,{defaults:{event:"tap",pointers:1,taps:1,interval:300,time:250,threshold:9,posThreshold:10},getTouchAction:function(){return[ae]},process:function(t){var e=this.options,n=t.pointers.length===e.pointers,r=t.distance<e.threshold,i=t.deltaTime<e.time;if(this.reset(),t.eventType&Mt&&0===this.count)return this.failTimeout();if(r&&i&&n){if(t.eventType!=Lt)return this.failTimeout();var o=!this.pTime||t.timeStamp-this.pTime<e.interval,a=!this.pCenter||D(this.pCenter,t.center)<e.posThreshold;this.pTime=t.timeStamp,this.pCenter=t.center,a&&o?this.count+=1:this.count=1,this._input=t;if(0===this.count%e.taps)return this.hasRequireFailures()?(this._timer=c(function(){this.state=me,this.tryEmit()},e.interval,this),pe):me}return 32},failTimeout:function(){return this._timer=c(function(){this.state=32},this.options.interval,this),32},reset:function(){clearTimeout(this._timer)},emit:function(){this.state==me&&(this._input.tapCount=this.count,this.manager.emit(this.options.event,this._input))}}),lt.VERSION="2.0.7",lt.defaults={domEvents:!1,touchAction:"compute",enable:!0,inputTarget:null,inputClass:null,preset:[[st,{enable:!1}],[ot,{enable:!1},["rotate"]],[ct,{direction:Rt}],[it,{direction:Rt},["swipe"]],[ut],[ut,{event:"doubletap",taps:2},["tap"]],[at]],cssProps:{userSelect:"none",touchSelect:"none",touchCallout:"none",contentZooming:"none",userDrag:"none",tapHighlightColor:"rgba(0,0,0,0)"}};ft.prototype={set:function(t){return ht(this.options,t),t.touchAction&&this.touchAction.update(),t.inputTarget&&(this.input.destroy(),this.input.target=t.inputTarget,this.input.init()),this},stop:function(t){this.session.stopped=t?2:1},recognize:function(t){var e=this.session;if(!e.stopped){this.touchAction.preventDefaults(t);var n,r=this.recognizers,i=e.curRecognizer;(!i||i&&i.state&me)&&(i=e.curRecognizer=null);for(var o=0;o<r.length;)n=r[o],2===e.stopped||i&&n!=i&&!n.canRecognizeWith(i)?n.reset():n.recognize(t),!i&&n.state&(pe|de|he)&&(i=e.curRecognizer=n),o++}},get:function(t){if(t instanceof K)return t;for(var e=this.recognizers,n=0;n<e.length;n++)if(e[n].options.event==t)return e[n];return null},add:function(t){if(u(t,"add",this))return this;var e=this.get(t.options.event);return e&&this.remove(e),this.recognizers.push(t),t.manager=this,this.touchAction.update(),t},remove:function(t){if(u(t,"remove",this))return this;if(t=this.get(t)){var e=this.recognizers,n=T(e,t);-1!==n&&(e.splice(n,1),this.touchAction.update())}return this},on:function(t,e){if(t!==s&&e!==s){var n=this.handlers;return l(x(t),function(t){n[t]=n[t]||[],n[t].push(e)}),this}},off:function(t,e){if(t!==s){var n=this.handlers;return l(x(t),function(t){e?n[t]&&n[t].splice(T(n[t],e),1):delete n[t]}),this}},emit:function(t,e){this.options.domEvents&&dt(t,e);var n=this.handlers[t]&&this.handlers[t].slice();if(n&&n.length){e.type=t,e.preventDefault=function(){e.srcEvent.preventDefault()};for(var r=0;r<n.length;)n[r](e),r++}},destroy:function(){this.element&&pt(this,!1),this.handlers={},this.session={},this.input.destroy(),this.element=null}},ht(lt,{INPUT_START:Mt,INPUT_MOVE:Pt,INPUT_END:Lt,INPUT_CANCEL:kt,STATE_POSSIBLE:fe,STATE_BEGAN:pe,STATE_CHANGED:de,STATE_ENDED:he,STATE_RECOGNIZED:me,STATE_CANCELLED:ve,STATE_FAILED:32,DIRECTION_NONE:jt,DIRECTION_LEFT:Nt,DIRECTION_RIGHT:_t,DIRECTION_UP:Xt,DIRECTION_DOWN:Dt,DIRECTION_HORIZONTAL:Rt,DIRECTION_VERTICAL:Ft,DIRECTION_ALL:zt,Manager:ft,Input:A,TouchAction:Q,TouchInput:W,MouseInput:Y,PointerEventInput:q,TouchMouseInput:B,SingleTouchInput:H,Recognizer:K,AttrRecognizer:rt,Tap:ut,Pan:it,Swipe:ct,Pinch:ot,Rotate:st,Press:at,on:v,off:g,each:l,merge:wt,extend:Tt,assign:ht,inherit:p,bindFn:d,prefixed:C}),(void 0!==i?i:"undefined"!=typeof self?self:{}).Hammer=lt,(r=function(){return lt}.call(e,n,e,t))!==s&&(t.exports=r)}(window,document)},function(t,e){t.exports=function(t,e,n){for(var r=(2<<Math.log(e.length-1)/Math.LN2)-1,i=Math.ceil(1.6*r*n/e.length),o="";;)for(var a=t(i),s=0;s<i;s++){var c=a[s]&r;if(e[c]&&(o+=e[c],o.length===n))return o}}},function(t,e,n){"use strict";function r(t){var e="",n=Math.floor(.001*(Date.now()-s));return n===o?i++:(i=0,o=n),e+=a(c),e+=a(t),i>0&&(e+=a(i)),e+=a(n)}var i,o,a=n(15),s=(n(0),1459707606518),c=6;t.exports=r},function(t,e,n){"use strict";function r(t){for(var e,n=0,r="";!e;)r+=a(o,i.get(),1),e=t<Math.pow(16,n+1),n++;return r}var i=n(0),o=n(18),a=n(13);t.exports=r},function(t,e,n){"use strict";function r(e){return s.seed(e),t.exports}function i(e){return l=e,t.exports}function o(t){return void 0!==t&&s.characters(t),s.shuffled()}function a(){return c(l)}var s=n(0),c=n(14),u=n(17),l=n(20)||0;t.exports=a,t.exports.generate=a,t.exports.seed=r,t.exports.worker=i,t.exports.characters=o,t.exports.isValid=u},function(t,e,n){"use strict";function r(t){return!(!t||"string"!=typeof t||t.length<6)&&!new RegExp("[^"+i.get().replace(/[|\\{}()[\]^$+*?.-]/g,"\\$&")+"]").test(t)}var i=n(0);t.exports=r},function(t,e,n){"use strict";var r,i="object"==typeof window&&(window.crypto||window.msCrypto);r=i&&i.getRandomValues?function(t){return i.getRandomValues(new Uint8Array(t))}:function(t){for(var e=[],n=0;n<t;n++)e.push(Math.floor(256*Math.random()));return e},t.exports=r},function(t,e,n){"use strict";function r(){return(o=(9301*o+49297)%233280)/233280}function i(t){o=t}var o=1;t.exports={nextValue:r,seed:i}},function(t,e,n){"use strict";t.exports=0},function(t,e){t.exports=function(t,e,n,r){var i,o=t=t||{},a=typeof t.default;"object"!==a&&"function"!==a||(i=t,o=t.default);var s="function"==typeof o?o.options:o;if(e&&(s.render=e.render,s.staticRenderFns=e.staticRenderFns),n&&(s._scopeId=n),r){var c=Object.create(s.computed||null);Object.keys(r).forEach(function(t){var e=r[t];c[t]=function(){return e}}),s.computed=c}return{esModule:i,exports:o,options:s}}},function(t,e,n){var r=n(9);"string"==typeof r&&(r=[[t.i,r,""]]),r.locals&&(t.exports=r.locals);n(23)("02af2e15",r,!0,{})},function(t,e,n){function r(t){for(var e=0;e<t.length;e++){var n=t[e],r=l[n.id];if(r){r.refs++;for(var i=0;i<r.parts.length;i++)r.parts[i](n.parts[i]);for(;i<n.parts.length;i++)r.parts.push(o(n.parts[i]));r.parts.length>n.parts.length&&(r.parts.length=n.parts.length)}else{for(var a=[],i=0;i<n.parts.length;i++)a.push(o(n.parts[i]));l[n.id]={id:n.id,refs:1,parts:a}}}}function i(){var t=document.createElement("style");return t.type="text/css",f.appendChild(t),t}function o(t){var e,n,r=document.querySelector("style["+g+'~="'+t.id+'"]');if(r){if(h)return m;r.parentNode.removeChild(r)}if(y){var o=d++;r=p||(p=i()),e=a.bind(null,r,o,!1),n=a.bind(null,r,o,!0)}else r=i(),e=s.bind(null,r),n=function(){r.parentNode.removeChild(r)};return e(t),function(r){if(r){if(r.css===t.css&&r.media===t.media&&r.sourceMap===t.sourceMap)return;e(t=r)}else n()}}function a(t,e,n,r){var i=n?"":r.css;if(t.styleSheet)t.styleSheet.cssText=b(e,i);else{var o=document.createTextNode(i),a=t.childNodes;a[e]&&t.removeChild(a[e]),a.length?t.insertBefore(o,a[e]):t.appendChild(o)}}function s(t,e){var n=e.css,r=e.media,i=e.sourceMap;if(r&&t.setAttribute("media",r),v.ssrId&&t.setAttribute(g,e.id),i&&(n+="\n/*# sourceURL="+i.sources[0]+" */",n+="\n/*# sourceMappingURL=data:application/json;base64,"+btoa(unescape(encodeURIComponent(JSON.stringify(i))))+" */"),t.styleSheet)t.styleSheet.cssText=n;else{for(;t.firstChild;)t.removeChild(t.firstChild);t.appendChild(document.createTextNode(n))}}var c="undefined"!=typeof document;if("undefined"!=typeof DEBUG&&DEBUG&&!c)throw new Error("vue-style-loader cannot be used in a non-browser environment. Use { target: 'node' } in your Webpack config to indicate a server-rendering environment.");var u=n(24),l={},f=c&&(document.head||document.getElementsByTagName("head")[0]),p=null,d=0,h=!1,m=function(){},v=null,g="data-vue-ssr-id",y="undefined"!=typeof navigator&&/msie [6-9]\b/.test(navigator.userAgent.toLowerCase());t.exports=function(t,e,n,i){h=n,v=i||{};var o=u(t,e);return r(o),function(e){for(var n=[],i=0;i<o.length;i++){var a=o[i],s=l[a.id];s.refs--,n.push(s)}e?(o=u(t,e),r(o)):o=[];for(var i=0;i<n.length;i++){var s=n[i];if(0===s.refs){for(var c=0;c<s.parts.length;c++)s.parts[c]();delete l[s.id]}}}};var b=function(){var t=[];return function(e,n){return t[e]=n,t.filter(Boolean).join("\n")}}()},function(t,e){t.exports=function(t,e){for(var n=[],r={},i=0;i<e.length;i++){var o=e[i],a=o[0],s=o[1],c=o[2],u=o[3],l={id:t+":"+i,css:s,media:c,sourceMap:u};r[a]?r[a].parts.push(l):n.push(r[a]={id:a,parts:[l]})}return n}},function(t,e){var n;n=function(){return this}();try{n=n||Function("return this")()||(0,eval)("this")}catch(t){"object"==typeof window&&(n=window)}t.exports=n}])});
+
+/***/ }),
+/* 78 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global, process) {
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var core = __webpack_require__(79);
+
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at http://www.apache.org/licenses/LICENSE-2.0
+
+THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+MERCHANTABLITY OR NON-INFRINGEMENT.
+
+See the Apache Version 2.0 License for specific language governing permissions
+and limitations under the License.
+***************************************************************************** */
+/* global Reflect, Promise */
+
+var extendStatics = function(d, b) {
+    extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return extendStatics(d, b);
+};
+
+function __extends(d, b) {
+    extendStatics(d, b);
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+}
+
+var __assign = function() {
+    __assign = Object.assign || function __assign(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+
+function __awaiter(thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+}
+
+function __generator(thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+}
+
+function __values(o) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator], i = 0;
+    if (m) return m.call(o);
+    return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+}
+
+function __read(o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+}
+
+function __spread() {
+    for (var ar = [], i = 0; i < arguments.length; i++)
+        ar = ar.concat(__read(arguments[i]));
+    return ar;
+}
+
+var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+
+function unwrapExports (x) {
+	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+}
+
+function createCommonjsModule(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
+
+var dist = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+/** JSDoc */
+var Severity;
+(function (Severity) {
+    /** JSDoc */
+    Severity["Fatal"] = "fatal";
+    /** JSDoc */
+    Severity["Error"] = "error";
+    /** JSDoc */
+    Severity["Warning"] = "warning";
+    /** JSDoc */
+    Severity["Log"] = "log";
+    /** JSDoc */
+    Severity["Info"] = "info";
+    /** JSDoc */
+    Severity["Debug"] = "debug";
+    /** JSDoc */
+    Severity["Critical"] = "critical";
+})(Severity = exports.Severity || (exports.Severity = {}));
+// tslint:disable:no-unnecessary-qualifier no-namespace
+(function (Severity) {
+    /**
+     * Converts a string-based level into a {@link Severity}.
+     *
+     * @param level string representation of Severity
+     * @returns Severity
+     */
+    function fromString(level) {
+        switch (level) {
+            case 'debug':
+                return Severity.Debug;
+            case 'info':
+                return Severity.Info;
+            case 'warn':
+            case 'warning':
+                return Severity.Warning;
+            case 'error':
+                return Severity.Error;
+            case 'fatal':
+                return Severity.Fatal;
+            case 'critical':
+                return Severity.Critical;
+            case 'log':
+            default:
+                return Severity.Log;
+        }
+    }
+    Severity.fromString = fromString;
+})(Severity = exports.Severity || (exports.Severity = {}));
+/** The status of an event. */
+var Status;
+(function (Status) {
+    /** The status could not be determined. */
+    Status["Unknown"] = "unknown";
+    /** The event was skipped due to configuration or callbacks. */
+    Status["Skipped"] = "skipped";
+    /** The event was sent to Sentry successfully. */
+    Status["Success"] = "success";
+    /** The client is currently rate limited and will try again later. */
+    Status["RateLimit"] = "rate_limit";
+    /** The event could not be processed. */
+    Status["Invalid"] = "invalid";
+    /** A server-side error ocurred during submission. */
+    Status["Failed"] = "failed";
+})(Status = exports.Status || (exports.Status = {}));
+// tslint:disable:no-unnecessary-qualifier no-namespace
+(function (Status) {
+    /**
+     * Converts a HTTP status code into a {@link Status}.
+     *
+     * @param code The HTTP response status code.
+     * @returns The send status or {@link Status.Unknown}.
+     */
+    function fromHttpCode(code) {
+        if (code >= 200 && code < 300) {
+            return Status.Success;
+        }
+        if (code === 429) {
+            return Status.RateLimit;
+        }
+        if (code >= 400 && code < 500) {
+            return Status.Invalid;
+        }
+        if (code >= 500) {
+            return Status.Failed;
+        }
+        return Status.Unknown;
+    }
+    Status.fromHttpCode = fromHttpCode;
+})(Status = exports.Status || (exports.Status = {}));
+
+});
+
+unwrapExports(dist);
+var dist_1 = dist.Severity;
+var dist_2 = dist.Status;
+
+var is = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Checks whether given value's type is one of a few Error or Error-like
+ * {@link isError}.
+ *
+ * @param wat A value to be checked.
+ * @returns A boolean representing the result.
+ */
+function isError(wat) {
+    switch (Object.prototype.toString.call(wat)) {
+        case '[object Error]':
+            return true;
+        case '[object Exception]':
+            return true;
+        case '[object DOMException]':
+            return true;
+        default:
+            return wat instanceof Error;
+    }
+}
+exports.isError = isError;
+/**
+ * Checks whether given value's type is ErrorEvent
+ * {@link isErrorEvent}.
+ *
+ * @param wat A value to be checked.
+ * @returns A boolean representing the result.
+ */
+function isErrorEvent(wat) {
+    return Object.prototype.toString.call(wat) === '[object ErrorEvent]';
+}
+exports.isErrorEvent = isErrorEvent;
+/**
+ * Checks whether given value's type is DOMError
+ * {@link isDOMError}.
+ *
+ * @param wat A value to be checked.
+ * @returns A boolean representing the result.
+ */
+function isDOMError(wat) {
+    return Object.prototype.toString.call(wat) === '[object DOMError]';
+}
+exports.isDOMError = isDOMError;
+/**
+ * Checks whether given value's type is DOMException
+ * {@link isDOMException}.
+ *
+ * @param wat A value to be checked.
+ * @returns A boolean representing the result.
+ */
+function isDOMException(wat) {
+    return Object.prototype.toString.call(wat) === '[object DOMException]';
+}
+exports.isDOMException = isDOMException;
+/**
+ * Checks whether given value's type is an undefined
+ * {@link isUndefined}.
+ *
+ * @param wat A value to be checked.
+ * @returns A boolean representing the result.
+ */
+function isUndefined(wat) {
+    return wat === void 0;
+}
+exports.isUndefined = isUndefined;
+/**
+ * Checks whether given value's type is a function
+ * {@link isFunction}.
+ *
+ * @param wat A value to be checked.
+ * @returns A boolean representing the result.
+ */
+function isFunction(wat) {
+    return typeof wat === 'function';
+}
+exports.isFunction = isFunction;
+/**
+ * Checks whether given value's type is a string
+ * {@link isString}.
+ *
+ * @param wat A value to be checked.
+ * @returns A boolean representing the result.
+ */
+function isString(wat) {
+    return Object.prototype.toString.call(wat) === '[object String]';
+}
+exports.isString = isString;
+/**
+ * Checks whether given value's type is an array
+ * {@link isArray}.
+ *
+ * @param wat A value to be checked.
+ * @returns A boolean representing the result.
+ */
+function isArray(wat) {
+    return Object.prototype.toString.call(wat) === '[object Array]';
+}
+exports.isArray = isArray;
+/**
+ * Checks whether given value's type is an object literal
+ * {@link isPlainObject}.
+ *
+ * @param wat A value to be checked.
+ * @returns A boolean representing the result.
+ */
+function isPlainObject(wat) {
+    return Object.prototype.toString.call(wat) === '[object Object]';
+}
+exports.isPlainObject = isPlainObject;
+/**
+ * Checks whether given value's type is an regexp
+ * {@link isRegExp}.
+ *
+ * @param wat A value to be checked.
+ * @returns A boolean representing the result.
+ */
+function isRegExp(wat) {
+    return Object.prototype.toString.call(wat) === '[object RegExp]';
+}
+exports.isRegExp = isRegExp;
+/**
+ * Checks whether given value's type is a NaN
+ * {@link isNaN}.
+ *
+ * @param wat A value to be checked.
+ * @returns A boolean representing the result.
+ */
+function isNaN(wat) {
+    return wat !== wat;
+}
+exports.isNaN = isNaN;
+
+});
+
+unwrapExports(is);
+var is_1 = is.isError;
+var is_2 = is.isErrorEvent;
+var is_3 = is.isDOMError;
+var is_4 = is.isDOMException;
+var is_5 = is.isUndefined;
+var is_6 = is.isFunction;
+var is_7 = is.isString;
+var is_8 = is.isArray;
+var is_9 = is.isPlainObject;
+var is_10 = is.isRegExp;
+var is_11 = is.isNaN;
+
+var misc = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+
+/**
+ * Requires a module which is protected against bundler minification.
+ *
+ * @param request The module path to resolve
+ */
+function dynamicRequire(mod, request) {
+    return mod.require(request);
+}
+exports.dynamicRequire = dynamicRequire;
+/**
+ * Checks whether we're in the Node.js or Browser environment
+ *
+ * @returns Answer to given question
+ */
+function isNodeEnv() {
+    // tslint:disable:strict-type-predicates
+    return Object.prototype.toString.call(typeof process !== 'undefined' ? process : 0) === '[object process]';
+}
+exports.isNodeEnv = isNodeEnv;
+/**
+ * Safely get global scope object
+ *
+ * @returns Global scope object
+ */
+// tslint:disable:strict-type-predicates
+function getGlobalObject() {
+    return isNodeEnv() ? commonjsGlobal : typeof window !== 'undefined' ? window : typeof self !== 'undefined' ? self : {};
+}
+exports.getGlobalObject = getGlobalObject;
+/**
+ * UUID4 generator
+ *
+ * @returns string Generated UUID4.
+ */
+function uuid4() {
+    var global = getGlobalObject();
+    var crypto = global.crypto || global.msCrypto;
+    if (!(crypto === void 0) && crypto.getRandomValues) {
+        // Use window.crypto API if available
+        var arr = new Uint16Array(8);
+        crypto.getRandomValues(arr);
+        // set 4 in byte 7
+        // tslint:disable-next-line:no-bitwise
+        arr[3] = (arr[3] & 0xfff) | 0x4000;
+        // set 2 most significant bits of byte 9 to '10'
+        // tslint:disable-next-line:no-bitwise
+        arr[4] = (arr[4] & 0x3fff) | 0x8000;
+        var pad = function (num) {
+            var v = num.toString(16);
+            while (v.length < 4) {
+                v = "0" + v;
+            }
+            return v;
+        };
+        return (pad(arr[0]) + pad(arr[1]) + pad(arr[2]) + pad(arr[3]) + pad(arr[4]) + pad(arr[5]) + pad(arr[6]) + pad(arr[7]));
+    }
+    else {
+        // http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript/2117523#2117523
+        return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            // tslint:disable-next-line:no-bitwise
+            var r = (Math.random() * 16) | 0;
+            // tslint:disable-next-line:no-bitwise
+            var v = c === 'x' ? r : (r & 0x3) | 0x8;
+            return v.toString(16);
+        });
+    }
+}
+exports.uuid4 = uuid4;
+/**
+ * Given a child DOM element, returns a query-selector statement describing that
+ * and its ancestors
+ * e.g. [HTMLElement] => body > div > input#foo.btn[name=baz]
+ * @returns generated DOM path
+ */
+function htmlTreeAsString(elem) {
+    var currentElem = elem;
+    var MAX_TRAVERSE_HEIGHT = 5;
+    var MAX_OUTPUT_LEN = 80;
+    var out = [];
+    var height = 0;
+    var len = 0;
+    var separator = ' > ';
+    var sepLength = separator.length;
+    var nextStr;
+    while (currentElem && height++ < MAX_TRAVERSE_HEIGHT) {
+        nextStr = htmlElementAsString(currentElem);
+        // bail out if
+        // - nextStr is the 'html' element
+        // - the length of the string that would be created exceeds MAX_OUTPUT_LEN
+        //   (ignore this limit if we are on the first iteration)
+        if (nextStr === 'html' || (height > 1 && len + out.length * sepLength + nextStr.length >= MAX_OUTPUT_LEN)) {
+            break;
+        }
+        out.push(nextStr);
+        len += nextStr.length;
+        currentElem = currentElem.parentNode;
+    }
+    return out.reverse().join(separator);
+}
+exports.htmlTreeAsString = htmlTreeAsString;
+/**
+ * Returns a simple, query-selector representation of a DOM element
+ * e.g. [HTMLElement] => input#foo.btn[name=baz]
+ * @returns generated DOM path
+ */
+function htmlElementAsString(elem) {
+    var out = [];
+    var className;
+    var classes;
+    var key;
+    var attr;
+    var i;
+    if (!elem || !elem.tagName) {
+        return '';
+    }
+    out.push(elem.tagName.toLowerCase());
+    if (elem.id) {
+        out.push("#" + elem.id);
+    }
+    className = elem.className;
+    if (className && is.isString(className)) {
+        classes = className.split(/\s+/);
+        for (i = 0; i < classes.length; i++) {
+            out.push("." + classes[i]);
+        }
+    }
+    var attrWhitelist = ['type', 'name', 'title', 'alt'];
+    for (i = 0; i < attrWhitelist.length; i++) {
+        key = attrWhitelist[i];
+        attr = elem.getAttribute(key);
+        if (attr) {
+            out.push("[" + key + "=\"" + attr + "\"]");
+        }
+    }
+    return out.join('');
+}
+exports.htmlElementAsString = htmlElementAsString;
+/**
+ * Parses string form of URL into an object
+ * // borrowed from https://tools.ietf.org/html/rfc3986#appendix-B
+ * // intentionally using regex and not <a/> href parsing trick because React Native and other
+ * // environments where DOM might not be available
+ * @returns parsed URL object
+ */
+function parseUrl(url) {
+    if (!url) {
+        return {};
+    }
+    var match = url.match(/^(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/);
+    if (!match) {
+        return {};
+    }
+    // coerce to undefined values to empty string so we don't get 'undefined'
+    var query = match[6] || '';
+    var fragment = match[8] || '';
+    return {
+        host: match[4],
+        path: match[5],
+        protocol: match[2],
+        relative: match[5] + query + fragment,
+    };
+}
+exports.parseUrl = parseUrl;
+/**
+ * Extracts either message or type+value from an event that can be used for user-facing logs
+ * @returns event's description
+ */
+function getEventDescription(event) {
+    if (event.message) {
+        return event.message;
+    }
+    else if (event.exception && event.exception.values && event.exception.values[0]) {
+        var exception = event.exception.values[0];
+        if (exception.type && exception.value) {
+            return exception.type + ": " + exception.value;
+        }
+        else {
+            return exception.type || exception.value || event.event_id || '<unknown>';
+        }
+    }
+    else {
+        return event.event_id || '<unknown>';
+    }
+}
+exports.getEventDescription = getEventDescription;
+/** JSDoc */
+function consoleSandbox(callback) {
+    var global = getGlobalObject();
+    var levels = ['debug', 'info', 'warn', 'error', 'log'];
+    if (!('console' in global)) {
+        return callback();
+    }
+    var originalConsole = global.console;
+    var wrappedLevels = {};
+    // Restore all wrapped console methods
+    levels.forEach(function (level) {
+        if (level in global.console && originalConsole[level].__sentry__) {
+            wrappedLevels[level] = originalConsole[level].__sentry_wrapped__;
+            originalConsole[level] = originalConsole[level].__sentry_original__;
+        }
+    });
+    // Perform callback manipulations
+    var result = callback();
+    // Revert restoration to wrapped state
+    Object.keys(wrappedLevels).forEach(function (level) {
+        originalConsole[level] = wrappedLevels[level];
+    });
+    return result;
+}
+exports.consoleSandbox = consoleSandbox;
+
+});
+
+unwrapExports(misc);
+var misc_1 = misc.dynamicRequire;
+var misc_2 = misc.isNodeEnv;
+var misc_3 = misc.getGlobalObject;
+var misc_4 = misc.uuid4;
+var misc_5 = misc.htmlTreeAsString;
+var misc_6 = misc.htmlElementAsString;
+var misc_7 = misc.parseUrl;
+var misc_8 = misc.getEventDescription;
+var misc_9 = misc.consoleSandbox;
+
+var logger_1 = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+
+// TODO: Implement different loggers for different environments
+var global = misc.getGlobalObject();
+/** JSDoc */
+var Logger = /** @class */ (function () {
+    /** JSDoc */
+    function Logger() {
+        this.enabled = false;
+    }
+    /** JSDoc */
+    Logger.prototype.disable = function () {
+        this.enabled = false;
+    };
+    /** JSDoc */
+    Logger.prototype.enable = function () {
+        this.enabled = true;
+    };
+    /** JSDoc */
+    Logger.prototype.log = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        if (!this.enabled) {
+            return;
+        }
+        misc.consoleSandbox(function () {
+            global.console.log("Sentry Logger [Log]: " + args.join(' ')); // tslint:disable-line:no-console
+        });
+    };
+    /** JSDoc */
+    Logger.prototype.warn = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        if (!this.enabled) {
+            return;
+        }
+        misc.consoleSandbox(function () {
+            global.console.warn("Sentry Logger [Warn]: " + args.join(' ')); // tslint:disable-line:no-console
+        });
+    };
+    /** JSDoc */
+    Logger.prototype.error = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        if (!this.enabled) {
+            return;
+        }
+        misc.consoleSandbox(function () {
+            global.console.error("Sentry Logger [Error]: " + args.join(' ')); // tslint:disable-line:no-console
+        });
+    };
+    return Logger;
+}());
+var logger = new Logger();
+exports.logger = logger;
+
+});
+
+unwrapExports(logger_1);
+var logger_2 = logger_1.logger;
+
+var supports = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+
+/**
+ * Tells whether current environment supports ErrorEvent objects
+ * {@link supportsErrorEvent}.
+ *
+ * @returns Answer to the given question.
+ */
+function supportsErrorEvent() {
+    try {
+        // tslint:disable:no-unused-expression
+        new ErrorEvent('');
+        return true;
+    }
+    catch (e) {
+        return false;
+    }
+}
+exports.supportsErrorEvent = supportsErrorEvent;
+/**
+ * Tells whether current environment supports DOMError objects
+ * {@link supportsDOMError}.
+ *
+ * @returns Answer to the given question.
+ */
+function supportsDOMError() {
+    try {
+        // It really needs 1 argument, not 0.
+        // Chrome: VM89:1 Uncaught TypeError: Failed to construct 'DOMError':
+        // 1 argument required, but only 0 present.
+        // @ts-ignore
+        // tslint:disable:no-unused-expression
+        new DOMError('');
+        return true;
+    }
+    catch (e) {
+        return false;
+    }
+}
+exports.supportsDOMError = supportsDOMError;
+/**
+ * Tells whether current environment supports DOMException objects
+ * {@link supportsDOMException}.
+ *
+ * @returns Answer to the given question.
+ */
+function supportsDOMException() {
+    try {
+        // tslint:disable:no-unused-expression
+        new DOMException('');
+        return true;
+    }
+    catch (e) {
+        return false;
+    }
+}
+exports.supportsDOMException = supportsDOMException;
+/**
+ * Tells whether current environment supports Fetch API
+ * {@link supportsFetch}.
+ *
+ * @returns Answer to the given question.
+ */
+function supportsFetch() {
+    if (!('fetch' in misc.getGlobalObject())) {
+        return false;
+    }
+    try {
+        // tslint:disable-next-line:no-unused-expression
+        new Headers();
+        // tslint:disable-next-line:no-unused-expression
+        new Request('');
+        // tslint:disable-next-line:no-unused-expression
+        new Response();
+        return true;
+    }
+    catch (e) {
+        return false;
+    }
+}
+exports.supportsFetch = supportsFetch;
+/**
+ * Tells whether current environment supports Fetch API natively
+ * {@link supportsNativeFetch}.
+ *
+ * @returns Answer to the given question.
+ */
+function supportsNativeFetch() {
+    if (!supportsFetch()) {
+        return false;
+    }
+    var global = misc.getGlobalObject();
+    var fetch = global.fetch;
+    // tslint:disable-next-line:no-unsafe-any
+    return fetch.toString().indexOf('native') !== -1;
+}
+exports.supportsNativeFetch = supportsNativeFetch;
+/**
+ * Tells whether current environment supports sendBeacon API
+ * {@link supportsBeacon}.
+ *
+ * @returns Answer to the given question.
+ */
+function supportsBeacon() {
+    var global = misc.getGlobalObject();
+    return 'navigator' in global && 'sendBeacon' in global.navigator;
+}
+exports.supportsBeacon = supportsBeacon;
+/**
+ * Tells whether current environment supports ReportingObserver API
+ * {@link supportsReportingObserver}.
+ *
+ * @returns Answer to the given question.
+ */
+function supportsReportingObserver() {
+    return 'ReportingObserver' in misc.getGlobalObject();
+}
+exports.supportsReportingObserver = supportsReportingObserver;
+/**
+ * Tells whether current environment supports Referrer Policy API
+ * {@link supportsReferrerPolicy}.
+ *
+ * @returns Answer to the given question.
+ */
+function supportsReferrerPolicy() {
+    // Despite all stars in the sky saying that Edge supports old draft syntax, aka 'never', 'always', 'origin' and 'default
+    // https://caniuse.com/#feat=referrer-policy
+    // It doesn't. And it throw exception instead of ignoring this parameter...
+    // REF: https://github.com/getsentry/raven-js/issues/1233
+    if (!supportsFetch()) {
+        return false;
+    }
+    try {
+        // tslint:disable:no-unused-expression
+        new Request('pickleRick', {
+            referrerPolicy: 'origin',
+        });
+        return true;
+    }
+    catch (e) {
+        return false;
+    }
+}
+exports.supportsReferrerPolicy = supportsReferrerPolicy;
+/**
+ * Tells whether current environment supports History API
+ * {@link supportsHistory}.
+ *
+ * @returns Answer to the given question.
+ */
+function supportsHistory() {
+    // NOTE: in Chrome App environment, touching history.pushState, *even inside
+    //       a try/catch block*, will cause Chrome to output an error to console.error
+    // borrowed from: https://github.com/angular/angular.js/pull/13945/files
+    var global = misc.getGlobalObject();
+    var chrome = global.chrome;
+    // tslint:disable-next-line:no-unsafe-any
+    var isChromePackagedApp = chrome && chrome.app && chrome.app.runtime;
+    var hasHistoryApi = 'history' in global && !!global.history.pushState && !!global.history.replaceState;
+    return !isChromePackagedApp && hasHistoryApi;
+}
+exports.supportsHistory = supportsHistory;
+
+});
+
+unwrapExports(supports);
+var supports_1 = supports.supportsErrorEvent;
+var supports_2 = supports.supportsDOMError;
+var supports_3 = supports.supportsDOMException;
+var supports_4 = supports.supportsFetch;
+var supports_5 = supports.supportsNativeFetch;
+var supports_6 = supports.supportsBeacon;
+var supports_7 = supports.supportsReportingObserver;
+var supports_8 = supports.supportsReferrerPolicy;
+var supports_9 = supports.supportsHistory;
+
+var object = createCommonjsModule(function (module, exports) {
+var __values = (commonjsGlobal && commonjsGlobal.__values) || function (o) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator], i = 0;
+    if (m) return m.call(o);
+    return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+
+/**
+ * Transforms Error object into an object literal with all it's attributes
+ * attached to it.
+ *
+ * Based on: https://github.com/ftlabs/js-abbreviate/blob/fa709e5f139e7770a71827b1893f22418097fbda/index.js#L95-L106
+ *
+ * @param error An Error containing all relevant information
+ * @returns An object with all error properties
+ */
+function objectifyError(error) {
+    // These properties are implemented as magical getters and don't show up in `for-in` loop
+    var err = {
+        message: error.message,
+        name: error.name,
+        stack: error.stack,
+    };
+    for (var i in error) {
+        if (Object.prototype.hasOwnProperty.call(error, i)) {
+            err[i] = error[i];
+        }
+    }
+    return err;
+}
+var NAN_VALUE = '[NaN]';
+var UNDEFINED_VALUE = '[undefined]';
+/**
+ * Serializer function used as 2nd argument to JSON.serialize in `serialize()` util function.
+ */
+function serializer() {
+    var stack = [];
+    var keys = [];
+    var cycleReplacer = function (_, value) {
+        if (stack[0] === value) {
+            return '[Circular ~]';
+        }
+        return "[Circular ~." + keys.slice(0, stack.indexOf(value)).join('.') + "]";
+    };
+    return function (key, value) {
+        var currentValue = value;
+        // NaN and undefined are not JSON.parseable, but we want to preserve this information
+        if (is.isNaN(value)) {
+            currentValue = NAN_VALUE;
+        }
+        else if (is.isUndefined(value)) {
+            currentValue = UNDEFINED_VALUE;
+        }
+        if (stack.length > 0) {
+            var thisPos = stack.indexOf(this);
+            if (thisPos !== -1) {
+                stack.splice(thisPos + 1);
+                keys.splice(thisPos, Infinity, key);
+            }
+            else {
+                stack.push(this);
+                keys.push(key);
+            }
+            if (stack.indexOf(currentValue) !== -1) {
+                currentValue = cycleReplacer.call(this, key, currentValue);
+            }
+        }
+        else {
+            stack.push(currentValue);
+        }
+        return currentValue instanceof Error ? objectifyError(currentValue) : currentValue;
+    };
+}
+/**
+ * Reviver function used as 2nd argument to JSON.parse in `deserialize()` util function.
+ */
+function reviver(_key, value) {
+    // NaN and undefined are not JSON.parseable, but we want to preserve this information
+    if (value === NAN_VALUE) {
+        return NaN;
+    }
+    if (value === UNDEFINED_VALUE) {
+        return undefined;
+    }
+    return value;
+}
+/**
+ * Serializes the given object into a string.
+ * Like JSON.stringify, but doesn't throw on circular references.
+ * Based on a `json-stringify-safe` package and modified to handle Errors serialization.
+ *
+ * The object must be serializable, i.e.:
+ *  - Only primitive types are allowed (object, array, number, string, boolean)
+ *  - Its depth should be considerably low for performance reasons
+ *
+ * @param object A JSON-serializable object.
+ * @returns A string containing the serialized object.
+ */
+function serialize(object) {
+    return JSON.stringify(object, serializer());
+}
+exports.serialize = serialize;
+/**
+ * Deserializes an object from a string previously serialized with
+ * {@link serialize}.
+ *
+ * @param str A serialized object.
+ * @returns The deserialized object.
+ */
+function deserialize(str) {
+    return JSON.parse(str, reviver);
+}
+exports.deserialize = deserialize;
+/**
+ * Creates a deep copy of the given object.
+ *
+ * The object must be serializable, i.e.:
+ *  - It must not contain any cycles
+ *  - Only primitive types are allowed (object, array, number, string, boolean)
+ *  - Its depth should be considerably low for performance reasons
+ *
+ * @param object A JSON-serializable object.
+ * @returns The object clone.
+ */
+function clone(object) {
+    return deserialize(serialize(object));
+}
+exports.clone = clone;
+/**
+ * Wrap a given object method with a higher-order function
+ *
+ * @param source An object that contains a method to be wrapped.
+ * @param name A name of method to be wrapped.
+ * @param replacement A function that should be used to wrap a given method.
+ * @returns void
+ */
+function fill(source, name, replacement) {
+    if (!(name in source) || source[name].__sentry__) {
+        return;
+    }
+    var original = source[name];
+    var wrapped = replacement(original);
+    wrapped.__sentry__ = true;
+    wrapped.__sentry_original__ = original;
+    wrapped.__sentry_wrapped__ = wrapped;
+    source[name] = wrapped;
+}
+exports.fill = fill;
+/**
+ * Encodes given object into url-friendly format
+ *
+ * @param object An object that contains serializable values
+ * @returns string Encoded
+ */
+function urlEncode(object) {
+    return Object.keys(object)
+        .map(
+    // tslint:disable-next-line:no-unsafe-any
+    function (key) { return encodeURIComponent(key) + "=" + encodeURIComponent(object[key]); })
+        .join('&');
+}
+exports.urlEncode = urlEncode;
+// Default Node.js REPL depth
+var MAX_SERIALIZE_EXCEPTION_DEPTH = 3;
+// TODO: Or is it 200kb? 🤔 — Kamil
+// NOTE: Yes, it is
+// 50kB, as 100kB is max payload size, so half sounds reasonable
+var MAX_SERIALIZE_EXCEPTION_SIZE = 50 * 1024;
+var MAX_SERIALIZE_KEYS_LENGTH = 40;
+/** JSDoc */
+function utf8Length(value) {
+    // tslint:disable-next-line:no-bitwise
+    return ~-encodeURI(value).split(/%..|./).length;
+}
+/** JSDoc */
+function jsonSize(value) {
+    return utf8Length(JSON.stringify(value));
+}
+/** JSDoc */
+function serializeValue(value) {
+    var maxLength = 40;
+    if (typeof value === 'string') {
+        return value.length <= maxLength ? value : value.substr(0, maxLength - 1) + "\u2026";
+    }
+    else if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'undefined') {
+        return value;
+    }
+    else if (is.isNaN(value)) {
+        // NaN and undefined are not JSON.parseable, but we want to preserve this information
+        return '[NaN]';
+    }
+    else if (is.isUndefined(value)) {
+        return '[undefined]';
+    }
+    var type = Object.prototype.toString.call(value);
+    // Node.js REPL notation
+    if (type === '[object Object]') {
+        return '[Object]';
+    }
+    if (type === '[object Array]') {
+        return '[Array]';
+    }
+    if (type === '[object Function]') {
+        var name_1 = value.name;
+        return name_1 ? "[Function: " + name_1 + "]" : '[Function]';
+    }
+    return value;
+}
+/** JSDoc */
+function serializeObject(value, depth) {
+    if (depth === 0) {
+        return serializeValue(value);
+    }
+    if (is.isPlainObject(value)) {
+        var serialized_1 = {};
+        var val_1 = value;
+        Object.keys(val_1).forEach(function (key) {
+            serialized_1[key] = serializeObject(val_1[key], depth - 1);
+        });
+        return serialized_1;
+    }
+    else if (Array.isArray(value)) {
+        var val = value;
+        return val.map(function (v) { return serializeObject(v, depth - 1); });
+    }
+    return serializeValue(value);
+}
+exports.serializeObject = serializeObject;
+/** JSDoc */
+function limitObjectDepthToSize(object, depth, maxSize) {
+    if (depth === void 0) { depth = MAX_SERIALIZE_EXCEPTION_DEPTH; }
+    if (maxSize === void 0) { maxSize = MAX_SERIALIZE_EXCEPTION_SIZE; }
+    var serialized = serializeObject(object, depth);
+    if (jsonSize(serialize(serialized)) > maxSize) {
+        return limitObjectDepthToSize(object, depth - 1);
+    }
+    return serialized;
+}
+exports.limitObjectDepthToSize = limitObjectDepthToSize;
+/** JSDoc */
+function serializeKeysToEventMessage(keys, maxLength) {
+    if (maxLength === void 0) { maxLength = MAX_SERIALIZE_KEYS_LENGTH; }
+    if (!keys.length) {
+        return '[object has no keys]';
+    }
+    if (keys[0].length >= maxLength) {
+        return keys[0];
+    }
+    for (var includedKeys = keys.length; includedKeys > 0; includedKeys--) {
+        var serialized = keys.slice(0, includedKeys).join(', ');
+        if (serialized.length > maxLength) {
+            continue;
+        }
+        if (includedKeys === keys.length) {
+            return serialized;
+        }
+        return serialized + "\u2026";
+    }
+    return '';
+}
+exports.serializeKeysToEventMessage = serializeKeysToEventMessage;
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign#Polyfill
+/** JSDoc */
+function assign(target) {
+    var args = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        args[_i - 1] = arguments[_i];
+    }
+    var e_1, _a;
+    if (target === null || target === undefined) {
+        throw new TypeError('Cannot convert undefined or null to object');
+    }
+    var to = Object(target);
+    try {
+        for (var args_1 = __values(args), args_1_1 = args_1.next(); !args_1_1.done; args_1_1 = args_1.next()) {
+            var source = args_1_1.value;
+            if (source !== null) {
+                for (var nextKey in source) {
+                    if (Object.prototype.hasOwnProperty.call(source, nextKey)) {
+                        to[nextKey] = source[nextKey];
+                    }
+                }
+            }
+        }
+    }
+    catch (e_1_1) { e_1 = { error: e_1_1 }; }
+    finally {
+        try {
+            if (args_1_1 && !args_1_1.done && (_a = args_1.return)) _a.call(args_1);
+        }
+        finally { if (e_1) throw e_1.error; }
+    }
+    return to;
+}
+exports.assign = assign;
+
+});
+
+unwrapExports(object);
+var object_1 = object.serialize;
+var object_2 = object.deserialize;
+var object_3 = object.clone;
+var object_4 = object.fill;
+var object_5 = object.urlEncode;
+var object_6 = object.serializeObject;
+var object_7 = object.limitObjectDepthToSize;
+var object_8 = object.serializeKeysToEventMessage;
+var object_9 = object.assign;
+
+var string = createCommonjsModule(function (module, exports) {
+var __values = (commonjsGlobal && commonjsGlobal.__values) || function (o) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator], i = 0;
+    if (m) return m.call(o);
+    return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+
+/**
+ * Encodes given object into url-friendly format
+ *
+ * @param str An object that contains serializable values
+ * @param max Maximum number of characters in truncated string
+ * @returns string Encoded
+ */
+function truncate(str, max) {
+    if (max === void 0) { max = 0; }
+    if (max === 0 || !is.isString(str)) {
+        return str;
+    }
+    return str.length <= max ? str : str.substr(0, max) + "\u2026";
+}
+exports.truncate = truncate;
+/**
+ * This is basically just `trim_line` from
+ * https://github.com/getsentry/sentry/blob/master/src/sentry/lang/javascript/processor.py#L67
+ *
+ * @param str An object that contains serializable values
+ * @param max Maximum number of characters in truncated string
+ * @returns string Encoded
+ */
+function snipLine(line, colno) {
+    var newLine = line;
+    var ll = newLine.length;
+    if (ll <= 150) {
+        return newLine;
+    }
+    if (colno > ll) {
+        colno = ll; // tslint:disable-line:no-parameter-reassignment
+    }
+    var start = Math.max(colno - 60, 0);
+    if (start < 5) {
+        start = 0;
+    }
+    var end = Math.min(start + 140, ll);
+    if (end > ll - 5) {
+        end = ll;
+    }
+    if (end === ll) {
+        start = Math.max(end - 140, 0);
+    }
+    newLine = newLine.slice(start, end);
+    if (start > 0) {
+        newLine = "'{snip} " + newLine;
+    }
+    if (end < ll) {
+        newLine += ' {snip}';
+    }
+    return newLine;
+}
+exports.snipLine = snipLine;
+/**
+ * Join values in array
+ * @param input array of values to be joined together
+ * @param delimiter string to be placed in-between values
+ * @returns Joined values
+ */
+function safeJoin(input, delimiter) {
+    var e_1, _a;
+    if (!Array.isArray(input)) {
+        return '';
+    }
+    var output = [];
+    try {
+        for (var input_1 = __values(input), input_1_1 = input_1.next(); !input_1_1.done; input_1_1 = input_1.next()) {
+            var value = input_1_1.value;
+            try {
+                output.push(String(value));
+            }
+            catch (e) {
+                output.push('[value cannot be serialized]');
+            }
+        }
+    }
+    catch (e_1_1) { e_1 = { error: e_1_1 }; }
+    finally {
+        try {
+            if (input_1_1 && !input_1_1.done && (_a = input_1.return)) _a.call(input_1);
+        }
+        finally { if (e_1) throw e_1.error; }
+    }
+    return output.join(delimiter);
+}
+exports.safeJoin = safeJoin;
+/**
+ * Checks if given value is included in the target
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/includes#Polyfill
+ * @param target source string
+ * @param search string to be looked for
+ * @returns An answer
+ */
+function includes(target, search) {
+    if (search.length > target.length) {
+        return false;
+    }
+    else {
+        return target.indexOf(search) !== -1;
+    }
+}
+exports.includes = includes;
+
+});
+
+unwrapExports(string);
+var string_1 = string.truncate;
+var string_2 = string.snipLine;
+var string_3 = string.safeJoin;
+var string_4 = string.includes;
+
+// tslint:disable
+/*
+ * JavaScript MD5
+ * https://github.com/blueimp/JavaScript-MD5
+ *
+ * Copyright 2011, Sebastian Tschan
+ * https://blueimp.net
+ *
+ * Licensed under the MIT license:
+ * https://opensource.org/licenses/MIT
+ *
+ * Based on
+ * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
+ * Digest Algorithm, as defined in RFC 1321.
+ * Version 2.2 Copyright (C) Paul Johnston 1999 - 2009
+ * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
+ * Distributed under the BSD License
+ * See http://pajhome.org.uk/crypt/md5 for more info.
+ */
+/**
+ * Add integers, wrapping at 2^32. This uses 16-bit operations internally
+ * to work around bugs in some JS interpreters.
+ */
+function safeAdd(x, y) {
+    var lsw = (x & 0xffff) + (y & 0xffff);
+    var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+    return (msw << 16) | (lsw & 0xffff);
+}
+/**
+ * Bitwise rotate a 32-bit number to the left.
+ */
+function bitRotateLeft(num, cnt) {
+    return (num << cnt) | (num >>> (32 - cnt));
+}
+/**
+ * These functions implement the four basic operations the algorithm uses.
+ */
+function md5cmn(q, a, b, x, s, t) {
+    return safeAdd(bitRotateLeft(safeAdd(safeAdd(a, q), safeAdd(x, t)), s), b);
+}
+function md5ff(a, b, c, d, x, s, t) {
+    return md5cmn((b & c) | (~b & d), a, b, x, s, t);
+}
+function md5gg(a, b, c, d, x, s, t) {
+    return md5cmn((b & d) | (c & ~d), a, b, x, s, t);
+}
+function md5hh(a, b, c, d, x, s, t) {
+    return md5cmn(b ^ c ^ d, a, b, x, s, t);
+}
+function md5ii(a, b, c, d, x, s, t) {
+    return md5cmn(c ^ (b | ~d), a, b, x, s, t);
+}
+/**
+ * Calculate the MD5 of an array of little-endian words, and a bit length.
+ */
+function binlMD5(x, len) {
+    /** append padding */
+    x[len >> 5] |= 0x80 << len % 32;
+    x[(((len + 64) >>> 9) << 4) + 14] = len;
+    var i;
+    var olda;
+    var oldb;
+    var oldc;
+    var oldd;
+    var a = 1732584193;
+    var b = -271733879;
+    var c = -1732584194;
+    var d = 271733878;
+    for (i = 0; i < x.length; i += 16) {
+        olda = a;
+        oldb = b;
+        oldc = c;
+        oldd = d;
+        a = md5ff(a, b, c, d, x[i], 7, -680876936);
+        d = md5ff(d, a, b, c, x[i + 1], 12, -389564586);
+        c = md5ff(c, d, a, b, x[i + 2], 17, 606105819);
+        b = md5ff(b, c, d, a, x[i + 3], 22, -1044525330);
+        a = md5ff(a, b, c, d, x[i + 4], 7, -176418897);
+        d = md5ff(d, a, b, c, x[i + 5], 12, 1200080426);
+        c = md5ff(c, d, a, b, x[i + 6], 17, -1473231341);
+        b = md5ff(b, c, d, a, x[i + 7], 22, -45705983);
+        a = md5ff(a, b, c, d, x[i + 8], 7, 1770035416);
+        d = md5ff(d, a, b, c, x[i + 9], 12, -1958414417);
+        c = md5ff(c, d, a, b, x[i + 10], 17, -42063);
+        b = md5ff(b, c, d, a, x[i + 11], 22, -1990404162);
+        a = md5ff(a, b, c, d, x[i + 12], 7, 1804603682);
+        d = md5ff(d, a, b, c, x[i + 13], 12, -40341101);
+        c = md5ff(c, d, a, b, x[i + 14], 17, -1502002290);
+        b = md5ff(b, c, d, a, x[i + 15], 22, 1236535329);
+        a = md5gg(a, b, c, d, x[i + 1], 5, -165796510);
+        d = md5gg(d, a, b, c, x[i + 6], 9, -1069501632);
+        c = md5gg(c, d, a, b, x[i + 11], 14, 643717713);
+        b = md5gg(b, c, d, a, x[i], 20, -373897302);
+        a = md5gg(a, b, c, d, x[i + 5], 5, -701558691);
+        d = md5gg(d, a, b, c, x[i + 10], 9, 38016083);
+        c = md5gg(c, d, a, b, x[i + 15], 14, -660478335);
+        b = md5gg(b, c, d, a, x[i + 4], 20, -405537848);
+        a = md5gg(a, b, c, d, x[i + 9], 5, 568446438);
+        d = md5gg(d, a, b, c, x[i + 14], 9, -1019803690);
+        c = md5gg(c, d, a, b, x[i + 3], 14, -187363961);
+        b = md5gg(b, c, d, a, x[i + 8], 20, 1163531501);
+        a = md5gg(a, b, c, d, x[i + 13], 5, -1444681467);
+        d = md5gg(d, a, b, c, x[i + 2], 9, -51403784);
+        c = md5gg(c, d, a, b, x[i + 7], 14, 1735328473);
+        b = md5gg(b, c, d, a, x[i + 12], 20, -1926607734);
+        a = md5hh(a, b, c, d, x[i + 5], 4, -378558);
+        d = md5hh(d, a, b, c, x[i + 8], 11, -2022574463);
+        c = md5hh(c, d, a, b, x[i + 11], 16, 1839030562);
+        b = md5hh(b, c, d, a, x[i + 14], 23, -35309556);
+        a = md5hh(a, b, c, d, x[i + 1], 4, -1530992060);
+        d = md5hh(d, a, b, c, x[i + 4], 11, 1272893353);
+        c = md5hh(c, d, a, b, x[i + 7], 16, -155497632);
+        b = md5hh(b, c, d, a, x[i + 10], 23, -1094730640);
+        a = md5hh(a, b, c, d, x[i + 13], 4, 681279174);
+        d = md5hh(d, a, b, c, x[i], 11, -358537222);
+        c = md5hh(c, d, a, b, x[i + 3], 16, -722521979);
+        b = md5hh(b, c, d, a, x[i + 6], 23, 76029189);
+        a = md5hh(a, b, c, d, x[i + 9], 4, -640364487);
+        d = md5hh(d, a, b, c, x[i + 12], 11, -421815835);
+        c = md5hh(c, d, a, b, x[i + 15], 16, 530742520);
+        b = md5hh(b, c, d, a, x[i + 2], 23, -995338651);
+        a = md5ii(a, b, c, d, x[i], 6, -198630844);
+        d = md5ii(d, a, b, c, x[i + 7], 10, 1126891415);
+        c = md5ii(c, d, a, b, x[i + 14], 15, -1416354905);
+        b = md5ii(b, c, d, a, x[i + 5], 21, -57434055);
+        a = md5ii(a, b, c, d, x[i + 12], 6, 1700485571);
+        d = md5ii(d, a, b, c, x[i + 3], 10, -1894986606);
+        c = md5ii(c, d, a, b, x[i + 10], 15, -1051523);
+        b = md5ii(b, c, d, a, x[i + 1], 21, -2054922799);
+        a = md5ii(a, b, c, d, x[i + 8], 6, 1873313359);
+        d = md5ii(d, a, b, c, x[i + 15], 10, -30611744);
+        c = md5ii(c, d, a, b, x[i + 6], 15, -1560198380);
+        b = md5ii(b, c, d, a, x[i + 13], 21, 1309151649);
+        a = md5ii(a, b, c, d, x[i + 4], 6, -145523070);
+        d = md5ii(d, a, b, c, x[i + 11], 10, -1120210379);
+        c = md5ii(c, d, a, b, x[i + 2], 15, 718787259);
+        b = md5ii(b, c, d, a, x[i + 9], 21, -343485551);
+        a = safeAdd(a, olda);
+        b = safeAdd(b, oldb);
+        c = safeAdd(c, oldc);
+        d = safeAdd(d, oldd);
+    }
+    return [a, b, c, d];
+}
+/**
+ * Convert an array of little-endian words to a string
+ */
+function binl2rstr(input) {
+    var i;
+    var output = '';
+    var length32 = input.length * 32;
+    for (i = 0; i < length32; i += 8) {
+        output += String.fromCharCode((input[i >> 5] >>> i % 32) & 0xff);
+    }
+    return output;
+}
+/**
+ * Convert a raw string to an array of little-endian words
+ * Characters >255 have their high-byte silently ignored.
+ */
+function rstr2binl(input) {
+    var i;
+    var output = [];
+    output[(input.length >> 2) - 1] = undefined;
+    for (i = 0; i < output.length; i += 1) {
+        output[i] = 0;
+    }
+    var length8 = input.length * 8;
+    for (i = 0; i < length8; i += 8) {
+        output[i >> 5] |= (input.charCodeAt(i / 8) & 0xff) << i % 32;
+    }
+    return output;
+}
+/**
+ * Calculate the MD5 of a raw string
+ */
+function rstrMD5(s) {
+    return binl2rstr(binlMD5(rstr2binl(s), s.length * 8));
+}
+/**
+ * Calculate the HMAC-MD5, of a key and some data (raw strings)
+ */
+function rstrHMACMD5(key, data) {
+    var i;
+    var bkey = rstr2binl(key);
+    var ipad = [];
+    var opad = [];
+    var hash;
+    ipad[15] = opad[15] = undefined;
+    if (bkey.length > 16) {
+        bkey = binlMD5(bkey, key.length * 8);
+    }
+    for (i = 0; i < 16; i += 1) {
+        ipad[i] = bkey[i] ^ 0x36363636;
+        opad[i] = bkey[i] ^ 0x5c5c5c5c;
+    }
+    hash = binlMD5(ipad.concat(rstr2binl(data)), 512 + data.length * 8);
+    return binl2rstr(binlMD5(opad.concat(hash), 512 + 128));
+}
+/**
+ * Convert a raw string to a hex string
+ */
+function rstr2hex(input) {
+    var hexTab = '0123456789abcdef';
+    var output = '';
+    var x;
+    var i;
+    for (i = 0; i < input.length; i += 1) {
+        x = input.charCodeAt(i);
+        output += hexTab.charAt((x >>> 4) & 0x0f) + hexTab.charAt(x & 0x0f);
+    }
+    return output;
+}
+/**
+ * Encode a string as utf-8
+ */
+function str2rstrUTF8(input) {
+    return unescape(encodeURIComponent(input));
+}
+/*
+* Take string arguments and return either raw or hex encoded strings
+*/
+function rawMD5(s) {
+    return rstrMD5(str2rstrUTF8(s));
+}
+function hexMD5(s) {
+    return rstr2hex(rawMD5(s));
+}
+function rawHMACMD5(k, d) {
+    return rstrHMACMD5(str2rstrUTF8(k), str2rstrUTF8(d));
+}
+function hexHMACMD5(k, d) {
+    return rstr2hex(rawHMACMD5(k, d));
+}
+function md5(string, key, raw) {
+    if (!key) {
+        if (!raw) {
+            return hexMD5(string);
+        }
+        return rawMD5(string);
+    }
+    if (!raw) {
+        return hexHMACMD5(key, string);
+    }
+    return rawHMACMD5(key, string);
+}
+
+// tslint:disable
+/**
+ * TraceKit - Cross brower stack traces
+ *
+ * This was originally forked from github.com/occ/TraceKit, but has since been
+ * largely modified and is now maintained as part of Sentry JS SDK.
+ *
+ * NOTE: Last merge with upstream repository
+ * Jul 11,2018 - #f03357c
+ *
+ * https://github.com/csnover/TraceKit
+ * @license MIT
+ * @namespace TraceKit
+ */
+var window$1 = misc_3();
+var TraceKit = {
+    wrap: function () { return function () { }; },
+    report: false,
+    collectWindowErrors: false,
+    computeStackTrace: false,
+    remoteFetching: false,
+    linesOfContext: false,
+    extendToAsynchronousCallbacks: false,
+};
+// var TraceKit: TraceKitInterface = {};
+// var TraceKit = {};
+// global reference to slice
+var _slice = [].slice;
+var UNKNOWN_FUNCTION = '?';
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error#Error_types
+var ERROR_TYPES_RE = /^(?:[Uu]ncaught (?:exception: )?)?(?:((?:Eval|Internal|Range|Reference|Syntax|Type|URI|)Error): )?(.*)$/;
+/**
+ * A better form of hasOwnProperty<br/>
+ * Example: `_has(MainHostObject, property) === true/false`
+ *
+ * @param {Object} object to check property
+ * @param {string} key to check
+ * @return {Boolean} true if the object has the key and it is not inherited
+ */
+function _has(object, key) {
+    return Object.prototype.hasOwnProperty.call(object, key);
+}
+/**
+ * A safe form of location.href<br/>
+ *
+ * @return {string} location.href
+ */
+function getLocationHref() {
+    if (typeof document === 'undefined' || document.location == null)
+        return '';
+    return document.location.href;
+}
+/**
+ * A safe form of location.origin<br/>
+ *
+ * @return {string} location.origin
+ */
+function getLocationOrigin() {
+    if (typeof document === 'undefined' || document.location == null)
+        return '';
+    // Oh dear IE10...
+    if (!document.location.origin) {
+        return (document.location.protocol +
+            '//' +
+            document.location.hostname +
+            (document.location.port ? ':' + document.location.port : ''));
+    }
+    return document.location.origin;
+}
+/**
+ * Wrap any function in a TraceKit reporter<br/>
+ * Example: `func = TraceKit.wrap(func);`
+ *
+ * @param {Function} func Function to be wrapped
+ * @return {Function} The wrapped func
+ * @memberof TraceKit
+ */
+TraceKit.wrap = function traceKitWrapper(func) {
+    function wrapped() {
+        try {
+            // @ts-ignore
+            return func.apply(this, arguments);
+        }
+        catch (e) {
+            TraceKit.report(e);
+            throw e;
+        }
+    }
+    return wrapped;
+};
+/**
+ * Cross-browser processing of unhandled exceptions
+ *
+ * Syntax:
+ * ```js
+ *   TraceKit.report.subscribe(function(stackInfo) { ... })
+ *   TraceKit.report.unsubscribe(function(stackInfo) { ... })
+ *   TraceKit.report(exception)
+ *   try { ...code... } catch(ex) { TraceKit.report(ex); }
+ * ```
+ *
+ * Supports:
+ *   - Firefox: full stack trace with line numbers, plus column number
+ *     on top frame; column number is not guaranteed
+ *   - Opera: full stack trace with line and column numbers
+ *   - Chrome: full stack trace with line and column numbers
+ *   - Safari: line and column number for the top frame only; some frames
+ *     may be missing, and column number is not guaranteed
+ *   - IE: line and column number for the top frame only; some frames
+ *     may be missing, and column number is not guaranteed
+ *
+ * In theory, TraceKit should work on all of the following versions:
+ *   - IE5.5+ (only 8.0 tested)
+ *   - Firefox 0.9+ (only 3.5+ tested)
+ *   - Opera 7+ (only 10.50 tested; versions 9 and earlier may require
+ *     Exceptions Have Stacktrace to be enabled in opera:config)
+ *   - Safari 3+ (only 4+ tested)
+ *   - Chrome 1+ (only 5+ tested)
+ *   - Konqueror 3.5+ (untested)
+ *
+ * Requires TraceKit.computeStackTrace.
+ *
+ * Tries to catch all unhandled exceptions and report them to the
+ * subscribed handlers. Please note that TraceKit.report will rethrow the
+ * exception. This is REQUIRED in order to get a useful stack trace in IE.
+ * If the exception does not reach the top of the browser, you will only
+ * get a stack trace from the point where TraceKit.report was called.
+ *
+ * Handlers receive a TraceKit.StackTrace object as described in the
+ * TraceKit.computeStackTrace docs.
+ *
+ * @memberof TraceKit
+ * @namespace
+ */
+TraceKit.report = (function reportModuleWrapper() {
+    var handlers = [], lastException = null, lastExceptionStack = null;
+    /**
+     * Add a crash handler.
+     * @param {Function} handler
+     * @memberof TraceKit.report
+     */
+    function subscribe(handler) {
+        // NOTE: We call both handlers manually in browser/integrations/globalhandler.ts
+        // So user can choose which one he wants to attach
+        // installGlobalHandler();
+        // installGlobalUnhandledRejectionHandler();
+        handlers.push(handler);
+    }
+    /**
+     * Remove a crash handler.
+     * @param {Function} handler
+     * @memberof TraceKit.report
+     */
+    function unsubscribe(handler) {
+        for (var i = handlers.length - 1; i >= 0; --i) {
+            if (handlers[i] === handler) {
+                handlers.splice(i, 1);
+            }
+        }
+        if (handlers.length === 0) {
+            uninstallGlobalHandler();
+            uninstallGlobalUnhandledRejectionHandler();
+        }
+    }
+    /**
+     * Dispatch stack information to all handlers.
+     * @param {TraceKit.StackTrace} stack
+     * @param {boolean} isWindowError Is this a top-level window error?
+     * @param {Error=} error The error that's being handled (if available, null otherwise)
+     * @memberof TraceKit.report
+     * @throws An exception if an error occurs while calling an handler.
+     */
+    function notifyHandlers(stack, isWindowError, error) {
+        var exception = null;
+        if (isWindowError && !TraceKit.collectWindowErrors) {
+            return;
+        }
+        for (var i in handlers) {
+            if (_has(handlers, i)) {
+                try {
+                    handlers[i](stack, isWindowError, error);
+                }
+                catch (inner) {
+                    exception = inner;
+                }
+            }
+        }
+        if (exception) {
+            throw exception;
+        }
+    }
+    var _oldOnerrorHandler, _onErrorHandlerInstalled;
+    var _oldOnunhandledrejectionHandler, _onUnhandledRejectionHandlerInstalled;
+    /**
+     * Ensures all global unhandled exceptions are recorded.
+     * Supported by Gecko and IE.
+     * @param {string} message Error message.
+     * @param {string} url URL of script that generated the exception.
+     * @param {(number|string)} lineNo The line number at which the error occurred.
+     * @param {(number|string)=} columnNo The column number at which the error occurred.
+     * @param {Error=} errorObj The actual Error object.
+     * @memberof TraceKit.report
+     */
+    function traceKitWindowOnError(message, url, lineNo, columnNo, errorObj) {
+        var stack = null;
+        // If 'errorObj' is ErrorEvent, get real Error from inside
+        errorObj = is_2(errorObj) ? errorObj.error : errorObj;
+        // If 'message' is ErrorEvent, get real message from inside
+        message = is_2(message) ? message.message : message;
+        if (lastExceptionStack) {
+            TraceKit.computeStackTrace.augmentStackTraceWithInitialElement(lastExceptionStack, url, lineNo, message);
+            processLastException();
+        }
+        else if (errorObj && is_1(errorObj)) {
+            stack = TraceKit.computeStackTrace(errorObj);
+            stack.mechanism = 'onerror';
+            notifyHandlers(stack, true, errorObj);
+        }
+        else {
+            var location = {
+                url: url,
+                line: lineNo,
+                column: columnNo,
+            };
+            var name;
+            var msg = message; // must be new var or will modify original `arguments`
+            if ({}.toString.call(message) === '[object String]') {
+                var groups = message.match(ERROR_TYPES_RE);
+                if (groups) {
+                    name = groups[1];
+                    msg = groups[2];
+                }
+            }
+            location.func = TraceKit.computeStackTrace.guessFunctionName(location.url, location.line);
+            location.context = TraceKit.computeStackTrace.gatherContext(location.url, location.line);
+            stack = {
+                name: name,
+                message: msg,
+                mode: 'onerror',
+                mechanism: 'onerror',
+                stack: [
+                    __assign({}, location, { 
+                        // Firefox sometimes doesn't return url correctly and this is an old behavior
+                        // that I prefer to port here as well.
+                        // It can be altered only here, as previously it's using `location.url` for other things — Kamil
+                        url: location.url || getLocationHref() }),
+                ],
+            };
+            notifyHandlers(stack, true, null);
+        }
+        if (_oldOnerrorHandler) {
+            // @ts-ignore
+            return _oldOnerrorHandler.apply(this, arguments);
+        }
+        return false;
+    }
+    /**
+     * Ensures all unhandled rejections are recorded.
+     * @param {PromiseRejectionEvent} e event.
+     * @memberof TraceKit.report
+     * @see https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onunhandledrejection
+     * @see https://developer.mozilla.org/en-US/docs/Web/API/PromiseRejectionEvent
+     */
+    function traceKitWindowOnUnhandledRejection(e) {
+        var err = (e && (e.detail ? e.detail.reason : e.reason)) || e;
+        var stack = TraceKit.computeStackTrace(err);
+        stack.mechanism = 'onunhandledrejection';
+        notifyHandlers(stack, true, err);
+    }
+    /**
+     * Install a global onerror handler
+     * @memberof TraceKit.report
+     */
+    function installGlobalHandler() {
+        if (_onErrorHandlerInstalled === true) {
+            return;
+        }
+        _oldOnerrorHandler = window$1.onerror;
+        window$1.onerror = traceKitWindowOnError;
+        _onErrorHandlerInstalled = true;
+    }
+    /**
+     * Uninstall the global onerror handler
+     * @memberof TraceKit.report
+     */
+    function uninstallGlobalHandler() {
+        if (_onErrorHandlerInstalled) {
+            window$1.onerror = _oldOnerrorHandler;
+            _onErrorHandlerInstalled = false;
+        }
+    }
+    /**
+     * Install a global onunhandledrejection handler
+     * @memberof TraceKit.report
+     */
+    function installGlobalUnhandledRejectionHandler() {
+        if (_onUnhandledRejectionHandlerInstalled === true) {
+            return;
+        }
+        _oldOnunhandledrejectionHandler = window$1.onunhandledrejection;
+        window$1.onunhandledrejection = traceKitWindowOnUnhandledRejection;
+        _onUnhandledRejectionHandlerInstalled = true;
+    }
+    /**
+     * Uninstall the global onunhandledrejection handler
+     * @memberof TraceKit.report
+     */
+    function uninstallGlobalUnhandledRejectionHandler() {
+        if (_onUnhandledRejectionHandlerInstalled) {
+            window$1.onerror = _oldOnunhandledrejectionHandler;
+            _onUnhandledRejectionHandlerInstalled = false;
+        }
+    }
+    /**
+     * Process the most recent exception
+     * @memberof TraceKit.report
+     */
+    function processLastException() {
+        var _lastExceptionStack = lastExceptionStack, _lastException = lastException;
+        lastExceptionStack = null;
+        lastException = null;
+        notifyHandlers(_lastExceptionStack, false, _lastException);
+    }
+    /**
+     * Reports an unhandled Error to TraceKit.
+     * @param {Error} ex
+     * @memberof TraceKit.report
+     * @throws An exception if an incomplete stack trace is detected (old IE browsers).
+     */
+    function report(ex) {
+        if (lastExceptionStack) {
+            if (lastException === ex) {
+                return; // already caught by an inner catch block, ignore
+            }
+            else {
+                processLastException();
+            }
+        }
+        var stack = TraceKit.computeStackTrace(ex);
+        lastExceptionStack = stack;
+        lastException = ex;
+        // If the stack trace is incomplete, wait for 2 seconds for
+        // slow slow IE to see if onerror occurs or not before reporting
+        // this exception; otherwise, we will end up with an incomplete
+        // stack trace
+        setTimeout(function () {
+            if (lastException === ex) {
+                processLastException();
+            }
+        }, stack.incomplete ? 2000 : 0);
+        throw ex; // re-throw to propagate to the top level (and cause window.onerror)
+    }
+    report.subscribe = subscribe;
+    report.unsubscribe = unsubscribe;
+    report.installGlobalHandler = installGlobalHandler;
+    report.installGlobalUnhandledRejectionHandler = installGlobalUnhandledRejectionHandler;
+    return report;
+})();
+/**
+ * An object representing a single stack frame.
+ * @typedef {Object} StackFrame
+ * @property {string} url The JavaScript or HTML file URL.
+ * @property {string} func The function name, or empty for anonymous functions (if guessing did not work).
+ * @property {string[]?} args The arguments passed to the function, if known.
+ * @property {number=} line The line number, if known.
+ * @property {number=} column The column number, if known.
+ * @property {string[]} context An array of source code lines; the middle element corresponds to the correct line#.
+ * @memberof TraceKit
+ */
+/**
+ * An object representing a JavaScript stack trace.
+ * @typedef {Object} StackTrace
+ * @property {string} name The name of the thrown exception.
+ * @property {string} message The exception error message.
+ * @property {TraceKit.StackFrame[]} stack An array of stack frames.
+ * @property {string} mode 'stack', 'stacktrace', 'multiline', 'callers', 'onerror', or 'failed' -- method used to collect the stack trace.
+ * @memberof TraceKit
+ */
+/**
+ * TraceKit.computeStackTrace: cross-browser stack traces in JavaScript
+ *
+ * Syntax:
+ *   ```js
+ *   s = TraceKit.computeStackTrace.ofCaller([depth])
+ *   s = TraceKit.computeStackTrace(exception) // consider using TraceKit.report instead (see below)
+ *   ```
+ *
+ * Supports:
+ *   - Firefox:  full stack trace with line numbers and unreliable column
+ *               number on top frame
+ *   - Opera 10: full stack trace with line and column numbers
+ *   - Opera 9-: full stack trace with line numbers
+ *   - Chrome:   full stack trace with line and column numbers
+ *   - Safari:   line and column number for the topmost stacktrace element
+ *               only
+ *   - IE:       no line numbers whatsoever
+ *
+ * Tries to guess names of anonymous functions by looking for assignments
+ * in the source code. In IE and Safari, we have to guess source file names
+ * by searching for function bodies inside all page scripts. This will not
+ * work for scripts that are loaded cross-domain.
+ * Here be dragons: some function names may be guessed incorrectly, and
+ * duplicate functions may be mismatched.
+ *
+ * TraceKit.computeStackTrace should only be used for tracing purposes.
+ * Logging of unhandled exceptions should be done with TraceKit.report,
+ * which builds on top of TraceKit.computeStackTrace and provides better
+ * IE support by utilizing the window.onerror event to retrieve information
+ * about the top of the stack.
+ *
+ * Note: In IE and Safari, no stack trace is recorded on the Error object,
+ * so computeStackTrace instead walks its *own* chain of callers.
+ * This means that:
+ *  * in Safari, some methods may be missing from the stack trace;
+ *  * in IE, the topmost function in the stack trace will always be the
+ *    caller of computeStackTrace.
+ *
+ * This is okay for tracing (because you are likely to be calling
+ * computeStackTrace from the function you want to be the topmost element
+ * of the stack trace anyway), but not okay for logging unhandled
+ * exceptions (because your catch block will likely be far away from the
+ * inner function that actually caused the exception).
+ *
+ * Tracing example:
+ *  ```js
+ *     function trace(message) {
+ *         var stackInfo = TraceKit.computeStackTrace.ofCaller();
+ *         var data = message + "\n";
+ *         for(var i in stackInfo.stack) {
+ *             var item = stackInfo.stack[i];
+ *             data += (item.func || '[anonymous]') + "() in " + item.url + ":" + (item.line || '0') + "\n";
+ *         }
+ *         if (window.console)
+ *             console.info(data);
+ *         else
+ *             alert(data);
+ *     }
+ * ```
+ * @memberof TraceKit
+ * @namespace
+ */
+TraceKit.computeStackTrace = (function computeStackTraceWrapper() {
+    var debug = false, sourceCache = {};
+    /**
+     * Attempts to retrieve source code via XMLHttpRequest, which is used
+     * to look up anonymous function names.
+     * @param {string} url URL of source code.
+     * @return {string} Source contents.
+     * @memberof TraceKit.computeStackTrace
+     */
+    function loadSource(url) {
+        if (!TraceKit.remoteFetching) {
+            //Only attempt request if remoteFetching is on.
+            return '';
+        }
+        try {
+            var getXHR = function () {
+                try {
+                    return new window$1.XMLHttpRequest();
+                }
+                catch (e) {
+                    // explicitly bubble up the exception if not found
+                    return new window$1.ActiveXObject('Microsoft.XMLHTTP');
+                }
+            };
+            var request = getXHR();
+            request.open('GET', url, false);
+            request.send('');
+            return request.responseText;
+        }
+        catch (e) {
+            return '';
+        }
+    }
+    /**
+     * Retrieves source code from the source code cache.
+     * @param {string} url URL of source code.
+     * @return {Array.<string>} Source contents.
+     * @memberof TraceKit.computeStackTrace
+     */
+    function getSource(url) {
+        if (typeof url !== 'string') {
+            return [];
+        }
+        if (!_has(sourceCache, url)) {
+            // URL needs to be able to fetched within the acceptable domain.  Otherwise,
+            // cross-domain errors will be triggered.
+            /*
+                        Regex matches:
+                        0 - Full Url
+                        1 - Protocol
+                        2 - Domain
+                        3 - Port (Useful for internal applications)
+                        4 - Path
+                    */
+            var source = '';
+            var domain = '';
+            try {
+                domain = window$1.document.domain;
+            }
+            catch (e) { }
+            var match = /(.*)\:\/\/([^:\/]+)([:\d]*)\/{0,1}([\s\S]*)/.exec(url);
+            if (match && match[2] === domain) {
+                source = loadSource(url);
+            }
+            sourceCache[url] = source ? source.split('\n') : [];
+        }
+        return sourceCache[url];
+    }
+    /**
+     * Tries to use an externally loaded copy of source code to determine
+     * the name of a function by looking at the name of the variable it was
+     * assigned to, if any.
+     * @param {string} url URL of source code.
+     * @param {(string|number)} lineNo Line number in source code.
+     * @return {string} The function name, if discoverable.
+     * @memberof TraceKit.computeStackTrace
+     */
+    function guessFunctionName(url, lineNo) {
+        var reFunctionArgNames = /function ([^(]*)\(([^)]*)\)/, reGuessFunction = /['"]?([0-9A-Za-z$_]+)['"]?\s*[:=]\s*(function|eval|new Function)/, line = '', maxLines = 10, source = getSource(url), m;
+        if (!source.length) {
+            return UNKNOWN_FUNCTION;
+        }
+        // Walk backwards from the first line in the function until we find the line which
+        // matches the pattern above, which is the function definition
+        for (var i = 0; i < maxLines; ++i) {
+            line = source[lineNo - i] + line;
+            if (!is_5(line)) {
+                if ((m = reGuessFunction.exec(line))) {
+                    return m[1];
+                }
+                else if ((m = reFunctionArgNames.exec(line))) {
+                    return m[1];
+                }
+            }
+        }
+        return UNKNOWN_FUNCTION;
+    }
+    /**
+     * Retrieves the surrounding lines from where an exception occurred.
+     * @param {string} url URL of source code.
+     * @param {(string|number)} line Line number in source code to center around for context.
+     * @return {?Array.<string>} Lines of source code.
+     * @memberof TraceKit.computeStackTrace
+     */
+    function gatherContext(url, line) {
+        var source = getSource(url);
+        if (!source.length) {
+            return null;
+        }
+        var context = [], 
+        // linesBefore & linesAfter are inclusive with the offending line.
+        // if linesOfContext is even, there will be one extra line
+        //   *before* the offending line.
+        linesBefore = Math.floor(TraceKit.linesOfContext / 2), 
+        // Add one extra line if linesOfContext is odd
+        linesAfter = linesBefore + (TraceKit.linesOfContext % 2), start = Math.max(0, line - linesBefore - 1), end = Math.min(source.length, line + linesAfter - 1);
+        line -= 1; // convert to 0-based index
+        for (var i = start; i < end; ++i) {
+            if (!is_5(source[i])) {
+                context.push(source[i]);
+            }
+        }
+        return context.length > 0 ? context : null;
+    }
+    /**
+     * Escapes special characters, except for whitespace, in a string to be
+     * used inside a regular expression as a string literal.
+     * @param {string} text The string.
+     * @return {string} The escaped string literal.
+     * @memberof TraceKit.computeStackTrace
+     */
+    function escapeRegExp(text) {
+        return text.replace(/[\-\[\]{}()*+?.,\\\^$|#]/g, '\\$&');
+    }
+    /**
+     * Escapes special characters in a string to be used inside a regular
+     * expression as a string literal. Also ensures that HTML entities will
+     * be matched the same as their literal friends.
+     * @param {string} body The string.
+     * @return {string} The escaped string.
+     * @memberof TraceKit.computeStackTrace
+     */
+    function escapeCodeAsRegExpForMatchingInsideHTML(body) {
+        return escapeRegExp(body)
+            .replace('<', '(?:<|&lt;)')
+            .replace('>', '(?:>|&gt;)')
+            .replace('&', '(?:&|&amp;)')
+            .replace('"', '(?:"|&quot;)')
+            .replace(/\s+/g, '\\s+');
+    }
+    /**
+     * Determines where a code fragment occurs in the source code.
+     * @param {RegExp} re The function definition.
+     * @param {Array.<string>} urls A list of URLs to search.
+     * @return {?Object.<string, (string|number)>} An object containing
+     * the url, line, and column number of the defined function.
+     * @memberof TraceKit.computeStackTrace
+     */
+    function findSourceInUrls(re, urls) {
+        var source, m;
+        for (var i = 0, j = urls.length; i < j; ++i) {
+            if ((source = getSource(urls[i])).length) {
+                source = source.join('\n');
+                if ((m = re.exec(source))) {
+                    return {
+                        url: urls[i],
+                        line: source.substring(0, m.index).split('\n').length,
+                        column: m.index - source.lastIndexOf('\n', m.index) - 1,
+                    };
+                }
+            }
+        }
+        return null;
+    }
+    /**
+     * Determines at which column a code fragment occurs on a line of the
+     * source code.
+     * @param {string} fragment The code fragment.
+     * @param {string} url The URL to search.
+     * @param {(string|number)} line The line number to examine.
+     * @return {?number} The column number.
+     * @memberof TraceKit.computeStackTrace
+     */
+    function findSourceInLine(fragment, url, line) {
+        var source = getSource(url), re = new RegExp('\\b' + escapeRegExp(fragment) + '\\b'), m;
+        line -= 1;
+        if (source && source.length > line && (m = re.exec(source[line]))) {
+            return m.index;
+        }
+        return null;
+    }
+    /**
+     * Determines where a function was defined within the source code.
+     * @param {(Function|string)} func A function reference or serialized
+     * function definition.
+     * @return {?Object.<string, (string|number)>} An object containing
+     * the url, line, and column number of the defined function.
+     * @memberof TraceKit.computeStackTrace
+     */
+    function findSourceByFunctionBody(func) {
+        if (is_5(window$1 && window$1.document)) {
+            return;
+        }
+        var urls = [getLocationHref()], scripts = window$1.document.getElementsByTagName('script'), body, code = '' + func, codeRE = /^function(?:\s+([\w$]+))?\s*\(([\w\s,]*)\)\s*\{\s*(\S[\s\S]*\S)\s*\}\s*$/, eventRE = /^function on([\w$]+)\s*\(event\)\s*\{\s*(\S[\s\S]*\S)\s*\}\s*$/, re, parts, result;
+        for (var i = 0; i < scripts.length; ++i) {
+            var script = scripts[i];
+            if (script.src) {
+                urls.push(script.src);
+            }
+        }
+        if (!(parts = codeRE.exec(code))) {
+            re = new RegExp(escapeRegExp(code).replace(/\s+/g, '\\s+'));
+        }
+        // not sure if this is really necessary, but I don’t have a test
+        // corpus large enough to confirm that and it was in the original.
+        else {
+            var name = parts[1] ? '\\s+' + parts[1] : '', args = parts[2].split(',').join('\\s*,\\s*');
+            body = escapeRegExp(parts[3]).replace(/;$/, ';?'); // semicolon is inserted if the function ends with a comment.replace(/\s+/g, '\\s+');
+            re = new RegExp('function' + name + '\\s*\\(\\s*' + args + '\\s*\\)\\s*{\\s*' + body + '\\s*}');
+        }
+        // look for a normal function definition
+        if ((result = findSourceInUrls(re, urls))) {
+            return result;
+        }
+        // look for an old-school event handler function
+        if ((parts = eventRE.exec(code))) {
+            var event = parts[1];
+            body = escapeCodeAsRegExpForMatchingInsideHTML(parts[2]);
+            // look for a function defined in HTML as an onXXX handler
+            re = new RegExp('on' + event + '=[\\\'"]\\s*' + body + '\\s*[\\\'"]', 'i');
+            if ((result = findSourceInUrls(re, urls[0]))) {
+                return result;
+            }
+            // look for ???
+            re = new RegExp(body);
+            if ((result = findSourceInUrls(re, urls))) {
+                return result;
+            }
+        }
+        return null;
+    }
+    // Contents of Exception in various browsers.
+    //
+    // SAFARI:
+    // ex.message = Can't find variable: qq
+    // ex.line = 59
+    // ex.sourceId = 580238192
+    // ex.sourceURL = http://...
+    // ex.expressionBeginOffset = 96
+    // ex.expressionCaretOffset = 98
+    // ex.expressionEndOffset = 98
+    // ex.name = ReferenceError
+    //
+    // FIREFOX:
+    // ex.message = qq is not defined
+    // ex.fileName = http://...
+    // ex.lineNumber = 59
+    // ex.columnNumber = 69
+    // ex.stack = ...stack trace... (see the example below)
+    // ex.name = ReferenceError
+    //
+    // CHROME:
+    // ex.message = qq is not defined
+    // ex.name = ReferenceError
+    // ex.type = not_defined
+    // ex.arguments = ['aa']
+    // ex.stack = ...stack trace...
+    //
+    // INTERNET EXPLORER:
+    // ex.message = ...
+    // ex.name = ReferenceError
+    //
+    // OPERA:
+    // ex.message = ...message... (see the example below)
+    // ex.name = ReferenceError
+    // ex.opera#sourceloc = 11  (pretty much useless, duplicates the info in ex.message)
+    // ex.stacktrace = n/a; see 'opera:config#UserPrefs|Exceptions Have Stacktrace'
+    /**
+     * Computes stack trace information from the stack property.
+     * Chrome and Gecko use this property.
+     * @param {Error} ex
+     * @return {?TraceKit.StackTrace} Stack trace information.
+     * @memberof TraceKit.computeStackTrace
+     */
+    function computeStackTraceFromStackProp(ex) {
+        if (!ex.stack) {
+            return null;
+        }
+        var chrome = /^\s*at (?:(.*?) ?\()?((?:file|https?|blob|chrome-extension|native|eval|webpack|<anonymous>|[a-z]:|\/).*?)(?::(\d+))?(?::(\d+))?\)?\s*$/i, gecko = /^\s*(.*?)(?:\((.*?)\))?(?:^|@)((?:file|https?|blob|chrome|webpack|resource|moz-extension).*?:\/.*?|\[native code\]|[^@]*bundle)(?::(\d+))?(?::(\d+))?\s*$/i, winjs = /^\s*at (?:((?:\[object object\])?.+) )?\(?((?:file|ms-appx|https?|webpack|blob):.*?):(\d+)(?::(\d+))?\)?\s*$/i, 
+        // Used to additionally parse URL/line/column from eval frames
+        isEval, geckoEval = /(\S+) line (\d+)(?: > eval line \d+)* > eval/i, chromeEval = /\((\S*)(?::(\d+))(?::(\d+))\)/, lines = ex.stack.split('\n'), stack = [], submatch, parts, element, reference = /^(.*) is undefined$/.exec(ex.message);
+        for (var i = 0, j = lines.length; i < j; ++i) {
+            if ((parts = chrome.exec(lines[i]))) {
+                var isNative = parts[2] && parts[2].indexOf('native') === 0; // start of line
+                isEval = parts[2] && parts[2].indexOf('eval') === 0; // start of line
+                if (isEval && (submatch = chromeEval.exec(parts[2]))) {
+                    // throw out eval line/column and use top-most line/column number
+                    parts[2] = submatch[1]; // url
+                    // NOTE: It's messing out our integration tests in Karma, let's see if we can live with it – Kamil
+                    // parts[3] = submatch[2]; // line
+                    // parts[4] = submatch[3]; // column
+                }
+                element = {
+                    url: !isNative ? parts[2] : null,
+                    func: parts[1] || UNKNOWN_FUNCTION,
+                    args: isNative ? [parts[2]] : [],
+                    line: parts[3] ? +parts[3] : null,
+                    column: parts[4] ? +parts[4] : null,
+                };
+            }
+            else if ((parts = winjs.exec(lines[i]))) {
+                element = {
+                    url: parts[2],
+                    func: parts[1] || UNKNOWN_FUNCTION,
+                    args: [],
+                    line: +parts[3],
+                    column: parts[4] ? +parts[4] : null,
+                };
+            }
+            else if ((parts = gecko.exec(lines[i]))) {
+                isEval = parts[3] && parts[3].indexOf(' > eval') > -1;
+                if (isEval && (submatch = geckoEval.exec(parts[3]))) {
+                    // throw out eval line/column and use top-most line number
+                    parts[3] = submatch[1];
+                    // NOTE: It's messing out our integration tests in Karma, let's see if we can live with it – Kamil
+                    // parts[4] = submatch[2];
+                    // parts[5] = null; // no column when eval
+                }
+                else if (i === 0 && !parts[5] && !is_5(ex.columnNumber)) {
+                    // FireFox uses this awesome columnNumber property for its top frame
+                    // Also note, Firefox's column number is 0-based and everything else expects 1-based,
+                    // so adding 1
+                    // NOTE: this hack doesn't work if top-most frame is eval
+                    stack[0].column = ex.columnNumber + 1;
+                }
+                element = {
+                    url: parts[3],
+                    func: parts[1] || UNKNOWN_FUNCTION,
+                    args: parts[2] ? parts[2].split(',') : [],
+                    line: parts[4] ? +parts[4] : null,
+                    column: parts[5] ? +parts[5] : null,
+                };
+            }
+            else {
+                continue;
+            }
+            if (!element.func && element.line) {
+                element.func = guessFunctionName(element.url, element.line);
+            }
+            if (TraceKit.remoteFetching && element.url && element.url.substr(0, 5) === 'blob:') {
+                // Special case for handling JavaScript loaded into a blob.
+                // We use a synchronous AJAX request here as a blob is already in
+                // memory - it's not making a network request.  This will generate a warning
+                // in the browser console, but there has already been an error so that's not
+                // that much of an issue.
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', element.url, false);
+                xhr.send('');
+                // If we failed to download the source, skip this patch
+                if (xhr.status === 200) {
+                    var source = xhr.responseText || '';
+                    // We trim the source down to the last 300 characters as sourceMappingURL is always at the end of the file.
+                    // Why 300? To be in line with: https://github.com/getsentry/sentry/blob/4af29e8f2350e20c28a6933354e4f42437b4ba42/src/sentry/lang/javascript/processor.py#L164-L175
+                    source = source.slice(-300);
+                    // Now we dig out the source map URL
+                    var sourceMaps = source.match(/\/\/# sourceMappingURL=(.*)$/);
+                    // If we don't find a source map comment or we find more than one, continue on to the next element.
+                    if (sourceMaps) {
+                        var sourceMapAddress = sourceMaps[1];
+                        // Now we check to see if it's a relative URL.
+                        // If it is, convert it to an absolute one.
+                        if (sourceMapAddress.charAt(0) === '~') {
+                            sourceMapAddress = getLocationOrigin() + sourceMapAddress.slice(1);
+                        }
+                        // Now we strip the '.map' off of the end of the URL and update the
+                        // element so that Sentry can match the map to the blob.
+                        element.url = sourceMapAddress.slice(0, -4);
+                    }
+                }
+            }
+            element.context = element.line ? gatherContext(element.url, element.line) : null;
+            stack.push(element);
+        }
+        if (!stack.length) {
+            return null;
+        }
+        if (stack[0] && stack[0].line && !stack[0].column && reference) {
+            stack[0].column = findSourceInLine(reference[1], stack[0].url, stack[0].line);
+        }
+        return {
+            mode: 'stack',
+            name: ex.name,
+            message: ex.message,
+            stack: stack,
+        };
+    }
+    /**
+     * Computes stack trace information from the stacktrace property.
+     * Opera 10+ uses this property.
+     * @param {Error} ex
+     * @return {?TraceKit.StackTrace} Stack trace information.
+     * @memberof TraceKit.computeStackTrace
+     */
+    function computeStackTraceFromStacktraceProp(ex) {
+        // Access and store the stacktrace property before doing ANYTHING
+        // else to it because Opera is not very good at providing it
+        // reliably in other circumstances.
+        var stacktrace = ex.stacktrace;
+        if (!stacktrace) {
+            return;
+        }
+        var opera10Regex = / line (\d+).*script (?:in )?(\S+)(?:: in function (\S+))?$/i, opera11Regex = / line (\d+), column (\d+)\s*(?:in (?:<anonymous function: ([^>]+)>|([^\)]+))\((.*)\))? in (.*):\s*$/i, lines = stacktrace.split('\n'), stack = [], parts;
+        for (var line = 0; line < lines.length; line += 2) {
+            var element = null;
+            if ((parts = opera10Regex.exec(lines[line]))) {
+                element = {
+                    url: parts[2],
+                    line: +parts[1],
+                    column: null,
+                    func: parts[3],
+                    args: [],
+                };
+            }
+            else if ((parts = opera11Regex.exec(lines[line]))) {
+                element = {
+                    url: parts[6],
+                    line: +parts[1],
+                    column: +parts[2],
+                    func: parts[3] || parts[4],
+                    args: parts[5] ? parts[5].split(',') : [],
+                };
+            }
+            if (element) {
+                if (!element.func && element.line) {
+                    element.func = guessFunctionName(element.url, element.line);
+                }
+                if (element.line) {
+                    try {
+                        element.context = gatherContext(element.url, element.line);
+                    }
+                    catch (exc) { }
+                }
+                if (!element.context) {
+                    element.context = [lines[line + 1]];
+                }
+                stack.push(element);
+            }
+        }
+        if (!stack.length) {
+            return null;
+        }
+        return {
+            mode: 'stacktrace',
+            name: ex.name,
+            message: ex.message,
+            stack: stack,
+        };
+    }
+    /**
+     * NOT TESTED.
+     * Computes stack trace information from an error message that includes
+     * the stack trace.
+     * Opera 9 and earlier use this method if the option to show stack
+     * traces is turned on in opera:config.
+     * @param {Error} ex
+     * @return {?TraceKit.StackTrace} Stack information.
+     * @memberof TraceKit.computeStackTrace
+     */
+    function computeStackTraceFromOperaMultiLineMessage(ex) {
+        // TODO: Clean this function up
+        // Opera includes a stack trace into the exception message. An example is:
+        //
+        // Statement on line 3: Undefined variable: undefinedFunc
+        // Backtrace:
+        //   Line 3 of linked script file://localhost/Users/andreyvit/Projects/TraceKit/javascript-client/sample.js: In function zzz
+        //         undefinedFunc(a);
+        //   Line 7 of inline#1 script in file://localhost/Users/andreyvit/Projects/TraceKit/javascript-client/sample.html: In function yyy
+        //           zzz(x, y, z);
+        //   Line 3 of inline#1 script in file://localhost/Users/andreyvit/Projects/TraceKit/javascript-client/sample.html: In function xxx
+        //           yyy(a, a, a);
+        //   Line 1 of function script
+        //     try { xxx('hi'); return false; } catch(ex) { TraceKit.report(ex); }
+        //   ...
+        var lines = ex.message.split('\n');
+        if (lines.length < 4) {
+            return null;
+        }
+        var lineRE1 = /^\s*Line (\d+) of linked script ((?:file|https?|blob)\S+)(?:: in function (\S+))?\s*$/i, lineRE2 = /^\s*Line (\d+) of inline#(\d+) script in ((?:file|https?|blob)\S+)(?:: in function (\S+))?\s*$/i, lineRE3 = /^\s*Line (\d+) of function script\s*$/i, stack = [], scripts = window$1 && window$1.document && window$1.document.getElementsByTagName('script'), inlineScriptBlocks = [], parts;
+        for (var s in scripts) {
+            if (_has(scripts, s) && !scripts[s].src) {
+                inlineScriptBlocks.push(scripts[s]);
+            }
+        }
+        for (var line = 2; line < lines.length; line += 2) {
+            var item = null;
+            if ((parts = lineRE1.exec(lines[line]))) {
+                item = {
+                    url: parts[2],
+                    func: parts[3],
+                    args: [],
+                    line: +parts[1],
+                    column: null,
+                };
+            }
+            else if ((parts = lineRE2.exec(lines[line]))) {
+                item = {
+                    url: parts[3],
+                    func: parts[4],
+                    args: [],
+                    line: +parts[1],
+                    column: null,
+                };
+                var relativeLine = +parts[1]; // relative to the start of the <SCRIPT> block
+                var script = inlineScriptBlocks[parts[2] - 1];
+                if (script) {
+                    var source = getSource(item.url);
+                    if (source) {
+                        source = source.join('\n');
+                        var pos = source.indexOf(script.innerText);
+                        if (pos >= 0) {
+                            item.line = relativeLine + source.substring(0, pos).split('\n').length;
+                        }
+                    }
+                }
+            }
+            else if ((parts = lineRE3.exec(lines[line]))) {
+                var url = getLocationHref().replace(/#.*$/, '');
+                var re = new RegExp(escapeCodeAsRegExpForMatchingInsideHTML(lines[line + 1]));
+                var src = findSourceInUrls(re, [url]);
+                item = {
+                    url: url,
+                    func: '',
+                    args: [],
+                    line: src ? src.line : parts[1],
+                    column: null,
+                };
+            }
+            if (item) {
+                if (!item.func) {
+                    item.func = guessFunctionName(item.url, item.line);
+                }
+                var context = gatherContext(item.url, item.line);
+                var midline = context ? context[Math.floor(context.length / 2)] : null;
+                if (context && midline.replace(/^\s*/, '') === lines[line + 1].replace(/^\s*/, '')) {
+                    item.context = context;
+                }
+                else {
+                    // if (context) alert("Context mismatch. Correct midline:\n" + lines[i+1] + "\n\nMidline:\n" + midline + "\n\nContext:\n" + context.join("\n") + "\n\nURL:\n" + item.url);
+                    item.context = [lines[line + 1]];
+                }
+                stack.push(item);
+            }
+        }
+        if (!stack.length) {
+            return null; // could not parse multiline exception message as Opera stack trace
+        }
+        return {
+            mode: 'multiline',
+            name: ex.name,
+            message: lines[0],
+            stack: stack,
+        };
+    }
+    /**
+     * Adds information about the first frame to incomplete stack traces.
+     * Safari and IE require this to get complete data on the first frame.
+     * @param {TraceKit.StackTrace} stackInfo Stack trace information from
+     * one of the compute* methods.
+     * @param {string} url The URL of the script that caused an error.
+     * @param {(number|string)} lineNo The line number of the script that
+     * caused an error.
+     * @param {string=} message The error generated by the browser, which
+     * hopefully contains the name of the object that caused the error.
+     * @return {boolean} Whether or not the stack information was
+     * augmented.
+     * @memberof TraceKit.computeStackTrace
+     */
+    function augmentStackTraceWithInitialElement(stackInfo, url, lineNo, message) {
+        var initial = {
+            url: url,
+            line: lineNo,
+        };
+        if (initial.url && initial.line) {
+            stackInfo.incomplete = false;
+            if (!initial.func) {
+                initial.func = guessFunctionName(initial.url, initial.line);
+            }
+            if (!initial.context) {
+                initial.context = gatherContext(initial.url, initial.line);
+            }
+            var reference = / '([^']+)' /.exec(message);
+            if (reference) {
+                initial.column = findSourceInLine(reference[1], initial.url, initial.line);
+            }
+            if (stackInfo.stack.length > 0) {
+                if (stackInfo.stack[0].url === initial.url) {
+                    if (stackInfo.stack[0].line === initial.line) {
+                        return false; // already in stack trace
+                    }
+                    else if (!stackInfo.stack[0].line && stackInfo.stack[0].func === initial.func) {
+                        stackInfo.stack[0].line = initial.line;
+                        stackInfo.stack[0].context = initial.context;
+                        return false;
+                    }
+                }
+            }
+            stackInfo.stack.unshift(initial);
+            stackInfo.partial = true;
+            return true;
+        }
+        else {
+            stackInfo.incomplete = true;
+        }
+        return false;
+    }
+    /**
+     * Computes stack trace information by walking the arguments.caller
+     * chain at the time the exception occurred. This will cause earlier
+     * frames to be missed but is the only way to get any stack trace in
+     * Safari and IE. The top frame is restored by
+     * {@link augmentStackTraceWithInitialElement}.
+     * @param {Error} ex
+     * @return {TraceKit.StackTrace=} Stack trace information.
+     * @memberof TraceKit.computeStackTrace
+     */
+    function computeStackTraceByWalkingCallerChain(ex, depth) {
+        var functionName = /function\s+([_$a-zA-Z\xA0-\uFFFF][_$a-zA-Z0-9\xA0-\uFFFF]*)?\s*\(/i, stack = [], funcs = {}, recursion = false, parts, item, source;
+        for (var curr = computeStackTraceByWalkingCallerChain.caller; curr && !recursion; curr = curr.caller) {
+            if (curr === computeStackTrace || curr === TraceKit.report) {
+                continue;
+            }
+            item = {
+                url: null,
+                func: UNKNOWN_FUNCTION,
+                args: [],
+                line: null,
+                column: null,
+            };
+            if (curr.name) {
+                item.func = curr.name;
+            }
+            else if ((parts = functionName.exec(curr.toString()))) {
+                item.func = parts[1];
+            }
+            if (typeof item.func === 'undefined') {
+                try {
+                    item.func = parts.input.substring(0, parts.input.indexOf('{'));
+                }
+                catch (e) { }
+            }
+            if ((source = findSourceByFunctionBody(curr))) {
+                item.url = source.url;
+                item.line = source.line;
+                if (item.func === UNKNOWN_FUNCTION) {
+                    item.func = guessFunctionName(item.url, item.line);
+                }
+                var reference = / '([^']+)' /.exec(ex.message || ex.description);
+                if (reference) {
+                    item.column = findSourceInLine(reference[1], source.url, source.line);
+                }
+            }
+            if (funcs['' + curr]) {
+                recursion = true;
+            }
+            else {
+                funcs['' + curr] = true;
+            }
+            stack.push(item);
+        }
+        if (depth) {
+            stack.splice(0, depth);
+        }
+        var result = {
+            mode: 'callers',
+            name: ex.name,
+            message: ex.message,
+            stack: stack,
+        };
+        augmentStackTraceWithInitialElement(result, ex.sourceURL || ex.fileName, ex.line || ex.lineNumber, ex.message || ex.description);
+        return result;
+    }
+    /**
+     * Computes a stack trace for an exception.
+     * @param {Error} ex
+     * @param {(string|number)=} depth
+     * @memberof TraceKit.computeStackTrace
+     */
+    function computeStackTrace(ex, depth) {
+        var stack = null;
+        depth = depth == null ? 0 : +depth;
+        try {
+            // This must be tried first because Opera 10 *destroys*
+            // its stacktrace property if you try to access the stack
+            // property first!!
+            stack = computeStackTraceFromStacktraceProp(ex);
+            if (stack) {
+                return stack;
+            }
+        }
+        catch (e) {
+            if (debug) {
+                throw e;
+            }
+        }
+        try {
+            stack = computeStackTraceFromStackProp(ex);
+            if (stack) {
+                return stack;
+            }
+        }
+        catch (e) {
+            if (debug) {
+                throw e;
+            }
+        }
+        try {
+            stack = computeStackTraceFromOperaMultiLineMessage(ex);
+            if (stack) {
+                return stack;
+            }
+        }
+        catch (e) {
+            if (debug) {
+                throw e;
+            }
+        }
+        try {
+            stack = computeStackTraceByWalkingCallerChain(ex, depth + 1);
+            if (stack) {
+                return stack;
+            }
+        }
+        catch (e) {
+            if (debug) {
+                throw e;
+            }
+        }
+        return {
+            name: ex.name,
+            message: ex.message,
+            mode: 'failed',
+        };
+    }
+    /**
+     * Logs a stacktrace starting from the previous call and working down.
+     * @param {(number|string)=} depth How many frames deep to trace.
+     * @return {TraceKit.StackTrace} Stack trace information.
+     * @memberof TraceKit.computeStackTrace
+     */
+    function computeStackTraceOfCaller(depth) {
+        depth = (depth == null ? 0 : +depth) + 1; // "+ 1" because "ofCaller" should drop one frame
+        try {
+            throw new Error();
+        }
+        catch (ex) {
+            return computeStackTrace(ex, depth + 1);
+        }
+    }
+    computeStackTrace.augmentStackTraceWithInitialElement = augmentStackTraceWithInitialElement;
+    computeStackTrace.computeStackTraceFromStackProp = computeStackTraceFromStackProp;
+    computeStackTrace.guessFunctionName = guessFunctionName;
+    computeStackTrace.gatherContext = gatherContext;
+    computeStackTrace.ofCaller = computeStackTraceOfCaller;
+    computeStackTrace.getSource = getSource;
+    return computeStackTrace;
+})();
+/**
+ * Extends support for global error handling for asynchronous browser
+ * functions. Adopted from Closure Library's errorhandler.js
+ * @memberof TraceKit
+ */
+TraceKit.extendToAsynchronousCallbacks = function () {
+    var _helper = function _helper(fnName) {
+        var originalFn = window$1[fnName];
+        window$1[fnName] = function traceKitAsyncExtension() {
+            // Make a copy of the arguments
+            var args = _slice.call(arguments);
+            var originalCallback = args[0];
+            if (typeof originalCallback === 'function') {
+                args[0] = TraceKit.wrap(originalCallback);
+            }
+            // IE < 9 doesn't support .call/.apply on setInterval/setTimeout, but it
+            // also only supports 2 argument and doesn't care what "this" is, so we
+            // can just call the original function directly.
+            if (originalFn.apply) {
+                return originalFn.apply(this, args);
+            }
+            else {
+                return originalFn(args[0], args[1]);
+            }
+        };
+    };
+    _helper('setTimeout');
+    _helper('setInterval');
+};
+TraceKit.remoteFetching = false;
+TraceKit.collectWindowErrors = true;
+TraceKit.linesOfContext = 11;
+var subscribe = TraceKit.report.subscribe;
+var installGlobalHandler = TraceKit.report.installGlobalHandler;
+var installGlobalUnhandledRejectionHandler = TraceKit.report.installGlobalUnhandledRejectionHandler;
+var computeStackTrace = TraceKit.computeStackTrace;
+
+var STACKTRACE_LIMIT = 50;
+/** JSDoc */
+function exceptionFromStacktrace(stacktrace) {
+    var frames = prepareFramesForEvent(stacktrace.stack);
+    var exception = {
+        stacktrace: { frames: frames },
+        type: stacktrace.name,
+        value: stacktrace.message,
+    };
+    // tslint:disable-next-line:strict-type-predicates
+    if (exception.type === undefined && exception.value === '') {
+        exception.value = 'Unrecoverable error caught';
+    }
+    return exception;
+}
+/** JSDoc */
+function eventFromPlainObject(exception, syntheticException) {
+    var exceptionKeys = Object.keys(exception).sort();
+    var event = {
+        extra: {
+            __serialized__: object_7(exception),
+        },
+        fingerprint: [md5(exceptionKeys.join(''))],
+        message: "Non-Error exception captured with keys: " + object_8(exceptionKeys),
+    };
+    if (syntheticException) {
+        var stacktrace = computeStackTrace(syntheticException);
+        var frames_1 = prepareFramesForEvent(stacktrace.stack);
+        event.stacktrace = {
+            frames: frames_1,
+        };
+    }
+    return event;
+}
+/** JSDoc */
+function eventFromStacktrace(stacktrace) {
+    var exception = exceptionFromStacktrace(stacktrace);
+    return {
+        exception: {
+            values: [exception],
+        },
+    };
+}
+/** JSDoc */
+function prepareFramesForEvent(stack) {
+    if (!stack || !stack.length) {
+        return [];
+    }
+    var localStack = stack;
+    var firstFrameFunction = localStack[0].func || '';
+    if (string_4(firstFrameFunction, 'captureMessage') || string_4(firstFrameFunction, 'captureException')) {
+        localStack = localStack.slice(1);
+    }
+    // The frame where the crash happened, should be the last entry in the array
+    return localStack
+        .map(function (frame) { return ({
+        colno: frame.column,
+        filename: frame.url || localStack[0].url,
+        function: frame.func || '?',
+        in_app: true,
+        lineno: frame.line,
+    }); })
+        .slice(0, STACKTRACE_LIMIT)
+        .reverse();
+}
+
+/** Base Transport class implementation */
+var BaseTransport = /** @class */ (function () {
+    function BaseTransport(options) {
+        this.options = options;
+        this.url = new core.API(this.options.dsn).getStoreEndpointWithUrlEncodedAuth();
+    }
+    /**
+     * @inheritDoc
+     */
+    BaseTransport.prototype.captureEvent = function (_) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                throw new core.SentryError('Transport Class has to implement `captureEvent` method');
+            });
+        });
+    };
+    return BaseTransport;
+}());
+
+var global$1 = misc_3();
+/** `fetch` based transport */
+var FetchTransport = /** @class */ (function (_super) {
+    __extends(FetchTransport, _super);
+    function FetchTransport() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    /**
+     * @inheritDoc
+     */
+    FetchTransport.prototype.captureEvent = function (event) {
+        return __awaiter(this, void 0, void 0, function () {
+            var defaultOptions, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        defaultOptions = {
+                            body: object_1(event),
+                            method: 'POST',
+                            // Despite all stars in the sky saying that Edge supports old draft syntax, aka 'never', 'always', 'origin' and 'default
+                            // https://caniuse.com/#feat=referrer-policy
+                            // It doesn't. And it throw exception instead of ignoring this parameter...
+                            // REF: https://github.com/getsentry/raven-js/issues/1233
+                            referrerPolicy: (supports_8() ? 'origin' : ''),
+                        };
+                        return [4 /*yield*/, global$1.fetch(this.url, defaultOptions)];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, {
+                                status: dist_2.fromHttpCode(response.status),
+                            }];
+                }
+            });
+        });
+    };
+    return FetchTransport;
+}(BaseTransport));
+
+/** `XHR` based transport */
+var XHRTransport = /** @class */ (function (_super) {
+    __extends(XHRTransport, _super);
+    function XHRTransport() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    /**
+     * @inheritDoc
+     */
+    XHRTransport.prototype.captureEvent = function (event) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                return [2 /*return*/, new Promise(function (resolve, reject) {
+                        var request = new XMLHttpRequest();
+                        request.onreadystatechange = function () {
+                            if (request.readyState !== 4) {
+                                return;
+                            }
+                            if (request.status === 200) {
+                                resolve({
+                                    status: dist_2.fromHttpCode(request.status),
+                                });
+                            }
+                            reject(request);
+                        };
+                        request.open('POST', _this.url);
+                        request.send(object_1(event));
+                    })];
+            });
+        });
+    };
+    return XHRTransport;
+}(BaseTransport));
+
+var global$2 = misc_3();
+/** `sendBeacon` based transport */
+var BeaconTransport = /** @class */ (function (_super) {
+    __extends(BeaconTransport, _super);
+    function BeaconTransport() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    /**
+     * @inheritDoc
+     */
+    BeaconTransport.prototype.captureEvent = function (event) {
+        return __awaiter(this, void 0, void 0, function () {
+            var data, result;
+            return __generator(this, function (_a) {
+                data = object_1(event);
+                result = global$2.navigator.sendBeacon(this.url, data);
+                return [2 /*return*/, {
+                        status: result ? dist_2.Success : dist_2.Failed,
+                    }];
+            });
+        });
+    };
+    return BeaconTransport;
+}(BaseTransport));
+
+
+
+var index$1 = /*#__PURE__*/Object.freeze({
+    BaseTransport: BaseTransport,
+    FetchTransport: FetchTransport,
+    XHRTransport: XHRTransport,
+    BeaconTransport: BeaconTransport
+});
+
+/** The Sentry Browser SDK Backend. */
+var BrowserBackend = /** @class */ (function (_super) {
+    __extends(BrowserBackend, _super);
+    function BrowserBackend() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    /**
+     * @inheritDoc
+     */
+    BrowserBackend.prototype.install = function () {
+        // We are only called by the client if the SDK is enabled and a valid Dsn
+        // has been configured. If no Dsn is present, this indicates a programming
+        // error.
+        var dsn = this.options.dsn;
+        if (!dsn) {
+            throw new core.SentryError('Invariant exception: install() must not be called when disabled');
+        }
+        Error.stackTraceLimit = 50;
+        return true;
+    };
+    /**
+     * @inheritDoc
+     */
+    BrowserBackend.prototype.eventFromException = function (exception, hint) {
+        return __awaiter(this, void 0, void 0, function () {
+            var event, ex, ex, name_1, message, ex, ex;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!(is_2(exception) && exception.error)) return [3 /*break*/, 1];
+                        ex = exception;
+                        exception = ex.error; // tslint:disable-line:no-parameter-reassignment
+                        event = eventFromStacktrace(computeStackTrace(exception));
+                        return [3 /*break*/, 7];
+                    case 1:
+                        if (!(is_3(exception) || is_4(exception))) return [3 /*break*/, 3];
+                        ex = exception;
+                        name_1 = ex.name || (is_3(ex) ? 'DOMError' : 'DOMException');
+                        message = ex.message ? name_1 + ": " + ex.message : name_1;
+                        return [4 /*yield*/, this.eventFromMessage(message, undefined, hint)];
+                    case 2:
+                        event = _a.sent();
+                        return [3 /*break*/, 7];
+                    case 3:
+                        if (!is_1(exception)) return [3 /*break*/, 4];
+                        // we have a real Error object, do nothing
+                        event = eventFromStacktrace(computeStackTrace(exception));
+                        return [3 /*break*/, 7];
+                    case 4:
+                        if (!(is_9(exception) && hint && hint.syntheticException)) return [3 /*break*/, 5];
+                        ex = exception;
+                        event = eventFromPlainObject(ex, hint.syntheticException);
+                        return [3 /*break*/, 7];
+                    case 5:
+                        ex = exception;
+                        return [4 /*yield*/, this.eventFromMessage(ex, undefined, hint)];
+                    case 6:
+                        event = _a.sent();
+                        _a.label = 7;
+                    case 7:
+                        event = __assign({}, event, { event_id: hint && hint.event_id, exception: __assign({}, event.exception, { mechanism: {
+                                    handled: true,
+                                    type: 'generic',
+                                } }) });
+                        return [2 /*return*/, event];
+                }
+            });
+        });
+    };
+    /**
+     * @inheritDoc
+     */
+    BrowserBackend.prototype.eventFromMessage = function (message, level, hint) {
+        if (level === void 0) { level = dist_1.Info; }
+        return __awaiter(this, void 0, void 0, function () {
+            var event, stacktrace, frames_1;
+            return __generator(this, function (_a) {
+                event = {
+                    event_id: hint && hint.event_id,
+                    fingerprint: [message],
+                    level: level,
+                    message: message,
+                };
+                if (this.options.attachStacktrace && hint && hint.syntheticException) {
+                    stacktrace = computeStackTrace(hint.syntheticException);
+                    frames_1 = prepareFramesForEvent(stacktrace.stack);
+                    event.stacktrace = {
+                        frames: frames_1,
+                    };
+                }
+                return [2 /*return*/, event];
+            });
+        });
+    };
+    /**
+     * @inheritDoc
+     */
+    BrowserBackend.prototype.sendEvent = function (event) {
+        return __awaiter(this, void 0, void 0, function () {
+            var transportOptions;
+            return __generator(this, function (_a) {
+                if (!this.options.dsn) {
+                    logger_2.warn("Event has been skipped because no Dsn is configured.");
+                    // We do nothing in case there is no DSN
+                    return [2 /*return*/, { status: dist_2.Skipped, reason: "Event has been skipped because no Dsn is configured." }];
+                }
+                if (!this.transport) {
+                    transportOptions = this.options.transportOptions
+                        ? this.options.transportOptions
+                        : { dsn: this.options.dsn };
+                    if (this.options.transport) {
+                        this.transport = new this.options.transport({ dsn: this.options.dsn });
+                    }
+                    else if (supports_6()) {
+                        this.transport = new BeaconTransport(transportOptions);
+                    }
+                    else if (supports_4()) {
+                        this.transport = new FetchTransport(transportOptions);
+                    }
+                    else {
+                        this.transport = new XHRTransport(transportOptions);
+                    }
+                }
+                return [2 /*return*/, this.transport.captureEvent(event)];
+            });
+        });
+    };
+    return BrowserBackend;
+}(core.BaseBackend));
+
+var SDK_NAME = 'sentry.javascript.browser';
+var SDK_VERSION = '4.3.0';
+
+/**
+ * The Sentry Browser SDK Client.
+ *
+ * @see BrowserOptions for documentation on configuration options.
+ * @see SentryClient for usage documentation.
+ */
+var BrowserClient = /** @class */ (function (_super) {
+    __extends(BrowserClient, _super);
+    /**
+     * Creates a new Browser SDK instance.
+     *
+     * @param options Configuration options for this SDK.
+     */
+    function BrowserClient(options) {
+        return _super.call(this, BrowserBackend, options) || this;
+    }
+    /**
+     * @inheritDoc
+     */
+    BrowserClient.prototype.prepareEvent = function (event, scope, hint) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                event.platform = event.platform || 'javascript';
+                event.sdk = __assign({}, event.sdk, { name: SDK_NAME, packages: __spread(((event.sdk && event.sdk.packages) || []), [
+                        {
+                            name: 'npm:@sentry/browser',
+                            version: SDK_VERSION,
+                        },
+                    ]), version: SDK_VERSION });
+                return [2 /*return*/, _super.prototype.prepareEvent.call(this, event, scope, hint)];
+            });
+        });
+    };
+    /**
+     * Show a report dialog to the user to send feedback to a specific event.
+     *
+     * @param options Set individual options for the dialog
+     */
+    BrowserClient.prototype.showReportDialog = function (options) {
+        if (options === void 0) { options = {}; }
+        // doesn't work without a document (React Native)
+        var document = misc_3().document;
+        if (!document) {
+            return;
+        }
+        var dsn = options.dsn || this.getDsn();
+        if (!options.eventId) {
+            throw new core.SentryError('Missing `eventId` option in showReportDialog call');
+        }
+        if (!dsn) {
+            throw new core.SentryError('Missing `Dsn` option in showReportDialog call');
+        }
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = new core.API(dsn).getReportDialogEndpoint(options);
+        (document.head || document.body).appendChild(script);
+    };
+    return BrowserClient;
+}(core.BaseClient));
+
+var debounceDuration = 1000;
+var keypressTimeout;
+var lastCapturedEvent;
+var ignoreOnError = 0;
+/** JSDoc */
+function shouldIgnoreOnError() {
+    return ignoreOnError > 0;
+}
+/** JSDoc */
+function ignoreNextOnError() {
+    // onerror should trigger before setTimeout
+    ignoreOnError += 1;
+    setTimeout(function () {
+        ignoreOnError -= 1;
+    });
+}
+/**
+ * Instruments the given function and sends an event to Sentry every time the
+ * function throws an exception.
+ *
+ * @param fn A function to wrap.
+ * @returns The wrapped function.
+ */
+function wrap(fn, options, before) {
+    if (options === void 0) { options = {}; }
+    if (!is_6(fn)) {
+        return fn;
+    }
+    try {
+        // We don't wanna wrap it twice
+        if (fn.__sentry__) {
+            return fn;
+        }
+        // If this has already been wrapped in the past, return that wrapped function
+        if (fn.__sentry_wrapped__) {
+            return fn.__sentry_wrapped__;
+        }
+    }
+    catch (e) {
+        // Just accessing custom props in some Selenium environments
+        // can cause a "Permission denied" exception (see raven-js#495).
+        // Bail on wrapping and return the function as-is (defers to window.onerror).
+        return fn;
+    }
+    var wrapped = function () {
+        var _this = this;
+        if (before && is_6(before)) {
+            before.apply(this, arguments);
+        }
+        var args = Array.prototype.slice.call(arguments);
+        try {
+            // Attempt to invoke user-land function
+            // NOTE: If you are a Sentry user, and you are seeing this stack frame, it
+            //       means Raven caught an error invoking your application code. This is
+            //       expected behavior and NOT indicative of a bug with Raven.js.
+            var wrappedArguments = args.map(function (arg) { return wrap(arg, options); });
+            if (fn.handleEvent) {
+                return fn.handleEvent.apply(this, wrappedArguments);
+            }
+            else {
+                return fn.apply(this, wrappedArguments);
+            }
+        }
+        catch (ex) {
+            ignoreNextOnError();
+            core.withScope(function (scope) { return __awaiter(_this, void 0, void 0, function () {
+                var _this = this;
+                return __generator(this, function (_a) {
+                    scope.addEventProcessor(function (event) { return __awaiter(_this, void 0, void 0, function () {
+                        var processedEvent;
+                        return __generator(this, function (_a) {
+                            processedEvent = __assign({}, event);
+                            if (options.mechanism) {
+                                processedEvent.exception = processedEvent.exception || {};
+                                processedEvent.exception.mechanism = options.mechanism;
+                            }
+                            processedEvent.extra = __assign({}, processedEvent.extra, { arguments: object_6(args, 2) });
+                            return [2 /*return*/, processedEvent];
+                        });
+                    }); });
+                    core.getCurrentHub().captureException(ex, { originalException: ex });
+                    return [2 /*return*/];
+                });
+            }); });
+            throw ex;
+        }
+    };
+    // Accessing some objects may throw
+    // ref: https://github.com/getsentry/sentry-javascript/issues/1168
+    try {
+        for (var property in fn) {
+            if (Object.prototype.hasOwnProperty.call(fn, property)) {
+                wrapped[property] = fn[property];
+            }
+        }
+    }
+    catch (_oO) { } // tslint:disable-line:no-empty
+    wrapped.prototype = fn.prototype;
+    fn.__sentry_wrapped__ = wrapped;
+    // Signal that this function has been wrapped/filled already
+    // for both debugging and to prevent it to being wrapped/filled twice
+    wrapped.__sentry__ = true;
+    wrapped.__sentry_original__ = fn;
+    return wrapped;
+}
+/**
+ * Wraps addEventListener to capture UI breadcrumbs
+ * @param eventName the event name (e.g. "click")
+ * @returns wrapped breadcrumb events handler
+ */
+function breadcrumbEventHandler(eventName) {
+    return function (event) {
+        // reset keypress timeout; e.g. triggering a 'click' after
+        // a 'keypress' will reset the keypress debounce so that a new
+        // set of keypresses can be recorded
+        keypressTimeout = undefined;
+        // It's possible this handler might trigger multiple times for the same
+        // event (e.g. event propagation through node ancestors). Ignore if we've
+        // already captured the event.
+        if (lastCapturedEvent === event) {
+            return;
+        }
+        lastCapturedEvent = event;
+        // try/catch both:
+        // - accessing event.target (see getsentry/raven-js#838, #768)
+        // - `htmlTreeAsString` because it's complex, and just accessing the DOM incorrectly
+        //   can throw an exception in some circumstances.
+        var target;
+        try {
+            target = misc_5(event.target);
+        }
+        catch (e) {
+            target = '<unknown>';
+        }
+        core.getCurrentHub().addBreadcrumb({
+            category: "ui." + eventName,
+            message: target,
+        }, {
+            event: event,
+            name: eventName,
+        });
+    };
+}
+/**
+ * Wraps addEventListener to capture keypress UI events
+ * @returns wrapped keypress events handler
+ */
+function keypressEventHandler() {
+    // TODO: if somehow user switches keypress target before
+    //       debounce timeout is triggered, we will only capture
+    //       a single breadcrumb from the FIRST target (acceptable?)
+    return function (event) {
+        var target;
+        try {
+            target = event.target;
+        }
+        catch (e) {
+            // just accessing event properties can throw an exception in some rare circumstances
+            // see: https://github.com/getsentry/raven-js/issues/838
+            return;
+        }
+        var tagName = target && target.tagName;
+        // only consider keypress events on actual input elements
+        // this will disregard keypresses targeting body (e.g. tabbing
+        // through elements, hotkeys, etc)
+        if (!tagName || (tagName !== 'INPUT' && tagName !== 'TEXTAREA' && !target.isContentEditable)) {
+            return;
+        }
+        // record first keypress in a series, but ignore subsequent
+        // keypresses until debounce clears
+        if (!keypressTimeout) {
+            breadcrumbEventHandler('input')(event);
+        }
+        clearTimeout(keypressTimeout);
+        keypressTimeout = setTimeout(function () {
+            keypressTimeout = undefined;
+        }, debounceDuration);
+    };
+}
+
+/** Global handlers */
+var GlobalHandlers = /** @class */ (function () {
+    /** JSDoc */
+    function GlobalHandlers(options) {
+        /**
+         * @inheritDoc
+         */
+        this.name = GlobalHandlers.id;
+        this.options = __assign({ onerror: true, onunhandledrejection: true }, options);
+    }
+    /**
+     * @inheritDoc
+     */
+    GlobalHandlers.prototype.setupOnce = function () {
+        subscribe(function (stack, _, error) {
+            // TODO: use stack.context to get a valuable information from TraceKit, eg.
+            // [
+            //   0: "  })"
+            //   1: ""
+            //   2: "  function foo () {"
+            //   3: "    Sentry.captureException('some error')"
+            //   4: "    Sentry.captureMessage('some message')"
+            //   5: "    throw 'foo'"
+            //   6: "  }"
+            //   7: ""
+            //   8: "  function bar () {"
+            //   9: "    foo();"
+            //   10: "  }"
+            // ]
+            if (shouldIgnoreOnError()) {
+                return;
+            }
+            var self = core.getCurrentHub().getIntegration(GlobalHandlers);
+            if (self) {
+                core.getCurrentHub().captureEvent(self.eventFromGlobalHandler(stack), { originalException: error, data: { stack: stack } });
+            }
+        });
+        if (this.options.onerror) {
+            logger_2.log('Global Handler attached: onerror');
+            installGlobalHandler();
+        }
+        if (this.options.onunhandledrejection) {
+            logger_2.log('Global Handler attached: onunhandledrejection');
+            installGlobalUnhandledRejectionHandler();
+        }
+    };
+    /** JSDoc */
+    GlobalHandlers.prototype.eventFromGlobalHandler = function (stacktrace) {
+        var event = eventFromStacktrace(stacktrace);
+        return __assign({}, event, { exception: __assign({}, event.exception, { mechanism: {
+                    data: {
+                        mode: stacktrace.mode,
+                    },
+                    handled: false,
+                    type: stacktrace.mechanism,
+                } }) });
+    };
+    /**
+     * @inheritDoc
+     */
+    GlobalHandlers.id = 'GlobalHandlers';
+    return GlobalHandlers;
+}());
+
+/** Wrap timer functions and event targets to catch errors and provide better meta data */
+var TryCatch = /** @class */ (function () {
+    function TryCatch() {
+        /** JSDoc */
+        this.ignoreOnError = 0;
+        /**
+         * @inheritDoc
+         */
+        this.name = TryCatch.id;
+    }
+    /** JSDoc */
+    TryCatch.prototype.wrapTimeFunction = function (original) {
+        return function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            var originalCallback = args[0];
+            args[0] = wrap(originalCallback, {
+                mechanism: {
+                    data: { function: original.name || '<anonymous>' },
+                    handled: true,
+                    type: 'instrument',
+                },
+            });
+            return original.apply(this, args);
+        };
+    };
+    /** JSDoc */
+    TryCatch.prototype.wrapRAF = function (original) {
+        return function (callback) {
+            return original(wrap(callback, {
+                mechanism: {
+                    data: {
+                        function: 'requestAnimationFrame',
+                        handler: (original && original.name) || '<anonymous>',
+                    },
+                    handled: true,
+                    type: 'instrument',
+                },
+            }));
+        };
+    };
+    /** JSDoc */
+    TryCatch.prototype.wrapEventTarget = function (target) {
+        var global = misc_3();
+        var proto = global[target] && global[target].prototype;
+        if (!proto || !proto.hasOwnProperty || !proto.hasOwnProperty('addEventListener')) {
+            return;
+        }
+        object_4(proto, 'addEventListener', function (original) {
+            return function (eventName, fn, options) {
+                try {
+                    fn.handleEvent = wrap(fn.handleEvent.bind(fn), {
+                        mechanism: {
+                            data: {
+                                function: 'handleEvent',
+                                handler: (fn && fn.name) || '<anonymous>',
+                                target: target,
+                            },
+                            handled: true,
+                            type: 'instrument',
+                        },
+                    });
+                }
+                catch (err) {
+                    // can sometimes get 'Permission denied to access property "handle Event'
+                }
+                // More breadcrumb DOM capture ... done here and not in `_instrumentBreadcrumbs`
+                // so that we don't have more than one wrapper function
+                var before;
+                var clickHandler;
+                var keypressHandler;
+                if (target === 'EventTarget' || target === 'Node') {
+                    // NOTE: generating multiple handlers per addEventListener invocation, should
+                    //       revisit and verify we can just use one (almost certainly)
+                    clickHandler = breadcrumbEventHandler('click');
+                    keypressHandler = keypressEventHandler();
+                    before = function (event) {
+                        // need to intercept every DOM event in `before` argument, in case that
+                        // same wrapped method is re-used for different events (e.g. mousemove THEN click)
+                        // see #724
+                        if (!event) {
+                            return;
+                        }
+                        var eventType;
+                        try {
+                            eventType = event.type;
+                        }
+                        catch (e) {
+                            // just accessing event properties can throw an exception in some rare circumstances
+                            // see: https://github.com/getsentry/raven-js/issues/838
+                            return;
+                        }
+                        if (eventType === 'click') {
+                            return clickHandler(event);
+                        }
+                        else if (eventType === 'keypress') {
+                            return keypressHandler(event);
+                        }
+                    };
+                }
+                return original.call(this, eventName, wrap(fn, {
+                    mechanism: {
+                        data: {
+                            function: 'addEventListener',
+                            handler: (fn && fn.name) || '<anonymous>',
+                            target: target,
+                        },
+                        handled: true,
+                        type: 'instrument',
+                    },
+                }, before), options);
+            };
+        });
+        object_4(proto, 'removeEventListener', function (original) {
+            return function (eventName, fn, options) {
+                var callback = fn;
+                try {
+                    callback = callback && (callback.__sentry_wrapped__ || callback);
+                }
+                catch (e) {
+                    // ignore, accessing __sentry_wrapped__ will throw in some Selenium environments
+                }
+                return original.call(this, eventName, callback, options);
+            };
+        });
+    };
+    /**
+     * Wrap timer functions and event targets to catch errors
+     * and provide better metadata.
+     */
+    TryCatch.prototype.setupOnce = function () {
+        this.ignoreOnError = this.ignoreOnError;
+        var global = misc_3();
+        object_4(global, 'setTimeout', this.wrapTimeFunction.bind(this));
+        object_4(global, 'setInterval', this.wrapTimeFunction.bind(this));
+        object_4(global, 'requestAnimationFrame', this.wrapRAF.bind(this));
+        [
+            'EventTarget',
+            'Window',
+            'Node',
+            'ApplicationCache',
+            'AudioTrackList',
+            'ChannelMergerNode',
+            'CryptoOperation',
+            'EventSource',
+            'FileReader',
+            'HTMLUnknownElement',
+            'IDBDatabase',
+            'IDBRequest',
+            'IDBTransaction',
+            'KeyOperation',
+            'MediaController',
+            'MessagePort',
+            'ModalWindow',
+            'Notification',
+            'SVGElementInstance',
+            'Screen',
+            'TextTrack',
+            'TextTrackCue',
+            'TextTrackList',
+            'WebSocket',
+            'WebSocketWorker',
+            'Worker',
+            'XMLHttpRequest',
+            'XMLHttpRequestEventTarget',
+            'XMLHttpRequestUpload',
+        ].forEach(this.wrapEventTarget.bind(this));
+    };
+    /**
+     * @inheritDoc
+     */
+    TryCatch.id = 'TryCatch';
+    return TryCatch;
+}());
+
+var global$3 = misc_3();
+var lastHref;
+/** Default Breadcrumbs instrumentations */
+var Breadcrumbs = /** @class */ (function () {
+    /**
+     * @inheritDoc
+     */
+    function Breadcrumbs(options) {
+        /**
+         * @inheritDoc
+         */
+        this.name = Breadcrumbs.id;
+        this.options = __assign({ beacon: true, console: true, dom: true, fetch: true, history: true, sentry: true, xhr: true }, options);
+    }
+    /** JSDoc */
+    Breadcrumbs.prototype.instrumentBeacon = function () {
+        if (!supports_6()) {
+            return;
+        }
+        /** JSDoc */
+        function beaconReplacementFunction(originalBeaconFunction) {
+            return function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i] = arguments[_i];
+                }
+                var url = args[0];
+                var data = args[1];
+                // If the browser successfully queues the request for delivery, the method returns "true" and returns "false" otherwise.
+                // https://developer.mozilla.org/en-US/docs/Web/API/Beacon_API/Using_the_Beacon_API
+                var result = originalBeaconFunction.apply(this, args);
+                var client = core.getCurrentHub().getClient();
+                var dsn = client && client.getDsn();
+                if (dsn) {
+                    var filterUrl = new core.API(dsn).getStoreEndpoint();
+                    // if Sentry key appears in URL, don't capture it as a request
+                    // but rather as our own 'sentry' type breadcrumb
+                    if (filterUrl && string_4(url, filterUrl)) {
+                        addSentryBreadcrumb(data);
+                        return result;
+                    }
+                }
+                // What is wrong with you TypeScript...
+                var breadcrumbData = {
+                    category: 'beacon',
+                    data: data,
+                    type: 'http',
+                };
+                if (!result) {
+                    breadcrumbData.level = dist_1.Error;
+                }
+                Breadcrumbs.addBreadcrumb(breadcrumbData, {
+                    input: args,
+                    result: result,
+                });
+                return result;
+            };
+        }
+        object_4(global$3.navigator, 'sendBeacon', beaconReplacementFunction);
+    };
+    /** JSDoc */
+    Breadcrumbs.prototype.instrumentConsole = function () {
+        if (!('console' in global$3)) {
+            return;
+        }
+        ['debug', 'info', 'warn', 'error', 'log'].forEach(function (level) {
+            if (!(level in global$3.console)) {
+                return;
+            }
+            object_4(global$3.console, level, function (originalConsoleLevel) {
+                return function () {
+                    var args = [];
+                    for (var _i = 0; _i < arguments.length; _i++) {
+                        args[_i] = arguments[_i];
+                    }
+                    var breadcrumbData = {
+                        category: 'console',
+                        data: {
+                            extra: {
+                                arguments: args.slice(1),
+                            },
+                            logger: 'console',
+                        },
+                        level: dist_1.fromString(level),
+                        message: string_3(args, ' '),
+                    };
+                    if (level === 'assert') {
+                        if (args[0] === false) {
+                            breadcrumbData.message = "Assertion failed: " + (string_3(args.slice(1), ' ') || 'console.assert');
+                            breadcrumbData.data.extra.arguments = args.slice(1);
+                        }
+                    }
+                    Breadcrumbs.addBreadcrumb(breadcrumbData, {
+                        input: args,
+                        level: level,
+                    });
+                    // this fails for some browsers. :(
+                    if (originalConsoleLevel) {
+                        Function.prototype.apply.call(originalConsoleLevel, global$3.console, args);
+                    }
+                };
+            });
+        });
+    };
+    /** JSDoc */
+    Breadcrumbs.prototype.instrumentDOM = function () {
+        if (!('document' in global$3)) {
+            return;
+        }
+        // Capture breadcrumbs from any click that is unhandled / bubbled up all the way
+        // to the document. Do this before we instrument addEventListener.
+        global$3.document.addEventListener('click', breadcrumbEventHandler('click'), false);
+        global$3.document.addEventListener('keypress', keypressEventHandler(), false);
+    };
+    /** JSDoc */
+    Breadcrumbs.prototype.instrumentFetch = function () {
+        if (!supports_5()) {
+            return;
+        }
+        object_4(global$3, 'fetch', function (originalFetch) {
+            return function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i] = arguments[_i];
+                }
+                var fetchInput = args[0];
+                var method = 'GET';
+                var url;
+                if (typeof fetchInput === 'string') {
+                    url = fetchInput;
+                }
+                else if ('Request' in global$3 && fetchInput instanceof Request) {
+                    url = fetchInput.url;
+                    if (fetchInput.method) {
+                        method = fetchInput.method;
+                    }
+                }
+                else {
+                    url = String(fetchInput);
+                }
+                if (args[1] && args[1].method) {
+                    method = args[1].method;
+                }
+                var client = core.getCurrentHub().getClient();
+                var dsn = client && client.getDsn();
+                if (dsn) {
+                    var filterUrl = new core.API(dsn).getStoreEndpoint();
+                    // if Sentry key appears in URL, don't capture it as a request
+                    // but rather as our own 'sentry' type breadcrumb
+                    if (filterUrl && string_4(url, filterUrl)) {
+                        if (method === 'POST' && args[1] && args[1].body) {
+                            addSentryBreadcrumb(args[1].body);
+                        }
+                        return originalFetch.apply(global$3, args);
+                    }
+                }
+                var fetchData = {
+                    method: method,
+                    url: url,
+                };
+                return originalFetch
+                    .apply(global$3, args)
+                    .then(function (response) {
+                    fetchData.status_code = response.status;
+                    Breadcrumbs.addBreadcrumb({
+                        category: 'fetch',
+                        data: fetchData,
+                        type: 'http',
+                    }, {
+                        input: args,
+                        response: response,
+                    });
+                    return response;
+                })
+                    .catch(function (error) {
+                    Breadcrumbs.addBreadcrumb({
+                        category: 'fetch',
+                        data: fetchData,
+                        level: dist_1.Error,
+                        type: 'http',
+                    }, {
+                        error: error,
+                        input: args,
+                    });
+                    throw error;
+                });
+            };
+        });
+    };
+    /** JSDoc */
+    Breadcrumbs.prototype.instrumentHistory = function () {
+        var _this = this;
+        if (!supports_9()) {
+            return;
+        }
+        var captureUrlChange = function (from, to) {
+            var parsedLoc = misc_7(global$3.location.href);
+            var parsedTo = misc_7(to);
+            var parsedFrom = misc_7(from);
+            // Initial pushState doesn't provide `from` information
+            if (!parsedFrom.path) {
+                parsedFrom = parsedLoc;
+            }
+            // because onpopstate only tells you the "new" (to) value of location.href, and
+            // not the previous (from) value, we need to track the value of the current URL
+            // state ourselves
+            lastHref = to;
+            // Use only the path component of the URL if the URL matches the current
+            // document (almost all the time when using pushState)
+            if (parsedLoc.protocol === parsedTo.protocol && parsedLoc.host === parsedTo.host) {
+                // tslint:disable-next-line:no-parameter-reassignment
+                to = parsedTo.relative;
+            }
+            if (parsedLoc.protocol === parsedFrom.protocol && parsedLoc.host === parsedFrom.host) {
+                // tslint:disable-next-line:no-parameter-reassignment
+                from = parsedFrom.relative;
+            }
+            Breadcrumbs.addBreadcrumb({
+                category: 'navigation',
+                data: {
+                    from: from,
+                    to: to,
+                },
+            });
+        };
+        // record navigation (URL) changes
+        var oldOnPopState = global$3.onpopstate;
+        global$3.onpopstate = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            var currentHref = global$3.location.href;
+            captureUrlChange(lastHref, currentHref);
+            if (oldOnPopState) {
+                return oldOnPopState.apply(_this, args);
+            }
+        };
+        /** JSDoc */
+        function historyReplacementFunction(originalHistoryFunction) {
+            // note history.pushState.length is 0; intentionally not declaring
+            // params to preserve 0 arity
+            return function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i] = arguments[_i];
+                }
+                var url = args.length > 2 ? args[2] : undefined;
+                // url argument is optional
+                if (url) {
+                    // coerce to string (this is what pushState does)
+                    captureUrlChange(lastHref, String(url));
+                }
+                return originalHistoryFunction.apply(this, args);
+            };
+        }
+        object_4(global$3.history, 'pushState', historyReplacementFunction);
+        object_4(global$3.history, 'replaceState', historyReplacementFunction);
+    };
+    /** JSDoc */
+    Breadcrumbs.prototype.instrumentXHR = function () {
+        if (!('XMLHttpRequest' in global$3)) {
+            return;
+        }
+        /** JSDoc */
+        function wrapProp(prop, xhr) {
+            // TODO: Fix XHR types
+            if (prop in xhr && is_6(xhr[prop])) {
+                object_4(xhr, prop, function (original) {
+                    return wrap(original, {
+                        mechanism: {
+                            data: {
+                                function: prop,
+                                handler: (original && original.name) || '<anonymous>',
+                            },
+                            handled: true,
+                            type: 'instrument',
+                        },
+                    });
+                });
+            }
+        }
+        var xhrproto = XMLHttpRequest.prototype;
+        object_4(xhrproto, 'open', function (originalOpen) {
+            return function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i] = arguments[_i];
+                }
+                var url = args[1];
+                this.__sentry_xhr__ = {
+                    method: args[0],
+                    url: args[1],
+                };
+                var client = core.getCurrentHub().getClient();
+                var dsn = client && client.getDsn();
+                if (dsn) {
+                    var filterUrl = new core.API(dsn).getStoreEndpoint();
+                    // if Sentry key appears in URL, don't capture it as a request
+                    // but rather as our own 'sentry' type breadcrumb
+                    if (is_7(url) && (filterUrl && string_4(url, filterUrl))) {
+                        this.__sentry_own_request__ = true;
+                    }
+                }
+                return originalOpen.apply(this, args);
+            };
+        });
+        object_4(xhrproto, 'send', function (originalSend) {
+            return function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i] = arguments[_i];
+                }
+                var xhr = this; // tslint:disable-line:no-this-assignment
+                if (xhr.__sentry_own_request__) {
+                    addSentryBreadcrumb(args[0]);
+                }
+                /** JSDoc */
+                function onreadystatechangeHandler() {
+                    if (xhr.readyState === 4) {
+                        if (xhr.__sentry_own_request__) {
+                            return;
+                        }
+                        try {
+                            // touching statusCode in some platforms throws
+                            // an exception
+                            if (xhr.__sentry_xhr__) {
+                                xhr.__sentry_xhr__.status_code = xhr.status;
+                            }
+                        }
+                        catch (e) {
+                            /* do nothing */
+                        }
+                        Breadcrumbs.addBreadcrumb({
+                            category: 'xhr',
+                            data: xhr.__sentry_xhr__,
+                            type: 'http',
+                        }, {
+                            xhr: xhr,
+                        });
+                    }
+                }
+                ['onload', 'onerror', 'onprogress'].forEach(function (prop) {
+                    wrapProp(prop, xhr);
+                });
+                if ('onreadystatechange' in xhr && is_6(xhr.onreadystatechange)) {
+                    object_4(xhr, 'onreadystatechange', function (original) {
+                        return wrap(original, {
+                            mechanism: {
+                                data: {
+                                    function: 'onreadystatechange',
+                                    handler: (original && original.name) || '<anonymous>',
+                                },
+                                handled: true,
+                                type: 'instrument',
+                            },
+                        }, onreadystatechangeHandler);
+                    });
+                }
+                else {
+                    // if onreadystatechange wasn't actually set by the page on this xhr, we
+                    // are free to set our own and capture the breadcrumb
+                    xhr.onreadystatechange = onreadystatechangeHandler;
+                }
+                return originalSend.apply(this, args);
+            };
+        });
+    };
+    /**
+     * Helper that checks if integration is enabled on the client.
+     * @param breadcrumb Breadcrumb
+     * @param hint SentryBreadcrumbHint
+     */
+    Breadcrumbs.addBreadcrumb = function (breadcrumb, hint) {
+        if (core.getCurrentHub().getIntegration(Breadcrumbs)) {
+            core.getCurrentHub().addBreadcrumb(breadcrumb, hint);
+        }
+    };
+    /**
+     * Instrument browser built-ins w/ breadcrumb capturing
+     *  - Console API
+     *  - DOM API (click/typing)
+     *  - XMLHttpRequest API
+     *  - Fetch API
+     *  - History API
+     */
+    Breadcrumbs.prototype.setupOnce = function () {
+        if (this.options.console) {
+            this.instrumentConsole();
+        }
+        if (this.options.dom) {
+            this.instrumentDOM();
+        }
+        if (this.options.xhr) {
+            this.instrumentXHR();
+        }
+        if (this.options.fetch) {
+            this.instrumentFetch();
+        }
+        if (this.options.beacon) {
+            this.instrumentBeacon();
+        }
+        if (this.options.history) {
+            this.instrumentHistory();
+        }
+    };
+    /**
+     * @inheritDoc
+     */
+    Breadcrumbs.id = 'Breadcrumbs';
+    return Breadcrumbs;
+}());
+/** JSDoc */
+function addSentryBreadcrumb(serializedData) {
+    // There's always something that can go wrong with deserialization...
+    try {
+        var event_1 = object_2(serializedData);
+        Breadcrumbs.addBreadcrumb({
+            category: 'sentry',
+            event_id: event_1.event_id,
+            level: event_1.level || dist_1.fromString('error'),
+            message: misc_8(event_1),
+        }, {
+            event: event_1,
+        });
+    }
+    catch (_oO) {
+        logger_2.error('Error while adding sentry type breadcrumb');
+    }
+}
+
+var DEFAULT_KEY = 'cause';
+var DEFAULT_LIMIT = 5;
+/** Adds SDK info to an event. */
+var LinkedErrors = /** @class */ (function () {
+    /**
+     * @inheritDoc
+     */
+    function LinkedErrors(options) {
+        if (options === void 0) { options = {}; }
+        /**
+         * @inheritDoc
+         */
+        this.name = LinkedErrors.id;
+        this.key = options.key || DEFAULT_KEY;
+        this.limit = options.limit || DEFAULT_LIMIT;
+    }
+    /**
+     * @inheritDoc
+     */
+    LinkedErrors.prototype.setupOnce = function () {
+        var _this = this;
+        core.addGlobalEventProcessor(function (event, hint) { return __awaiter(_this, void 0, void 0, function () {
+            var self;
+            return __generator(this, function (_a) {
+                self = core.getCurrentHub().getIntegration(LinkedErrors);
+                if (self) {
+                    return [2 /*return*/, self.handler(event, hint)];
+                }
+                return [2 /*return*/, event];
+            });
+        }); });
+    };
+    /**
+     * @inheritDoc
+     */
+    LinkedErrors.prototype.handler = function (event, hint) {
+        if (!event.exception || !event.exception.values || !hint || !(hint.originalException instanceof Error)) {
+            return event;
+        }
+        var linkedErrors = this.walkErrorTree(hint.originalException, this.key);
+        event.exception.values = __spread(linkedErrors, event.exception.values);
+        return event;
+    };
+    /**
+     * @inheritDoc
+     */
+    LinkedErrors.prototype.walkErrorTree = function (error, key, stack) {
+        if (stack === void 0) { stack = []; }
+        if (!(error[key] instanceof Error) || stack.length + 1 >= this.limit) {
+            return stack;
+        }
+        var stacktrace = computeStackTrace(error[key]);
+        var exception = exceptionFromStacktrace(stacktrace);
+        return this.walkErrorTree(error[key], key, __spread([exception], stack));
+    };
+    /**
+     * @inheritDoc
+     */
+    LinkedErrors.id = 'LinkedErrors';
+    return LinkedErrors;
+}());
+
+var global$4 = misc_3();
+/** UserAgent */
+var UserAgent = /** @class */ (function () {
+    function UserAgent() {
+        /**
+         * @inheritDoc
+         */
+        this.name = UserAgent.id;
+    }
+    /**
+     * @inheritDoc
+     */
+    UserAgent.prototype.setupOnce = function () {
+        var _this = this;
+        core.addGlobalEventProcessor(function (event) { return __awaiter(_this, void 0, void 0, function () {
+            var request;
+            return __generator(this, function (_a) {
+                if (core.getCurrentHub().getIntegration(UserAgent)) {
+                    if (!global$4.navigator || !global$4.location) {
+                        return [2 /*return*/, event];
+                    }
+                    request = event.request || {};
+                    request.url = request.url || global$4.location.href;
+                    request.headers = request.headers || {};
+                    request.headers['User-Agent'] = global$4.navigator.userAgent;
+                    return [2 /*return*/, __assign({}, event, { request: request })];
+                }
+                return [2 /*return*/, event];
+            });
+        }); });
+    };
+    /**
+     * @inheritDoc
+     */
+    UserAgent.id = 'UserAgent';
+    return UserAgent;
+}());
+
+/** JSDoc */
+var Ember = /** @class */ (function () {
+    /**
+     * @inheritDoc
+     */
+    function Ember(options) {
+        if (options === void 0) { options = {}; }
+        /**
+         * @inheritDoc
+         */
+        this.name = Ember.id;
+        this.Ember =
+            options.Ember ||
+                misc_3().Ember;
+    }
+    /**
+     * @inheritDoc
+     */
+    Ember.prototype.setupOnce = function () {
+        var _this = this;
+        if (!this.Ember) {
+            return;
+        }
+        var oldOnError = this.Ember.onerror;
+        this.Ember.onerror = function (error) {
+            if (core.getCurrentHub().getIntegration(Ember)) {
+                core.withScope(function (scope) {
+                    _this.addIntegrationToSdkInfo(scope);
+                    core.getCurrentHub().captureException(error, { originalException: error });
+                });
+            }
+            if (typeof oldOnError === 'function') {
+                oldOnError.call(_this.Ember, error);
+            }
+            else if (_this.Ember.testing) {
+                throw error;
+            }
+        };
+        this.Ember.RSVP.on('error', function (reason) {
+            if (core.getCurrentHub().getIntegration(Ember)) {
+                core.withScope(function (scope) {
+                    if (reason instanceof Error) {
+                        scope.setExtra('context', 'Unhandled Promise error detected');
+                        _this.addIntegrationToSdkInfo(scope);
+                        core.getCurrentHub().captureException(reason, { originalException: reason });
+                    }
+                    else {
+                        scope.setExtra('reason', reason);
+                        _this.addIntegrationToSdkInfo(scope);
+                        core.captureMessage('Unhandled Promise error detected');
+                    }
+                });
+            }
+        });
+    };
+    /**
+     * Appends SDK integrations
+     * @param scope The scope currently used.
+     */
+    Ember.prototype.addIntegrationToSdkInfo = function (scope) {
+        var _this = this;
+        scope.addEventProcessor(function (event) { return __awaiter(_this, void 0, void 0, function () {
+            var integrations;
+            return __generator(this, function (_a) {
+                if (event.sdk) {
+                    integrations = event.sdk.integrations || [];
+                    event.sdk = __assign({}, event.sdk, { integrations: __spread(integrations, ['ember']) });
+                }
+                return [2 /*return*/, event];
+            });
+        }); });
+    };
+    /**
+     * @inheritDoc
+     */
+    Ember.id = 'Ember';
+    return Ember;
+}());
+
+/** JSDoc */
+var Vue = /** @class */ (function () {
+    /**
+     * @inheritDoc
+     */
+    function Vue(options) {
+        if (options === void 0) { options = {}; }
+        /**
+         * @inheritDoc
+         */
+        this.name = Vue.id;
+        this.Vue =
+            options.Vue ||
+                misc_3().Vue;
+    }
+    /** JSDoc */
+    Vue.prototype.formatComponentName = function (vm) {
+        if (vm.$root === vm) {
+            return 'root instance';
+        }
+        var name = vm._isVue ? vm.$options.name || vm.$options._componentTag : vm.name;
+        return ((name ? "component <" + name + ">" : 'anonymous component') +
+            (vm._isVue && vm.$options.__file ? " at " + vm.$options.__file : ''));
+    };
+    /**
+     * @inheritDoc
+     */
+    Vue.prototype.setupOnce = function () {
+        var _this = this;
+        if (!this.Vue || !this.Vue.config) {
+            return;
+        }
+        var oldOnError = this.Vue.config.errorHandler;
+        this.Vue.config.errorHandler = function (error, vm, info) {
+            var metadata = {};
+            if (is_9(vm)) {
+                metadata.componentName = _this.formatComponentName(vm);
+                metadata.propsData = vm.$options.propsData;
+            }
+            if (!is_5(info)) {
+                metadata.lifecycleHook = info;
+            }
+            if (core.getCurrentHub().getIntegration(Vue)) {
+                core.withScope(function (scope) {
+                    Object.keys(metadata).forEach(function (key) {
+                        scope.setExtra(key, metadata[key]);
+                    });
+                    scope.addEventProcessor(function (event) { return __awaiter(_this, void 0, void 0, function () {
+                        var integrations;
+                        return __generator(this, function (_a) {
+                            if (event.sdk) {
+                                integrations = event.sdk.integrations || [];
+                                event.sdk = __assign({}, event.sdk, { integrations: __spread(integrations, ['vue']) });
+                            }
+                            return [2 /*return*/, event];
+                        });
+                    }); });
+                    core.getCurrentHub().captureException(error, { originalException: error });
+                });
+            }
+            if (typeof oldOnError === 'function') {
+                oldOnError.call(_this.Vue, error, vm, info);
+            }
+        };
+    };
+    /**
+     * @inheritDoc
+     */
+    Vue.id = 'Vue';
+    return Vue;
+}());
+
+/** JSDoc */
+var ReportTypes;
+(function (ReportTypes) {
+    /** JSDoc */
+    ReportTypes["Crash"] = "crash";
+    /** JSDoc */
+    ReportTypes["Deprecation"] = "deprecation";
+    /** JSDoc */
+    ReportTypes["Intervention"] = "intervention";
+})(ReportTypes || (ReportTypes = {}));
+/** Reporting API integration - https://w3c.github.io/reporting/ */
+var ReportingObserver = /** @class */ (function () {
+    /**
+     * @inheritDoc
+     */
+    function ReportingObserver(options) {
+        if (options === void 0) { options = {
+            types: [ReportTypes.Crash, ReportTypes.Deprecation, ReportTypes.Intervention],
+        }; }
+        this.options = options;
+        /**
+         * @inheritDoc
+         */
+        this.name = ReportingObserver.id;
+    }
+    /**
+     * @inheritDoc
+     */
+    ReportingObserver.prototype.setupOnce = function () {
+        if (!supports_7()) {
+            return;
+        }
+        var observer = new (misc_3().ReportingObserver)(this.handler.bind(this), {
+            buffered: true,
+            types: this.options.types,
+        });
+        observer.observe();
+    };
+    /**
+     * @inheritDoc
+     */
+    ReportingObserver.prototype.handler = function (reports) {
+        var e_1, _a;
+        if (!core.getCurrentHub().getIntegration(ReportingObserver)) {
+            return;
+        }
+        var _loop_1 = function (report) {
+            core.withScope(function (scope) {
+                scope.setExtra('url', report.url);
+                var label = "ReportingObserver [" + report.type + "]";
+                var details = 'No details available';
+                if (report.body) {
+                    // Object.keys doesn't work on ReportBody, as all properties are inheirted
+                    var plainBody = {};
+                    // tslint:disable-next-line:forin
+                    for (var prop in report.body) {
+                        plainBody[prop] = report.body[prop];
+                    }
+                    scope.setExtra('body', plainBody);
+                    if (report.type === ReportTypes.Crash) {
+                        var body = report.body;
+                        // A fancy way to create a message out of crashId OR reason OR both OR fallback
+                        details = [body.crashId || '', body.reason || ''].join(' ').trim() || details;
+                    }
+                    else {
+                        var body = report.body;
+                        details = body.message || details;
+                    }
+                }
+                core.captureMessage(label + ": " + details);
+            });
+        };
+        try {
+            for (var reports_1 = __values(reports), reports_1_1 = reports_1.next(); !reports_1_1.done; reports_1_1 = reports_1.next()) {
+                var report = reports_1_1.value;
+                _loop_1(report);
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (reports_1_1 && !reports_1_1.done && (_a = reports_1.return)) _a.call(reports_1);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+    };
+    /**
+     * @inheritDoc
+     */
+    ReportingObserver.id = 'ReportingObserver';
+    return ReportingObserver;
+}());
+
+
+
+var BrowserIntegrations = /*#__PURE__*/Object.freeze({
+    GlobalHandlers: GlobalHandlers,
+    TryCatch: TryCatch,
+    Breadcrumbs: Breadcrumbs,
+    LinkedErrors: LinkedErrors,
+    UserAgent: UserAgent,
+    Ember: Ember,
+    Vue: Vue,
+    ReportingObserver: ReportingObserver
+});
+
+var defaultIntegrations = [
+    // Common
+    new core.Integrations.Dedupe(),
+    new core.Integrations.InboundFilters(),
+    new core.Integrations.FunctionToString(),
+    // Native Wrappers
+    new TryCatch(),
+    new Breadcrumbs(),
+    // Global Handlers
+    new GlobalHandlers(),
+    // Misc
+    new LinkedErrors(),
+    new UserAgent(),
+];
+/**
+ * The Sentry Browser SDK Client.
+ *
+ * To use this SDK, call the {@link init} function as early as possible when
+ * loading the web page. To set context information or send manual events, use
+ * the provided methods.
+ *
+ * @example
+ * import { init } from '@sentry/browser';
+ *
+ * init({
+ *   dsn: '__DSN__',
+ *   // ...
+ * });
+ *
+ * @example
+ * import { configureScope } from '@sentry/browser';
+ * configureScope((scope: Scope) => {
+ *   scope.setExtra({ battery: 0.7 });
+ *   scope.setTag({ user_mode: 'admin' });
+ *   scope.setUser({ id: '4711' });
+ * });
+ *
+ * @example
+ * import { addBreadcrumb } from '@sentry/browser';
+ * addBreadcrumb({
+ *   message: 'My Breadcrumb',
+ *   // ...
+ * });
+ *
+ * @example
+ * import * as Sentry from '@sentry/browser';
+ * Sentry.captureMessage('Hello, world!');
+ * Sentry.captureException(new Error('Good bye'));
+ * Sentry.captureEvent({
+ *   message: 'Manual',
+ *   stacktrace: [
+ *     // ...
+ *   ],
+ * });
+ *
+ * @see BrowserOptions for documentation on configuration options.
+ */
+function init(options) {
+    if (options === void 0) { options = {}; }
+    if (options.defaultIntegrations === undefined) {
+        options.defaultIntegrations = defaultIntegrations;
+    }
+    core.initAndBind(BrowserClient, options);
+}
+/**
+ * Present the user with a report dialog.
+ *
+ * @param options Everything is optional, we try to fetch all info need from the global scope.
+ */
+function showReportDialog(options) {
+    if (options === void 0) { options = {}; }
+    if (!options.eventId) {
+        options.eventId = core.getCurrentHub().lastEventId();
+    }
+    core.getCurrentHub().getClient().showReportDialog(options);
+}
+/**
+ * This is the getter for lastEventId.
+ *
+ * @returns The last event id of a captured event.
+ */
+function lastEventId() {
+    return core.getCurrentHub().lastEventId();
+}
+/**
+ * This function is here to be API compatible with the loader
+ */
+function forceLoad() {
+    // Noop
+}
+/**
+ * This function is here to be API compatible with the loader
+ */
+function onLoad(callback) {
+    callback();
+}
+
+var INTEGRATIONS = __assign({}, core.Integrations, BrowserIntegrations);
+
+exports.addGlobalEventProcessor = core.addGlobalEventProcessor;
+exports.addBreadcrumb = core.addBreadcrumb;
+exports.captureException = core.captureException;
+exports.captureEvent = core.captureEvent;
+exports.captureMessage = core.captureMessage;
+exports.configureScope = core.configureScope;
+exports.withScope = core.withScope;
+exports.getHubFromCarrier = core.getHubFromCarrier;
+exports.getCurrentHub = core.getCurrentHub;
+exports.Hub = core.Hub;
+exports.Scope = core.Scope;
+exports.Integrations = INTEGRATIONS;
+exports.Transports = index$1;
+exports.Severity = dist_1;
+exports.Status = dist_2;
+exports.BrowserBackend = BrowserBackend;
+exports.BrowserClient = BrowserClient;
+exports.defaultIntegrations = defaultIntegrations;
+exports.forceLoad = forceLoad;
+exports.init = init;
+exports.lastEventId = lastEventId;
+exports.onLoad = onLoad;
+exports.showReportDialog = showReportDialog;
+exports.SDK_NAME = SDK_NAME;
+exports.SDK_VERSION = SDK_VERSION;
+//# sourceMappingURL=index.js.map
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(7)))
+
+/***/ }),
+/* 79 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var minimal_1 = __webpack_require__(80);
+exports.addBreadcrumb = minimal_1.addBreadcrumb;
+exports.captureException = minimal_1.captureException;
+exports.captureEvent = minimal_1.captureEvent;
+exports.captureMessage = minimal_1.captureMessage;
+exports.configureScope = minimal_1.configureScope;
+exports.withScope = minimal_1.withScope;
+var hub_1 = __webpack_require__(3);
+exports.addGlobalEventProcessor = hub_1.addGlobalEventProcessor;
+exports.getCurrentHub = hub_1.getCurrentHub;
+exports.Hub = hub_1.Hub;
+exports.getHubFromCarrier = hub_1.getHubFromCarrier;
+exports.Scope = hub_1.Scope;
+var api_1 = __webpack_require__(83);
+exports.API = api_1.API;
+var baseclient_1 = __webpack_require__(84);
+exports.BaseClient = baseclient_1.BaseClient;
+var basebackend_1 = __webpack_require__(88);
+exports.BaseBackend = basebackend_1.BaseBackend;
+var dsn_1 = __webpack_require__(12);
+exports.Dsn = dsn_1.Dsn;
+var error_1 = __webpack_require__(13);
+exports.SentryError = error_1.SentryError;
+var requestbuffer_1 = __webpack_require__(21);
+exports.RequestBuffer = requestbuffer_1.RequestBuffer;
+var interfaces_1 = __webpack_require__(89);
+exports.LogLevel = interfaces_1.LogLevel;
+var sdk_1 = __webpack_require__(90);
+exports.initAndBind = sdk_1.initAndBind;
+var Integrations = __webpack_require__(91);
+exports.Integrations = Integrations;
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+/* 80 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var hub_1 = __webpack_require__(3);
+/**
+ * This calls a function on the current hub.
+ * @param method function to call on hub.
+ * @param args to pass to function.
+ */
+function callOnHub(method) {
+    var args = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        args[_i - 1] = arguments[_i];
+    }
+    var hub = hub_1.getCurrentHub();
+    if (hub && hub[method]) {
+        // tslint:disable-next-line:no-unsafe-any
+        return hub[method].apply(hub, __spread(args));
+    }
+    throw new Error("No hub defined or " + method + " was not found on the hub, please open a bug report.");
+}
+/**
+ * Captures an exception event and sends it to Sentry.
+ *
+ * @param exception An exception-like object.
+ * @returns The generated eventId.
+ */
+function captureException(exception) {
+    var syntheticException;
+    try {
+        throw new Error('Sentry syntheticException');
+    }
+    catch (exception) {
+        syntheticException = exception;
+    }
+    return callOnHub('captureException', exception, {
+        originalException: exception,
+        syntheticException: syntheticException,
+    });
+}
+exports.captureException = captureException;
+/**
+ * Captures a message event and sends it to Sentry.
+ *
+ * @param message The message to send to Sentry.
+ * @param level Define the level of the message.
+ * @returns The generated eventId.
+ */
+function captureMessage(message, level) {
+    var syntheticException;
+    try {
+        throw new Error(message);
+    }
+    catch (exception) {
+        syntheticException = exception;
+    }
+    return callOnHub('captureMessage', message, level, {
+        originalException: message,
+        syntheticException: syntheticException,
+    });
+}
+exports.captureMessage = captureMessage;
+/**
+ * Captures a manually created event and sends it to Sentry.
+ *
+ * @param event The event to send to Sentry.
+ * @returns The generated eventId.
+ */
+function captureEvent(event) {
+    return callOnHub('captureEvent', event);
+}
+exports.captureEvent = captureEvent;
+/**
+ * Records a new breadcrumb which will be attached to future events.
+ *
+ * Breadcrumbs will be added to subsequent events to provide more context on
+ * user's actions prior to an error or crash.
+ *
+ * @param breadcrumb The breadcrumb to record.
+ */
+function addBreadcrumb(breadcrumb) {
+    callOnHub('addBreadcrumb', breadcrumb);
+}
+exports.addBreadcrumb = addBreadcrumb;
+/**
+ * Callback to set context information onto the scope.
+ * @param callback Callback function that receives Scope.
+ */
+function configureScope(callback) {
+    callOnHub('configureScope', callback);
+}
+exports.configureScope = configureScope;
+/**
+ * Creates a new scope with and executes the given operation within.
+ * The scope is automatically removed once the operation
+ * finishes or throws.
+ *
+ * This is essentially a convenience function for:
+ *
+ *     pushScope();
+ *     callback();
+ *     popScope();
+ *
+ * @param callback that will be enclosed into push/popScope.
+ */
+function withScope(callback) {
+    callOnHub('withScope', callback);
+}
+exports.withScope = withScope;
+/**
+ * Calls a function on the latest client. Use this with caution, it's meant as
+ * in "internal" helper so we don't need to expose every possible function in
+ * the shim. It is not guaranteed that the client actually implements the
+ * function.
+ *
+ * @param method The method to call on the client/client.
+ * @param args Arguments to pass to the client/fontend.
+ */
+function _callOnClient(method) {
+    var args = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        args[_i - 1] = arguments[_i];
+    }
+    callOnHub.apply(void 0, __spread(['invokeClient', method], args));
+}
+exports._callOnClient = _callOnClient;
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+/* 81 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(module) {
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var logger_1 = __webpack_require__(2);
+var misc_1 = __webpack_require__(4);
+var scope_1 = __webpack_require__(19);
+/**
+ * API compatibility version of this hub.
+ *
+ * WARNING: This number should only be incresed when the global interface
+ * changes a and new methods are introduced.
+ */
+exports.API_VERSION = 3;
+/**
+ * Internal class used to make sure we always have the latest internal functions
+ * working in case we have a version conflict.
+ */
+var Hub = /** @class */ (function () {
+    /**
+     * Creates a new instance of the hub, will push one {@link Layer} into the
+     * internal stack on creation.
+     *
+     * @param client bound to the hub.
+     * @param scope bound to the hub.
+     * @param version number, higher number means higher priority.
+     */
+    function Hub(client, scope, version) {
+        if (scope === void 0) { scope = new scope_1.Scope(); }
+        if (version === void 0) { version = exports.API_VERSION; }
+        this.version = version;
+        /** Is a {@link Layer}[] containing the client and scope */
+        this.stack = [];
+        this.stack.push({ client: client, scope: scope });
+    }
+    /**
+     * Internal helper function to call a method on the top client if it exists.
+     *
+     * @param method The method to call on the client/client.
+     * @param args Arguments to pass to the client/frontend.
+     */
+    Hub.prototype.invokeClient = function (method) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        var _a;
+        var top = this.getStackTop();
+        if (top && top.client && top.client[method]) {
+            (_a = top.client)[method].apply(_a, __spread(args, [top.scope]));
+        }
+    };
+    /**
+     * Internal helper function to call an async method on the top client if it
+     * exists.
+     *
+     * @param method The method to call on the client/client.
+     * @param args Arguments to pass to the client/frontend.
+     */
+    Hub.prototype.invokeClientAsync = function (method) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        var _a;
+        var top = this.getStackTop();
+        if (top && top.client && top.client[method]) {
+            (_a = top.client)[method].apply(_a, __spread(args, [top.scope])).catch(function (err) {
+                logger_1.logger.error(err);
+            });
+        }
+    };
+    /**
+     * Checks if this hub's version is older than the given version.
+     *
+     * @param version A version number to compare to.
+     * @return True if the given version is newer; otherwise false.
+     */
+    Hub.prototype.isOlderThan = function (version) {
+        return this.version < version;
+    };
+    /**
+     * This binds the given client to the current scope.
+     * @param client An SDK client (client) instance.
+     */
+    Hub.prototype.bindClient = function (client) {
+        var top = this.getStackTop();
+        top.client = client;
+        if (top && top.scope && client) {
+            top.scope.addScopeListener(function (s) {
+                if (client.getBackend) {
+                    try {
+                        client.getBackend().storeScope(s);
+                    }
+                    catch (_a) {
+                        // Do nothing
+                    }
+                }
+            });
+        }
+    };
+    /**
+     * Create a new scope to store context information.
+     *
+     * The scope will be layered on top of the current one. It is isolated, i.e. all
+     * breadcrumbs and context information added to this scope will be removed once
+     * the scope ends. Be sure to always remove this scope with {@link this.popScope}
+     * when the operation finishes or throws.
+     *
+     * @returns Scope, the new cloned scope
+     */
+    Hub.prototype.pushScope = function () {
+        // We want to clone the content of prev scope
+        var stack = this.getStack();
+        var parentScope = stack.length > 0 ? stack[stack.length - 1].scope : undefined;
+        var scope = scope_1.Scope.clone(parentScope);
+        this.getStack().push({
+            client: this.getClient(),
+            scope: scope,
+        });
+        return scope;
+    };
+    /**
+     * Removes a previously pushed scope from the stack.
+     *
+     * This restores the state before the scope was pushed. All breadcrumbs and
+     * context information added since the last call to {@link this.pushScope} are
+     * discarded.
+     */
+    Hub.prototype.popScope = function () {
+        return this.getStack().pop() !== undefined;
+    };
+    /**
+     * Creates a new scope with and executes the given operation within.
+     * The scope is automatically removed once the operation
+     * finishes or throws.
+     *
+     * This is essentially a convenience function for:
+     *
+     *     pushScope();
+     *     callback();
+     *     popScope();
+     *
+     * @param callback that will be enclosed into push/popScope.
+     */
+    Hub.prototype.withScope = function (callback) {
+        var scope = this.pushScope();
+        try {
+            callback(scope);
+        }
+        finally {
+            this.popScope();
+        }
+    };
+    /** Returns the client of the top stack. */
+    Hub.prototype.getClient = function () {
+        return this.getStackTop().client;
+    };
+    /** Returns the scope of the top stack. */
+    Hub.prototype.getScope = function () {
+        return this.getStackTop().scope;
+    };
+    /** Returns the scope stack for domains or the process. */
+    Hub.prototype.getStack = function () {
+        return this.stack;
+    };
+    /** Returns the topmost scope layer in the order domain > local > process. */
+    Hub.prototype.getStackTop = function () {
+        return this.stack[this.stack.length - 1];
+    };
+    /**
+     * Captures an exception event and sends it to Sentry.
+     *
+     * @param exception An exception-like object.
+     * @param hint May contain additional information about the original exception.
+     * @returns The generated eventId.
+     */
+    Hub.prototype.captureException = function (exception, hint) {
+        var eventId = (this._lastEventId = misc_1.uuid4());
+        this.invokeClientAsync('captureException', exception, __assign({}, hint, { event_id: eventId }));
+        return eventId;
+    };
+    /**
+     * Captures a message event and sends it to Sentry.
+     *
+     * @param message The message to send to Sentry.
+     * @param level Define the level of the message.
+     * @param hint May contain additional information about the original exception.
+     * @returns The generated eventId.
+     */
+    Hub.prototype.captureMessage = function (message, level, hint) {
+        var eventId = (this._lastEventId = misc_1.uuid4());
+        this.invokeClientAsync('captureMessage', message, level, __assign({}, hint, { event_id: eventId }));
+        return eventId;
+    };
+    /**
+     * Captures a manually created event and sends it to Sentry.
+     *
+     * @param event The event to send to Sentry.
+     * @param hint May contain additional information about the original exception.
+     */
+    Hub.prototype.captureEvent = function (event, hint) {
+        var eventId = (this._lastEventId = misc_1.uuid4());
+        this.invokeClientAsync('captureEvent', event, __assign({}, hint, { event_id: eventId }));
+        return eventId;
+    };
+    /**
+     * This is the getter for lastEventId.
+     *
+     * @returns The last event id of a captured event.
+     */
+    Hub.prototype.lastEventId = function () {
+        return this._lastEventId;
+    };
+    /**
+     * Records a new breadcrumb which will be attached to future events.
+     *
+     * Breadcrumbs will be added to subsequent events to provide more context on
+     * user's actions prior to an error or crash.
+     *
+     * @param breadcrumb The breadcrumb to record.
+     * @param hint May contain additional information about the original breadcrumb.
+     */
+    Hub.prototype.addBreadcrumb = function (breadcrumb, hint) {
+        this.invokeClient('addBreadcrumb', breadcrumb, __assign({}, hint));
+    };
+    /**
+     * Callback to set context information onto the scope.
+     *
+     * @param callback Callback function that receives Scope.
+     */
+    Hub.prototype.configureScope = function (callback) {
+        var top = this.getStackTop();
+        if (top.scope && top.client) {
+            // TODO: freeze flag
+            callback(top.scope);
+        }
+    };
+    /**
+     * For the duraction of the callback, this hub will be set as the global current Hub.
+     * This function is useful if you want to run your own client and hook into an already initialized one
+     * e.g.: Reporting issues to your own sentry when running in your component while still using the users configuration.
+     */
+    Hub.prototype.run = function (callback) {
+        var oldHub = makeMain(this);
+        try {
+            callback(this);
+        }
+        finally {
+            makeMain(oldHub);
+        }
+    };
+    /** Returns the integration if installed on the current client. */
+    Hub.prototype.getIntegration = function (integration) {
+        try {
+            return this.getClient().getIntegration(integration);
+        }
+        catch (_oO) {
+            logger_1.logger.warn("Cannot retrieve integration " + integration.id + " from the current Hub");
+            return null;
+        }
+    };
+    return Hub;
+}());
+exports.Hub = Hub;
+/** Returns the global shim registry. */
+function getMainCarrier() {
+    var carrier = misc_1.getGlobalObject();
+    carrier.__SENTRY__ = carrier.__SENTRY__ || {
+        hub: undefined,
+    };
+    return carrier;
+}
+exports.getMainCarrier = getMainCarrier;
+/**
+ * Replaces the current main hub with the passed one on the global object
+ *
+ * @returns The old replaced hub
+ */
+function makeMain(hub) {
+    var registry = getMainCarrier();
+    var oldHub = getHubFromCarrier(registry);
+    setHubOnCarrier(registry, hub);
+    return oldHub;
+}
+exports.makeMain = makeMain;
+/**
+ * Returns the default hub instance.
+ *
+ * If a hub is already registered in the global carrier but this module
+ * contains a more recent version, it replaces the registered version.
+ * Otherwise, the currently registered hub will be returned.
+ */
+function getCurrentHub() {
+    // Get main carrier (global for every environment)
+    var registry = getMainCarrier();
+    // If there's no hub, or its an old API, assign a new one
+    if (!hasHubOnCarrier(registry) || getHubFromCarrier(registry).isOlderThan(exports.API_VERSION)) {
+        setHubOnCarrier(registry, new Hub());
+    }
+    // Prefer domains over global if they are there
+    try {
+        // We need to use `dynamicRequire` because `require` on it's own will be optimized by webpack.
+        // We do not want this to happen, we need to try to `require` the domain node module and fail if we are in browser
+        // for example so we do not have to shim it and use `getCurrentHub` universally.
+        var domain = misc_1.dynamicRequire(module, 'domain');
+        var activeDomain = domain.active;
+        // If there no active domain, just return global hub
+        if (!activeDomain) {
+            return getHubFromCarrier(registry);
+        }
+        // If there's no hub on current domain, or its an old API, assign a new one
+        if (!hasHubOnCarrier(activeDomain) || getHubFromCarrier(activeDomain).isOlderThan(exports.API_VERSION)) {
+            var registryHubTopStack = getHubFromCarrier(registry).getStackTop();
+            setHubOnCarrier(activeDomain, new Hub(registryHubTopStack.client, scope_1.Scope.clone(registryHubTopStack.scope)));
+        }
+        // Return hub that lives on a domain
+        return getHubFromCarrier(activeDomain);
+    }
+    catch (_Oo) {
+        // Return hub that lives on a global object
+        return getHubFromCarrier(registry);
+    }
+}
+exports.getCurrentHub = getCurrentHub;
+/**
+ * This will tell whether a carrier has a hub on it or not
+ * @param carrier object
+ */
+function hasHubOnCarrier(carrier) {
+    if (carrier && carrier.__SENTRY__ && carrier.__SENTRY__.hub) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+exports.hasHubOnCarrier = hasHubOnCarrier;
+/**
+ * This will create a new {@link Hub} and add to the passed object on
+ * __SENTRY__.hub.
+ * @param carrier object
+ */
+function getHubFromCarrier(carrier) {
+    if (carrier && carrier.__SENTRY__ && carrier.__SENTRY__.hub) {
+        return carrier.__SENTRY__.hub;
+    }
+    else {
+        carrier.__SENTRY__ = {};
+        carrier.__SENTRY__.hub = new Hub();
+        return carrier.__SENTRY__.hub;
+    }
+}
+exports.getHubFromCarrier = getHubFromCarrier;
+/**
+ * This will set passed {@link Hub} on the passed object's __SENTRY__.hub attribute
+ * @param carrier object
+ * @param hub Hub
+ */
+function setHubOnCarrier(carrier, hub) {
+    if (!carrier) {
+        return false;
+    }
+    carrier.__SENTRY__ = carrier.__SENTRY__ || {};
+    carrier.__SENTRY__.hub = hub;
+    return true;
+}
+exports.setHubOnCarrier = setHubOnCarrier;
+//# sourceMappingURL=hub.js.map
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(82)(module)))
+
+/***/ }),
+/* 82 */
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+
+/***/ }),
+/* 83 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var object_1 = __webpack_require__(11);
+var dsn_1 = __webpack_require__(12);
+var SENTRY_API_VERSION = '7';
+/** Helper class to provide urls to different Sentry endpoints. */
+var API = /** @class */ (function () {
+    /** Create a new instance of API */
+    function API(dsn) {
+        this.dsn = dsn;
+        this.dsnObject = new dsn_1.Dsn(dsn);
+    }
+    /** Returns the Dsn object. */
+    API.prototype.getDsn = function () {
+        return this.dsnObject;
+    };
+    /** Returns a string with auth headers in the url to the store endpoint. */
+    API.prototype.getStoreEndpoint = function () {
+        return "" + this.getBaseUrl() + this.getStoreEndpointPath();
+    };
+    /** Returns the store endpoint with auth added in url encoded. */
+    API.prototype.getStoreEndpointWithUrlEncodedAuth = function () {
+        var dsn = this.dsnObject;
+        var auth = {
+            sentry_key: dsn.user,
+            sentry_version: SENTRY_API_VERSION,
+        };
+        // Auth is intentionally sent as part of query string (NOT as custom HTTP header)
+        // to avoid preflight CORS requests
+        return this.getStoreEndpoint() + "?" + object_1.urlEncode(auth);
+    };
+    /** Returns the base path of the url including the port. */
+    API.prototype.getBaseUrl = function () {
+        var dsn = this.dsnObject;
+        var protocol = dsn.protocol ? dsn.protocol + ":" : '';
+        var port = dsn.port ? ":" + dsn.port : '';
+        return protocol + "//" + dsn.host + port;
+    };
+    /** Returns only the path component for the store endpoint. */
+    API.prototype.getStoreEndpointPath = function () {
+        var dsn = this.dsnObject;
+        return (dsn.path ? "/" + dsn.path : '') + "/api/" + dsn.projectId + "/store/";
+    };
+    /** Returns an object that can be used in request headers. */
+    API.prototype.getRequestHeaders = function (clientName, clientVersion) {
+        var dsn = this.dsnObject;
+        var header = ["Sentry sentry_version=" + SENTRY_API_VERSION];
+        header.push("sentry_timestamp=" + new Date().getTime());
+        header.push("sentry_client=" + clientName + "/" + clientVersion);
+        header.push("sentry_key=" + dsn.user);
+        if (dsn.pass) {
+            header.push("sentry_secret=" + dsn.pass);
+        }
+        return {
+            'Content-Type': 'application/json',
+            'X-Sentry-Auth': header.join(', '),
+        };
+    };
+    /** Returns the url to the report dialog endpoint. */
+    API.prototype.getReportDialogEndpoint = function (dialogOptions) {
+        if (dialogOptions === void 0) { dialogOptions = {}; }
+        var dsn = this.dsnObject;
+        var endpoint = "" + this.getBaseUrl() + (dsn.path ? "/" + dsn.path : '') + "/api/embed/error-page/";
+        var encodedOptions = [];
+        encodedOptions.push("dsn=" + dsn.toString());
+        for (var key in dialogOptions) {
+            if (key === 'user') {
+                if (!dialogOptions.user) {
+                    continue;
+                }
+                if (dialogOptions.user.name) {
+                    encodedOptions.push("name=" + encodeURIComponent(dialogOptions.user.name));
+                }
+                if (dialogOptions.user.email) {
+                    encodedOptions.push("email=" + encodeURIComponent(dialogOptions.user.email));
+                }
+            }
+            else {
+                encodedOptions.push(encodeURIComponent(key) + "=" + encodeURIComponent(dialogOptions[key]));
+            }
+        }
+        if (encodedOptions.length) {
+            return endpoint + "?" + encodedOptions.join('&');
+        }
+        return endpoint;
+    };
+    return API;
+}());
+exports.API = API;
+//# sourceMappingURL=api.js.map
+
+/***/ }),
+/* 84 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var types_1 = __webpack_require__(85);
+var async_1 = __webpack_require__(86);
+var logger_1 = __webpack_require__(2);
+var misc_1 = __webpack_require__(4);
+var string_1 = __webpack_require__(20);
+var dsn_1 = __webpack_require__(12);
+var integration_1 = __webpack_require__(87);
+/**
+ * Default maximum number of breadcrumbs added to an event. Can be overwritten
+ * with {@link Options.maxBreadcrumbs}.
+ */
+var DEFAULT_BREADCRUMBS = 30;
+/**
+ * Absolute maximum number of breadcrumbs added to an event. The
+ * `maxBreadcrumbs` option cannot be higher than this value.
+ */
+var MAX_BREADCRUMBS = 100;
+/**
+ * By default, truncates URL values to 250 chars
+ */
+var MAX_URL_LENGTH = 250;
+/**
+ * Base implementation for all JavaScript SDK clients.
+ *
+ * Call the constructor with the corresponding backend constructor and options
+ * specific to the client subclass. To access these options later, use
+ * {@link Client.getOptions}. Also, the Backend instance is available via
+ * {@link Client.getBackend}.
+ *
+ * If a Dsn is specified in the options, it will be parsed and stored. Use
+ * {@link Client.getDsn} to retrieve the Dsn at any moment. In case the Dsn is
+ * invalid, the constructor will throw a {@link SentryException}. Note that
+ * without a valid Dsn, the SDK will not send any events to Sentry.
+ *
+ * Before sending an event via the backend, it is passed through
+ * {@link BaseClient.prepareEvent} to add SDK information and scope data
+ * (breadcrumbs and context). To add more custom information, override this
+ * method and extend the resulting prepared event.
+ *
+ * To issue automatically created events (e.g. via instrumentation), use
+ * {@link Client.captureEvent}. It will prepare the event and pass it through
+ * the callback lifecycle. To issue auto-breadcrumbs, use
+ * {@link Client.addBreadcrumb}.
+ *
+ * @example
+ * class NodeClient extends BaseClient<NodeBackend, NodeOptions> {
+ *   public constructor(options: NodeOptions) {
+ *     super(NodeBackend, options);
+ *   }
+ *
+ *   // ...
+ * }
+ */
+var BaseClient = /** @class */ (function () {
+    /**
+     * Initializes this client instance.
+     *
+     * @param backendClass A constructor function to create the backend.
+     * @param options Options for the client.
+     */
+    function BaseClient(backendClass, options) {
+        this.backend = new backendClass(options);
+        this.options = options;
+        if (options.dsn) {
+            this.dsn = new dsn_1.Dsn(options.dsn);
+        }
+        // We have to setup the integrations in the constructor since we do not want
+        // that anyone needs to call client.install();
+        this.integrations = integration_1.setupIntegrations(this.options);
+    }
+    /**
+     * @inheritDoc
+     */
+    BaseClient.prototype.install = function () {
+        if (!this.isEnabled()) {
+            return (this.installed = false);
+        }
+        var backend = this.getBackend();
+        if (!this.installed && backend.install) {
+            backend.install();
+        }
+        return (this.installed = true);
+    };
+    /**
+     * Internal helper function to buffer promises.
+     *
+     * @param promise Any promise, but in this case Promise<SentryResponse>.
+     */
+    BaseClient.prototype.buffer = function (promise) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, this.getBackend()
+                        .getBuffer()
+                        .add(promise)];
+            });
+        });
+    };
+    /**
+     * @inheritDoc
+     */
+    BaseClient.prototype.captureException = function (exception, hint, scope) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                return [2 /*return*/, this.buffer((function () { return __awaiter(_this, void 0, void 0, function () {
+                        var event;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0: return [4 /*yield*/, this.getBackend().eventFromException(exception, hint)];
+                                case 1:
+                                    event = _a.sent();
+                                    return [2 /*return*/, this.captureEvent(event, hint, scope)];
+                            }
+                        });
+                    }); })())];
+            });
+        });
+    };
+    /**
+     * @inheritDoc
+     */
+    BaseClient.prototype.captureMessage = function (message, level, hint, scope) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                return [2 /*return*/, this.buffer((function () { return __awaiter(_this, void 0, void 0, function () {
+                        var event;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0: return [4 /*yield*/, this.getBackend().eventFromMessage(message, level, hint)];
+                                case 1:
+                                    event = _a.sent();
+                                    return [2 /*return*/, this.captureEvent(event, hint, scope)];
+                            }
+                        });
+                    }); })())];
+            });
+        });
+    };
+    /**
+     * @inheritDoc
+     */
+    BaseClient.prototype.captureEvent = function (event, hint, scope) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                // Adding this here is technically not correct since if you call captureMessage/captureException it's already
+                // buffered. But since we not really need the count and we only need to know if the buffer is full or not,
+                // This is fine...
+                return [2 /*return*/, this.buffer((function () { return __awaiter(_this, void 0, void 0, function () {
+                        var _this = this;
+                        return __generator(this, function (_a) {
+                            return [2 /*return*/, this.processEvent(event, function (finalEvent) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+                                    return [2 /*return*/, this.getBackend().sendEvent(finalEvent)];
+                                }); }); }, hint, scope)];
+                        });
+                    }); })())];
+            });
+        });
+    };
+    /**
+     * @inheritDoc
+     */
+    BaseClient.prototype.addBreadcrumb = function (breadcrumb, hint, scope) {
+        var _a = this.getOptions(), beforeBreadcrumb = _a.beforeBreadcrumb, _b = _a.maxBreadcrumbs, maxBreadcrumbs = _b === void 0 ? DEFAULT_BREADCRUMBS : _b;
+        if (maxBreadcrumbs <= 0) {
+            return;
+        }
+        var timestamp = new Date().getTime() / 1000;
+        var mergedBreadcrumb = __assign({ timestamp: timestamp }, breadcrumb);
+        var finalBreadcrumb = beforeBreadcrumb
+            ? misc_1.consoleSandbox(function () { return beforeBreadcrumb(mergedBreadcrumb, hint); })
+            : mergedBreadcrumb;
+        if (finalBreadcrumb === null) {
+            return;
+        }
+        if (this.getBackend().storeBreadcrumb(finalBreadcrumb) && scope) {
+            scope.addBreadcrumb(finalBreadcrumb, Math.min(maxBreadcrumbs, MAX_BREADCRUMBS));
+        }
+    };
+    /**
+     * @inheritDoc
+     */
+    BaseClient.prototype.getDsn = function () {
+        return this.dsn;
+    };
+    /**
+     * @inheritDoc
+     */
+    BaseClient.prototype.getOptions = function () {
+        return this.options;
+    };
+    /** Returns the current backend. */
+    BaseClient.prototype.getBackend = function () {
+        return this.backend;
+    };
+    /** Determines whether this SDK is enabled and a valid Dsn is present. */
+    BaseClient.prototype.isEnabled = function () {
+        return this.getOptions().enabled !== false && this.dsn !== undefined;
+    };
+    /**
+     * Adds common information to events.
+     *
+     * The information includes release and environment from `options`,
+     * breadcrumbs and context (extra, tags and user) from the scope.
+     *
+     * Information that is already present in the event is never overwritten. For
+     * nested objects, such as the context, keys are merged.
+     *
+     * @param event The original event.
+     * @param hint May contain additional informartion about the original exception.
+     * @param scope A scope containing event metadata.
+     * @returns A new event with more information.
+     */
+    BaseClient.prototype.prepareEvent = function (event, scope, hint) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a, environment, _b, maxBreadcrumbs, release, dist, prepared, exception, request;
+            return __generator(this, function (_c) {
+                _a = this.getOptions(), environment = _a.environment, _b = _a.maxBreadcrumbs, maxBreadcrumbs = _b === void 0 ? DEFAULT_BREADCRUMBS : _b, release = _a.release, dist = _a.dist;
+                prepared = __assign({}, event);
+                if (prepared.environment === undefined && environment !== undefined) {
+                    prepared.environment = environment;
+                }
+                if (prepared.release === undefined && release !== undefined) {
+                    prepared.release = release;
+                }
+                if (prepared.dist === undefined && dist !== undefined) {
+                    prepared.dist = dist;
+                }
+                if (prepared.message) {
+                    prepared.message = string_1.truncate(prepared.message, MAX_URL_LENGTH);
+                }
+                exception = prepared.exception && prepared.exception.values && prepared.exception.values[0];
+                if (exception && exception.value) {
+                    exception.value = string_1.truncate(exception.value, MAX_URL_LENGTH);
+                }
+                request = prepared.request;
+                if (request && request.url) {
+                    request.url = string_1.truncate(request.url, MAX_URL_LENGTH);
+                }
+                if (prepared.event_id === undefined) {
+                    prepared.event_id = misc_1.uuid4();
+                }
+                // This should be the last thing called, since we want that
+                // {@link Hub.addEventProcessor} gets the finished prepared event.
+                if (scope) {
+                    return [2 /*return*/, scope.applyToEvent(prepared, hint, Math.min(maxBreadcrumbs, MAX_BREADCRUMBS))];
+                }
+                return [2 /*return*/, prepared];
+            });
+        });
+    };
+    /**
+     * Processes an event (either error or message) and sends it to Sentry.
+     *
+     * This also adds breadcrumbs and context information to the event. However,
+     * platform specific meta data (such as the User's IP address) must be added
+     * by the SDK implementor.
+     *
+     * The returned event status offers clues to whether the event was sent to
+     * Sentry and accepted there. If the {@link Options.shouldSend} hook returns
+     * `false`, the status will be {@link SendStatus.Skipped}. If the rate limit
+     * was exceeded, the status will be {@link SendStatus.RateLimit}.
+     *
+     * @param event The event to send to Sentry.
+     * @param send A function to actually send the event.
+     * @param scope A scope containing event metadata.
+     * @param hint May contain additional informartion about the original exception.
+     * @returns A Promise that resolves with the event status.
+     */
+    BaseClient.prototype.processEvent = function (event, send, hint, scope) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a, beforeSend, sampleRate, prepared, finalEvent, isInternalException, exception_1, response;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        if (!this.isEnabled()) {
+                            return [2 /*return*/, {
+                                    status: types_1.Status.Skipped,
+                                }];
+                        }
+                        _a = this.getOptions(), beforeSend = _a.beforeSend, sampleRate = _a.sampleRate;
+                        // 1.0 === 100% events are sent
+                        // 0.0 === 0% events are sent
+                        if (typeof sampleRate === 'number' && Math.random() > sampleRate) {
+                            return [2 /*return*/, {
+                                    status: types_1.Status.Skipped,
+                                }];
+                        }
+                        return [4 /*yield*/, this.prepareEvent(event, scope, hint)];
+                    case 1:
+                        prepared = _b.sent();
+                        if (prepared === null) {
+                            return [2 /*return*/, {
+                                    status: types_1.Status.Skipped,
+                                }];
+                        }
+                        finalEvent = prepared;
+                        _b.label = 2;
+                    case 2:
+                        _b.trys.push([2, 5, , 6]);
+                        isInternalException = hint && hint.data && hint.data.__sentry__ === true;
+                        if (!(!isInternalException && beforeSend)) return [3 /*break*/, 4];
+                        return [4 /*yield*/, beforeSend(prepared, hint)];
+                    case 3:
+                        finalEvent = _b.sent();
+                        if (typeof finalEvent === 'undefined') {
+                            logger_1.logger.error('`beforeSend` method has to return `null` or a valid event');
+                        }
+                        _b.label = 4;
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
+                        exception_1 = _b.sent();
+                        async_1.forget(this.captureException(exception_1, {
+                            data: {
+                                __sentry__: true,
+                            },
+                            originalException: exception_1,
+                        }));
+                        return [2 /*return*/, {
+                                reason: 'Event processing in beforeSend method threw an exception',
+                                status: types_1.Status.Invalid,
+                            }];
+                    case 6:
+                        if (finalEvent === null) {
+                            return [2 /*return*/, {
+                                    reason: 'Event dropped due to being discarded by beforeSend method',
+                                    status: types_1.Status.Skipped,
+                                }];
+                        }
+                        return [4 /*yield*/, send(finalEvent)];
+                    case 7:
+                        response = _b.sent();
+                        response.event = finalEvent;
+                        if (response.status === types_1.Status.RateLimit) {
+                            // TODO: Handle rate limits and maintain a queue. For now, we require SDK
+                            // implementors to override this method and handle it themselves.
+                        }
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    /**
+     * @inheritDoc
+     */
+    BaseClient.prototype.close = function (timeout) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, this.getBackend()
+                        .getBuffer()
+                        .drain(timeout)];
+            });
+        });
+    };
+    /**
+     * @inheritDoc
+     */
+    BaseClient.prototype.getIntegrations = function () {
+        return this.integrations || {};
+    };
+    /**
+     * @inheritDoc
+     */
+    BaseClient.prototype.getIntegration = function (integration) {
+        try {
+            return this.integrations[integration.id] || null;
+        }
+        catch (_oO) {
+            logger_1.logger.warn("Cannot retrieve integration " + integration.id + " from the current Client");
+            return null;
+        }
+    };
+    return BaseClient;
+}());
+exports.BaseClient = BaseClient;
+//# sourceMappingURL=baseclient.js.map
+
+/***/ }),
+/* 85 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/** JSDoc */
+var Severity;
+(function (Severity) {
+    /** JSDoc */
+    Severity["Fatal"] = "fatal";
+    /** JSDoc */
+    Severity["Error"] = "error";
+    /** JSDoc */
+    Severity["Warning"] = "warning";
+    /** JSDoc */
+    Severity["Log"] = "log";
+    /** JSDoc */
+    Severity["Info"] = "info";
+    /** JSDoc */
+    Severity["Debug"] = "debug";
+    /** JSDoc */
+    Severity["Critical"] = "critical";
+})(Severity = exports.Severity || (exports.Severity = {}));
+// tslint:disable:no-unnecessary-qualifier no-namespace
+(function (Severity) {
+    /**
+     * Converts a string-based level into a {@link Severity}.
+     *
+     * @param level string representation of Severity
+     * @returns Severity
+     */
+    function fromString(level) {
+        switch (level) {
+            case 'debug':
+                return Severity.Debug;
+            case 'info':
+                return Severity.Info;
+            case 'warn':
+            case 'warning':
+                return Severity.Warning;
+            case 'error':
+                return Severity.Error;
+            case 'fatal':
+                return Severity.Fatal;
+            case 'critical':
+                return Severity.Critical;
+            case 'log':
+            default:
+                return Severity.Log;
+        }
+    }
+    Severity.fromString = fromString;
+})(Severity = exports.Severity || (exports.Severity = {}));
+/** The status of an event. */
+var Status;
+(function (Status) {
+    /** The status could not be determined. */
+    Status["Unknown"] = "unknown";
+    /** The event was skipped due to configuration or callbacks. */
+    Status["Skipped"] = "skipped";
+    /** The event was sent to Sentry successfully. */
+    Status["Success"] = "success";
+    /** The client is currently rate limited and will try again later. */
+    Status["RateLimit"] = "rate_limit";
+    /** The event could not be processed. */
+    Status["Invalid"] = "invalid";
+    /** A server-side error ocurred during submission. */
+    Status["Failed"] = "failed";
+})(Status = exports.Status || (exports.Status = {}));
+// tslint:disable:no-unnecessary-qualifier no-namespace
+(function (Status) {
+    /**
+     * Converts a HTTP status code into a {@link Status}.
+     *
+     * @param code The HTTP response status code.
+     * @returns The send status or {@link Status.Unknown}.
+     */
+    function fromHttpCode(code) {
+        if (code >= 200 && code < 300) {
+            return Status.Success;
+        }
+        if (code === 429) {
+            return Status.RateLimit;
+        }
+        if (code >= 400 && code < 500) {
+            return Status.Invalid;
+        }
+        if (code >= 500) {
+            return Status.Failed;
+        }
+        return Status.Unknown;
+    }
+    Status.fromHttpCode = fromHttpCode;
+})(Status = exports.Status || (exports.Status = {}));
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+/* 86 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Consumes the promise and logs the error when it rejects.
+ * @param promise A promise to forget.
+ */
+function forget(promise) {
+    promise.catch(function (e) {
+        // TODO: Use a better logging mechanism
+        console.error(e);
+    });
+}
+exports.forget = forget;
+/**
+ * Helper to filter an array with asynchronous callbacks.
+ *
+ * @param array An array containing items to filter.
+ * @param predicate An async predicate evaluated on every item.
+ * @param thisArg Optional value passed as "this" into the callback.
+ * @returns An array containing only values where the callback returned true.
+ */
+function filterAsync(array, predicate, thisArg) {
+    return __awaiter(this, void 0, void 0, function () {
+        var verdicts;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, Promise.all(array.map(predicate, thisArg))];
+                case 1:
+                    verdicts = _a.sent();
+                    return [2 /*return*/, array.filter(function (_, index) { return verdicts[index]; })];
+            }
+        });
+    });
+}
+exports.filterAsync = filterAsync;
+//# sourceMappingURL=async.js.map
+
+/***/ }),
+/* 87 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
+};
+var __values = (this && this.__values) || function (o) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator], i = 0;
+    if (m) return m.call(o);
+    return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var logger_1 = __webpack_require__(2);
+exports.installedIntegrations = [];
+/** Gets integration to install */
+function getIntegrationsToSetup(options) {
+    var e_1, _a, e_2, _b;
+    var defaultIntegrations = (options.defaultIntegrations && __spread(options.defaultIntegrations)) || [];
+    var userIntegrations = options.integrations;
+    var integrations = [];
+    if (Array.isArray(userIntegrations)) {
+        var userIntegrationsNames = userIntegrations.map(function (i) { return i.name; });
+        var pickedIntegrationsNames = [];
+        try {
+            // Leave only unique default integrations, that were not overridden with provided user integrations
+            for (var defaultIntegrations_1 = __values(defaultIntegrations), defaultIntegrations_1_1 = defaultIntegrations_1.next(); !defaultIntegrations_1_1.done; defaultIntegrations_1_1 = defaultIntegrations_1.next()) {
+                var defaultIntegration = defaultIntegrations_1_1.value;
+                if (userIntegrationsNames.indexOf(getIntegrationName(defaultIntegration)) === -1 &&
+                    pickedIntegrationsNames.indexOf(getIntegrationName(defaultIntegration)) === -1) {
+                    integrations.push(defaultIntegration);
+                    pickedIntegrationsNames.push(getIntegrationName(defaultIntegration));
+                }
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (defaultIntegrations_1_1 && !defaultIntegrations_1_1.done && (_a = defaultIntegrations_1.return)) _a.call(defaultIntegrations_1);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        try {
+            // Don't add same user integration twice
+            for (var userIntegrations_1 = __values(userIntegrations), userIntegrations_1_1 = userIntegrations_1.next(); !userIntegrations_1_1.done; userIntegrations_1_1 = userIntegrations_1.next()) {
+                var userIntegration = userIntegrations_1_1.value;
+                if (pickedIntegrationsNames.indexOf(getIntegrationName(userIntegration)) === -1) {
+                    integrations.push(userIntegration);
+                    pickedIntegrationsNames.push(getIntegrationName(userIntegration));
+                }
+            }
+        }
+        catch (e_2_1) { e_2 = { error: e_2_1 }; }
+        finally {
+            try {
+                if (userIntegrations_1_1 && !userIntegrations_1_1.done && (_b = userIntegrations_1.return)) _b.call(userIntegrations_1);
+            }
+            finally { if (e_2) throw e_2.error; }
+        }
+    }
+    else if (typeof userIntegrations === 'function') {
+        integrations = userIntegrations(defaultIntegrations);
+        integrations = Array.isArray(integrations) ? integrations : [integrations];
+    }
+    else {
+        return __spread(defaultIntegrations);
+    }
+    return integrations;
+}
+exports.getIntegrationsToSetup = getIntegrationsToSetup;
+/** Setup given integration */
+function setupIntegration(integration, options) {
+    if (exports.installedIntegrations.indexOf(getIntegrationName(integration)) !== -1) {
+        return;
+    }
+    try {
+        integration.setupOnce();
+    }
+    catch (_Oo) {
+        /** @deprecated */
+        // TODO: Remove in v5
+        logger_1.logger.warn("Integration " + getIntegrationName(integration) + ": The install method is deprecated. Use \"setupOnce\".");
+        // tslint:disable:deprecation
+        if (integration.install) {
+            integration.install(options);
+        }
+        // tslint:enable:deprecation
+    }
+    exports.installedIntegrations.push(getIntegrationName(integration));
+    logger_1.logger.log("Integration installed: " + getIntegrationName(integration));
+}
+exports.setupIntegration = setupIntegration;
+/**
+ * Given a list of integration instances this installs them all. When `withDefaults` is set to `true` then all default
+ * integrations are added unless they were already provided before.
+ * @param integrations array of integration instances
+ * @param withDefault should enable default integrations
+ */
+function setupIntegrations(options) {
+    var integrations = {};
+    getIntegrationsToSetup(options).forEach(function (integration) {
+        integrations[getIntegrationName(integration)] = integration;
+        setupIntegration(integration, options);
+    });
+    return integrations;
+}
+exports.setupIntegrations = setupIntegrations;
+/**
+ * Returns the integration static id.
+ * @param integration Integration to retrieve id
+ */
+function getIntegrationName(integration) {
+    /**
+     * @depracted
+     */
+    // tslint:disable-next-line:no-unsafe-any
+    return integration.constructor.id || integration.name;
+}
+//# sourceMappingURL=integration.js.map
+
+/***/ }),
+/* 88 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var logger_1 = __webpack_require__(2);
+var error_1 = __webpack_require__(13);
+var requestbuffer_1 = __webpack_require__(21);
+/**
+ * This is the base implemention of a Backend.
+ */
+var BaseBackend = /** @class */ (function () {
+    /** Creates a new browser backend instance. */
+    function BaseBackend(options) {
+        /** A simple buffer holding all requests. */
+        this.buffer = new requestbuffer_1.RequestBuffer();
+        this.options = options;
+        if (!this.options.dsn) {
+            logger_1.logger.warn('No DSN provided, backend will not do anything.');
+        }
+    }
+    /**
+     * @inheritDoc
+     */
+    BaseBackend.prototype.eventFromException = function (_exception, _hint) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                throw new error_1.SentryError('Backend has to implement `eventFromException` method');
+            });
+        });
+    };
+    /**
+     * @inheritDoc
+     */
+    BaseBackend.prototype.eventFromMessage = function (_message, _level, _hint) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                throw new error_1.SentryError('Backend has to implement `eventFromMessage` method');
+            });
+        });
+    };
+    /**
+     * @inheritDoc
+     */
+    BaseBackend.prototype.sendEvent = function (_event) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                throw new error_1.SentryError('Backend has to implement `sendEvent` method');
+            });
+        });
+    };
+    /**
+     * @inheritDoc
+     */
+    BaseBackend.prototype.storeBreadcrumb = function (_) {
+        return true;
+    };
+    /**
+     * @inheritDoc
+     */
+    BaseBackend.prototype.storeScope = function (_) {
+        // Noop
+    };
+    /**
+     * @inheritDoc
+     */
+    BaseBackend.prototype.getBuffer = function () {
+        return this.buffer;
+    };
+    return BaseBackend;
+}());
+exports.BaseBackend = BaseBackend;
+//# sourceMappingURL=basebackend.js.map
+
+/***/ }),
+/* 89 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/** Console logging verbosity for the SDK. */
+var LogLevel;
+(function (LogLevel) {
+    /** No logs will be generated. */
+    LogLevel[LogLevel["None"] = 0] = "None";
+    /** Only SDK internal errors will be logged. */
+    LogLevel[LogLevel["Error"] = 1] = "Error";
+    /** Information useful for debugging the SDK will be logged. */
+    LogLevel[LogLevel["Debug"] = 2] = "Debug";
+    /** All SDK actions will be logged. */
+    LogLevel[LogLevel["Verbose"] = 3] = "Verbose";
+})(LogLevel = exports.LogLevel || (exports.LogLevel = {}));
+//# sourceMappingURL=interfaces.js.map
+
+/***/ }),
+/* 90 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var hub_1 = __webpack_require__(3);
+var logger_1 = __webpack_require__(2);
+/**
+ * Internal function to create a new SDK client instance. The client is
+ * installed and then bound to the current scope.
+ *
+ * @param clientClass The client class to instanciate.
+ * @param options Options to pass to the client.
+ * @returns The installed and bound client instance.
+ */
+function initAndBind(clientClass, options) {
+    if (options.debug === true) {
+        logger_1.logger.enable();
+    }
+    if (hub_1.getCurrentHub().getClient()) {
+        return;
+    }
+    var client = new clientClass(options);
+    hub_1.getCurrentHub().bindClient(client);
+    client.install();
+}
+exports.initAndBind = initAndBind;
+//# sourceMappingURL=sdk.js.map
+
+/***/ }),
+/* 91 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var dedupe_1 = __webpack_require__(92);
+exports.Dedupe = dedupe_1.Dedupe;
+var functiontostring_1 = __webpack_require__(93);
+exports.FunctionToString = functiontostring_1.FunctionToString;
+var sdkinformation_1 = __webpack_require__(94);
+exports.SDKInformation = sdkinformation_1.SDKInformation;
+var inboundfilters_1 = __webpack_require__(95);
+exports.InboundFilters = inboundfilters_1.InboundFilters;
+var debug_1 = __webpack_require__(96);
+exports.Debug = debug_1.Debug;
+var rewriteframes_1 = __webpack_require__(97);
+exports.RewriteFrames = rewriteframes_1.RewriteFrames;
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+/* 92 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var hub_1 = __webpack_require__(3);
+var logger_1 = __webpack_require__(2);
+var misc_1 = __webpack_require__(4);
+/** Deduplication filter */
+var Dedupe = /** @class */ (function () {
+    function Dedupe() {
+        /**
+         * @inheritDoc
+         */
+        this.name = Dedupe.id;
+    }
+    /**
+     * @inheritDoc
+     */
+    Dedupe.prototype.setupOnce = function () {
+        var _this = this;
+        hub_1.addGlobalEventProcessor(function (currentEvent) { return __awaiter(_this, void 0, void 0, function () {
+            var self;
+            return __generator(this, function (_a) {
+                self = hub_1.getCurrentHub().getIntegration(Dedupe);
+                if (self) {
+                    // Juuust in case something goes wrong
+                    try {
+                        if (self.shouldDropEvent(currentEvent, self.previousEvent)) {
+                            return [2 /*return*/, null];
+                        }
+                    }
+                    catch (_oO) {
+                        return [2 /*return*/, (self.previousEvent = currentEvent)];
+                    }
+                    return [2 /*return*/, (self.previousEvent = currentEvent)];
+                }
+                return [2 /*return*/, currentEvent];
+            });
+        }); });
+    };
+    /** JSDoc */
+    Dedupe.prototype.shouldDropEvent = function (currentEvent, previousEvent) {
+        if (!previousEvent) {
+            return false;
+        }
+        if (this.isSameMessageEvent(currentEvent, previousEvent)) {
+            logger_1.logger.warn("Event dropped due to being a duplicate of previous event (same message).\nEvent: " + misc_1.getEventDescription(currentEvent));
+            return true;
+        }
+        if (this.isSameExceptionEvent(currentEvent, previousEvent)) {
+            logger_1.logger.warn("Event dropped due to being a duplicate of previous event (same exception).\nEvent: " + misc_1.getEventDescription(currentEvent));
+            return true;
+        }
+        return false;
+    };
+    /** JSDoc */
+    Dedupe.prototype.isSameMessageEvent = function (currentEvent, previousEvent) {
+        var currentMessage = currentEvent.message;
+        var previousMessage = previousEvent.message;
+        // If no event has a message, they were both exceptions, so bail out
+        if (!currentMessage && !previousMessage) {
+            return false;
+        }
+        // If only one event has a stacktrace, but not the other one, they are not the same
+        if ((currentMessage && !previousMessage) || (!currentMessage && previousMessage)) {
+            return false;
+        }
+        if (currentMessage !== previousMessage) {
+            return false;
+        }
+        if (!this.isSameFingerprint(currentEvent, previousEvent)) {
+            return false;
+        }
+        if (!this.isSameStacktrace(currentEvent, previousEvent)) {
+            return false;
+        }
+        return true;
+    };
+    /** JSDoc */
+    Dedupe.prototype.getFramesFromEvent = function (event) {
+        var exception = event.exception;
+        if (exception) {
+            try {
+                // @ts-ignore
+                return exception.values[0].stacktrace.frames;
+            }
+            catch (_oO) {
+                return undefined;
+            }
+        }
+        else if (event.stacktrace) {
+            return event.stacktrace.frames;
+        }
+        else {
+            return undefined;
+        }
+    };
+    /** JSDoc */
+    Dedupe.prototype.isSameStacktrace = function (currentEvent, previousEvent) {
+        var currentFrames = this.getFramesFromEvent(currentEvent);
+        var previousFrames = this.getFramesFromEvent(previousEvent);
+        // If no event has a fingerprint, they are assumed to be the same
+        if (!currentFrames && !previousFrames) {
+            return true;
+        }
+        // If only one event has a stacktrace, but not the other one, they are not the same
+        if ((currentFrames && !previousFrames) || (!currentFrames && previousFrames)) {
+            return false;
+        }
+        currentFrames = currentFrames;
+        previousFrames = previousFrames;
+        // If number of frames differ, they are not the same
+        if (previousFrames.length !== currentFrames.length) {
+            return false;
+        }
+        // Otherwise, compare the two
+        for (var i = 0; i < previousFrames.length; i++) {
+            var frameA = previousFrames[i];
+            var frameB = currentFrames[i];
+            if (frameA.filename !== frameB.filename ||
+                frameA.lineno !== frameB.lineno ||
+                frameA.colno !== frameB.colno ||
+                frameA.function !== frameB.function) {
+                return false;
+            }
+        }
+        return true;
+    };
+    /** JSDoc */
+    Dedupe.prototype.getExceptionFromEvent = function (event) {
+        return event.exception && event.exception.values && event.exception.values[0];
+    };
+    /** JSDoc */
+    Dedupe.prototype.isSameExceptionEvent = function (currentEvent, previousEvent) {
+        var previousException = this.getExceptionFromEvent(previousEvent);
+        var currentException = this.getExceptionFromEvent(currentEvent);
+        if (!previousException || !currentException) {
+            return false;
+        }
+        if (previousException.type !== currentException.type || previousException.value !== currentException.value) {
+            return false;
+        }
+        if (!this.isSameFingerprint(currentEvent, previousEvent)) {
+            return false;
+        }
+        if (!this.isSameStacktrace(currentEvent, previousEvent)) {
+            return false;
+        }
+        return true;
+    };
+    /** JSDoc */
+    Dedupe.prototype.isSameFingerprint = function (currentEvent, previousEvent) {
+        var currentFingerprint = currentEvent.fingerprint;
+        var previousFingerprint = previousEvent.fingerprint;
+        // If no event has a fingerprint, they are assumed to be the same
+        if (!currentFingerprint && !previousFingerprint) {
+            return true;
+        }
+        // If only one event has a fingerprint, but not the other one, they are not the same
+        if ((currentFingerprint && !previousFingerprint) || (!currentFingerprint && previousFingerprint)) {
+            return false;
+        }
+        currentFingerprint = currentFingerprint;
+        previousFingerprint = previousFingerprint;
+        // Otherwise, compare the two
+        try {
+            return !!(currentFingerprint.join('') === previousFingerprint.join(''));
+        }
+        catch (_oO) {
+            return false;
+        }
+    };
+    /**
+     * @inheritDoc
+     */
+    Dedupe.id = 'Dedupe';
+    return Dedupe;
+}());
+exports.Dedupe = Dedupe;
+//# sourceMappingURL=dedupe.js.map
+
+/***/ }),
+/* 93 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var originalFunctionToString;
+/** Patch toString calls to return proper name for wrapped functions */
+var FunctionToString = /** @class */ (function () {
+    function FunctionToString() {
+        /**
+         * @inheritDoc
+         */
+        this.name = FunctionToString.id;
+    }
+    /**
+     * @inheritDoc
+     */
+    FunctionToString.prototype.setupOnce = function () {
+        originalFunctionToString = Function.prototype.toString;
+        Function.prototype.toString = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            var context = this.__sentry__ ? this.__sentry_original__ : this;
+            // tslint:disable-next-line:no-unsafe-any
+            return originalFunctionToString.apply(context, args);
+        };
+    };
+    /**
+     * @inheritDoc
+     */
+    FunctionToString.id = 'FunctionToString';
+    return FunctionToString;
+}());
+exports.FunctionToString = FunctionToString;
+//# sourceMappingURL=functiontostring.js.map
+
+/***/ }),
+/* 94 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var logger_1 = __webpack_require__(2);
+/**
+ * @deprecated
+ * This file can be safely removed in the next major bump
+ */
+/** Adds SDK info to an event. */
+var SDKInformation = /** @class */ (function () {
+    function SDKInformation() {
+        /**
+         * @inheritDoc
+         */
+        this.name = 'SDKInformation';
+    }
+    /**
+     * @inheritDoc
+     */
+    SDKInformation.prototype.setupOnce = function () {
+        logger_1.logger.warn("SDKInformation Integration is deprecated and can be safely removed. It's functionality has been merged into the SDK's core.");
+    };
+    return SDKInformation;
+}());
+exports.SDKInformation = SDKInformation;
+//# sourceMappingURL=sdkinformation.js.map
+
+/***/ }),
+/* 95 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var hub_1 = __webpack_require__(3);
+var is_1 = __webpack_require__(6);
+var logger_1 = __webpack_require__(2);
+var misc_1 = __webpack_require__(4);
+var string_1 = __webpack_require__(20);
+// "Script error." is hard coded into browsers for errors that it can't read.
+// this is the result of a script being pulled in from an external domain and CORS.
+var DEFAULT_IGNORE_ERRORS = [/^Script error\.?$/, /^Javascript error: Script error\.? on line 0$/];
+/** Inbound filters configurable by the user */
+var InboundFilters = /** @class */ (function () {
+    function InboundFilters(options) {
+        if (options === void 0) { options = {}; }
+        this.options = options;
+        /**
+         * @inheritDoc
+         */
+        this.name = InboundFilters.id;
+    }
+    /**
+     * @inheritDoc
+     */
+    InboundFilters.prototype.setupOnce = function () {
+        var _this = this;
+        hub_1.addGlobalEventProcessor(function (event) { return __awaiter(_this, void 0, void 0, function () {
+            var hub, self, client, clientOptions, options;
+            return __generator(this, function (_a) {
+                hub = hub_1.getCurrentHub();
+                if (!hub) {
+                    return [2 /*return*/, event];
+                }
+                self = hub.getIntegration(InboundFilters);
+                if (self) {
+                    client = hub.getClient();
+                    clientOptions = client ? client.getOptions() : {};
+                    options = self.mergeOptions(clientOptions);
+                    if (self.shouldDropEvent(event, options)) {
+                        return [2 /*return*/, null];
+                    }
+                }
+                return [2 /*return*/, event];
+            });
+        }); });
+    };
+    /** JSDoc */
+    InboundFilters.prototype.shouldDropEvent = function (event, options) {
+        if (this.isIgnoredError(event, options)) {
+            logger_1.logger.warn("Event dropped due to being matched by `ignoreErrors` option.\nEvent: " + misc_1.getEventDescription(event));
+            return true;
+        }
+        if (this.isBlacklistedUrl(event, options)) {
+            logger_1.logger.warn("Event dropped due to being matched by `blacklistUrls` option.\nEvent: " + misc_1.getEventDescription(event) + ".\nUrl: " + this.getEventFilterUrl(event));
+            return true;
+        }
+        if (!this.isWhitelistedUrl(event, options)) {
+            logger_1.logger.warn("Event dropped due to not being matched by `whitelistUrls` option.\nEvent: " + misc_1.getEventDescription(event) + ".\nUrl: " + this.getEventFilterUrl(event));
+            return true;
+        }
+        return false;
+    };
+    /** JSDoc */
+    InboundFilters.prototype.isIgnoredError = function (event, options) {
+        var _this = this;
+        if (options === void 0) { options = {}; }
+        if (!options.ignoreErrors || !options.ignoreErrors.length) {
+            return false;
+        }
+        return this.getPossibleEventMessages(event).some(function (message) {
+            // Not sure why TypeScript complains here...
+            return options.ignoreErrors.some(function (pattern) { return _this.isMatchingPattern(message, pattern); });
+        });
+    };
+    /** JSDoc */
+    InboundFilters.prototype.isBlacklistedUrl = function (event, options) {
+        var _this = this;
+        if (options === void 0) { options = {}; }
+        // TODO: Use Glob instead?
+        if (!options.blacklistUrls || !options.blacklistUrls.length) {
+            return false;
+        }
+        var url = this.getEventFilterUrl(event);
+        return !url ? false : options.blacklistUrls.some(function (pattern) { return _this.isMatchingPattern(url, pattern); });
+    };
+    /** JSDoc */
+    InboundFilters.prototype.isWhitelistedUrl = function (event, options) {
+        var _this = this;
+        if (options === void 0) { options = {}; }
+        // TODO: Use Glob instead?
+        if (!options.whitelistUrls || !options.whitelistUrls.length) {
+            return true;
+        }
+        var url = this.getEventFilterUrl(event);
+        return !url ? true : options.whitelistUrls.some(function (pattern) { return _this.isMatchingPattern(url, pattern); });
+    };
+    /** JSDoc */
+    InboundFilters.prototype.mergeOptions = function (clientOptions) {
+        if (clientOptions === void 0) { clientOptions = {}; }
+        return {
+            blacklistUrls: __spread((this.options.blacklistUrls || []), (clientOptions.blacklistUrls || [])),
+            ignoreErrors: __spread((this.options.ignoreErrors || []), (clientOptions.ignoreErrors || []), DEFAULT_IGNORE_ERRORS),
+            whitelistUrls: __spread((this.options.whitelistUrls || []), (clientOptions.whitelistUrls || [])),
+        };
+    };
+    /** JSDoc */
+    InboundFilters.prototype.isMatchingPattern = function (value, pattern) {
+        if (is_1.isRegExp(pattern)) {
+            return pattern.test(value);
+        }
+        else if (typeof pattern === 'string') {
+            return string_1.includes(value, pattern);
+        }
+        else {
+            return false;
+        }
+    };
+    /** JSDoc */
+    InboundFilters.prototype.getPossibleEventMessages = function (event) {
+        if (event.message) {
+            return [event.message];
+        }
+        else if (event.exception) {
+            try {
+                // tslint:disable-next-line:no-unsafe-any
+                var _a = event.exception.values[0], type = _a.type, value = _a.value;
+                return ["" + value, type + ": " + value];
+            }
+            catch (oO) {
+                logger_1.logger.error("Cannot extract message for event " + misc_1.getEventDescription(event));
+                return [];
+            }
+        }
+        else {
+            return [];
+        }
+    };
+    /** JSDoc */
+    InboundFilters.prototype.getEventFilterUrl = function (event) {
+        try {
+            if (event.stacktrace) {
+                // tslint:disable-next-line:no-unsafe-any
+                return event.stacktrace.frames[0].filename;
+            }
+            else if (event.exception) {
+                // tslint:disable-next-line:no-unsafe-any
+                return event.exception.values[0].stacktrace.frames[0].filename;
+            }
+            else {
+                return null;
+            }
+        }
+        catch (oO) {
+            logger_1.logger.error("Cannot extract url for event " + misc_1.getEventDescription(event));
+            return null;
+        }
+    };
+    /**
+     * @inheritDoc
+     */
+    InboundFilters.id = 'InboundFilters';
+    return InboundFilters;
+}());
+exports.InboundFilters = InboundFilters;
+//# sourceMappingURL=inboundfilters.js.map
+
+/***/ }),
+/* 96 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var hub_1 = __webpack_require__(3);
+/** JSDoc */
+var Debug = /** @class */ (function () {
+    /**
+     * @inheritDoc
+     */
+    function Debug(options) {
+        /**
+         * @inheritDoc
+         */
+        this.name = Debug.id;
+        this.options = __assign({ debugger: false, stringify: false }, options);
+    }
+    /**
+     * @inheritDoc
+     */
+    Debug.prototype.setupOnce = function () {
+        var _this = this;
+        hub_1.addGlobalEventProcessor(function (event, hint) { return __awaiter(_this, void 0, void 0, function () {
+            var self;
+            return __generator(this, function (_a) {
+                self = hub_1.getCurrentHub().getIntegration(Debug);
+                if (self) {
+                    // tslint:disable:no-console
+                    // tslint:disable:no-debugger
+                    if (self.options.debugger) {
+                        debugger;
+                    }
+                    if (self.options.stringify) {
+                        console.log(JSON.stringify(event, null, 2));
+                        if (hint) {
+                            console.log(JSON.stringify(hint, null, 2));
+                        }
+                    }
+                    else {
+                        console.log(event);
+                        if (hint) {
+                            console.log(hint);
+                        }
+                    }
+                }
+                return [2 /*return*/, event];
+            });
+        }); });
+    };
+    /**
+     * @inheritDoc
+     */
+    Debug.id = 'Debug';
+    return Debug;
+}());
+exports.Debug = Debug;
+//# sourceMappingURL=debug.js.map
+
+/***/ }),
+/* 97 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var hub_1 = __webpack_require__(3);
+var path_1 = __webpack_require__(98);
+/** Rewrite event frames paths */
+var RewriteFrames = /** @class */ (function () {
+    /**
+     * @inheritDoc
+     */
+    function RewriteFrames(options) {
+        if (options === void 0) { options = {}; }
+        var _this = this;
+        /**
+         * @inheritDoc
+         */
+        this.name = RewriteFrames.id;
+        /**
+         * @inheritDoc
+         */
+        this.iteratee = function (frame) { return __awaiter(_this, void 0, void 0, function () {
+            var base;
+            return __generator(this, function (_a) {
+                if (frame.filename && frame.filename.startsWith('/')) {
+                    base = this.root ? path_1.relative(this.root, frame.filename) : path_1.basename(frame.filename);
+                    frame.filename = "app:///" + base;
+                }
+                return [2 /*return*/, frame];
+            });
+        }); };
+        if (options.root) {
+            this.root = options.root;
+        }
+        if (options.iteratee) {
+            this.iteratee = options.iteratee;
+        }
+    }
+    /**
+     * @inheritDoc
+     */
+    RewriteFrames.prototype.setupOnce = function () {
+        var _this = this;
+        hub_1.addGlobalEventProcessor(function (event) { return __awaiter(_this, void 0, void 0, function () {
+            var self;
+            return __generator(this, function (_a) {
+                self = hub_1.getCurrentHub().getIntegration(RewriteFrames);
+                if (self) {
+                    return [2 /*return*/, self.process(event)];
+                }
+                return [2 /*return*/, event];
+            });
+        }); });
+    };
+    /** JSDoc */
+    RewriteFrames.prototype.process = function (event) {
+        return __awaiter(this, void 0, void 0, function () {
+            var frames, _a, _b, _i, i, _c, _d;
+            return __generator(this, function (_e) {
+                switch (_e.label) {
+                    case 0:
+                        frames = this.getFramesFromEvent(event);
+                        if (!frames) return [3 /*break*/, 4];
+                        _a = [];
+                        for (_b in frames)
+                            _a.push(_b);
+                        _i = 0;
+                        _e.label = 1;
+                    case 1:
+                        if (!(_i < _a.length)) return [3 /*break*/, 4];
+                        i = _a[_i];
+                        // tslint:disable-next-line
+                        _c = frames;
+                        _d = i;
+                        return [4 /*yield*/, this.iteratee(frames[i])];
+                    case 2:
+                        // tslint:disable-next-line
+                        _c[_d] = _e.sent();
+                        _e.label = 3;
+                    case 3:
+                        _i++;
+                        return [3 /*break*/, 1];
+                    case 4: return [2 /*return*/, event];
+                }
+            });
+        });
+    };
+    /** JSDoc */
+    RewriteFrames.prototype.getFramesFromEvent = function (event) {
+        var exception = event.exception;
+        if (exception) {
+            try {
+                // tslint:disable-next-line:no-unsafe-any
+                return exception.values[0].stacktrace.frames;
+            }
+            catch (_oO) {
+                return undefined;
+            }
+        }
+        else if (event.stacktrace) {
+            return event.stacktrace.frames;
+        }
+        else {
+            return undefined;
+        }
+    };
+    /**
+     * @inheritDoc
+     */
+    RewriteFrames.id = 'RewriteFrames';
+    return RewriteFrames;
+}());
+exports.RewriteFrames = RewriteFrames;
+//# sourceMappingURL=rewriteframes.js.map
+
+/***/ }),
+/* 98 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+// Slightly modified (no IE8 support, ES6) and transcribed to TypeScript
+// https://raw.githubusercontent.com/calvinmetcalf/rollup-plugin-node-builtins/master/src/es6/path.js
+Object.defineProperty(exports, "__esModule", { value: true });
+/** JSDoc */
+function normalizeArray(parts, allowAboveRoot) {
+    // if the path tries to go above the root, `up` ends up > 0
+    var up = 0;
+    for (var i = parts.length - 1; i >= 0; i--) {
+        var last = parts[i];
+        if (last === '.') {
+            parts.splice(i, 1);
+        }
+        else if (last === '..') {
+            parts.splice(i, 1);
+            up++;
+        }
+        else if (up) {
+            parts.splice(i, 1);
+            up--;
+        }
+    }
+    // if the path is allowed to go above the root, restore leading ..s
+    if (allowAboveRoot) {
+        for (; up--; up) {
+            parts.unshift('..');
+        }
+    }
+    return parts;
+}
+// Split a filename into [root, dir, basename, ext], unix version
+// 'root' is just a slash, or nothing.
+var splitPathRe = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
+/** JSDoc */
+function splitPath(filename) {
+    var parts = splitPathRe.exec(filename);
+    return parts ? parts.slice(1) : [];
+}
+// path.resolve([from ...], to)
+// posix version
+/** JSDoc */
+function resolve() {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+    }
+    var resolvedPath = '';
+    var resolvedAbsolute = false;
+    for (var i = args.length - 1; i >= -1 && !resolvedAbsolute; i--) {
+        var path = i >= 0 ? args[i] : '/';
+        // Skip empty entries
+        if (!path) {
+            continue;
+        }
+        resolvedPath = path + "/" + resolvedPath;
+        resolvedAbsolute = path.charAt(0) === '/';
+    }
+    // At this point the path should be resolved to a full absolute path, but
+    // handle relative paths to be safe (might happen when process.cwd() fails)
+    // Normalize the path
+    resolvedPath = normalizeArray(resolvedPath.split('/').filter(function (p) { return !!p; }), !resolvedAbsolute).join('/');
+    return (resolvedAbsolute ? '/' : '') + resolvedPath || '.';
+}
+exports.resolve = resolve;
+/** JSDoc */
+function trim(arr) {
+    var start = 0;
+    for (; start < arr.length; start++) {
+        if (arr[start] !== '') {
+            break;
+        }
+    }
+    var end = arr.length - 1;
+    for (; end >= 0; end--) {
+        if (arr[end] !== '') {
+            break;
+        }
+    }
+    if (start > end) {
+        return [];
+    }
+    return arr.slice(start, end - start + 1);
+}
+// path.relative(from, to)
+// posix version
+/** JSDoc */
+function relative(from, to) {
+    // tslint:disable:no-parameter-reassignment
+    from = resolve(from).substr(1);
+    to = resolve(to).substr(1);
+    var fromParts = trim(from.split('/'));
+    var toParts = trim(to.split('/'));
+    var length = Math.min(fromParts.length, toParts.length);
+    var samePartsLength = length;
+    for (var i = 0; i < length; i++) {
+        if (fromParts[i] !== toParts[i]) {
+            samePartsLength = i;
+            break;
+        }
+    }
+    var outputParts = [];
+    for (var i = samePartsLength; i < fromParts.length; i++) {
+        outputParts.push('..');
+    }
+    outputParts = outputParts.concat(toParts.slice(samePartsLength));
+    return outputParts.join('/');
+}
+exports.relative = relative;
+// path.normalize(path)
+// posix version
+/** JSDoc */
+function normalize(path) {
+    var isPathAbsolute = isAbsolute(path);
+    var trailingSlash = path.substr(-1) === '/';
+    // Normalize the path
+    var normalizedPath = normalizeArray(path.split('/').filter(function (p) { return !!p; }), !isPathAbsolute).join('/');
+    if (!normalizedPath && !isPathAbsolute) {
+        normalizedPath = '.';
+    }
+    if (normalizedPath && trailingSlash) {
+        normalizedPath += '/';
+    }
+    return (isPathAbsolute ? '/' : '') + normalizedPath;
+}
+exports.normalize = normalize;
+// posix version
+/** JSDoc */
+function isAbsolute(path) {
+    return path.charAt(0) === '/';
+}
+exports.isAbsolute = isAbsolute;
+// posix version
+/** JSDoc */
+function join() {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+    }
+    return normalize(args.join('/'));
+}
+exports.join = join;
+/** JSDoc */
+function dirname(path) {
+    var result = splitPath(path);
+    var root = result[0];
+    var dir = result[1];
+    if (!root && !dir) {
+        // No dirname whatsoever
+        return '.';
+    }
+    if (dir) {
+        // It has a dirname, strip trailing slash
+        dir = dir.substr(0, dir.length - 1);
+    }
+    return root + dir;
+}
+exports.dirname = dirname;
+/** JSDoc */
+function basename(path, ext) {
+    var f = splitPath(path)[2];
+    if (ext && f.substr(ext.length * -1) === ext) {
+        f = f.substr(0, f.length - ext.length);
+    }
+    return f;
+}
+exports.basename = basename;
+//# sourceMappingURL=path.js.map
+
+/***/ }),
+/* 99 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);

@@ -23,6 +23,7 @@ export default {
   methods: {
     importData() {
       this.busy = true;
+      throw "Hello!";
       axios
         .post(route("wlm.import"))
         .then(response => {
