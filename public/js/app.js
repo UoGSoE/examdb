@@ -27501,7 +27501,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       var _this = this;
 
       this.busy = true;
-      throw "Hello!";
       axios.post(route("wlm.import")).then(function (response) {
         setTimeout(function () {
           _this.buttonText = "Import started";
