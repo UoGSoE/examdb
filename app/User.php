@@ -2,14 +2,16 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
+use App\CanBeCreatedFromOutsideSources;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\URL;
 use Spatie\Activitylog\Models\Activity;
 
 class User extends Authenticatable
 {
     use Notifiable;
+    use CanBeCreatedFromOutsideSources;
 
     protected $guarded = [];
 
@@ -73,17 +75,17 @@ class User extends Authenticatable
         $this->courses()->updateExistingPivot($course->id, ['is_setter' => false, 'is_moderator' => false, 'is_external' => true]);
     }
 
-    public function isSetterFor(Course $course) : bool
+    public function isSetterFor(Course $course): bool
     {
         return $this->courses()->where('course_user.course_id', '=', $course->id)->wherePivot('is_setter', true)->count() > 0;
     }
 
-    public function isModeratorFor(Course $course) : bool
+    public function isModeratorFor(Course $course): bool
     {
         return $this->courses()->where('course_user.course_id', '=', $course->id)->wherePivot('is_moderator', true)->count() > 0;
     }
 
-    public function isExternalFor(Course $course) : bool
+    public function isExternalFor(Course $course): bool
     {
         return $this->courses()->where('course_user.course_id', '=', $course->id)->wherePivot('is_external', true)->count() > 0;
     }
@@ -117,4 +119,8 @@ class User extends Authenticatable
         return $this->forenames . ' ' . $this->surname;
     }
 
+    public static function findByUsername($username)
+    {
+        return static::where('username', '=', $username)->first();
+    }
 }

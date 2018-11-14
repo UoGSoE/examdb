@@ -4,8 +4,8 @@ namespace App;
 
 use App\Events\PaperApproved;
 use App\Events\PaperUnapproved;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 class Course extends Model
@@ -20,7 +20,7 @@ class Course extends Model
 
     public function staff()
     {
-        return $this->belongsToMany(User::class, 'course_user', 'user_id')->withPivot('is_moderator', 'is_setter', 'is_external');
+        return $this->belongsToMany(User::class, 'course_user', 'course_id', 'user_id')->withPivot('is_moderator', 'is_setter', 'is_external');
     }
 
     public function moderators()
@@ -68,7 +68,7 @@ class Course extends Model
         return $this->solutions()->resit();
     }
 
-    public function addPaper(string $category, string $subcategory, UploadedFile $file) : Paper
+    public function addPaper(string $category, string $subcategory, UploadedFile $file): Paper
     {
         if (!in_array($category, Paper::VALID_CATEGORIES)) {
             throw new \InvalidArgumentException('Invalid category');
@@ -132,19 +132,19 @@ class Course extends Model
         throw new \DomainException('User is not associated with this course');
     }
 
-    public function isApprovedBySetter(string $category) : bool
+    public function isApprovedBySetter(string $category): bool
     {
         $key = "setter_approved_{$category}";
         return $this->$key;
     }
 
-    public function isApprovedByModerator(string $category) : bool
+    public function isApprovedByModerator(string $category): bool
     {
         $key = "moderator_approved_{$category}";
         return $this->$key;
     }
 
-    public function isApprovedBy(User $user, string $category) : bool
+    public function isApprovedBy(User $user, string $category): bool
     {
         if ($user->isSetterFor($this)) {
             $key = "setter_approved_{$category}";
@@ -166,7 +166,7 @@ class Course extends Model
         throw new \DomainException('User is not associated with this course');
     }
 
-    public function getUserApprovedMainAttribute(? User $user) : bool
+    public function getUserApprovedMainAttribute(?User $user): bool
     {
         if (!$user) {
             $user = auth()->user();
@@ -174,7 +174,7 @@ class Course extends Model
         return $this->isApprovedBy($user, 'main');
     }
 
-    public function getUserApprovedResitAttribute(? User $user) : bool
+    public function getUserApprovedResitAttribute(?User $user): bool
     {
         if (!$user) {
             $user = auth()->user();
@@ -187,7 +187,7 @@ class Course extends Model
         return $this->code . ' ' . $this->title;
     }
 
-    public function datePaperAdded(string $category, string $subcategory) : string
+    public function datePaperAdded(string $category, string $subcategory): string
     {
         $paper = $this->papers
             ->where('category', $category)
@@ -198,5 +198,39 @@ class Course extends Model
             return '';
         }
         return $paper->created_at->format('d/m/Y');
+    }
+
+    public static function findByCode($code)
+    {
+        return static::where('code', '=', $code)->first();
+    }
+
+    /**
+     * Create a course based on import data from the WLM
+     *
+     */
+    public static function fromWlmData(array $wlmCourse): Course
+    {
+        $code = $wlmCourse['Code'];
+        $title = $wlmCourse['Title'];
+        $course = static::findByCode($code);
+        if (!$course) {
+            $course = new static(['code' => $code]);
+        }
+        $course->is_active = $course->getWlmStatus($wlmCourse);
+        $course->title = $title;
+        $course->save();
+        return $course;
+    }
+
+    protected function getWlmStatus($wlmCourse)
+    {
+        if (!array_key_exists('CurrentFlag', $wlmCourse)) {
+            return false;
+        }
+        if ($wlmCourse['CurrentFlag'] === 'Yes') {
+            return true;
+        }
+        return false;
     }
 }
