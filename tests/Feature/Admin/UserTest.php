@@ -233,7 +233,7 @@ class UserTest extends TestCase
         tap(Activity::all()->last(), function ($log) use ($admin, $user) {
             $this->assertTrue($log->causer->is($admin));
             $this->assertEquals(
-                "Toggled admin status for {{ $user->full_name }}",
+                "Toggled admin status for {$user->full_name}",
                 $log->description
             );
         });
@@ -253,9 +253,21 @@ class UserTest extends TestCase
         tap(Activity::all()->last(), function ($log) use ($admin, $user) {
             $this->assertTrue($log->causer->is($admin));
             $this->assertEquals(
-                "Toggled admin status for {{ $user->full_name }}",
+                "Toggled admin status for {$user->full_name}",
                 $log->description
             );
         });
+    }
+
+    /** @test */
+    public function regular_users_cant_toggle_admin_status_of_users()
+    {
+        $user1 = create(User::class, ['is_admin' => false]);
+        $user2 = create(User::class, ['is_admin' => false]);
+
+        $response = $this->actingAs($user1)->postJson(route('admin.toggle', $user2->id));
+
+        $response->assertStatus(403);
+        $this->assertFalse($user2->fresh()->isAdmin());
     }
 }
