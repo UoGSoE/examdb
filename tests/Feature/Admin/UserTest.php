@@ -270,4 +270,16 @@ class UserTest extends TestCase
         $response->assertStatus(403);
         $this->assertFalse($user2->fresh()->isAdmin());
     }
+
+    /** @test */
+    public function admins_cant_toggle_their_own_admin_status()
+    {
+        $this->withoutExceptionHandling();
+        $admin = create(User::class, ['is_admin' => true]);
+
+        $response = $this->actingAs($admin)->postJson(route('admin.toggle', $admin->id));
+
+        $response->assertStatus(409);
+        $this->assertTrue($admin->fresh()->isAdmin());
+    }
 }
