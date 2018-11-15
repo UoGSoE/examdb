@@ -26,6 +26,7 @@
 
 </template>
 <script>
+var distanceInWordsToNow = require("date-fns/distance_in_words_to_now");
 export default {
   props: ["course", "papers", "subcategories", "user", "staff", "externals"],
   data() {
@@ -33,6 +34,11 @@ export default {
       thePapers: this.papers,
       theCourse: this.course
     };
+  },
+  mounted() {
+    setInterval(() => {
+      this.updateDiffForHumans();
+    }, 60000);
   },
   computed: {},
   methods: {
@@ -76,6 +82,12 @@ export default {
     },
     approvalToggled(course) {
       this.theCourse = course;
+    },
+    updateDiffForHumans() {
+      this.thePapers.main.forEach(paper => {
+        const date = new Date(Date.parse(paper.created_at));
+        paper.diff_for_humans = `${distanceInWordsToNow(date)} ago`;
+      });
     }
   }
 };

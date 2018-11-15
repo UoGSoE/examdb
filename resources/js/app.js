@@ -25,6 +25,9 @@ Vue.component('add-local-user', require('./components/AddLocalUser.vue'));
 Vue.component('add-external-user', require('./components/AddExternalUser.vue'));
 Vue.component('staff-course-editor', require('./components/StaffCourseEditor.vue'));
 Vue.component('wlm-importer', require('./components/WlmImporter.vue'));
+Vue.component('user-list', require('./components/UserList.vue'));
+Vue.component('impersonate-button', require('./components/ImpersonateButton.vue'));
+Vue.component('admin-toggle-button', require('./components/AdminToggleButton.vue'));
 
 import PortalVue from 'portal-vue'
 Vue.use(PortalVue)

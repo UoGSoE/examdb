@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Admin;
 
-use App\User;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Course;
+use App\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Activitylog\Models\Activity;
+use Tests\TestCase;
 
 class UserTest extends TestCase
 {
@@ -91,7 +91,7 @@ class UserTest extends TestCase
             'username' => 'test1x',
             'email' => 'test@example.com',
             'surname' => 'McTest',
-            'forenames' => 'Test'
+            'forenames' => 'Test',
         ]);
 
         $response->assertStatus(201);
@@ -102,7 +102,7 @@ class UserTest extends TestCase
                 'surname' => 'McTest',
                 'forenames' => 'Test',
                 'is_external' => false,
-            ]
+            ],
         ]);
         $this->assertDatabaseHas('users', [
             'username' => 'test1x',
@@ -111,6 +111,14 @@ class UserTest extends TestCase
             'forenames' => 'Test',
             'is_external' => false,
         ]);
+        // and check we recorded this in the activity/audit log
+        tap(Activity::all()->last(), function ($log) use ($admin) {
+            $this->assertTrue($log->causer->is($admin));
+            $this->assertEquals(
+                "Created new local user 'test1x'",
+                $log->description
+            );
+        });
     }
 
     /** @test */
@@ -123,7 +131,7 @@ class UserTest extends TestCase
             'username' => 'test@example.com',
             'email' => 'test@example.com',
             'surname' => 'McTest',
-            'forenames' => 'Test'
+            'forenames' => 'Test',
         ]);
 
         $response->assertStatus(201);
@@ -134,7 +142,7 @@ class UserTest extends TestCase
                 'surname' => 'McTest',
                 'forenames' => 'Test',
                 'is_external' => true,
-            ]
+            ],
         ]);
         $this->assertDatabaseHas('users', [
             'username' => 'test@example.com',
@@ -143,6 +151,15 @@ class UserTest extends TestCase
             'forenames' => 'Test',
             'is_external' => true,
         ]);
+        // and check we recorded this in the activity/audit log
+        tap(Activity::all()->last(), function ($log) use ($admin) {
+            $this->assertTrue($log->causer->is($admin));
+            $this->assertEquals(
+                "Created new external 'test@example.com'",
+                $log->description
+            );
+        });
+
     }
 
     /** @test */
@@ -154,12 +171,12 @@ class UserTest extends TestCase
             'username' => 'test@example.com',
             'email' => 'test@example.com',
             'surname' => 'McTest',
-            'forenames' => 'Test'
+            'forenames' => 'Test',
         ]);
 
         $response->assertStatus(403);
         $this->assertDatabaseMissing('users', [
-            'username' => 'test@example.com'
+            'username' => 'test@example.com',
         ]);
     }
 
@@ -173,7 +190,7 @@ class UserTest extends TestCase
             'username' => 'TEST@EXAMPLE.COM',
             'email' => 'TEST@EXAMPLE.COM',
             'surname' => 'McTest',
-            'forenames' => 'Test'
+            'forenames' => 'Test',
         ]);
 
         $response->assertStatus(201);
@@ -184,7 +201,7 @@ class UserTest extends TestCase
                 'surname' => 'McTest',
                 'forenames' => 'Test',
                 'is_external' => true,
-            ]
+            ],
         ]);
         $this->assertDatabaseHas('users', [
             'username' => 'test@example.com',
@@ -193,5 +210,52 @@ class UserTest extends TestCase
             'forenames' => 'Test',
             'is_external' => true,
         ]);
+    }
+
+    /** @test */
+    public function admins_can_toggle_admin_status_of_other_users()
+    {
+        $this->withoutExceptionHandling();
+        $admin = create(User::class, ['is_admin' => true]);
+        $user = create(User::class, ['is_admin' => false]);
+
+        $response = $this->actingAs($admin)->postJson(route('admin.toggle', $user->id));
+
+        $response->assertOk();
+        $response->assertJson([
+            'user' => [
+                'id' => $user->id,
+                'is_admin' => true,
+            ],
+        ]);
+        $this->assertTrue($user->fresh()->isAdmin());
+        // and check we recorded this in the activity/audit log
+        tap(Activity::all()->last(), function ($log) use ($admin, $user) {
+            $this->assertTrue($log->causer->is($admin));
+            $this->assertEquals(
+                "Toggled admin status for {{ $user->full_name }}",
+                $log->description
+            );
+        });
+
+        $response = $this->actingAs($admin)->postJson(route('admin.toggle', $user->id));
+
+        $response->assertOk();
+        $response->assertJson([
+            'user' => [
+                'id' => $user->id,
+                'is_admin' => false,
+            ],
+        ]);
+        $this->assertFalse($user->fresh()->isAdmin());
+
+        // and check we recorded this in the activity/audit log
+        tap(Activity::all()->last(), function ($log) use ($admin, $user) {
+            $this->assertTrue($log->causer->is($admin));
+            $this->assertEquals(
+                "Toggled admin status for {{ $user->full_name }}",
+                $log->description
+            );
+        });
     }
 }

@@ -2,9 +2,23 @@
 
 @section('content')
 
-<h3 class="title is-3">
-    Details for user {{ $user->full_name }}
-</h3>
+<div class="level">
+    <div class="level-left">
+        <span class="level-item">
+            <h3 class="title is-3">
+                Details for user {{ $user->full_name }}
+            </h3>
+        </span>
+        <span class="level-item">
+            <form method="POST" action="{{ route('impersonate.start', $user) }}">
+                @csrf
+                <button class="button">
+                    Impersonate
+                </button>
+            </form>
+        </span>
+    </div>
+</div>
 
 <table class="table">
     <tr>

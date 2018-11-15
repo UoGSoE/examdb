@@ -37,6 +37,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('user/{user}/impersonate', 'Admin\ImpersonationController@store')->name('impersonate.start');
         Route::post('course/{course}/users', 'Admin\CourseUsersController@update')->name('course.users.update');
         Route::post('wlm/import', 'Admin\WlmImportController@update')->name('wlm.import');
+        Route::post('user/{user}/toggle-admin', 'Admin\AdminPermissionController@update')->name('admin.toggle');
     });
     Route::post('impersonate-stop', 'Admin\ImpersonationController@destroy')->name('impersonate.stop');
 });

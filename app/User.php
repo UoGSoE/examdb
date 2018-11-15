@@ -90,6 +90,17 @@ class User extends Authenticatable
         return $this->courses()->where('course_user.course_id', '=', $course->id)->wherePivot('is_external', true)->count() > 0;
     }
 
+    public function toggleAdmin()
+    {
+        $this->is_admin = !$this->is_admin;
+        $this->save();
+        activity()
+            ->causedBy(request()->user())
+            ->log(
+                "Toggled admin status for {$this->full_name}"
+            );
+    }
+
     public function isAdmin()
     {
         return $this->is_admin;
