@@ -7,7 +7,7 @@ image: uogsoe/soe-php-apache:7.2-ci
 # Only needed when using a docker container to run your tests in.
 # Check out: http://docs.gitlab.com/ce/ci/docker/using_docker_images.html#what-is-a-service
 services:
-  - mysql:8.0
+  - name: mysql:8.0
     command: ["--default-authentication-plugin=mysql_native_password"]
 variables:
   MYSQL_DATABASE: homestead
