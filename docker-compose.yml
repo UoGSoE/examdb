@@ -19,6 +19,7 @@ services:
       - "8088:80"
     environment:
       APP_ENV: local
+      APP_URL: "examdb.${LOCAL_IP}.xip.io"
       CONTAINER_ROLE: app
       DB_CONNECTION: mysql
       DB_HOST: mysql
@@ -41,7 +42,7 @@ services:
       labels:
         - "traefik.backend=examdb"
         - "traefik.docker.network=proxy"
-        - "traefik.frontend.rule=Host:examdb.130.209.176.42.xip.io"
+        - "traefik.frontend.rule=Host:examdb.${LOCAL_IP}.xip.io"
         - "traefik.enable=true"
         - "traefik.port=80"
         - "traefik.default.protocol=http"
@@ -58,6 +59,7 @@ services:
       - private
     environment:
       APP_ENV: local
+      APP_URL: "examdb.${LOCAL_IP}.xip.io"
       CONTAINER_ROLE: scheduler
       DB_CONNECTION: mysql
       DB_HOST: mysql
@@ -89,6 +91,7 @@ services:
       - private
     environment:
       APP_ENV: local
+      APP_URL: "examdb.${LOCAL_IP}.xip.io"
       CONTAINER_ROLE: queue
       DB_CONNECTION: mysql
       DB_HOST: mysql
@@ -146,7 +149,7 @@ services:
       labels:
         - "traefik.backend=examdb-minio"
         - "traefik.docker.network=proxy"
-        - "traefik.frontend.rule=Host:examdb.130.209.176.42.xip.io;PathPrefixStrip:/images"
+        - "traefik.frontend.rule=Host:examdb.${LOCAL_IP}.xip.io;PathPrefixStrip:/images"
         - "traefik.enable=true"
         - "traefik.port=80"
         - "traefik.default.protocol=http"
@@ -177,7 +180,7 @@ services:
       labels:
         - "traefik.backend=examdb-mailhog"
         - "traefik.docker.network=proxy"
-        - "traefik.frontend.rule=Host:examdb.130.209.176.42.xip.io;PathPrefixStrip:/mailhog"
+        - "traefik.frontend.rule=Host:examdb.${LOCAL_IP}.xip.io;PathPrefixStrip:/mailhog"
         - "traefik.enable=true"
         - "traefik.port=8025"
         - "traefik.default.protocol=http"
