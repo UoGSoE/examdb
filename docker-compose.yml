@@ -5,7 +5,7 @@ services:
     container_name: examdb
     build:
       context: .
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/multi.Dockerfile
     depends_on:
       - redis
       - mysql
