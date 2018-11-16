@@ -51,7 +51,7 @@ before_script:
 
   # Install Composer and project dependencies.
   # - curl -sS https://getcomposer.org/installer | php
-  composer install
+  - composer install
 
   # If you need Node.js
   #- curl -sL https://deb.nodesource.com/setup_8.x | bash -
