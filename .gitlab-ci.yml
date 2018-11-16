@@ -8,7 +8,7 @@ image: uogsoe/soe-php-apache:7.2-ci
 # Check out: http://docs.gitlab.com/ce/ci/docker/using_docker_images.html#what-is-a-service
 services:
   - mysql:8.0
-
+    command: ["--default-authentication-plugin=mysql_native_password"]
 variables:
   MYSQL_DATABASE: homestead
   MYSQL_ROOT_PASSWORD: secret
@@ -51,7 +51,7 @@ before_script:
 
   # Install Composer and project dependencies.
   # - curl -sS https://getcomposer.org/installer | php
-  # - php composer.phar install
+  composer install
 
   # If you need Node.js
   #- curl -sL https://deb.nodesource.com/setup_8.x | bash -
