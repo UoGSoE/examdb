@@ -14,7 +14,7 @@ export default {
   methods: {
     impersonate() {
       axios
-        .post(route("impersonate.start", this.user.id))
+        .get(route("impersonate", this.user.id))
         .then(response => {
           window.location = "/home";
         })

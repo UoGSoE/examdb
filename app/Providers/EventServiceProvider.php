@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -18,16 +18,22 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\LogThatPaperWasAdded',
         ],
         'Illuminate\Auth\Events\Login' => [
-            'App\Listeners\UserLoggedIn'
+            'App\Listeners\UserLoggedIn',
         ],
         'Illuminate\Auth\Events\Attempting' => [
             'App\Listeners\DispachPasswordChecker',
         ],
         'App\Events\PaperApproved' => [
-            'App\Listeners\PaperWasApproved'
+            'App\Listeners\PaperWasApproved',
         ],
         'App\Events\PaperUnapproved' => [
-            'App\Listeners\PaperWasUnapproved'
+            'App\Listeners\PaperWasUnapproved',
+        ],
+        'Lab404\Impersonate\Events\TakeImpersonation' => [
+            'App\Listeners\ImpersonationStarted',
+        ],
+        'Lab404\Impersonate\Events\LeaveImpersonation' => [
+            'App\Listeners\ImpersonationStopped',
         ],
     ];
 

@@ -17,6 +17,9 @@ Route::get('/external-login/{user}', 'Auth\ExternalLoginController@login')->name
 
 Route::group(['middleware' => 'auth'], function () {
     Route::redirect('/', '/home', 301);
+
+    Route::impersonate(); // https: //github.com/404labfr/laravel-impersonate
+
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/course/{course}', 'CourseController@show')->name('course.show');
     Route::post('/course/{course}/paper', 'PaperController@store')->name('course.paper.store');
@@ -34,10 +37,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('user', 'Admin\UserController@index')->name('user.index');
         Route::get('user/{user}', 'Admin\UserController@show')->name('user.show');
         Route::post('user', 'Admin\UserController@store')->name('user.store');
-        Route::post('user/{user}/impersonate', 'Admin\ImpersonationController@store')->name('impersonate.start');
+        // Route::post('user/{user}/impersonate', 'Admin\ImpersonationController@store')->name('impersonate.start');
         Route::post('course/{course}/users', 'Admin\CourseUsersController@update')->name('course.users.update');
         Route::post('wlm/import', 'Admin\WlmImportController@update')->name('wlm.import');
         Route::post('user/{user}/toggle-admin', 'Admin\AdminPermissionController@update')->name('admin.toggle');
     });
-    Route::post('impersonate-stop', 'Admin\ImpersonationController@destroy')->name('impersonate.stop');
+    // Route::post('impersonate-stop', 'Admin\ImpersonationController@destroy')->name('impersonate.stop');
 });

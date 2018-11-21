@@ -10,7 +10,7 @@
             </h3>
         </span>
         <span class="level-item">
-            <form method="POST" action="{{ route('impersonate.start', $user) }}">
+            <form method="GET" action="{{ route('impersonate', $user->id) }}">
                 @csrf
                 <button class="button">
                     Impersonate

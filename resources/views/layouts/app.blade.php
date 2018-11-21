@@ -35,14 +35,14 @@
             </portal-target>
         </div>
 
-        @if (session('original_id'))
+        @impersonating
             <div class="box impersonation-box shadow-lg">
-                <form method="POST" action="{{ route('impersonate.stop') }}">
+                <form method="GET" action="{{ route('impersonate.leave') }}">
                     @csrf
                     <button class="button is-outlined">Stop impersonating</button>
                 </form>
             </div>
-        @endif
+        @endImpersonating
 
     </section>
 

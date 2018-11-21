@@ -36820,7 +36820,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
   methods: {
     impersonate: function impersonate() {
-      axios.post(route("impersonate.start", this.user.id)).then(function (response) {
+      axios.get(route("impersonate", this.user.id)).then(function (response) {
         window.location = "/home";
       }).catch(function (error) {
         console.error(error);
