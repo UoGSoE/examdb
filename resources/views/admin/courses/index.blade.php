@@ -75,13 +75,13 @@
                     </div>
                 </td>
                 <td>
-                    {{ $course->setters->pluck('full_name')->implode(', ') }}
+                    {!! $course->setters->userLinks()->implode(', ') !!}
                 </td>
                 <td>
-                    {{ $course->moderators->pluck('full_name')->implode(', ') }}
+                    {!! $course->moderators->userLinks()->implode(', ') !!}
                 </td>
                 <td>
-                    {{ $course->externals->pluck('full_name')->implode(', ') }}
+                    {!! $course->externals->userLinks()->implode(', ') !!}
                 </td>
             </tr>
         @endforeach

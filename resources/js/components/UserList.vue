@@ -18,7 +18,7 @@
             <tbody>
                 <tr v-for="user in theUsers" :key="user.id">
                     <td>
-                        <a href="showUser(user)">
+                        <a :href="showUser(user)">
                             <span v-if="user.is_external" class="icon has-text-info" title="External">
                                 <i class="fas fa-globe-americas"></i>
                             </span>

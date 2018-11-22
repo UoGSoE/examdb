@@ -1,0 +1,134 @@
+version: "3"
+services:
+  app:
+    image: examdb
+    container_name: examdb
+    build:
+      context: .
+      dockerfile: docker/multi.Dockerfile
+    depends_on:
+      - redis
+      - mysql
+      - minio
+    expose:
+      - "80"
+    ports:
+      - "7172:80"
+    environment:
+      APP_ENV: local
+      APP_URL: "localhost:7172"
+      CONTAINER_ROLE: app
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_DATABASE: examdb
+      DB_USERNAME: homestead
+      DB_PASSWORD: secret
+      CACHE_DRIVER: redis
+      SESSION_DRIVER: redis
+      QUEUE_DRIVER: redis
+      REDIS_HOST: redis
+      MAIL_HOST: mailhog
+      DEFAULT_DISK: images
+      MINIO_ACCESS_KEY: AKIAIOSFODNN7EXAMPLE
+      MINIO_SECRET_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      MINIO_REGION: us-east-1
+      MINIO_BUCKET: examdb
+      MINIO_ENDPOINT: http://minio:9000
+
+  scheduler:
+    image: examdb
+    container_name: examdb-scheduler
+    depends_on:
+      - app
+    environment:
+      APP_ENV: local
+      APP_URL: "localhost:7172"
+      CONTAINER_ROLE: scheduler
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_DATABASE: examdb
+      DB_USERNAME: homestead
+      DB_PASSWORD: secret
+      CACHE_DRIVER: redis
+      SESSION_DRIVER: redis
+      QUEUE_DRIVER: redis
+      REDIS_HOST: redis
+      MAIL_HOST: mailhog
+      DEFAULT_DISK: images
+      MINIO_ACCESS_KEY: AKIAIOSFODNN7EXAMPLE
+      MINIO_SECRET_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      MINIO_REGION: us-east-1
+      MINIO_BUCKET: examdb
+      MINIO_ENDPOINT: http://minio:9000
+
+  queue:
+    image: examdb
+    container_name: examdb-queue
+    depends_on:
+      - app
+    environment:
+      APP_ENV: local
+      APP_URL: "localhost:7172"
+      CONTAINER_ROLE: queue
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_DATABASE: examdb
+      DB_USERNAME: homestead
+      DB_PASSWORD: secret
+      CACHE_DRIVER: redis
+      SESSION_DRIVER: redis
+      QUEUE_DRIVER: redis
+      REDIS_HOST: redis
+      MAIL_HOST: mailhog
+      DEFAULT_DISK: images
+      MINIO_ACCESS_KEY: AKIAIOSFODNN7EXAMPLE
+      MINIO_SECRET_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      MINIO_REGION: us-east-1
+      MINIO_BUCKET: examdb
+      MINIO_ENDPOINT: http://minio:9000
+
+  redis:
+    container_name: examdb-redis
+    image: redis:4
+    volumes:
+      - redis:/data
+
+  mysql:
+    container_name: examdb-mysql
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: examdb
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: homestead
+      MYSQL_PASSWORD: secret
+
+  minio:
+    container_name: examdb-minio
+    image: minio/minio
+    command: server /data
+    expose:
+      - "9000"
+    volumes:
+      - minio:/data
+    environment:
+      MINIO_ACCESS_KEY: AKIAIOSFODNN7EXAMPLE
+      MINIO_SECRET_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+
+  mailhog:
+    container_name: examdb-mailhog
+    image: mailhog/mailhog
+    expose:
+      - "8025"
+    ports:
+      - "8125:8025"
+
+volumes:
+  redis:
+    driver: "local"
+  mysql:
+    driver: "local"
+  minio:
+    driver: "local"

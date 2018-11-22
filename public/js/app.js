@@ -14075,14 +14075,16 @@ if (token) {
 
 
 
-window.Pusher = __webpack_require__(46);
+if (true) {
+  window.Pusher = __webpack_require__(46);
 
-window.Echo = new __WEBPACK_IMPORTED_MODULE_0_laravel_echo___default.a({
-  broadcaster: 'pusher',
-  key: "65e245f612ec38b0ad6c",
-  cluster: "eu",
-  encrypted: true
-});
+  window.Echo = new __WEBPACK_IMPORTED_MODULE_0_laravel_echo___default.a({
+    broadcaster: 'pusher',
+    key: "65e245f612ec38b0ad6c",
+    cluster: "eu",
+    encrypted: true
+  });
+}
 
 /***/ }),
 /* 26 */
@@ -36666,7 +36668,7 @@ var render = function() {
         _vm._l(_vm.theUsers, function(user) {
           return _c("tr", { key: user.id }, [
             _c("td", [
-              _c("a", { attrs: { href: "showUser(user)" } }, [
+              _c("a", { attrs: { href: _vm.showUser(user) } }, [
                 user.is_external
                   ? _c(
                       "span",
