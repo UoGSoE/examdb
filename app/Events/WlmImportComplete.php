@@ -20,7 +20,6 @@ class WlmImportComplete implements ShouldBroadcast
      */
     public function __construct()
     {
-        //
     }
 
     /**

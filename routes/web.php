@@ -31,6 +31,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('/paper/{paper}', 'PaperController@destroy')->name('paper.delete');
 
     Route::group(['middleware' => 'admin', 'prefix' => '/admin'], function () {
+
+        Route::get('test-event', function () {
+            \App\Jobs\SlowTestJob::dispatch();
+            return view('admin.activity.index', ['logs' => \Spatie\Activitylog\Models\Activity::with('causer')->latest()->paginate(1)]);
+        });
+
         Route::get('log', 'Admin\ActivityLogController@index')->name('activity.index');
         Route::get('course', 'Admin\CourseController@index')->name('course.index');
         Route::get('paper', 'Admin\PaperController@index')->name('paper.index');

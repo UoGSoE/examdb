@@ -1,5 +1,5 @@
 {
-	"authHost": "http://localhost",
+	"authHost": "http://examdb.test",
 	"authEndpoint": "/broadcasting/auth",
 	"clients": [
 		{
@@ -9,13 +9,15 @@
 	],
 	"database": "redis",
 	"databaseConfig": {
-		"redis": {},
+		"redis": {
+                    "host": "localhost",
+                    "port": "6379"
+                },
 		"sqlite": {
-			"databasePath": "/database/laravel-echo-server.sqlite"
 		}
 	},
 	"devMode": true,
-	"host": null,
+	"host": "examdb.test",
 	"port": "6001",
 	"protocol": "http",
 	"socketio": {},
