@@ -35,6 +35,7 @@ Vue.use(PortalVue)
 import vSelect from 'vue-select'
 Vue.component('v-select', vSelect)
 
+
 Echo.private('notifications')
     .listen('WlmImportComplete', (e) => {
         Vue.toasted.show('WLM Data Imported Successfully!');
