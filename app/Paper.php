@@ -12,7 +12,7 @@ class Paper extends Model
         'approved_setter' => 'boolean',
     ];
 
-    protected $appends = ['icon', 'formatted_date', 'diff_for_humans'];
+    protected $appends = ['icon', 'formatted_date', 'diff_for_humans', 'formatted_size'];
 
     const VALID_CATEGORIES = ['main', 'resit'];
 
@@ -69,6 +69,17 @@ class Paper extends Model
         }
 
         return "far fa-file";
+    }
+
+    public function getFormattedSizeAttribute()
+    {
+        // stolen from https://stackoverflow.com/a/2510459 as is tradition
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        $bytes = max($this->size, 0);
+        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+        $pow = min($pow, count($units) - 1);
+        $bytes /= pow(1024, $pow);
+        return round($bytes, 1) . ' ' . $units[$pow];
     }
 
     protected function isAPdf()

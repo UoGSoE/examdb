@@ -34709,6 +34709,18 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 exports.default = {
   props: ["course", "papers", "category"],
@@ -34760,11 +34772,20 @@ var render = function() {
         _vm._l(_vm.papers, function(paper) {
           return _c("article", { key: paper.id, staticClass: "media" }, [
             _c("figure", { staticClass: "media-left has-text-centered" }, [
-              _c("a", { attrs: { href: _vm.getDownloadRoute(paper) } }, [
-                _c("span", { staticClass: "icon is-large" }, [
-                  _c("i", { class: paper.icon + " fa-3x" })
-                ])
-              ])
+              _c(
+                "a",
+                {
+                  staticClass: "image is-64x64",
+                  attrs: { href: _vm.getDownloadRoute(paper) }
+                },
+                [
+                  _c("span", { staticClass: "icon is-large" }, [
+                    _c("i", { class: paper.icon + " fa-3x" })
+                  ]),
+                  _vm._v(" "),
+                  _c("span", [_vm._v(_vm._s(paper.formatted_size))])
+                ]
+              )
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "media-content" }, [
@@ -34801,9 +34822,9 @@ var render = function() {
                           _c("i", { staticClass: "far fa-comment" })
                         ]),
                         _vm._v(
-                          "\n\n                            " +
+                          "\n              " +
                             _vm._s(paper.comments[0].comment) +
-                            "\n                        "
+                            "\n            "
                         )
                       ])
                     : _vm._e()
@@ -34853,11 +34874,11 @@ var render = function() {
                 ]),
                 _vm._v(" "),
                 _c("section", { staticClass: "modal-card-body" }, [
-                  _vm._v("\n                    Are you "),
+                  _vm._v("\n          Are you\n          "),
                   _c("strong", [_c("em", [_vm._v("sure")])]),
-                  _vm._v(" you want do delete this paper?  This "),
+                  _vm._v(" you want do delete this paper? This\n          "),
                   _c("em", [_vm._v("cannot")]),
-                  _vm._v(" be undone!\n                ")
+                  _vm._v(" be undone!\n        ")
                 ]),
                 _vm._v(" "),
                 _c("footer", { staticClass: "modal-card-foot" }, [
