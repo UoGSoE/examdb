@@ -22091,7 +22091,6 @@ window.Pusher = __webpack_require__(72);
 
 window.Echo = new _laravelEcho2.default({
   broadcaster: 'pusher',
-  host: window.location.hostname + ':6001',
   key: '65e245f612ec38b0ad6c',
   wsHost: window.location.hostname,
   wsPort: 6001,

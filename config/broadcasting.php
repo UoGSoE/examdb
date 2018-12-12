@@ -13,7 +13,7 @@ return [
     |
     | Supported: "pusher", "redis", "log", "null"
     |
-     */
+ */
 
     'default' => env('BROADCAST_DRIVER', 'null'),
 
@@ -40,9 +40,10 @@ return [
                 'encrypted' => true,
                 'host' => '127.0.0.1',
                 'port' => 6001,
-                'scheme' => 'http',
+                'scheme' => 'http'
             ],
         ],
+
 
         'redis' => [
             'driver' => 'redis',

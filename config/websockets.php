@@ -3,12 +3,12 @@
 return [
 
     /*
-     * This package comes with multi tenancy out of the box. Here you can
-     * configure the different apps that can use the webSockets server.
-     *
-     * Optionally you can disable client events so clients cannot send
-     * messages to each other via the webSockets.
-     */
+ * This package comes with multi tenancy out of the box. Here you can
+ * configure the different apps that can use the webSockets server.
+ *
+ * Optionally you can disable client events so clients cannot send
+ * messages to each other via the webSockets.
+ */
     'apps' => [
         [
             'id' => env('PUSHER_APP_ID'),
@@ -49,10 +49,10 @@ return [
 
     'statistics' => [
         /*
-         * This model will be used to store the statistics of the WebSocketsServer.
-         * The only requirement is that the model should extend
-         * `WebSocketsStatisticsEntry` provided by this package.
-         */
+     * This model will be used to store the statistics of the WebSocketsServer.
+     * The only requirement is that the model should extend
+     * `WebSocketsStatisticsEntry` provided by this package.
+     */
         'model' => \BeyondCode\LaravelWebSockets\Statistics\Models\WebSocketsStatisticsEntry::class,
 
         /*
@@ -73,11 +73,11 @@ return [
      */
     'ssl' => [
         /*
-         * Path to local certificate file on filesystem. It must be a PEM encoded file which
-         * contains your certificate and private key. It can optionally contain the
-         * certificate chain of issuers. The private key also may be contained
-         * in a separate file specified by local_pk.
-         */
+     * Path to local certificate file on filesystem. It must be a PEM encoded file which
+     * contains your certificate and private key. It can optionally contain the
+     * certificate chain of issuers. The private key also may be contained
+     * in a separate file specified by local_pk.
+     */
         'local_cert' => null,
 
         /*
