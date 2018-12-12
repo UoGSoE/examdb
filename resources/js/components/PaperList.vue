@@ -7,6 +7,7 @@
             <span class="icon is-large">
               <i :class="paper.icon + ' fa-3x'"></i>
             </span>
+            <br>
             <span>{{ paper.formatted_size }}</span>
           </a>
         </figure>

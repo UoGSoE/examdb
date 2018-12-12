@@ -34720,6 +34720,7 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
+//
 
 exports.default = {
   props: ["course", "papers", "category"],
@@ -34781,6 +34782,8 @@ var render = function() {
                   _c("span", { staticClass: "icon is-large" }, [
                     _c("i", { class: paper.icon + " fa-3x" })
                   ]),
+                  _vm._v(" "),
+                  _c("br"),
                   _vm._v(" "),
                   _c("span", [_vm._v(_vm._s(paper.formatted_size))])
                 ]
