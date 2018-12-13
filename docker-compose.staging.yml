@@ -5,7 +5,7 @@ services:
     container_name: examdb
     build:
       context: .
-      dockerfile: docker/multi.Dockerfile
+      dockerfile: docker/staging.Dockerfile
     depends_on:
       - redis
       - mysql
@@ -16,8 +16,6 @@ services:
       - private
     expose:
       - "80"
-    ports:
-      - "8088:80"
     environment:
       APP_ENV: local
       APP_URL: "${STAGING_TRAEFIK_HOST}"
@@ -32,6 +30,7 @@ services:
       QUEUE_DRIVER: redis
       REDIS_HOST: redis
       MAIL_HOST: mailhog
+      BROADCAST_DRIVER: pusher
       DEFAULT_DISK: images
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
@@ -50,7 +49,7 @@ services:
 
   scheduler:
     image: localhost:5000/examdb:staging
-    container_name: jwnc-scheduler
+    container_name: examdb-scheduler
     depends_on:
       - app
     deploy:
@@ -72,6 +71,7 @@ services:
       QUEUE_DRIVER: redis
       REDIS_HOST: redis
       MAIL_HOST: mailhog
+      BROADCAST_DRIVER: pusher
       DEFAULT_DISK: images
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
@@ -81,7 +81,7 @@ services:
 
   queue:
     image: localhost:5000/examdb:staging
-    container_name: jwnc-queue
+    container_name: examdb-queue
     depends_on:
       - app
     deploy:
@@ -104,6 +104,48 @@ services:
       QUEUE_DRIVER: redis
       REDIS_HOST: redis
       MAIL_HOST: mailhog
+      BROADCAST_DRIVER: pusher
+      DEFAULT_DISK: images
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_REGION: us-east-1
+      MINIO_BUCKET: examdb
+      MINIO_ENDPOINT: http://minio:9000
+
+  websockets:
+    image: localhost:5000/examdb:staging
+    container_name: examdb-websockets
+    depends_on:
+      - app
+    expose:
+      - "6001"
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.backend=examdb-websockets"
+        - "traefik.docker.network=proxy"
+        - "traefik.frontend.rule=Host:${STAGING_TRAEFIK_HOST}"
+        - "traefik.enable=true"
+        - "traefik.port=6001"
+        - "traefik.default.protocol=http"
+    networks:
+      - proxy
+      - private
+    environment:
+      APP_ENV: local
+      APP_URL: "${STAGING_TRAEFIK_HOST}"
+      CONTAINER_ROLE: websockets
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_DATABASE: examdb
+      DB_USERNAME: homestead
+      DB_PASSWORD: secret
+      CACHE_DRIVER: redis
+      SESSION_DRIVER: redis
+      QUEUE_DRIVER: redis
+      REDIS_HOST: redis
+      MAIL_HOST: mailhog
+      BROADCAST_DRIVER: pusher
       DEFAULT_DISK: images
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
@@ -123,7 +165,7 @@ services:
       - redis:/data
 
   mysql:
-    container_name: jwnc-mysql
+    container_name: examdb-mysql
     image: mysql:8.0
     command: --default-authentication-plugin=mysql_native_password
     deploy:
