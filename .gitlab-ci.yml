@@ -118,6 +118,6 @@ build-production:
   - docker push $CI_REGISTRY/$CI_PROJECT_PATH
   - docker push $CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_SHA
 
-  deploy-staging:
-    stage: deploy
-    when: manual
+deploy-staging:
+  stage: deploy
+  when: manual
