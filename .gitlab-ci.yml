@@ -121,3 +121,13 @@ build-production:
 deploy-staging:
   stage: deploy
   when: manual
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - mkdir -p ~/.ssh
+    - eval $(ssh-agent -s)
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+  script:
+    - ssh-add <(echo "$STAGING_PRIVATE_KEY")
+    - ssh -o StrictHostKeyChecking=no deployer@"$STAGING_SERVER" 'docker pull $CI_REGISTRY/$CI_PROJECT_PATH:staging'
+    - scp docker-compose.staging.yml deployer@"$STAGING_SERVER":~/$CI_PROJECT_PATH.yml
+    - ssh -o StrictHostKeyChecking=no deployer@"$STAGING_SERVER" 'cd examdb && docker stack deploy -c docker-compose.staging.yml examdb'
