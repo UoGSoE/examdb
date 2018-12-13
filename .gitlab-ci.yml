@@ -1,7 +1,7 @@
-# This file is a template, and might need editing before it works on your project.
-# Official framework image. Look for the different tagged releases at:
-# https://hub.docker.com/r/library/php
-image: uogsoe/soe-php-apache:7.2-ci
+stages:
+  - test
+  - build
+
 
 # Pick zero or more services to be used on all builds.
 # Only needed when using a docker container to run your tests in.
@@ -31,14 +31,6 @@ before_script:
   # Install dependencies
   - apt-get install -y git gnupg2
 
-  # Install php extensions
-  # - docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
-  # - docker-php-ext-install mbstring pdo_mysql curl json intl gd xml zip bz2 opcache gd gmp bcmath pcntl ldap sysvmsg
-
-  # Install & enable Xdebug for code coverage reports
-  # - pecl install xdebug
-  # - docker-php-ext-enable xdebug
-
   # Copy over testing configuration.
   # Don't forget to set the database config in .env.testing correctly
   # DB_HOST=mysql
@@ -46,8 +38,6 @@ before_script:
   # DB_USERNAME=root
   # DB_PASSWORD=secret
   - cp .env.gitlab .env
-
-  - touch database/mailinglist.sqlite
 
   # Install Composer and project dependencies.
   # - curl -sS https://getcomposer.org/installer | php
@@ -68,7 +58,6 @@ before_script:
   - php artisan config:cache
 
   # Run database migrations.
-  - echo "" > database/mailinglist.sqlite
   - php artisan migrate:fresh
 
   # Run database seed
@@ -79,11 +68,56 @@ before_script:
   - php -i | grep memory_limit
 
 test:
+  image: uogsoe/soe-php-apache:7.2-ci
   script:
-    # run laravel tests
+    - apt-get update -yqq
+    - apt-get install -y git gnupg2
+    - cp .env.gitlab .env
+    - composer install
+    # If you need Node.js
+    #- curl -sL https://deb.nodesource.com/setup_8.x | bash -
+    #- apt-get install -y nodejs
+    #- npm install
+    #- npm run dev
+    - php artisan key:generate
+    - php artisan cache:clear
+    - php artisan view:clear
+    - php artisan route:clear
+    - php artisan clear-compiled
+    - php artisan config:cache
+    - php artisan migrate:fresh
+    - php artisan db:seed
+    - php --version
+    - php -i | grep memory_limit
     - php vendor/bin/phpunit -d memory_limit=1024M --stop-on-failure --coverage-text --colors=never
     # run frontend tests
     # if you have any task for testing frontend
     # set it in your package.json script
     # comment this out if you don't have a frontend test
     # - npm test
+
+build-staging:
+  stage: build
+  image: docker:stable
+  script:
+  - cp docker/staging.Dockerfile ./Dockerfile
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+  - docker build -t $CI_REGISTRY/$CI_PROJECT_PATH:staging .
+  - docker push $CI_REGISTRY/$CI_PROJECT_PATH:staging
+
+build-production:
+  stage: build
+  image: docker:stable
+  only:
+  - master
+  script:
+  - cp docker/production.Dockerfile ./Dockerfile
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+  - docker build -t $CI_REGISTRY/$CI_PROJECT_PATH .
+  - docker build -t $CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_SHA .
+  - docker push $CI_REGISTRY/$CI_PROJECT_PATH
+  - docker push $CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_SHA
+
+  deploy-staging:
+    stage: deploy
+    when: manual

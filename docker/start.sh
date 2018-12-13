@@ -19,7 +19,7 @@ fi
 
 if [ "$role" = "app" ]; then
 
-    php /var/www/html/artisan migrate
+    #php /var/www/html/artisan migrate
     exec apache2-foreground
 
 elif [ "$role" = "queue" ]; then
@@ -34,6 +34,11 @@ elif [ "$role" = "scheduler" ]; then
       php /var/www/html/artisan schedule:run --verbose --no-interaction &
       sleep 60
     done
+
+elif [ "$role" = "websockets" ]; then
+
+    echo "Running the websocket server..."
+    php /var/www/html/artisan websockets:serve
 
 else
     echo "Could not match the container role \"$role\""

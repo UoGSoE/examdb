@@ -1,7 +1,7 @@
 version: "3"
 services:
   app:
-    image: localhost:5000/examdb
+    image: localhost:5000/examdb:staging
     container_name: examdb
     build:
       context: .
@@ -10,6 +10,7 @@ services:
       - redis
       - mysql
       - minio
+      - mailhog
     networks:
       - proxy
       - private
@@ -19,7 +20,7 @@ services:
       - "8088:80"
     environment:
       APP_ENV: local
-      APP_URL: "${PRODUCTION_TRAEFIK_HOST}"
+      APP_URL: "${STAGING_TRAEFIK_HOST}"
       CONTAINER_ROLE: app
       DB_CONNECTION: mysql
       DB_HOST: mysql
@@ -42,13 +43,13 @@ services:
       labels:
         - "traefik.backend=examdb"
         - "traefik.docker.network=proxy"
-        - "traefik.frontend.rule=Host:${PRODUCTION_TRAEFIK_HOST}"
+        - "traefik.frontend.rule=Host:${STAGING_TRAEFIK_HOST}"
         - "traefik.enable=true"
         - "traefik.port=80"
         - "traefik.default.protocol=http"
 
   scheduler:
-    image: localhost:5000/examdb
+    image: localhost:5000/examdb:staging
     container_name: jwnc-scheduler
     depends_on:
       - app
@@ -59,7 +60,7 @@ services:
       - private
     environment:
       APP_ENV: local
-      APP_URL: "${PRODUCTION_TRAEFIK_HOST}"
+      APP_URL: "${STAGING_TRAEFIK_HOST}"
       CONTAINER_ROLE: scheduler
       DB_CONNECTION: mysql
       DB_HOST: mysql
@@ -79,7 +80,7 @@ services:
       MINIO_ENDPOINT: http://minio:9000
 
   queue:
-    image: localhost:5000/examdb
+    image: localhost:5000/examdb:staging
     container_name: jwnc-queue
     depends_on:
       - app
@@ -91,7 +92,7 @@ services:
       - private
     environment:
       APP_ENV: local
-      APP_URL: "${PRODUCTION_TRAEFIK_HOST}"
+      APP_URL: "${STAGING_TRAEFIK_HOST}"
       CONTAINER_ROLE: queue
       DB_CONNECTION: mysql
       DB_HOST: mysql
@@ -122,7 +123,7 @@ services:
       - redis:/data
 
   mysql:
-    container_name: examdb-mysql
+    container_name: jwnc-mysql
     image: mysql:8.0
     command: --default-authentication-plugin=mysql_native_password
     deploy:
@@ -149,7 +150,7 @@ services:
       labels:
         - "traefik.backend=examdb-minio"
         - "traefik.docker.network=proxy"
-        - "traefik.frontend.rule=Host:${PRODUCTION_TRAEFIK_HOST};PathPrefixStrip:/images"
+        - "traefik.frontend.rule=Host:${STAGING_TRAEFIK_HOST};PathPrefixStrip:/images"
         - "traefik.enable=true"
         - "traefik.port=80"
         - "traefik.default.protocol=http"
@@ -172,6 +173,23 @@ services:
 #      /usr/bin/mc policy download myminio/examdb;
 #      exit 0;
 #      "
+
+  mailhog:
+    container_name: examdb-mailhog
+    image: mailhog/mailhog
+    deploy:
+      labels:
+        - "traefik.backend=examdb-mailhog"
+        - "traefik.docker.network=proxy"
+        - "traefik.frontend.rule=Host:${STAGING_TRAEFIK_HOST}"
+        - "traefik.enable=true"
+        - "traefik.port=8025"
+        - "traefik.default.protocol=http"
+    expose:
+      - "8025"
+    networks:
+      - proxy
+      - private
 
 volumes:
   redis:

@@ -1,3 +1,5 @@
+### STAGING/TEST BUILD
+
 # Set up php dependancies
 FROM composer:1.7 as vendor
 
@@ -27,7 +29,7 @@ COPY resources/ /app/resources/
 WORKDIR /app
 
 RUN yarn install
-RUN yarn production
+RUN yarn development
 
 # And build the app
 FROM uogsoe/soe-php-apache:7.2
@@ -45,11 +47,10 @@ COPY --from=frontend /app/public/css/ /var/www/html/public/css/
 COPY --from=frontend /app/mix-manifest.json /var/www/html/mix-manifest.json
 
 RUN rm -fr /var/www/html/public/images
-RUN mv /var/www/html/.env.docker-dev /var/www/html/.env
-RUN php /var/www/html/artisan key:generate
+RUN mv /var/www/html/.env.docker-testing /var/www/html/.env
 RUN php /var/www/html/artisan storage:link
 RUN php /var/www/html/artisan view:clear
-RUN touch /var/www/html/database/mailinglist.sqlite
-RUN chown -R www-data:www-data /var/www/html
+RUN chown -R www-data:www-data /var/www/html/storage
+RUN chown -R www-data:www-data /var/www/html/bootstrap/cache
 
 CMD ["/usr/local/bin/start"]
