@@ -1,7 +1,7 @@
 stages:
   - test
   - build
-
+  - deploy
 
 # Pick zero or more services to be used on all builds.
 # Only needed when using a docker container to run your tests in.
@@ -129,5 +129,5 @@ deploy-staging:
   script:
     - ssh-add <(echo "$STAGING_PRIVATE_KEY")
     - ssh -o StrictHostKeyChecking=no deployer@"$STAGING_SERVER" 'docker pull $CI_REGISTRY/$CI_PROJECT_PATH:staging'
-    - scp docker-compose.staging.yml deployer@"$STAGING_SERVER":~/$CI_PROJECT_PATH.yml
-    - ssh -o StrictHostKeyChecking=no deployer@"$STAGING_SERVER" 'cd examdb && docker stack deploy -c docker-compose.staging.yml examdb'
+    - scp docker-compose.staging.yml deployer@"$STAGING_SERVER":~/$CI_PROJECT_NAME.yml
+    - ssh -o StrictHostKeyChecking=no deployer@"$STAGING_SERVER" 'cd examdb && docker stack deploy -c $CI_PROJECT_NAME.yml examdb'
