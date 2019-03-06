@@ -36,7 +36,7 @@ class User extends Authenticatable
 
     public function logs()
     {
-        return $this->hasMany(Activity::class, 'causer_id');
+        return $this->hasMany(Activity::class, 'causer_id')->orderByDesc('created_at');
     }
 
     public static function getStaffForVueSelect()
