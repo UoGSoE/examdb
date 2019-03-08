@@ -166,7 +166,7 @@ class Course extends Model
         throw new \DomainException('User is not associated with this course');
     }
 
-    public function getUserApprovedMainAttribute(?User $user): bool
+    public function getUserApprovedMainAttribute(? User $user): bool
     {
         if (!$user) {
             $user = auth()->user();
@@ -174,7 +174,7 @@ class Course extends Model
         return $this->isApprovedBy($user, 'main');
     }
 
-    public function getUserApprovedResitAttribute(?User $user): bool
+    public function getUserApprovedResitAttribute(? User $user): bool
     {
         if (!$user) {
             $user = auth()->user();

@@ -31,6 +31,11 @@ class Paper extends Model
         return $this->morphMany(Comment::class, 'commentable');
     }
 
+    public function scopeReadyForExternals($query)
+    {
+        return $query->where('subcategory', '=', 'Paper Checklist');
+    }
+
     public function scopeMain($query)
     {
         return $query->where('category', '=', 'main');
