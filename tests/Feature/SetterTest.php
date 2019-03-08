@@ -116,11 +116,11 @@ class SetterTest extends TestCase
         });
 
         // check an email was sent to each moderator about the new upload
-        Mail::assertQueued(NotifyModeratorAboutUpload::class, 2);
-        Mail::assertQueued(NotifyModeratorAboutUpload::class, function ($mail) use ($moderator1) {
+        Mail::assertNotQueued(NotifyModeratorAboutUpload::class, 2);
+        Mail::assertNotQueued(NotifyModeratorAboutUpload::class, function ($mail) use ($moderator1) {
             return $mail->hasTo($moderator1->email);
         });
-        Mail::assertQueued(NotifyModeratorAboutUpload::class, function ($mail) use ($moderator2) {
+        Mail::assertNotQueued(NotifyModeratorAboutUpload::class, function ($mail) use ($moderator2) {
             return $mail->hasTo($moderator2->email);
         });
     }
@@ -167,11 +167,11 @@ class SetterTest extends TestCase
         });
 
         // check an email was sent to each moderator about the new upload
-        Mail::assertQueued(NotifyModeratorAboutUpload::class, 2);
-        Mail::assertQueued(NotifyModeratorAboutUpload::class, function ($mail) use ($moderator1) {
+        Mail::assertNotQueued(NotifyModeratorAboutUpload::class, 2);
+        Mail::assertNotQueued(NotifyModeratorAboutUpload::class, function ($mail) use ($moderator1) {
             return $mail->hasTo($moderator1->email);
         });
-        Mail::assertQueued(NotifyModeratorAboutUpload::class, function ($mail) use ($moderator2) {
+        Mail::assertNotQueued(NotifyModeratorAboutUpload::class, function ($mail) use ($moderator2) {
             return $mail->hasTo($moderator2->email);
         });
     }
