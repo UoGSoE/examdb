@@ -124,4 +124,9 @@ class Paper extends Model
     {
         return $this->created_at->diffForHumans();
     }
+
+    public function isntChecklist()
+    {
+        return !$this->subcategory == 'Paper Checklist';
+    }
 }

@@ -30,6 +30,11 @@ class NotifyAboutNewPaper
      */
     public function handle(PaperAdded $event)
     {
+        // @TODO remove this class
+        // bail out if the upload won't trigger any emails
+        if ($event->paper->isntChecklist() and $event->paper->isntExternalComments()) {
+            return;
+        }
         if ($event->user->isSetterFor($event->paper->course)) {
             $event->paper->course->moderators->each(function ($moderator) use ($event) {
                 Mail::to($moderator)->queue(new NotifyModeratorAboutUpload($event->paper));

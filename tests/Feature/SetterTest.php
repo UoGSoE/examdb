@@ -16,6 +16,8 @@ use App\Mail\NotifyModeratorAboutApproval;
 use App\Mail\NotifyModeratorAboutUnapproval;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Listeners\NotifyModeratorThatChecklistUploaded;
+use App\Mail\ChecklistUploaded;
 
 class SetterTest extends TestCase
 {
@@ -115,14 +117,8 @@ class SetterTest extends TestCase
             );
         });
 
-        // check an email was sent to each moderator about the new upload
-        Mail::assertNotQueued(NotifyModeratorAboutUpload::class, 2);
-        Mail::assertNotQueued(NotifyModeratorAboutUpload::class, function ($mail) use ($moderator1) {
-            return $mail->hasTo($moderator1->email);
-        });
-        Mail::assertNotQueued(NotifyModeratorAboutUpload::class, function ($mail) use ($moderator2) {
-            return $mail->hasTo($moderator2->email);
-        });
+        // check an email wasn't sent to any moderator about the new upload
+        Mail::assertNotQueued(NotifyModeratorAboutUpload::class);
     }
 
     /** @test */
@@ -166,14 +162,53 @@ class SetterTest extends TestCase
             );
         });
 
-        // check an email was sent to each moderator about the new upload
-        Mail::assertNotQueued(NotifyModeratorAboutUpload::class, 2);
-        Mail::assertNotQueued(NotifyModeratorAboutUpload::class, function ($mail) use ($moderator1) {
-            return $mail->hasTo($moderator1->email);
+        // check an email wasn't sent to each moderator about the new upload
+        Mail::assertNotQueued(NotifyModeratorAboutUpload::class);
+    }
+
+    /** @test */
+    public function once_the_user_uploads_the_checklist_an_email_is_sent_to_the_moderators()
+    {
+        Mail::fake();
+        $this->withoutExceptionHandling();
+        Storage::fake('exampapers');
+        $staff = create(User::class);
+        $course = create(Course::class);
+        $staff->markAsSetter($course);
+        $moderator1 = create(User::class);
+        $moderator2 = create(User::class);
+        $moderator1->markAsModerator($course);
+        $moderator2->markAsModerator($course);
+
+        $response = $this->actingAs($staff)->postJson(route('course.paper.store', $course->id), [
+            'paper' => UploadedFile::fake()->create('main_paper_1.pdf', 1),
+            'category' => 'main',
+            'subcategory' => 'Paper Checklist',
+            'comment' => 'Whatever',
+        ]);
+
+        $response->assertStatus(201);
+        $this->assertCount(1, $course->papers);
+        $this->assertCount(1, $course->papers->first()->comments);
+        $paper = $course->papers->first();
+        Storage::disk('exampapers')->assertExists($paper->filename);
+        $this->assertEquals('main', $paper->category);
+        $this->assertEquals('Paper Checklist', $paper->subcategory);
+        $this->assertEquals('Whatever', $paper->comments->first()->comment);
+        $this->assertTrue($paper->user->is($staff));
+        $this->assertTrue($paper->course->is($course));
+
+        // and check we recorded this in the activity/audit log
+        tap(Activity::all()->last(), function ($log) use ($staff, $paper) {
+            $this->assertTrue($log->causer->is($staff));
+            $this->assertEquals(
+                "Uploaded a paper ({$paper->course->code} - {$paper->category} / {$paper->subcategory})",
+                $log->description
+            );
         });
-        Mail::assertNotQueued(NotifyModeratorAboutUpload::class, function ($mail) use ($moderator2) {
-            return $mail->hasTo($moderator2->email);
-        });
+
+        // check an email was sent to all the course moderators about the new upload
+        Mail::assertQueued(ChecklistUploaded::class, 2);
     }
 
     /** @test */

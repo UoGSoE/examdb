@@ -14,7 +14,10 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         'App\Events\PaperAdded' => [
-            'App\Listeners\NotifyAboutNewPaper',
+            // 'App\Listeners\NotifyAboutNewPaper',
+            'App\Listeners\NotifyModeratorThatChecklistUploaded',
+            'App\Listeners\NotifySetterThatModeratorHasCommented',
+            'App\Listeners\NotifySetterThatExternalHasCommented',
             'App\Listeners\LogThatPaperWasAdded',
         ],
         'Illuminate\Auth\Events\Login' => [
