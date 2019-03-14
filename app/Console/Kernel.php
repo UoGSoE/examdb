@@ -25,6 +25,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('activitylog:clean')->daily();
+        $schedule->command('exampapers:notify-paperwork-incomplete main')->dailyAt('02:00');
+        $schedule->command('exampapers:notify-paperwork-incomplete resit')->dailyAt('02:30');
     }
 
     /**

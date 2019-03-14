@@ -15,7 +15,7 @@ class NotifyExternals extends Command
      *
      * @var string
      */
-    protected $signature = 'exampapers:notify-externals';
+    protected $signature = 'exampapers:notify-externals {type : "main" or "resit"}';
 
     /**
      * The console command description.
@@ -41,15 +41,19 @@ class NotifyExternals extends Command
      */
     public function handle()
     {
-        if (!option_exists('main_deadline')) {
-            abort(500, 'No main_deadline option set');
+        $deadlineField = 'resit_deadline';
+        if ($this->argument('type') == 'main') {
+            $deadlineField = 'main_deadline';
         }
-        $deadline = Carbon::createFromFormat('Y-m-d', option('main_deadline'));
+        if (!option_exists($deadlineField)) {
+            abort(500, "No {$deadlineField} option set");
+        }
+        $deadline = Carbon::createFromFormat('Y-m-d', option($deadlineField));
         if ($deadline->gt(now())) {
             return;
         }
 
-        $externalEmails = Paper::with('course.externals')->readyForExternals()->get()->map(function ($paper) {
+        $externalEmails = Paper::with('course.externals')->where('category', '=', $this->argument('type'))->readyForExternals()->get()->map(function ($paper) {
             return $paper->course->externals->pluck('email');
         })->flatten()->unique();
 

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Mail\NotifyLocalsAboutExternalComments;
+use App\Mail\NotifySetterAboutExternalComments;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ExternalsTest extends TestCase
@@ -117,19 +118,13 @@ class ExternalsTest extends TestCase
             );
         });
 
-        // check an email was sent to each local setter & moderator about the new upload
-        Mail::assertQueued(NotifyLocalsAboutExternalComments::class, 4);
-        Mail::assertQueued(NotifyLocalsAboutExternalComments::class, function ($mail) use ($setter1) {
+        // check an email was sent to each local setter about the new upload
+        Mail::assertQueued(NotifySetterAboutExternalComments::class, 2);
+        Mail::assertQueued(NotifySetterAboutExternalComments::class, function ($mail) use ($setter1) {
             return $mail->hasTo($setter1->email);
         });
-        Mail::assertQueued(NotifyLocalsAboutExternalComments::class, function ($mail) use ($setter2) {
+        Mail::assertQueued(NotifySetterAboutExternalComments::class, function ($mail) use ($setter2) {
             return $mail->hasTo($setter2->email);
-        });
-        Mail::assertQueued(NotifyLocalsAboutExternalComments::class, function ($mail) use ($moderator1) {
-            return $mail->hasTo($moderator1->email);
-        });
-        Mail::assertQueued(NotifyLocalsAboutExternalComments::class, function ($mail) use ($moderator2) {
-            return $mail->hasTo($moderator2->email);
         });
     }
 
