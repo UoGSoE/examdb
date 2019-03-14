@@ -42,16 +42,20 @@ class NotifyPaperworkIncomplete extends Command
      */
     public function handle()
     {
-        if (!option_exists('externals_notification_date')) {
-            abort(500, 'No externals_notification_date option set');
+        $deadlineField = 'resit_deadline';
+        if ($this->argument('type') == 'main') {
+            $deadlineField = 'main_deadline';
         }
-        $deadline = Carbon::createFromFormat('Y-m-d', option('externals_notification_date'));
+        if (!option_exists($deadlineField)) {
+            abort(500, "No {$deadlineField} option set");
+        }
+        $deadline = Carbon::createFromFormat('Y-m-d', option($deadlineField));
         if ($deadline->gt(now())) {
             return;
         }
 
         $setterEmails = Course::with('papers')->whereDoesntHave('papers', function ($query) {
-            $query->where('subcategory', '=', 'Paper Checklist');
+            $query->where('category', '=', $this->argument('type'))->where('subcategory', '=', 'Paper Checklist');
         })->get()->map(function ($course) {
             return $course->setters->pluck('email');
         })->flatten()->unique();

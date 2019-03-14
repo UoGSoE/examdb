@@ -21,7 +21,7 @@ class ExternalsNotificationTest extends TestCase
         $this->withoutExceptionHandling();
 
         // set the deadline to tomorrow
-        option(['externals_notification_date' => now()->addDays(1)->format('Y-m-d')]);
+        option(['main_deadline' => now()->addDays(1)->format('Y-m-d')]);
 
         // the 'Paper Checklist' is the trigger that means 'this paper is ready'
         $paper = create(Paper::class, ['subcategory' => 'Paper Checklist']);
@@ -39,7 +39,7 @@ class ExternalsNotificationTest extends TestCase
         Mail::fake();
         $this->withoutExceptionHandling();
         // set the deadline to yesterday
-        option(['externals_notification_date' => now()->subDays(1)->format('Y-m-d')]);
+        option(['main_deadline' => now()->subDays(1)->format('Y-m-d')]);
         $external1 = create(User::class);
         $external2 = create(User::class);
         // the 'Paper Checklist' is the trigger that means 'this paper is ready'
@@ -65,7 +65,7 @@ class ExternalsNotificationTest extends TestCase
         Mail::fake();
         $this->withoutExceptionHandling();
         // set the deadline to yesterday
-        option(['externals_notification_date' => now()->subDays(1)->format('Y-m-d')]);
+        option(['main_deadline' => now()->subDays(1)->format('Y-m-d')]);
         // the 'Paper Checklist' is the trigger that means 'this paper is ready'
         $paper1 = create(Paper::class, ['subcategory' => 'Not Paper Checklist']);
         $external1 = create(User::class);

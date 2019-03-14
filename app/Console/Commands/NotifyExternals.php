@@ -41,10 +41,10 @@ class NotifyExternals extends Command
      */
     public function handle()
     {
-        if (!option_exists('externals_notification_date')) {
-            abort(500, 'No externals_notification_date option set');
+        if (!option_exists('main_deadline')) {
+            abort(500, 'No main_deadline option set');
         }
-        $deadline = Carbon::createFromFormat('Y-m-d', option('externals_notification_date'));
+        $deadline = Carbon::createFromFormat('Y-m-d', option('main_deadline'));
         if ($deadline->gt(now())) {
             return;
         }

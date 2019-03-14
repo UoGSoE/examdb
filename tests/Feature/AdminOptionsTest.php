@@ -38,12 +38,12 @@ class AdminOptionsTest extends TestCase
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
 
-        $this->assertNull(option('externals_notification_date'));
+        $this->assertNull(option('main_deadline'));
         $response = $this->actingAs($admin)->postJson(route('admin.options.update'), [
-            'externals_notification_date' => '30/01/2019'
+            'main_deadline' => '30/01/2019'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals('2019-01-30', option('externals_notification_date'));
+        $this->assertEquals('2019-01-30', option('main_deadline'));
 
         $this->assertNull(option('teaching_office_contact'));
         $response = $this->actingAs($admin)->postJson(route('admin.options.update'), [
@@ -58,12 +58,12 @@ class AdminOptionsTest extends TestCase
     {
         $admin = create(User::class, ['is_admin' => true]);
 
-        $this->assertNull(option('externals_notification_date'));
+        $this->assertNull(option('main_deadline'));
         $response = $this->actingAs($admin)->postJson(route('admin.options.update'), [
-            'externals_notification_date' => 'MUFFINS FOR EVERYONE!'
+            'main_deadline' => 'MUFFINS FOR EVERYONE!'
         ]);
         $response->assertStatus(422);
-        $this->assertNull(option('externals_notification_date'));
+        $this->assertNull(option('main_deadline'));
 
         $this->assertNull(option('teaching_office_contact'));
         $response = $this->actingAs($admin)->postJson(route('admin.options.update'), [

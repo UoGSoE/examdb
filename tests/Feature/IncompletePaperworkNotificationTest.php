@@ -21,14 +21,14 @@ class IncompletePaperworkNotificationTest extends TestCase
         $this->withoutExceptionHandling();
 
         // set the deadline to tomorrow
-        option(['externals_notification_date' => now()->addDays(1)->format('Y-m-d')]);
+        option(['main_deadline' => now()->addDays(1)->format('Y-m-d')]);
 
         // the 'Paper Checklist' is the trigger that means 'this paper is ready'
-        $paper = create(Paper::class, ['subcategory' => 'Paper Checklist']);
+        $paper = create(Paper::class, ['category' => 'main', 'subcategory' => 'Paper Checklist']);
         $setter = create(User::class);
         $setter->markAsSetter($paper->course);
 
-        Artisan::call('exampapers:notify-paperwork-incomplete');
+        Artisan::call('exampapers:notify-paperwork-incomplete', ['type' => 'main']);
 
         Mail::assertNotQueued(PaperworkIncomplete::class);
     }
@@ -39,15 +39,16 @@ class IncompletePaperworkNotificationTest extends TestCase
         Mail::fake();
         $this->withoutExceptionHandling();
         // set the deadline to yesterday
-        option(['externals_notification_date' => now()->subDays(1)->format('Y-m-d')]);
+        option(['main_deadline' => now()->subDays(1)->format('Y-m-d')]);
         $setter1 = create(User::class);
         $setter2 = create(User::class);
+        $setter3 = create(User::class); // an extra just to make sure they are _not_ emailed in the batch
         // the 'Paper Checklist' is the trigger that means 'this paper is ready'
-        $paper1 = create(Paper::class, ['subcategory' => 'Not Paper Checklist']);
+        $paper1 = create(Paper::class, ['category' => 'main', 'subcategory' => 'Not Paper Checklist']);
         $setter1->markAsSetter($paper1->course);
         $setter2->markAsSetter($paper1->course);
 
-        Artisan::call('exampapers:notify-paperwork-incomplete');
+        Artisan::call('exampapers:notify-paperwork-incomplete', ['type' => 'main']);
 
         // check an email was sent to both setters about the course they are associated with
         Mail::assertQueued(PaperworkIncomplete::class, 2);
@@ -65,13 +66,13 @@ class IncompletePaperworkNotificationTest extends TestCase
         Mail::fake();
         $this->withoutExceptionHandling();
         // set the deadline to yesterday
-        option(['externals_notification_date' => now()->subDays(1)->format('Y-m-d')]);
+        option(['main_deadline' => now()->subDays(1)->format('Y-m-d')]);
         // the 'Paper Checklist' is the trigger that means 'this paper is ready'
-        $paper1 = create(Paper::class, ['subcategory' => 'Paper Checklist']);
+        $paper1 = create(Paper::class, ['category' => 'main', 'subcategory' => 'Paper Checklist']);
         $setter1 = create(User::class);
         $setter1->markAsSetter($paper1->course);
 
-        Artisan::call('exampapers:notify-paperwork-incomplete');
+        Artisan::call('exampapers:notify-paperwork-incomplete', ['type' => 'main']);
 
         // check an email wasn't sent to the setter
         Mail::assertNotQueued(PaperworkIncomplete::class);
@@ -80,6 +81,18 @@ class IncompletePaperworkNotificationTest extends TestCase
     /** @test */
     public function setters_are_not_notified_about_resit_papers_before_the_resit_deadline()
     {
-        $this->fail('TODO');
+        Mail::fake();
+        $this->withoutExceptionHandling();
+        // set the deadline to tomorrow
+        option(['resit_deadline' => now()->addDays(1)->format('Y-m-d')]);
+        // the 'Paper Checklist' is the trigger that means 'this paper is ready'
+        $paper1 = create(Paper::class, ['category' => 'resit', 'subcategory' => 'Not Paper Checklist']);
+        $setter1 = create(User::class);
+        $setter1->markAsSetter($paper1->course);
+
+        Artisan::call('exampapers:notify-paperwork-incomplete', ['type' => 'resit']);
+
+        // check an email wasn't sent to the setter
+        Mail::assertNotQueued(PaperworkIncomplete::class);
     }
 }

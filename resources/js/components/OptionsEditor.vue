@@ -16,13 +16,13 @@
       <div class="field">
         <label
           class="label"
-          :class="{'has-text-danger': hasError('externals_notification_date')}"
+          :class="{'has-text-danger': hasError('main_deadline')}"
         >Date Externals will be notified to look at papers</label>
         <div class="control">
           <input
             class="input"
             type="text"
-            v-model="localOptions.externals_notification_date"
+            v-model="localOptions.main_deadline"
             v-pikaday="pikadayOptions"
           >
         </div>
@@ -49,9 +49,9 @@ export default {
     return {
       localOptions: {
         teaching_office_contact: this.options.teaching_office_contact,
-        externals_notification_date: this.options.externals_notification_date
+        main_deadline: this.options.main_deadline
           ? moment(
-              this.options.externals_notification_date,
+              this.options.main_deadline,
               "YYYY-MM-DD"
             ).format("DD/MM/YYYY")
           : ""

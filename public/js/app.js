@@ -56105,7 +56105,7 @@ exports.default = {
     return {
       localOptions: {
         teaching_office_contact: this.options.teaching_office_contact,
-        externals_notification_date: this.options.externals_notification_date ? (0, _moment2.default)(this.options.externals_notification_date, "YYYY-MM-DD").format("DD/MM/YYYY") : ""
+        main_deadline: this.options.main_deadline ? (0, _moment2.default)(this.options.main_deadline, "YYYY-MM-DD").format("DD/MM/YYYY") : ""
       },
       pikadayOptions: {
         format: "DD/MM/YYYY"
@@ -56198,9 +56198,7 @@ var render = function() {
           "label",
           {
             staticClass: "label",
-            class: {
-              "has-text-danger": _vm.hasError("externals_notification_date")
-            }
+            class: { "has-text-danger": _vm.hasError("main_deadline") }
           },
           [_vm._v("Date Externals will be notified to look at papers")]
         ),
@@ -56211,8 +56209,8 @@ var render = function() {
               {
                 name: "model",
                 rawName: "v-model",
-                value: _vm.localOptions.externals_notification_date,
-                expression: "localOptions.externals_notification_date"
+                value: _vm.localOptions.main_deadline,
+                expression: "localOptions.main_deadline"
               },
               {
                 name: "pikaday",
@@ -56223,17 +56221,13 @@ var render = function() {
             ],
             staticClass: "input",
             attrs: { type: "text" },
-            domProps: { value: _vm.localOptions.externals_notification_date },
+            domProps: { value: _vm.localOptions.main_deadline },
             on: {
               input: function($event) {
                 if ($event.target.composing) {
                   return
                 }
-                _vm.$set(
-                  _vm.localOptions,
-                  "externals_notification_date",
-                  $event.target.value
-                )
+                _vm.$set(_vm.localOptions, "main_deadline", $event.target.value)
               }
             }
           })

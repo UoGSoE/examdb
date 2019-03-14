@@ -21,14 +21,14 @@ class OptionsController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'externals_notification_date' => 'nullable|date_format:d/m/Y',
+            'main_deadline' => 'nullable|date_format:d/m/Y',
             'teaching_office_contact' => 'nullable|email',
         ]);
 
-        if ($request->filled('externals_notification_date')) {
+        if ($request->filled('main_deadline')) {
             option([
-                'externals_notification_date' =>
-                Carbon::createFromFormat('d/m/Y', $request->externals_notification_date)
+                'main_deadline' =>
+                Carbon::createFromFormat('d/m/Y', $request->main_deadline)
                     ->format('Y-m-d')
             ]);
         }
