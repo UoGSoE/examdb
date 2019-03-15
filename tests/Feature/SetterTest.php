@@ -6,17 +6,13 @@ use App\User;
 use App\Paper;
 use App\Course;
 use Tests\TestCase;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
-use App\Mail\NotifyModeratorAboutUpload;
 use App\Mail\NotifyModeratorAboutApproval;
 use App\Mail\NotifyModeratorAboutUnapproval;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Listeners\NotifyModeratorThatChecklistUploaded;
-use App\Mail\ChecklistUploaded;
 
 class SetterTest extends TestCase
 {
