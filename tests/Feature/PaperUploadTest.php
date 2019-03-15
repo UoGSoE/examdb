@@ -114,7 +114,7 @@ class PaperUploadTest extends TestCase
     }
 
     /** @test */
-    public function a_moderator_can_upload_thier_comments_which_triggers_an_email_to_the_setter()
+    public function a_moderator_can_upload_thier_checklist_which_triggers_an_email_to_the_setter()
     {
         Mail::fake();
         $this->withoutExceptionHandling();
@@ -128,7 +128,7 @@ class PaperUploadTest extends TestCase
         $response = $this->actingAs($moderator)->postJson(route('course.paper.store', $course->id), [
             'paper' => UploadedFile::fake()->create('main_paper_1.pdf', 1),
             'category' => 'main',
-            'subcategory' => 'Moderator Comments',
+            'subcategory' => 'Moderator Checklist',
             'comment' => 'Whatever',
         ]);
 
@@ -145,7 +145,7 @@ class PaperUploadTest extends TestCase
             );
         });
 
-        // check an email was sent to all the course moderators about the new upload
+        // check an email was sent to all the course setters about the new upload
         Mail::assertQueued(NotifySetterAboutModeratorComments::class, function ($mail) use ($setter) {
             return $mail->hasTo($setter->email);
         });
