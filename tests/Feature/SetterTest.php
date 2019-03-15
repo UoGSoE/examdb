@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\User;
 use App\Paper;
 use App\Course;
-use App\Solution;
 use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;

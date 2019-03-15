@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\User;
 use App\Paper;
 use App\Course;
-use App\Solution;
 use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
@@ -55,8 +54,6 @@ class ModeratorTest extends TestCase
         $staff->markAsModerator($course1);
         $mainPaper = create(Paper::class, ['course_id' => $course1->id, 'category' => 'main']);
         $resitPaper = create(Paper::class, ['course_id' => $course1->id, 'category' => 'resit']);
-        $mainSolution = create(Solution::class, ['course_id' => $course1->id, 'category' => 'main']);
-        $resitSolution = create(Solution::class, ['course_id' => $course1->id, 'category' => 'resit']);
 
         $response = $this->actingAs($staff)->get(route('course.show', $course1->id));
 

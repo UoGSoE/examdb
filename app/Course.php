@@ -54,21 +54,6 @@ class Course extends Model
         return $this->papers()->resit();
     }
 
-    public function solutions()
-    {
-        return $this->hasMany(Paper::class);
-    }
-
-    public function mainSolutions()
-    {
-        return $this->solutions()->main();
-    }
-
-    public function resitSolutions()
-    {
-        return $this->solutions()->resit();
-    }
-
     public function scopeExternalsNotNotified($query)
     {
         return $query->where('external_notified', '=', false);
