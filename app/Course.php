@@ -16,6 +16,7 @@ class Course extends Model
         'setter_approved' => 'boolean',
         'moderator_approved' => 'boolean',
         'external_approved' => 'boolean',
+        'external_notified' => 'boolean',
     ];
 
     public function staff()
@@ -66,6 +67,31 @@ class Course extends Model
     public function resitSolutions()
     {
         return $this->solutions()->resit();
+    }
+
+    public function scopeExternalsNotNotified($query)
+    {
+        return $query->where('external_notified', '=', false);
+    }
+
+    public function markExternalNotified()
+    {
+        $this->update(['external_notified' => true]);
+    }
+
+    public function markExternalNotNotified()
+    {
+        $this->update(['external_notified' => false]);
+    }
+
+    public function externalNotified()
+    {
+        return $this->external_notified;
+    }
+
+    public function getLatestUploadAttribute()
+    {
+        return $this->papers()->latest()->first();
     }
 
     public function addPaper(string $category, string $subcategory, UploadedFile $file): Paper

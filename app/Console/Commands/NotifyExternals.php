@@ -3,10 +3,11 @@
 namespace App\Console\Commands;
 
 use App\Paper;
+use App\Course;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ExternalHasPapersToLookAt;
-use Carbon\Carbon;
 
 class NotifyExternals extends Command
 {
@@ -15,7 +16,7 @@ class NotifyExternals extends Command
      *
      * @var string
      */
-    protected $signature = 'exampapers:notify-externals {type : "main" or "resit"}';
+    protected $signature = 'exampapers:notify-externals';
 
     /**
      * The console command description.
@@ -41,24 +42,20 @@ class NotifyExternals extends Command
      */
     public function handle()
     {
-        $deadlineField = 'resit_deadline';
-        if ($this->argument('type') == 'main') {
-            $deadlineField = 'main_deadline';
+        if (!option_exists('main_deadline')) {
+            abort(500, "No 'main_deadline' option set");
         }
-        if (!option_exists($deadlineField)) {
-            abort(500, "No {$deadlineField} option set");
-        }
-        $deadline = Carbon::createFromFormat('Y-m-d', option($deadlineField));
+
+        $deadline = Carbon::createFromFormat('Y-m-d', option('main_deadline'));
         if ($deadline->gt(now())) {
             return;
         }
 
-        $externalEmails = Paper::with('course.externals')->where('category', '=', $this->argument('type'))->readyForExternals()->get()->map(function ($paper) {
-            return $paper->course->externals->pluck('email');
-        })->flatten()->unique();
-
-        $externalEmails->each(function ($email) {
-            Mail::to($email)->queue(new ExternalHasPapersToLookAt);
+        Course::externalsNotNotified()->whereHas('papers')->get()->each(function ($course) {
+            $course->externals->pluck('email')->flatten()->unique()->each(function ($email) {
+                Mail::to($email)->queue(new ExternalHasPapersToLookAt);
+            });
+            $course->markExternalNotified();
         });
     }
 }

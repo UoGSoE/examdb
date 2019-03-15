@@ -9,13 +9,14 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\ExternalHasPapersToLookAt;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Course;
 
 class ExternalsNotificationTest extends TestCase
 {
     use RefreshDatabase;
 
     /** @test */
-    public function externals_are_not_sent_an_emails_if_it_is_currently_before_the_notification_deadline()
+    public function externals_are_not_sent_an_email_if_it_is_currently_before_the_paper_notification_deadline()
     {
         Mail::fake();
         $this->withoutExceptionHandling();
@@ -23,18 +24,17 @@ class ExternalsNotificationTest extends TestCase
         // set the deadline to tomorrow
         option(['main_deadline' => now()->addDays(1)->format('Y-m-d')]);
 
-        // the 'Paper Checklist' is the trigger that means 'this paper is ready'
-        $paper = create(Paper::class, ['category' => 'main', 'subcategory' => 'Paper Checklist']);
+        $paper = create(Paper::class);
         $external1 = create(User::class);
         $external1->markAsExternal($paper->course);
 
-        Artisan::call('exampapers:notify-externals', ['type' => 'main']);
+        Artisan::call('exampapers:notify-externals');
 
         Mail::assertNotQueued(ExternalHasPapersToLookAt::class);
     }
 
     /** @test */
-    public function externals_are_notified_about_any_fully_set_papers_after_the_deadline()
+    public function externals_are_notified_about_any_papers_for_courses_after_the_deadline()
     {
         Mail::fake();
         $this->withoutExceptionHandling();
@@ -42,12 +42,12 @@ class ExternalsNotificationTest extends TestCase
         option(['main_deadline' => now()->subDays(1)->format('Y-m-d')]);
         $external1 = create(User::class);
         $external2 = create(User::class);
-        // the 'Paper Checklist' is the trigger that means 'this paper is ready'
-        $paper1 = create(Paper::class, ['category' => 'main', 'subcategory' => 'Paper Checklist']);
+        $external3 = create(User::class); // just to check this external isn't notified
+        $paper1 = create(Paper::class);
         $external1->markAsExternal($paper1->course);
         $external2->markAsExternal($paper1->course);
 
-        Artisan::call('exampapers:notify-externals', ['type' => 'main']);
+        Artisan::call('exampapers:notify-externals');
 
         // check an email was sent to both externals about the course they are associated with
         Mail::assertQueued(ExternalHasPapersToLookAt::class, 2);
@@ -60,83 +60,61 @@ class ExternalsNotificationTest extends TestCase
     }
 
     /** @test */
-    public function externals_are_not_notified_about_papers_which_are_not_fully_set()
+    public function externals_are_not_notified_twice_about_the_same_course()
     {
-        Mail::fake();
         $this->withoutExceptionHandling();
         // set the deadline to yesterday
         option(['main_deadline' => now()->subDays(1)->format('Y-m-d')]);
-        // the 'Paper Checklist' is the trigger that means 'this paper is ready'
-        $paper1 = create(Paper::class, ['category' => 'main', 'subcategory' => 'Not Paper Checklist']);
+        $paper1 = create(Paper::class);
         $external1 = create(User::class);
         $external1->markAsExternal($paper1->course);
 
-        Artisan::call('exampapers:notify-externals', ['type' => 'main']);
-
-        // check an email wasn't sent to the external
-        Mail::assertNotQueued(ExternalHasPapersToLookAt::class);
-    }
-
-    /** @test */
-    public function externals_are_not_notified_about_resit_papers_before_the_resit_deadline()
-    {
         Mail::fake();
-        $this->withoutExceptionHandling();
 
-        // set the deadline to tomorrow
-        option(['resit_deadline' => now()->addDays(1)->format('Y-m-d')]);
+        Artisan::call('exampapers:notify-externals');
 
-        // the 'Paper Checklist' is the trigger that means 'this paper is ready'
-        $paper = create(Paper::class, ['category' => 'resit', 'subcategory' => 'Paper Checklist']);
-        $external1 = create(User::class);
-        $external1->markAsExternal($paper->course);
+        Mail::assertQueued(ExternalHasPapersToLookAt::class);
 
-        Artisan::call('exampapers:notify-externals', ['type' => 'resit']);
+        Mail::fake();
+
+        Artisan::call('exampapers:notify-externals');
 
         Mail::assertNotQueued(ExternalHasPapersToLookAt::class);
     }
 
     /** @test */
-    public function externals_are_notified_about_any_fully_set_resit_papers_after_the_deadline()
+    public function externals_are_not_notified_about_courses_with_no_papers()
     {
-        Mail::fake();
         $this->withoutExceptionHandling();
         // set the deadline to yesterday
-        option(['resit_deadline' => now()->subDays(1)->format('Y-m-d')]);
+        option(['main_deadline' => now()->subDays(1)->format('Y-m-d')]);
+        $course = create(Course::class);
         $external1 = create(User::class);
-        $external2 = create(User::class);
-        // the 'Paper Checklist' is the trigger that means 'this paper is ready'
-        $paper1 = create(Paper::class, ['category' => 'resit', 'subcategory' => 'Paper Checklist']);
-        $external1->markAsExternal($paper1->course);
-        $external2->markAsExternal($paper1->course);
+        $external1->markAsExternal($course);
 
-        Artisan::call('exampapers:notify-externals', ['type' => 'resit']);
+        Mail::fake();
 
-        // check an email was sent to both externals about the course they are associated with
-        Mail::assertQueued(ExternalHasPapersToLookAt::class, 2);
-        Mail::assertQueued(ExternalHasPapersToLookAt::class, function ($mail) use ($external1) {
-            return $mail->hasTo($external1->email);
-        });
-        Mail::assertQueued(ExternalHasPapersToLookAt::class, function ($mail) use ($external2) {
-            return $mail->hasTo($external2->email);
-        });
+        Artisan::call('exampapers:notify-externals');
+
+        Mail::assertNotQueued(ExternalHasPapersToLookAt::class);
     }
 
     /** @test */
-    public function externals_are_not_notified_about_resit_papers_which_are_not_fully_set()
+    public function courses_where_the_externals_have_been_notified_are_marked_as_such()
     {
-        Mail::fake();
         $this->withoutExceptionHandling();
         // set the deadline to yesterday
-        option(['resit_deadline' => now()->subDays(1)->format('Y-m-d')]);
-        // the 'Paper Checklist' is the trigger that means 'this paper is ready'
-        $paper1 = create(Paper::class, ['category' => 'resit', 'subcategory' => 'Not Paper Checklist']);
+        option(['main_deadline' => now()->subDays(1)->format('Y-m-d')]);
+        $paper1 = create(Paper::class);
         $external1 = create(User::class);
         $external1->markAsExternal($paper1->course);
 
-        Artisan::call('exampapers:notify-externals', ['type' => 'resit']);
+        Mail::fake();
 
-        // check an email wasn't sent to the external
-        Mail::assertNotQueued(ExternalHasPapersToLookAt::class);
+        $this->assertFalse($paper1->course->fresh()->externalNotified());
+
+        Artisan::call('exampapers:notify-externals');
+
+        $this->assertTrue($paper1->course->fresh()->externalNotified());
     }
 }

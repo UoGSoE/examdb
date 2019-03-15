@@ -132,6 +132,6 @@ class Paper extends Model
 
     public function isntChecklist()
     {
-        return !$this->subcategory == 'Paper Checklist';
+        return $this->subcategory != 'Paper Checklist';
     }
 }
