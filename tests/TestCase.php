@@ -2,15 +2,17 @@
 
 namespace Tests;
 
-use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\TestResponse;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
+    use RefreshDatabase;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         TestResponse::macro('data', function ($key) {

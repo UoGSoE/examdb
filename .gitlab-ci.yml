@@ -1,88 +1,64 @@
 stages:
+  - build-qa
   - test
-  - build
-  - deploy
+  - build-prod
 
-# Pick zero or more services to be used on all builds.
-# Only needed when using a docker container to run your tests in.
-# Check out: http://docs.gitlab.com/ce/ci/docker/using_docker_images.html#what-is-a-service
-services:
-  - name: mysql:8.0
-    command: ["--default-authentication-plugin=mysql_native_password"]
 variables:
-  MYSQL_DATABASE: homestead
-  MYSQL_ROOT_PASSWORD: secret
-  MYSQL_USER: homestead
-  MYSQL_PASSWORD: secret
+  QA_IMAGE_NAME: $CI_REGISTRY/$CI_PROJECT_PATH:qa-$CI_COMMIT_SHA
+  PROD_IMAGE_NAME: $CI_REGISTRY/$CI_PROJECT_PATH:prod-$CI_COMMIT_SHA
 
 # This folder is cached between builds
 # http://docs.gitlab.com/ce/ci/yaml/README.html#cache
 cache:
   paths:
-    - vendor/
-    - node_modules/
+  # - vendor/
+  # - node_modules/
 
 test:
-  image: uogsoe/soe-php-apache:7.2-ci
-  script:
-    - apt-get update -yqq
-    - apt-get install -y git gnupg2
-    - cp .env.gitlab .env
-    - composer install
-    # If you need Node.js
-    #- curl -sL https://deb.nodesource.com/setup_8.x | bash -
-    #- apt-get install -y nodejs
-    #- npm install
-    #- npm run dev
-    - php artisan key:generate
-    - php artisan cache:clear
-    - php artisan view:clear
-    - php artisan route:clear
-    - php artisan clear-compiled
-    - php artisan config:cache
-    - php artisan migrate:fresh
-    - php artisan db:seed
-    - php --version
-    - php -i | grep memory_limit
-    - php vendor/bin/phpunit -d memory_limit=1024M --stop-on-failure --coverage-text --colors=never
-    # run frontend tests
-    # if you have any task for testing frontend
-    # set it in your package.json script
-    # comment this out if you don't have a frontend test
-    # - npm test
+  image: $QA_IMAGE_NAME
 
-build-staging:
-  stage: build
+  services:
+  - mysql:5.7
+  - redis:5.0.4
+
+  variables:
+    MYSQL_DATABASE: homestead
+    MYSQL_ROOT_PASSWORD: secret
+    MYSQL_USER: homestead
+    MYSQL_PASSWORD: secret
+
+  # If you need Node.js
+  #- curl -sL https://deb.nodesource.com/setup_10.x | bash -
+  #- apt-get install -y nodejs
+  #- npm install
+  #- npm run dev
+
+  script:
+  # - php vendor/bin/phpunit --coverage-text --colors=never
+  - cd /var/www/html
+  - mkdir -p /run/secrets
+  - cp -f .env.gitlab /run/secrets/.env
+  - export APP_ENV=testing
+  - php artisan key:generate
+  - php artisan config:clear
+  - php artisan migrate:fresh
+  - cat .env
+  - php vendor/bin/phpunit --colors=never
+
+build-qa-tagged:
+  stage: build-qa
   image: docker:stable
   script:
-  - cp docker/staging.Dockerfile ./Dockerfile
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-  - docker build -t $CI_REGISTRY/$CI_PROJECT_PATH:staging .
-  - docker push $CI_REGISTRY/$CI_PROJECT_PATH:staging
+  - DOCKER_BUILDKIT=1 docker build --build-arg PHP_VERSION=${PHP_VERSION} --target=ci -t $QA_IMAGE_NAME .
+  - docker push $QA_IMAGE_NAME
 
-build-production:
-  stage: build
+build-prod-tagged:
+  stage: build-prod
   image: docker:stable
   only:
   - master
   script:
-  - cp docker/production.Dockerfile ./Dockerfile
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-  - docker build -t $CI_REGISTRY/$CI_PROJECT_PATH .
-  - docker build -t $CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_SHA .
-  - docker push $CI_REGISTRY/$CI_PROJECT_PATH
-  - docker push $CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_SHA
-
-deploy-staging:
-  stage: deploy
-  when: manual
-  before_script:
-    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
-    - mkdir -p ~/.ssh
-    - eval $(ssh-agent -s)
-    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-  script:
-    - ssh-add <(echo "$STAGING_PRIVATE_KEY")
-    - ssh -o StrictHostKeyChecking=no deployer@"$STAGING_SERVER" 'docker pull $CI_REGISTRY/$CI_PROJECT_PATH:staging'
-    - scp docker-compose.staging.yml deployer@"$STAGING_SERVER":~/$CI_PROJECT_NAME.yml
-    - ssh -o StrictHostKeyChecking=no deployer@"$STAGING_SERVER" 'cd examdb && docker stack deploy -c $CI_PROJECT_NAME.yml examdb'
+  - DOCKER_BUILDKIT=1 docker build --build-arg PHP_VERSION=${PHP_VERSION} --target=prod -t $PROD_IMAGE_NAME .
+  - docker push $PROD_IMAGE_NAME

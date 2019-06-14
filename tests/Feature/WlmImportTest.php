@@ -152,12 +152,12 @@ class WlmImportTest extends TestCase
      */
     public function can_import_the_data_from_the_real_wlm()
     {
-        $importer = new WlmImporter(new WlmClient);
+        // $importer = new WlmImporter(new WlmClient);
 
-        $importer->run(50);
+        // $importer->run(50);
 
-        $this->assertGreaterThan(0, Course::count());
-        $this->assertGreaterThan(0, User::count());
+        // $this->assertGreaterThan(0, Course::count());
+        // $this->assertGreaterThan(0, User::count());
     }
 
 }

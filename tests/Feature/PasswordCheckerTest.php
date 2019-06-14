@@ -4,12 +4,13 @@ namespace Tests\Feature;
 
 use App\User;
 use Tests\TestCase;
+use Illuminate\Support\Str;
 use App\Jobs\CheckPasswordQuality;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Queue;
+use App\Exceptions\PasswordQualityException;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Exceptions\PasswordQualityException;
 
 class PasswordCheckerTest extends TestCase
 {
@@ -47,6 +48,7 @@ class PasswordCheckerTest extends TestCase
     public function when_an_admin_logs_in_a_job_is_dispatched_to_check_their_password_against_nist_guidelines_and_p0wned()
     {
         Queue::fake();
+        config(['exampapers.check_passwords' => true]);
 
         $admin = create(User::class, ['is_admin' => true, 'password' => 'secret']);
 
@@ -73,7 +75,7 @@ class PasswordCheckerTest extends TestCase
     public function a_strong_password_does_not_trigger_an_exception_inside_the_dispatched_job()
     {
         try {
-            (new CheckPasswordQuality(['username' => 'something', 'password' => str_random(64)]))->handle();
+            (new CheckPasswordQuality(['username' => 'something', 'password' => Str::random(64)]))->handle();
             $this->assertTrue(true);
         } catch (PasswordQualityException $e) {
             $this->fail('Bad password supplied, but no exception thrown');

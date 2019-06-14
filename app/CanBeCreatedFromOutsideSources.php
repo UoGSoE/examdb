@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Illuminate\Support\Str;
+
 trait CanBeCreatedFromOutsideSources
 {
     /**
@@ -27,7 +29,7 @@ trait CanBeCreatedFromOutsideSources
         }
         $user->surname = $wlmData['Surname'] ?? 'Unknown';
         $user->forenames = $wlmData['Forenames'] ?? 'Unknown';
-        $user->password = bcrypt(str_random(32));
+        $user->password = bcrypt(Str::random(32));
         $user->is_staff = true;
         $user->save();
         return $user;

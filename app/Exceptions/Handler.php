@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Exception;
+use Sentry\State\Scope;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -35,6 +36,20 @@ class Handler extends ExceptionHandler
     public function report(Exception $exception)
     {
         if (app()->bound('sentry') && $this->shouldReport($exception)) {
+            if (auth()->check()) {
+                \Sentry\configureScope(function (Scope $scope): void {
+                    $scope->setUser([
+                        'id' => auth()->user()->id,
+                        'username' => auth()->user()->username
+                    ]);
+                });
+            } else {
+                \Sentry\configureScope(function (Scope $scope): void {
+                    $scope->setUser([
+                        'id' => null
+                    ]);
+                });
+            }
             app('sentry')->captureException($exception);
         }
 
