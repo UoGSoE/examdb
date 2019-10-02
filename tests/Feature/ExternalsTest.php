@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\User;
 use App\Paper;
 use App\Course;
-use App\Solution;
 use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
@@ -13,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Mail\NotifyLocalsAboutExternalComments;
+use App\Mail\NotifySetterAboutExternalComments;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ExternalsTest extends TestCase
@@ -52,8 +52,6 @@ class ExternalsTest extends TestCase
         $staff->markAsExternal($course1);
         $mainPaper = create(Paper::class, ['course_id' => $course1->id, 'category' => 'main']);
         $resitPaper = create(Paper::class, ['course_id' => $course1->id, 'category' => 'resit']);
-        $mainSolution = create(Solution::class, ['course_id' => $course1->id, 'category' => 'main']);
-        $resitSolution = create(Solution::class, ['course_id' => $course1->id, 'category' => 'resit']);
 
         $response = $this->actingAs($staff)->get(route('course.show', $course1->id));
 
@@ -70,103 +68,6 @@ class ExternalsTest extends TestCase
         $response = $this->actingAs($staff)->get(route('course.show', $course1->id));
 
         $response->assertStatus(403);
-    }
-
-    /** @test */
-    public function a_user_can_add_a_main_paper_and_comment_to_a_course()
-    {
-        $this->withoutExceptionHandling();
-        Storage::fake('exampapers');
-        Mail::fake();
-        $external = factory(User::class)->states('external')->create();
-        $course = create(Course::class);
-        $external->markAsExternal($course);
-        $setter1 = create(User::class);
-        $setter1->markAsSetter($course);
-        $setter2 = create(User::class);
-        $setter2->markAsSetter($course);
-        $moderator1 = create(User::class);
-        $moderator2 = create(User::class);
-        $moderator1->markAsModerator($course);
-        $moderator2->markAsModerator($course);
-
-        $response = $this->actingAs($external)->postJson(route('course.paper.store', $course->id), [
-            'paper' => UploadedFile::fake()->create('main_paper_1.pdf', 1),
-            'category' => 'main',
-            'subcategory' => 'fred',
-            'comment' => 'Whatever',
-        ]);
-
-        $response->assertStatus(201);
-        $this->assertCount(1, $course->papers);
-        $this->assertCount(1, $course->papers->first()->comments);
-        Storage::disk('exampapers')->assertExists($course->papers->first()->filename);
-        $paper = $course->papers->first();
-        $this->assertEquals('main', $paper->category);
-        $this->assertEquals('fred', $paper->subcategory);
-        $this->assertEquals('Whatever', $paper->comments->first()->comment);
-        $this->assertTrue($paper->user->is($external));
-        $this->assertTrue($paper->course->is($course));
-
-        // and check we recorded this in the activity/audit log
-        tap(Activity::all()->last(), function ($log) use ($external, $paper) {
-            $this->assertTrue($log->causer->is($external));
-            $this->assertEquals(
-                "Uploaded a paper ({$paper->course->code} - {$paper->category} / {$paper->subcategory})",
-                $log->description
-            );
-        });
-
-        // check an email was sent to each local setter & moderator about the new upload
-        Mail::assertQueued(NotifyLocalsAboutExternalComments::class, 4);
-        Mail::assertQueued(NotifyLocalsAboutExternalComments::class, function ($mail) use ($setter1) {
-            return $mail->hasTo($setter1->email);
-        });
-        Mail::assertQueued(NotifyLocalsAboutExternalComments::class, function ($mail) use ($setter2) {
-            return $mail->hasTo($setter2->email);
-        });
-        Mail::assertQueued(NotifyLocalsAboutExternalComments::class, function ($mail) use ($moderator1) {
-            return $mail->hasTo($moderator1->email);
-        });
-        Mail::assertQueued(NotifyLocalsAboutExternalComments::class, function ($mail) use ($moderator2) {
-            return $mail->hasTo($moderator2->email);
-        });
-    }
-
-    /** @test */
-    public function a_user_can_add_a_resit_paper_and_comment_to_a_course()
-    {
-        $this->withoutExceptionHandling();
-        Storage::fake('exampapers');
-        $staff = factory(User::class)->states('external')->create();
-        $course = create(Course::class);
-        $staff->markAsSetter($course);
-
-        $response = $this->actingAs($staff)->postJson(route('course.paper.store', $course->id), [
-            'paper' => UploadedFile::fake()->create('main_paper_1.pdf', 1),
-            'category' => 'resit',
-            'subcategory' => 'fred',
-            'comment' => 'Whatever',
-        ]);
-
-        $response->assertStatus(201);
-        $this->assertCount(1, $course->papers);
-        $this->assertCount(1, $course->papers->first()->comments);
-        Storage::disk('exampapers')->assertExists($course->papers->first()->filename);
-        $paper = $course->papers->first();
-        $this->assertEquals('resit', $paper->category);
-        $this->assertEquals('fred', $paper->subcategory);
-        $this->assertEquals('Whatever', $paper->comments->first()->comment);
-        $this->assertTrue($paper->user->is($staff));
-        $this->assertTrue($paper->course->is($course));
-        // and check we recorded this in the activity/audit log
-        tap(Activity::all()->last(), function ($log) use ($staff, $paper) {
-            $this->assertTrue($log->causer->is($staff));
-            $this->assertEquals(
-                "Uploaded a paper ({$paper->course->code} - {$paper->category} / {$paper->subcategory})",
-                $log->description
-            );
-        });
     }
 
     /** @test */

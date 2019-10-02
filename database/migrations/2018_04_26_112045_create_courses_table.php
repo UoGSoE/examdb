@@ -24,6 +24,7 @@ class CreateCoursesTable extends Migration
             $table->boolean('setter_approved_resit')->default(false);
             $table->boolean('moderator_approved_resit')->default(false);
             $table->boolean('external_approved_resit')->default(false);
+            $table->boolean('external_notified')->default(false);
             $table->timestamps();
         });
     }

@@ -17,6 +17,7 @@ class Course extends Model
         'setter_approved' => 'boolean',
         'moderator_approved' => 'boolean',
         'external_approved' => 'boolean',
+        'external_notified' => 'boolean',
     ];
 
     public function staff()
@@ -54,19 +55,29 @@ class Course extends Model
         return $this->papers()->resit();
     }
 
-    public function solutions()
+    public function scopeExternalsNotNotified($query)
     {
-        return $this->hasMany(Paper::class);
+        return $query->where('external_notified', '=', false);
     }
 
-    public function mainSolutions()
+    public function markExternalNotified()
     {
-        return $this->solutions()->main();
+        $this->update(['external_notified' => true]);
     }
 
-    public function resitSolutions()
+    public function markExternalNotNotified()
     {
-        return $this->solutions()->resit();
+        $this->update(['external_notified' => false]);
+    }
+
+    public function externalNotified()
+    {
+        return $this->external_notified;
+    }
+
+    public function getLatestUploadAttribute()
+    {
+        return $this->papers()->latest()->first();
     }
 
     public function addPaper(string $category, string $subcategory, UploadedFile $file): Paper
@@ -75,7 +86,7 @@ class Course extends Model
             throw new \InvalidArgumentException('Invalid category');
         }
 
-        $randomName = Str::random(64);
+        $randomName = Str::random(64) . '_' . now()->format('d-m-Y');
         $filename = "papers/{$this->id}/{$category}/{$randomName}.dat";
         Storage::disk('exampapers')->put($filename, encrypt($file->get()));
         // $filename = $file->store("papers/{$this->id}/{$category}", 'exampapers');
@@ -167,7 +178,7 @@ class Course extends Model
         throw new \DomainException('User is not associated with this course');
     }
 
-    public function getUserApprovedMainAttribute(?User $user): bool
+    public function getUserApprovedMainAttribute(? User $user): bool
     {
         if (!$user) {
             $user = auth()->user();
@@ -175,7 +186,7 @@ class Course extends Model
         return $this->isApprovedBy($user, 'main');
     }
 
-    public function getUserApprovedResitAttribute(?User $user): bool
+    public function getUserApprovedResitAttribute(? User $user): bool
     {
         if (!$user) {
             $user = auth()->user();

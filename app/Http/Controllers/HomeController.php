@@ -28,6 +28,7 @@ class HomeController extends Controller
             'moderatedCourses' => auth()->user()->courses()->wherePivot('is_moderator', true)->get(),
             'setterCourses' => auth()->user()->courses()->wherePivot('is_setter', true)->get(),
             'externalCourses' => auth()->user()->courses()->wherePivot('is_external', true)->get(),
+            'paperList' => auth()->user()->papers()->with('course')->orderByDesc('created_at')->get(),
         ]);
     }
 }

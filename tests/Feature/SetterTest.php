@@ -5,19 +5,14 @@ namespace Tests\Feature;
 use App\User;
 use App\Paper;
 use App\Course;
-use App\Solution;
 use Tests\TestCase;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
-use App\Mail\NotifyModeratorAboutUpload;
 use App\Mail\NotifyModeratorAboutApproval;
 use App\Mail\NotifyModeratorAboutUnapproval;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Listeners\NotifyModeratorThatChecklistUploaded;
-use App\Mail\ChecklistUploaded;
 
 class SetterTest extends TestCase
 {
@@ -56,8 +51,6 @@ class SetterTest extends TestCase
         $staff->markAsSetter($course1);
         $mainPaper = create(Paper::class, ['course_id' => $course1->id, 'category' => 'main']);
         $resitPaper = create(Paper::class, ['course_id' => $course1->id, 'category' => 'resit']);
-        $mainSolution = create(Solution::class, ['course_id' => $course1->id, 'category' => 'main']);
-        $resitSolution = create(Solution::class, ['course_id' => $course1->id, 'category' => 'resit']);
 
         $response = $this->actingAs($staff)->get(route('course.show', $course1->id));
 
@@ -74,141 +67,6 @@ class SetterTest extends TestCase
         $response = $this->actingAs($staff)->get(route('course.show', $course1->id));
 
         $response->assertStatus(403);
-    }
-
-    /** @test */
-    public function a_user_can_add_a_main_paper_and_comment_to_a_course()
-    {
-        Mail::fake();
-        $this->withoutExceptionHandling();
-        Storage::fake('exampapers');
-        $staff = create(User::class);
-        $course = create(Course::class);
-        $staff->markAsSetter($course);
-        $moderator1 = create(User::class);
-        $moderator2 = create(User::class);
-        $moderator1->markAsModerator($course);
-        $moderator2->markAsModerator($course);
-
-        $response = $this->actingAs($staff)->postJson(route('course.paper.store', $course->id), [
-            'paper' => UploadedFile::fake()->create('main_paper_1.pdf', 1),
-            'category' => 'main',
-            'subcategory' => 'fred',
-            'comment' => 'Whatever',
-        ]);
-
-        $response->assertStatus(201);
-        $this->assertCount(1, $course->papers);
-        $this->assertCount(1, $course->papers->first()->comments);
-        Storage::disk('exampapers')->assertExists($course->papers->first()->filename);
-        $paper = $course->papers->first();
-        $this->assertEquals('main', $paper->category);
-        $this->assertEquals('fred', $paper->subcategory);
-        $this->assertEquals('Whatever', $paper->comments->first()->comment);
-        $this->assertTrue($paper->user->is($staff));
-        $this->assertTrue($paper->course->is($course));
-
-        // and check we recorded this in the activity/audit log
-        tap(Activity::all()->last(), function ($log) use ($staff, $paper) {
-            $this->assertTrue($log->causer->is($staff));
-            $this->assertEquals(
-                "Uploaded a paper ({$paper->course->code} - {$paper->category} / {$paper->subcategory})",
-                $log->description
-            );
-        });
-
-        // check an email wasn't sent to any moderator about the new upload
-        Mail::assertNotQueued(NotifyModeratorAboutUpload::class);
-    }
-
-    /** @test */
-    public function a_user_can_add_a_resit_paper_and_comment_to_a_course()
-    {
-        $this->withoutExceptionHandling();
-
-        Mail::fake();
-        Storage::fake('exampapers');
-        $course = create(Course::class);
-        $staff = create(User::class);
-        $staff->markAsSetter($course);
-        $moderator1 = create(User::class);
-        $moderator2 = create(User::class);
-        $moderator1->markAsModerator($course);
-        $moderator2->markAsModerator($course);
-
-        $response = $this->actingAs($staff)->postJson(route('course.paper.store', $course->id), [
-            'paper' => UploadedFile::fake()->create('main_paper_1.pdf', 1),
-            'category' => 'resit',
-            'subcategory' => 'fred',
-            'comment' => 'Whatever',
-        ]);
-
-        $response->assertStatus(201);
-        $this->assertCount(1, $course->papers);
-        $this->assertCount(1, $course->papers->first()->comments);
-        Storage::disk('exampapers')->assertExists($course->papers->first()->filename);
-        $paper = $course->papers->first();
-        $this->assertEquals('resit', $paper->category);
-        $this->assertEquals('fred', $paper->subcategory);
-        $this->assertEquals('Whatever', $paper->comments->first()->comment);
-        $this->assertTrue($paper->user->is($staff));
-        $this->assertTrue($paper->course->is($course));
-        // and check we recorded this in the activity/audit log
-        tap(Activity::all()->last(), function ($log) use ($staff, $paper) {
-            $this->assertTrue($log->causer->is($staff));
-            $this->assertEquals(
-                "Uploaded a paper ({$paper->course->code} - {$paper->category} / {$paper->subcategory})",
-                $log->description
-            );
-        });
-
-        // check an email wasn't sent to each moderator about the new upload
-        Mail::assertNotQueued(NotifyModeratorAboutUpload::class);
-    }
-
-    /** @test */
-    public function once_the_user_uploads_the_checklist_an_email_is_sent_to_the_moderators()
-    {
-        Mail::fake();
-        $this->withoutExceptionHandling();
-        Storage::fake('exampapers');
-        $staff = create(User::class);
-        $course = create(Course::class);
-        $staff->markAsSetter($course);
-        $moderator1 = create(User::class);
-        $moderator2 = create(User::class);
-        $moderator1->markAsModerator($course);
-        $moderator2->markAsModerator($course);
-
-        $response = $this->actingAs($staff)->postJson(route('course.paper.store', $course->id), [
-            'paper' => UploadedFile::fake()->create('main_paper_1.pdf', 1),
-            'category' => 'main',
-            'subcategory' => 'Paper Checklist',
-            'comment' => 'Whatever',
-        ]);
-
-        $response->assertStatus(201);
-        $this->assertCount(1, $course->papers);
-        $this->assertCount(1, $course->papers->first()->comments);
-        $paper = $course->papers->first();
-        Storage::disk('exampapers')->assertExists($paper->filename);
-        $this->assertEquals('main', $paper->category);
-        $this->assertEquals('Paper Checklist', $paper->subcategory);
-        $this->assertEquals('Whatever', $paper->comments->first()->comment);
-        $this->assertTrue($paper->user->is($staff));
-        $this->assertTrue($paper->course->is($course));
-
-        // and check we recorded this in the activity/audit log
-        tap(Activity::all()->last(), function ($log) use ($staff, $paper) {
-            $this->assertTrue($log->causer->is($staff));
-            $this->assertEquals(
-                "Uploaded a paper ({$paper->course->code} - {$paper->category} / {$paper->subcategory})",
-                $log->description
-            );
-        });
-
-        // check an email was sent to all the course moderators about the new upload
-        Mail::assertQueued(ChecklistUploaded::class, 2);
     }
 
     /** @test */

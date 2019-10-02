@@ -28,13 +28,13 @@ Vue.component('wlm-importer', require('./components/WlmImporter.vue'));
 Vue.component('user-list', require('./components/UserList.vue'));
 Vue.component('impersonate-button', require('./components/ImpersonateButton.vue'));
 Vue.component('admin-toggle-button', require('./components/AdminToggleButton.vue'));
+Vue.component('options-editor', require('./components/OptionsEditor.vue'));
+import vSelect from 'vue-select'
 
 import PortalVue from 'portal-vue'
 Vue.use(PortalVue)
 
-import vSelect from 'vue-select'
 Vue.component('v-select', vSelect)
-
 
 Echo.private('notifications')
     .listen('WlmImportComplete', (e) => {
@@ -56,5 +56,5 @@ Sentry.init({
 })
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
 });

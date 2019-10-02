@@ -3,12 +3,12 @@
 namespace App\Listeners;
 
 use App\Events\PaperAdded;
+use App\Mail\NotifyTeachingOffice;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Mail\NotifySetterAboutExternalComments;
 
-class NotifySetterThatExternalHasCommented
+class NotifyTechingOfficePaperForRegistryUploaded
 {
     /**
      * Create the event listener.
@@ -28,12 +28,14 @@ class NotifySetterThatExternalHasCommented
      */
     public function handle(PaperAdded $event)
     {
-        if (!request()->user()->isExternalFor($event->paper->course)) {
+        if ($event->paper->subcategory != 'Paper For Registry') {
             return;
         }
 
-        $event->paper->course->setters->each(function ($setter) use ($event) {
-            Mail::to($setter->email)->queue(new NotifySetterAboutExternalComments($event->paper->course));
-        });
+        if (!option_exists('teaching_office_contact')) {
+            // @TODO something better...
+            abort(500);
+        }
+        Mail::to(option('teaching_office_contact'))->queue(new NotifyTeachingOffice($event->paper->course));
     }
 }

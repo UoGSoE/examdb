@@ -6,9 +6,9 @@ use App\Events\PaperAdded;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Mail\NotifySetterAboutExternalComments;
+use App\Mail\NotifyTeachingOfficeExternalHasCommented;
 
-class NotifySetterThatExternalHasCommented
+class NotifyTeachingOfficeThatExternalHasCommented
 {
     /**
      * Create the event listener.
@@ -32,8 +32,11 @@ class NotifySetterThatExternalHasCommented
             return;
         }
 
-        $event->paper->course->setters->each(function ($setter) use ($event) {
-            Mail::to($setter->email)->queue(new NotifySetterAboutExternalComments($event->paper->course));
-        });
+        if (!option_exists('teaching_office_contact')) {
+            // @TODO something better
+            abort(500);
+        }
+
+        Mail::to(option('teaching_office_contact'))->queue(new NotifyTeachingOfficeExternalHasCommented($event->paper->course));
     }
 }

@@ -39,6 +39,11 @@ class User extends Authenticatable
         return $this->hasMany(Activity::class, 'causer_id')->orderByDesc('created_at');
     }
 
+    public function papers()
+    {
+        return $this->hasMany(Paper::class);
+    }
+
     public static function getStaffForVueSelect()
     {
         return static::where('is_external', '=', false)->orderBy('surname')->get()->map(function ($user) {
