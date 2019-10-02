@@ -134,4 +134,12 @@ class Paper extends Model
     {
         return $this->subcategory != 'Paper Checklist';
     }
+
+    public function getTeachingOfficeContact()
+    {
+        if ($this->course->isUestc()) {
+            return option('teaching_office_contact_uestc');
+        }
+        return option('teaching_office_contact_glasgow');
+    }
 }

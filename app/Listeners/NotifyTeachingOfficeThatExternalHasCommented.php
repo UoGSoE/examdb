@@ -32,11 +32,12 @@ class NotifyTeachingOfficeThatExternalHasCommented
             return;
         }
 
-        if (!option_exists('teaching_office_contact')) {
-            // @TODO something better
+        $contact = $event->paper->getTeachingOfficeContact();
+        if (!$contact) {
+            // @TODO something better...
             abort(500);
         }
 
-        Mail::to(option('teaching_office_contact'))->queue(new NotifyTeachingOfficeExternalHasCommented($event->paper->course));
+        Mail::to($contact)->queue(new NotifyTeachingOfficeExternalHasCommented($event->paper->course));
     }
 }

@@ -32,10 +32,11 @@ class NotifyTechingOfficePaperForRegistryUploaded
             return;
         }
 
-        if (!option_exists('teaching_office_contact')) {
+        $contact = $event->paper->getTeachingOfficeContact();
+        if (!$contact) {
             // @TODO something better...
             abort(500);
         }
-        Mail::to(option('teaching_office_contact'))->queue(new NotifyTeachingOffice($event->paper->course));
+        Mail::to($contact)->queue(new NotifyTeachingOffice($event->paper->course));
     }
 }

@@ -158,7 +158,7 @@ class PaperUploadTest extends TestCase
         Mail::fake();
         Storage::fake('exampapers');
 
-        option(['teaching_office_contact' => 'jenny@example.com']);
+        option(['teaching_office_contact_glasgow' => 'jenny@example.com']);
         $setter = create(User::class);
         $course = create(Course::class);
         $setter->markAsSetter($course);
@@ -191,7 +191,7 @@ class PaperUploadTest extends TestCase
         });
         // check an email was sent to the teaching office about the new upload
         Mail::assertQueued(NotifyTeachingOfficeExternalHasCommented::class, function ($mail) {
-            return $mail->hasTo(option('teaching_office_contact'));
+            return $mail->hasTo(option('teaching_office_contact_glasgow'));
         });
     }
 
@@ -202,9 +202,9 @@ class PaperUploadTest extends TestCase
         Mail::fake();
         Storage::fake('exampapers');
 
-        option(['teaching_office_contact' => 'jenny@example.com']);
+        option(['teaching_office_contact_glasgow' => 'jenny@example.com']);
         $setter = create(User::class);
-        $course = create(Course::class);
+        $course = create(Course::class, ['code' => 'ENG1234']);
         $setter->markAsSetter($course);
 
         $response = $this->actingAs($setter)->postJson(route('course.paper.store', $course->id), [
@@ -221,7 +221,7 @@ class PaperUploadTest extends TestCase
 
         // check an email was sent to all the course moderators about the new upload
         Mail::assertQueued(NotifyTeachingOffice::class, function ($mail) {
-            return $mail->hasTo(option('teaching_office_contact'));
+            return $mail->hasTo(option('teaching_office_contact_glasgow'));
         });
     }
 }

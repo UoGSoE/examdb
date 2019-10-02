@@ -245,4 +245,9 @@ class Course extends Model
         }
         return false;
     }
+
+    public function isUestc()
+    {
+        return preg_match('/^UESTC/i', $this->code) === 1;
+    }
 }
