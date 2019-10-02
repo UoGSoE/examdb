@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
@@ -42,7 +43,7 @@ class UserController extends Controller
 
         // we don't use password so set to random
         // (saves dealing with any fallout from deleting the password field re.Eloquent etc)
-        $data['password'] = bcrypt(str_random(64));
+        $data['password'] = bcrypt(Str::random(64));
 
         $user = User::create($data);
 

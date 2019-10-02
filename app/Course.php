@@ -2,10 +2,11 @@
 
 namespace App;
 
+use Illuminate\Support\Str;
 use App\Events\PaperApproved;
 use App\Events\PaperUnapproved;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
 class Course extends Model
@@ -74,7 +75,7 @@ class Course extends Model
             throw new \InvalidArgumentException('Invalid category');
         }
 
-        $randomName = str_random(64);
+        $randomName = Str::random(64);
         $filename = "papers/{$this->id}/{$category}/{$randomName}.dat";
         Storage::disk('exampapers')->put($filename, encrypt($file->get()));
         // $filename = $file->store("papers/{$this->id}/{$category}", 'exampapers');
