@@ -34,9 +34,10 @@ class PaperUploadTest extends TestCase
         $moderator2 = create(User::class);
         $moderator1->markAsModerator($course);
         $moderator2->markAsModerator($course);
+        $file = UploadedFile::fake()->create('main_paper_1.pdf', 1);
 
         $response = $this->actingAs($staff)->postJson(route('course.paper.store', $course->id), [
-            'paper' => UploadedFile::fake()->create('main_paper_1.pdf', 1),
+            'paper' => $file,
             'category' => 'main',
             'subcategory' => 'fred',
             'comment' => 'Whatever',
@@ -46,6 +47,10 @@ class PaperUploadTest extends TestCase
         $this->assertCount(1, $course->papers);
         $this->assertCount(1, $course->papers->first()->comments);
         Storage::disk('exampapers')->assertExists($course->papers->first()->filename);
+        $this->assertNotEquals( // basic check to check the file was encrypted
+            md5($file->get()),
+            md5(Storage::disk('exampapers')->get($course->papers->first()->filename))
+        );
         $paper = $course->papers->first();
         $this->assertEquals('main', $paper->category);
         $this->assertEquals('fred', $paper->subcategory);
