@@ -52171,6 +52171,8 @@ exports.default = {
       showPopupBox: false,
       busy: false,
       searching: false,
+      searchError: false,
+      createError: false,
       user: {
         username: "",
         email: "",
@@ -52191,17 +52193,47 @@ exports.default = {
     closePopup: function closePopup() {
       this.showPopupBox = false;
     },
+    searchForUser: function searchForUser() {
+      var _this = this;
+
+      axios.get(route('user.search', { guid: this.user.username })).then(function (res) {
+        _this.user.username = res.data.user.username;
+        _this.user.email = res.data.user.email;
+        _this.user.forenames = res.data.user.forenames;
+        _this.user.surname = res.data.user.surname;
+        _this.user.lookedUp = true;
+        _this.searchError = false;
+        _this.createError = false;
+        console.log(res);
+      }).catch(function (err) {
+        console.error(err);
+        _this.searchError = "Not found";
+      });
+    },
     submit: function submit() {
-      console.log(this.user);
+      var _this2 = this;
+
       this.busy = true;
       axios.post(route("user.store"), this.user).then(function (response) {
         location.reload();
       }).catch(function (error) {
+        if (error.response) {
+          if (error.response.status == 422) {
+            // validation error on the server
+            _this2.createError = error.response.data.errors;
+          }
+        }
+        // this.createError = error.response ? error.response : 'Error :-(';
         console.log(error);
+        _this2.busy = false;
       });
     }
   }
 }; //
+//
+//
+//
+//
 //
 //
 //
@@ -52330,7 +52362,17 @@ var render = function() {
                 _c(
                   "label",
                   { staticClass: "label", attrs: { for: "username" } },
-                  [_vm._v("Username (GUID)")]
+                  [
+                    _vm._v(
+                      "\n                        Username (GUID)\n                        "
+                    ),
+                    _vm.searchError
+                      ? _c("span", {
+                          staticClass: "has-text-danger",
+                          domProps: { textContent: _vm._s(_vm.searchError) }
+                        })
+                      : _vm._e()
+                  ]
                 ),
                 _vm._v(" "),
                 _c("div", { staticClass: "field has-addons" }, [
@@ -52372,7 +52414,7 @@ var render = function() {
                         on: {
                           click: function($event) {
                             $event.preventDefault()
-                            _vm.user.lookedUp = true
+                            return _vm.searchForUser($event)
                           }
                         }
                       },
@@ -52542,7 +52584,16 @@ var render = function() {
                                   )
                                 ])
                               ]
-                            )
+                            ),
+                            _vm._v(" "),
+                            _vm.createError
+                              ? _c("p", {
+                                  staticClass: "has-text-danger",
+                                  domProps: {
+                                    textContent: _vm._s(_vm.createError)
+                                  }
+                                })
+                              : _vm._e()
                           ])
                         ])
                       ]
@@ -52645,6 +52696,7 @@ exports.default = {
     return {
       showPopupBox: false,
       busy: false,
+      createError: false,
       user: {
         username: "",
         email: "",
@@ -52670,16 +52722,26 @@ exports.default = {
       this.showPopupBox = false;
     },
     submit: function submit() {
+      var _this = this;
+
       this.user.username = this.user.email;
       this.busy = true;
       axios.post(route("user.store"), this.user).then(function (response) {
         location.reload();
       }).catch(function (error) {
+        if (error.response) {
+          if (error.response.status == 422) {
+            // validation error on the server
+            _this.createError = error.response.data.errors;
+          }
+        }
         console.log(error);
+        _this.busy = false;
       });
     }
   }
 }; //
+//
 //
 //
 //
@@ -52905,7 +52967,14 @@ var render = function() {
                         )
                       ])
                     ]
-                  )
+                  ),
+                  _vm._v(" "),
+                  _vm.createError
+                    ? _c("p", {
+                        staticClass: "has-text-danger",
+                        domProps: { textContent: _vm._s(_vm.createError) }
+                      })
+                    : _vm._e()
                 ])
               ])
             ])

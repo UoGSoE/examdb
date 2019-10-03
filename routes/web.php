@@ -43,6 +43,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('user', 'Admin\UserController@index')->name('user.index');
         Route::get('user/{user}', 'Admin\UserController@show')->name('user.show');
         Route::post('user', 'Admin\UserController@store')->name('user.store');
+        Route::get('search/user', 'Admin\UserSearchController@show')->name('user.search');
         // Route::post('user/{user}/impersonate', 'Admin\ImpersonationController@store')->name('impersonate.start');
         Route::post('course/{course}/users', 'Admin\CourseUsersController@update')->name('course.users.update');
         Route::post('wlm/import', 'Admin\WlmImportController@update')->name('wlm.import');

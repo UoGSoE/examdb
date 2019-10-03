@@ -11,13 +11,16 @@
             <transition name="fade" mode="in-out">
                 <div class="box shadow-lg paper-box" style="" v-show="showPopupBox">
                     <form>
-                        <label class="label" for="username">Username (GUID)</label>
+                        <label class="label" for="username">
+                            Username (GUID)
+                            <span v-if="searchError" v-text="searchError" class="has-text-danger"/>
+                        </label>
                         <div class="field has-addons">
                             <div class="control">
                                 <input type="text" class="input" v-model="user.username" id="username" @input="user.lookedUp = false">
                             </div>
                             <div class="control">
-                                <button class="button is-info" :class="{'is-loading': searching}" @click.prevent="user.lookedUp = true">
+                                <button class="button is-info" :class="{'is-loading': searching}" @click.prevent="searchForUser">
                                     <span class="icon">
                                         <i class="fas fa-search"></i>
                                     </span>
@@ -55,6 +58,7 @@
                                             Add User
                                         </span>
                                     </button>
+                                    <p v-if="createError" class="has-text-danger" v-text="createError" />
                                 </div>
                             </div>
                         </div>
@@ -76,6 +80,8 @@ export default {
       showPopupBox: false,
       busy: false,
       searching: false,
+      searchError: false,
+      createError: false,
       user: {
         username: "",
         email: "",
@@ -95,8 +101,24 @@ export default {
     closePopup() {
       this.showPopupBox = false;
     },
+    searchForUser() {
+        axios.get(route('user.search', {guid: this.user.username}))
+            .then(res => {
+                this.user.username = res.data.user.username;
+                this.user.email = res.data.user.email;
+                this.user.forenames = res.data.user.forenames;
+                this.user.surname = res.data.user.surname;
+                this.user.lookedUp = true;
+                this.searchError = false;
+                this.createError = false;
+                console.log(res)
+            })
+            .catch(err => {
+                console.error(err);
+                this.searchError = "Not found";
+            });
+    },
     submit() {
-      console.log(this.user);
       this.busy = true;
       axios
         .post(route("user.store"), this.user)
@@ -104,7 +126,14 @@ export default {
           location.reload();
         })
         .catch(error => {
+            if (error.response) {
+                if (error.response.status == 422) { // validation error on the server
+                    this.createError = error.response.data.errors;
+                }
+            }
+            // this.createError = error.response ? error.response : 'Error :-(';
           console.log(error);
+          this.busy = false;
         });
     }
   }

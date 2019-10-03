@@ -9,7 +9,6 @@ use App\Mail\ChecklistUploaded;
 use Illuminate\Http\UploadedFile;
 use App\Mail\NotifyTeachingOffice;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\ExternalHasPapersToLookAt;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -128,7 +127,7 @@ class PaperUploadTest extends TestCase
         $response = $this->actingAs($moderator)->postJson(route('course.paper.store', $course->id), [
             'paper' => UploadedFile::fake()->create('main_paper_1.pdf', 1),
             'category' => 'main',
-            'subcategory' => 'Moderator Checklist',
+            'subcategory' => 'Paper Checklist',
             'comment' => 'Whatever',
         ]);
 

@@ -5,6 +5,7 @@ namespace Tests\Feature\Admin;
 use App\Course;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Ohffs\Ldap\FakeLdapConnection;
 use Spatie\Activitylog\Models\Activity;
 use Tests\TestCase;
 
@@ -79,6 +80,38 @@ class UserTest extends TestCase
         $response = $this->actingAs($user)->get(route('user.show', $user));
 
         $response->assertStatus(403);
+    }
+
+    /** @test */
+    public function admins_can_search_for_a_guid()
+    {
+        $this->withoutExceptionHandling();
+        $this->app->bind('Ohffs\Ldap\LdapConnectionInterface', function ($app) {
+            return new FakeLdapConnection('a', 'b');
+        });
+        $admin = create(User::class, ['is_admin' => true]);
+
+        $response = $this->actingAs($admin)->getJson(route('user.search', ['guid' => 'validuser']));
+
+        $response->assertOk();
+        $response->assertJson([
+            'user' => [
+                'username' => 'validuser',
+            ]
+        ]);
+    }
+
+    /** @test */
+    public function invalid_guid_searches_return_a_404()
+    {
+        $this->app->bind('Ohffs\Ldap\LdapConnectionInterface', function ($app) {
+            return new FakeLdapConnection('a', 'b');
+        });
+        $admin = create(User::class, ['is_admin' => true]);
+
+        $response = $this->actingAs($admin)->getJson(route('user.search', ['guid' => 'invaliduser']));
+
+        $response->assertStatus(404);
     }
 
     /** @test */

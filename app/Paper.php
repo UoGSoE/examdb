@@ -84,7 +84,7 @@ class Paper extends Model
         $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
         $pow = min($pow, count($units) - 1);
         $bytes /= pow(1024, $pow);
-        return round($bytes, 1) . ' ' . $units[$pow];
+        return round($bytes) . ' ' . $units[$pow];
     }
 
     protected function isAPdf()
@@ -133,6 +133,11 @@ class Paper extends Model
     public function isntChecklist()
     {
         return $this->subcategory != 'Paper Checklist';
+    }
+
+    public function isChecklist()
+    {
+        return ! $this->isntChecklist();
     }
 
     public function getTeachingOfficeContact()

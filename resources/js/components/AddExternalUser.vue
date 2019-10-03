@@ -39,6 +39,7 @@
                                         Add User
                                     </span>
                                 </button>
+                                <p v-if="createError" class="has-text-danger" v-text="createError" />
                             </div>
                         </div>
                     </form>
@@ -57,6 +58,7 @@ export default {
     return {
       showPopupBox: false,
       busy: false,
+      createError: false,
       user: {
         username: "",
         email: "",
@@ -94,7 +96,13 @@ export default {
           location.reload();
         })
         .catch(error => {
+            if (error.response) {
+                if (error.response.status == 422) { // validation error on the server
+                    this.createError = error.response.data.errors;
+                }
+            }
           console.log(error);
+          this.busy = false;
         });
     }
   }

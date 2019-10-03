@@ -60,6 +60,12 @@ class Course extends Model
         return $query->where('external_notified', '=', false);
     }
 
+    public function scopeForArea($query, $area)
+    {
+        $codePrefix = $area == 'uestc' ? 'UESTC' : 'ENG';
+        return $query->where('code', 'like', $codePrefix . '%');
+    }
+
     public function markExternalNotified()
     {
         $this->update(['external_notified' => true]);

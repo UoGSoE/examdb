@@ -22,13 +22,14 @@ class ExternalsNotificationTest extends TestCase
         $this->withoutExceptionHandling();
 
         // set the deadline to tomorrow
-        option(['main_deadline' => now()->addDays(1)->format('Y-m-d')]);
+        option(['main_deadline_glasgow' => now()->addDays(1)->format('Y-m-d')]);
 
-        $paper = create(Paper::class);
+        $course = create(Course::class, ['code' => 'ENG1234']);
+        $paper = create(Paper::class, ['course_id' => $course->id]);
         $external1 = create(User::class);
         $external1->markAsExternal($paper->course);
 
-        Artisan::call('exampapers:notify-externals');
+        Artisan::call('exampapers:notify-externals --area=glasgow');
 
         Mail::assertNotQueued(ExternalHasPapersToLookAt::class);
     }
@@ -39,7 +40,7 @@ class ExternalsNotificationTest extends TestCase
         Mail::fake();
         $this->withoutExceptionHandling();
         // set the deadline to yesterday
-        option(['main_deadline' => now()->subDays(1)->format('Y-m-d')]);
+        option(['main_deadline_glasgow' => now()->subDays(1)->format('Y-m-d')]);
         $external1 = create(User::class);
         $external2 = create(User::class);
         $external3 = create(User::class); // just to check this external isn't notified
@@ -47,7 +48,7 @@ class ExternalsNotificationTest extends TestCase
         $external1->markAsExternal($paper1->course);
         $external2->markAsExternal($paper1->course);
 
-        Artisan::call('exampapers:notify-externals');
+        Artisan::call('exampapers:notify-externals --area=glasgow');
 
         // check an email was sent to both externals about the course they are associated with
         Mail::assertQueued(ExternalHasPapersToLookAt::class, 2);
@@ -64,22 +65,64 @@ class ExternalsNotificationTest extends TestCase
     {
         $this->withoutExceptionHandling();
         // set the deadline to yesterday
-        option(['main_deadline' => now()->subDays(1)->format('Y-m-d')]);
+        option(['main_deadline_glasgow' => now()->subDays(1)->format('Y-m-d')]);
         $paper1 = create(Paper::class);
         $external1 = create(User::class);
         $external1->markAsExternal($paper1->course);
 
         Mail::fake();
 
-        Artisan::call('exampapers:notify-externals');
+        Artisan::call('exampapers:notify-externals --area=glasgow');
 
         Mail::assertQueued(ExternalHasPapersToLookAt::class);
 
         Mail::fake();
 
-        Artisan::call('exampapers:notify-externals');
+        Artisan::call('exampapers:notify-externals --area=glasgow');
 
         Mail::assertNotQueued(ExternalHasPapersToLookAt::class);
+    }
+
+    /** @test */
+    public function externals_are_only_sent_one_email_even_if_they_are_on_multiple_courses()
+    {
+        $this->withoutExceptionHandling();
+        // set the deadline to yesterday
+        option(['main_deadline_glasgow' => now()->subDays(1)->format('Y-m-d')]);
+        $paper1 = create(Paper::class);
+        $paper2 = create(Paper::class);
+        $external1 = create(User::class);
+        $external1->markAsExternal($paper1->course);
+        $external1->markAsExternal($paper2->course);
+
+        Mail::fake();
+
+        Artisan::call('exampapers:notify-externals --area=glasgow');
+
+        Mail::assertQueued(ExternalHasPapersToLookAt::class, 1);
+    }
+
+    /** @test */
+    public function externals_are_not_notified_about_papers_for_a_different_area_deadline()
+    {
+        $this->withoutExceptionHandling();
+        // set the deadline to yesterday
+        option(['main_deadline_glasgow' => now()->subDays(1)->format('Y-m-d')]);
+        option(['main_deadline_uestc' => now()->subDays(1)->format('Y-m-d')]);
+        $glasgowCourse = create(Course::class, ['code' => 'ENG1234']);
+        $uestcCourse = create(Course::class, ['code' => 'UESTC1234']);
+        $paper1 = create(Paper::class, ['course_id' => $glasgowCourse->id]);
+        $paper2 = create(Paper::class, ['course_id' => $uestcCourse->id]);
+        $external1 = create(User::class);
+        $external2 = create(User::class);
+        $external1->markAsExternal($paper1->course);
+        $external2->markAsExternal($paper2->course);
+
+        Mail::fake();
+
+        Artisan::call('exampapers:notify-externals --area=uestc');
+
+        Mail::assertQueued(ExternalHasPapersToLookAt::class, 1);
     }
 
     /** @test */
@@ -87,14 +130,14 @@ class ExternalsNotificationTest extends TestCase
     {
         $this->withoutExceptionHandling();
         // set the deadline to yesterday
-        option(['main_deadline' => now()->subDays(1)->format('Y-m-d')]);
+        option(['main_deadline_glasgow' => now()->subDays(1)->format('Y-m-d')]);
         $course = create(Course::class);
         $external1 = create(User::class);
         $external1->markAsExternal($course);
 
         Mail::fake();
 
-        Artisan::call('exampapers:notify-externals');
+        Artisan::call('exampapers:notify-externals --area=glasgow');
 
         Mail::assertNotQueued(ExternalHasPapersToLookAt::class);
     }
@@ -104,7 +147,7 @@ class ExternalsNotificationTest extends TestCase
     {
         $this->withoutExceptionHandling();
         // set the deadline to yesterday
-        option(['main_deadline' => now()->subDays(1)->format('Y-m-d')]);
+        option(['main_deadline_glasgow' => now()->subDays(1)->format('Y-m-d')]);
         $paper1 = create(Paper::class);
         $external1 = create(User::class);
         $external1->markAsExternal($paper1->course);
@@ -113,7 +156,7 @@ class ExternalsNotificationTest extends TestCase
 
         $this->assertFalse($paper1->course->fresh()->externalNotified());
 
-        Artisan::call('exampapers:notify-externals');
+        Artisan::call('exampapers:notify-externals --area=glasgow');
 
         $this->assertTrue($paper1->course->fresh()->externalNotified());
     }
