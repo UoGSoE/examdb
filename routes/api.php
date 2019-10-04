@@ -12,3 +12,7 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::group(['middleware' => 'api.token'], function () {
+    Route::get('/course/{code}/staff', 'Api\CourseStaffController@show')->name('api.course.staff');
+});

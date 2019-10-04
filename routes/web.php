@@ -23,7 +23,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/course/{course}', 'CourseController@show')->name('course.show');
     Route::post('/course/{course}/paper', 'PaperController@store')->name('course.paper.store');
-    Route::post('/paper/{paper}/comment', 'PaperCommentController@store')->name('paper.comment');
     Route::post('/course/{course}/approve/{category}', 'PaperApprovalController@store')->name('paper.approve');
     Route::post('/course/{course}/unapprove/{category}', 'PaperApprovalController@destroy')->name('paper.unapprove');
 
