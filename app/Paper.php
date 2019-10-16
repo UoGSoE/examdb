@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Paper extends Model
 {
+    const PAPER_FOR_REGISTRY = 'Paper For Registry';
+    const PAPER_CHECKLIST = 'Paper Checklist';
+    const EXTERNAL_COMMENTS = 'External Examiner Comments';
+
     protected $guarded = [];
 
     protected $casts = [
@@ -33,7 +37,7 @@ class Paper extends Model
 
     public function scopeReadyForExternals($query)
     {
-        return $query->where('subcategory', '=', 'Paper Checklist');
+        return $query->where('subcategory', '=', Paper::PAPER_CHECKLIST);
     }
 
     public function scopeMain($query)
@@ -132,7 +136,7 @@ class Paper extends Model
 
     public function isntChecklist()
     {
-        return $this->subcategory != 'Paper Checklist';
+        return $this->subcategory != Paper::PAPER_CHECKLIST;
     }
 
     public function isChecklist()

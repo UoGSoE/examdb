@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\User;
+use App\Paper;
 use App\Course;
 use Tests\TestCase;
 use App\Mail\ChecklistUploaded;
@@ -89,7 +90,7 @@ class PaperUploadTest extends TestCase
         $response = $this->actingAs($staff)->postJson(route('course.paper.store', $course->id), [
             'paper' => UploadedFile::fake()->create('main_paper_1.pdf', 1),
             'category' => 'main',
-            'subcategory' => 'Paper Checklist',
+            'subcategory' => Paper::PAPER_CHECKLIST,
             'comment' => 'Whatever',
         ]);
 
@@ -99,7 +100,7 @@ class PaperUploadTest extends TestCase
         $paper = $course->papers->first();
         Storage::disk('exampapers')->assertExists($paper->filename);
         $this->assertEquals('main', $paper->category);
-        $this->assertEquals('Paper Checklist', $paper->subcategory);
+        $this->assertEquals(Paper::PAPER_CHECKLIST, $paper->subcategory);
         $this->assertEquals('Whatever', $paper->comments->first()->comment);
         $this->assertTrue($paper->user->is($staff));
         $this->assertTrue($paper->course->is($course));
@@ -132,7 +133,7 @@ class PaperUploadTest extends TestCase
         $response = $this->actingAs($moderator)->postJson(route('course.paper.store', $course->id), [
             'paper' => UploadedFile::fake()->create('main_paper_1.pdf', 1),
             'category' => 'main',
-            'subcategory' => 'Paper Checklist',
+            'subcategory' => Paper::PAPER_CHECKLIST,
             'comment' => 'Whatever',
         ]);
 
@@ -172,7 +173,7 @@ class PaperUploadTest extends TestCase
         $response = $this->actingAs($external)->postJson(route('course.paper.store', $course->id), [
             'paper' => UploadedFile::fake()->create('main_paper_1.pdf', 1),
             'category' => 'main',
-            'subcategory' => 'External Examiner Comments',
+            'subcategory' => Paper::EXTERNAL_COMMENTS,
             'comment' => 'Whatever',
         ]);
 
@@ -214,7 +215,7 @@ class PaperUploadTest extends TestCase
         $response = $this->actingAs($setter)->postJson(route('course.paper.store', $course->id), [
             'paper' => UploadedFile::fake()->create('main_paper_1.pdf', 1),
             'category' => 'main',
-            'subcategory' => 'Paper For Registry',
+            'subcategory' => Paper::PAPER_FOR_REGISTRY,
             'comment' => 'Whatever',
         ]);
 

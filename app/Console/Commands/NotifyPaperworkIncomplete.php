@@ -55,7 +55,7 @@ class NotifyPaperworkIncomplete extends Command
         }
 
         $setterEmails = Course::with('papers')->whereDoesntHave('papers', function ($query) {
-            $query->where('category', '=', $this->argument('type'))->where('subcategory', '=', 'Paper Checklist');
+            $query->where('category', '=', $this->argument('type'))->where('subcategory', '=', Paper::PAPER_CHECKLIST);
         })->get()->map(function ($course) {
             return $course->setters->pluck('email');
         })->flatten()->unique();

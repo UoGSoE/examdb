@@ -40,6 +40,11 @@ class Course extends Model
         return $this->belongsToMany(User::class, 'course_user')->wherePivot('is_external', true);
     }
 
+    public function discipline()
+    {
+        return $this->belongsTo(Discipline::class);
+    }
+
     public function papers()
     {
         return $this->hasMany(Paper::class);
@@ -231,12 +236,15 @@ class Course extends Model
     {
         $code = $wlmCourse['Code'];
         $title = $wlmCourse['Title'];
+        $disciplineTitle = trim($wlmCourse['Discipline']);
+        $discipline = Discipline::firstOrCreate(['title' => $disciplineTitle]);
         $course = static::findByCode($code);
         if (!$course) {
             $course = new static(['code' => $code]);
         }
         $course->is_active = $course->getWlmStatus($wlmCourse);
         $course->title = $title;
+        $course->discipline()->associate($discipline);
         $course->save();
         return $course;
     }

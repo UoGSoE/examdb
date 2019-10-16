@@ -4,6 +4,7 @@
 namespace Tests\Feature;
 
 use App\Course;
+use App\Discipline;
 use App\Events\WlmImportComplete;
 use App\Jobs\ImportFromWlm;
 use App\User;
@@ -30,8 +31,10 @@ class WlmImportTest extends TestCase
 
         $this->assertCount(2, Course::all());
         $this->assertCount(3, User::all());
+        $this->assertCount(2, Discipline::all());
         Course::all()->each(function ($course) {
             $this->assertCount(2, $course->staff()->get());
+            $this->assertNotNull($course->discipline);
         });
         User::all()->each(function ($staff) {
             $this->assertEquals("{$staff->username}@glasgow.ac.uk", $staff->email);
@@ -39,6 +42,7 @@ class WlmImportTest extends TestCase
         $courseA = Course::first();
         $this->assertEquals('TEST1234', $courseA->code);
         $this->assertEquals('Fake Course 1234', $courseA->title);
+        $this->assertEquals('Discipline the first', $courseA->discipline->title);
     }
 
     /** @test */

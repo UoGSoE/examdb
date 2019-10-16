@@ -23,8 +23,8 @@ class IncompletePaperworkNotificationTest extends TestCase
         // set the deadline to tomorrow
         option(['main_deadline' => now()->addDays(1)->format('Y-m-d')]);
 
-        // the 'Paper Checklist' is the trigger that means 'this paper is ready'
-        $paper = create(Paper::class, ['category' => 'main', 'subcategory' => 'Paper Checklist']);
+        // the Paper::PAPER_CHECKLIST is the trigger that means 'this paper is ready'
+        $paper = create(Paper::class, ['category' => 'main', 'subcategory' => Paper::PAPER_CHECKLIST]);
         $setter = create(User::class);
         $setter->markAsSetter($paper->course);
 
@@ -43,7 +43,7 @@ class IncompletePaperworkNotificationTest extends TestCase
         $setter1 = create(User::class);
         $setter2 = create(User::class);
         $setter3 = create(User::class); // an extra just to make sure they are _not_ emailed in the batch
-        // the 'Paper Checklist' is the trigger that means 'this paper is ready'
+        // the Paper::PAPER_CHECKLIST is the trigger that means 'this paper is ready'
         $paper1 = create(Paper::class, ['category' => 'main', 'subcategory' => 'Not Paper Checklist']);
         $setter1->markAsSetter($paper1->course);
         $setter2->markAsSetter($paper1->course);
@@ -67,8 +67,8 @@ class IncompletePaperworkNotificationTest extends TestCase
         $this->withoutExceptionHandling();
         // set the deadline to yesterday
         option(['main_deadline' => now()->subDays(1)->format('Y-m-d')]);
-        // the 'Paper Checklist' is the trigger that means 'this paper is ready'
-        $paper1 = create(Paper::class, ['category' => 'main', 'subcategory' => 'Paper Checklist']);
+        // the Paper::PAPER_CHECKLIST is the trigger that means 'this paper is ready'
+        $paper1 = create(Paper::class, ['category' => 'main', 'subcategory' => Paper::PAPER_CHECKLIST]);
         $setter1 = create(User::class);
         $setter1->markAsSetter($paper1->course);
 
@@ -85,7 +85,7 @@ class IncompletePaperworkNotificationTest extends TestCase
         $this->withoutExceptionHandling();
         // set the deadline to tomorrow
         option(['resit_deadline' => now()->addDays(1)->format('Y-m-d')]);
-        // the 'Paper Checklist' is the trigger that means 'this paper is ready'
+        // the Paper::PAPER_CHECKLIST is the trigger that means 'this paper is ready'
         $paper1 = create(Paper::class, ['category' => 'resit', 'subcategory' => 'Not Paper Checklist']);
         $setter1 = create(User::class);
         $setter1->markAsSetter($paper1->course);
@@ -106,7 +106,7 @@ class IncompletePaperworkNotificationTest extends TestCase
         $setter1 = create(User::class);
         $setter2 = create(User::class);
         $setter3 = create(User::class); // an extra just to make sure they are _not_ emailed in the batch
-        // the 'Paper Checklist' is the trigger that means 'this paper is ready'
+        // the Paper::PAPER_CHECKLIST is the trigger that means 'this paper is ready'
         $paper1 = create(Paper::class, ['category' => 'resit', 'subcategory' => 'Not Paper Checklist']);
         $setter1->markAsSetter($paper1->course);
         $setter2->markAsSetter($paper1->course);
@@ -130,8 +130,8 @@ class IncompletePaperworkNotificationTest extends TestCase
         $this->withoutExceptionHandling();
         // set the deadline to yesterday
         option(['resit_deadline' => now()->subDays(1)->format('Y-m-d')]);
-        // the 'Paper Checklist' is the trigger that means 'this paper is ready'
-        $paper1 = create(Paper::class, ['category' => 'resit', 'subcategory' => 'Paper Checklist']);
+        // the Paper::PAPER_CHECKLIST is the trigger that means 'this paper is ready'
+        $paper1 = create(Paper::class, ['category' => 'resit', 'subcategory' => Paper::PAPER_CHECKLIST]);
         $setter1 = create(User::class);
         $setter1->markAsSetter($paper1->course);
 
