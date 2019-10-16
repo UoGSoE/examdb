@@ -26,13 +26,13 @@
       <div class="field">
         <label
           class="label"
-          :class="{'has-text-danger': hasError('main_deadline_glasgow')}"
-        >Date Glasgow Externals will be notified to look at papers</label>
+          :class="{'has-text-danger': hasError('external_deadline_glasgow')}"
+        >Deadline for Glasgow paper submissions (staff are emailed 1week before and again 1day after the deadline if the paperwork isn't complete)</label>
         <div class="control">
           <input
             class="input"
             type="text"
-            v-model="localOptions.main_deadline_glasgow"
+            v-model="localOptions.internal_deadline_glasgow"
             v-pikaday="pikadayOptions"
           >
         </div>
@@ -40,13 +40,42 @@
       <div class="field">
         <label
           class="label"
-          :class="{'has-text-danger': hasError('main_deadline_uestc')}"
-        >Date UESTC Externals will be notified to look at papers</label>
+          :class="{'has-text-danger': hasError('internal_deadline_uestc')}"
+        >Deadline for UESTC paper submissions (staff are emailed 1week before and again 1day after the deadline if the paperwork isn't complete)</label>
         <div class="control">
           <input
             class="input"
             type="text"
-            v-model="localOptions.main_deadline_uestc"
+            v-model="localOptions.internal_deadline_uestc"
+            v-pikaday="pikadayOptions"
+          >
+        </div>
+      </div>
+
+      <div class="field">
+        <label
+          class="label"
+          :class="{'has-text-danger': hasError('internal_deadline_glasgow')}"
+        >Date Glasgow Teaching office will be notified to look at papers before alerting externals</label>
+        <div class="control">
+          <input
+            class="input"
+            type="text"
+            v-model="localOptions.external_deadline_glasgow"
+            v-pikaday="pikadayOptions"
+          >
+        </div>
+      </div>
+      <div class="field">
+        <label
+          class="label"
+          :class="{'has-text-danger': hasError('external_deadline_uestc')}"
+        >Date UESTC Teaching office will be notified to look at papers before alerting externals</label>
+        <div class="control">
+          <input
+            class="input"
+            type="text"
+            v-model="localOptions.external_deadline_uestc"
             v-pikaday="pikadayOptions"
           >
         </div>
@@ -75,15 +104,27 @@ export default {
       localOptions: {
         teaching_office_contact_glasgow: this.options.teaching_office_contact_glasgow,
         teaching_office_contact_uestc: this.options.teaching_office_contact_uestc,
-        main_deadline_glasgow: this.options.main_deadline_glasgow
+        external_deadline_glasgow: this.options.external_deadline_glasgow
           ? moment(
-              this.options.main_deadline_glasgow,
+              this.options.external_deadline_glasgow,
               "YYYY-MM-DD"
             ).format("DD/MM/YYYY")
           : "",
-        main_deadline_uestc: this.options.main_deadline_uestc
+        external_deadline_uestc: this.options.external_deadline_uestc
           ? moment(
-              this.options.main_deadline_uestc,
+              this.options.external_deadline_uestc,
+              "YYYY-MM-DD"
+            ).format("DD/MM/YYYY")
+          : "",
+        internal_deadline_glasgow: this.options.internal_deadline_glasgow
+          ? moment(
+              this.options.internal_deadline_glasgow,
+              "YYYY-MM-DD"
+            ).format("DD/MM/YYYY")
+          : "",
+        internal_deadline_uestc: this.options.internal_deadline_uestc
+          ? moment(
+              this.options.internal_deadline_uestc,
               "YYYY-MM-DD"
             ).format("DD/MM/YYYY")
           : ""

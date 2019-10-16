@@ -52854,6 +52854,35 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 exports.default = {
   props: ["options"],
@@ -52865,8 +52894,10 @@ exports.default = {
       localOptions: {
         teaching_office_contact_glasgow: this.options.teaching_office_contact_glasgow,
         teaching_office_contact_uestc: this.options.teaching_office_contact_uestc,
-        main_deadline_glasgow: this.options.main_deadline_glasgow ? (0, _moment2.default)(this.options.main_deadline_glasgow, "YYYY-MM-DD").format("DD/MM/YYYY") : "",
-        main_deadline_uestc: this.options.main_deadline_uestc ? (0, _moment2.default)(this.options.main_deadline_uestc, "YYYY-MM-DD").format("DD/MM/YYYY") : ""
+        external_deadline_glasgow: this.options.external_deadline_glasgow ? (0, _moment2.default)(this.options.external_deadline_glasgow, "YYYY-MM-DD").format("DD/MM/YYYY") : "",
+        external_deadline_uestc: this.options.external_deadline_uestc ? (0, _moment2.default)(this.options.external_deadline_uestc, "YYYY-MM-DD").format("DD/MM/YYYY") : "",
+        internal_deadline_glasgow: this.options.internal_deadline_glasgow ? (0, _moment2.default)(this.options.internal_deadline_glasgow, "YYYY-MM-DD").format("DD/MM/YYYY") : "",
+        internal_deadline_uestc: this.options.internal_deadline_uestc ? (0, _moment2.default)(this.options.internal_deadline_uestc, "YYYY-MM-DD").format("DD/MM/YYYY") : ""
       },
       pikadayOptions: {
         format: "DD/MM/YYYY"
@@ -55155,9 +55186,15 @@ var render = function() {
           "label",
           {
             staticClass: "label",
-            class: { "has-text-danger": _vm.hasError("main_deadline_glasgow") }
+            class: {
+              "has-text-danger": _vm.hasError("external_deadline_glasgow")
+            }
           },
-          [_vm._v("Date Glasgow Externals will be notified to look at papers")]
+          [
+            _vm._v(
+              "Deadline for Glasgow paper submissions (staff are emailed 1week before and again 1day after the deadline if the paperwork isn't complete)"
+            )
+          ]
         ),
         _vm._v(" "),
         _c("div", { staticClass: "control" }, [
@@ -55166,8 +55203,8 @@ var render = function() {
               {
                 name: "model",
                 rawName: "v-model",
-                value: _vm.localOptions.main_deadline_glasgow,
-                expression: "localOptions.main_deadline_glasgow"
+                value: _vm.localOptions.internal_deadline_glasgow,
+                expression: "localOptions.internal_deadline_glasgow"
               },
               {
                 name: "pikaday",
@@ -55178,7 +55215,7 @@ var render = function() {
             ],
             staticClass: "input",
             attrs: { type: "text" },
-            domProps: { value: _vm.localOptions.main_deadline_glasgow },
+            domProps: { value: _vm.localOptions.internal_deadline_glasgow },
             on: {
               input: function($event) {
                 if ($event.target.composing) {
@@ -55186,7 +55223,7 @@ var render = function() {
                 }
                 _vm.$set(
                   _vm.localOptions,
-                  "main_deadline_glasgow",
+                  "internal_deadline_glasgow",
                   $event.target.value
                 )
               }
@@ -55200,9 +55237,15 @@ var render = function() {
           "label",
           {
             staticClass: "label",
-            class: { "has-text-danger": _vm.hasError("main_deadline_uestc") }
+            class: {
+              "has-text-danger": _vm.hasError("internal_deadline_uestc")
+            }
           },
-          [_vm._v("Date UESTC Externals will be notified to look at papers")]
+          [
+            _vm._v(
+              "Deadline for UESTC paper submissions (staff are emailed 1week before and again 1day after the deadline if the paperwork isn't complete)"
+            )
+          ]
         ),
         _vm._v(" "),
         _c("div", { staticClass: "control" }, [
@@ -55211,8 +55254,8 @@ var render = function() {
               {
                 name: "model",
                 rawName: "v-model",
-                value: _vm.localOptions.main_deadline_uestc,
-                expression: "localOptions.main_deadline_uestc"
+                value: _vm.localOptions.internal_deadline_uestc,
+                expression: "localOptions.internal_deadline_uestc"
               },
               {
                 name: "pikaday",
@@ -55223,7 +55266,7 @@ var render = function() {
             ],
             staticClass: "input",
             attrs: { type: "text" },
-            domProps: { value: _vm.localOptions.main_deadline_uestc },
+            domProps: { value: _vm.localOptions.internal_deadline_uestc },
             on: {
               input: function($event) {
                 if ($event.target.composing) {
@@ -55231,7 +55274,109 @@ var render = function() {
                 }
                 _vm.$set(
                   _vm.localOptions,
-                  "main_deadline_uestc",
+                  "internal_deadline_uestc",
+                  $event.target.value
+                )
+              }
+            }
+          })
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "field" }, [
+        _c(
+          "label",
+          {
+            staticClass: "label",
+            class: {
+              "has-text-danger": _vm.hasError("internal_deadline_glasgow")
+            }
+          },
+          [
+            _vm._v(
+              "Date Glasgow Teaching office will be notified to look at papers before alerting externals"
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c("div", { staticClass: "control" }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.localOptions.external_deadline_glasgow,
+                expression: "localOptions.external_deadline_glasgow"
+              },
+              {
+                name: "pikaday",
+                rawName: "v-pikaday",
+                value: _vm.pikadayOptions,
+                expression: "pikadayOptions"
+              }
+            ],
+            staticClass: "input",
+            attrs: { type: "text" },
+            domProps: { value: _vm.localOptions.external_deadline_glasgow },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(
+                  _vm.localOptions,
+                  "external_deadline_glasgow",
+                  $event.target.value
+                )
+              }
+            }
+          })
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "field" }, [
+        _c(
+          "label",
+          {
+            staticClass: "label",
+            class: {
+              "has-text-danger": _vm.hasError("external_deadline_uestc")
+            }
+          },
+          [
+            _vm._v(
+              "Date UESTC Teaching office will be notified to look at papers before alerting externals"
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c("div", { staticClass: "control" }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.localOptions.external_deadline_uestc,
+                expression: "localOptions.external_deadline_uestc"
+              },
+              {
+                name: "pikaday",
+                rawName: "v-pikaday",
+                value: _vm.pikadayOptions,
+                expression: "pikadayOptions"
+              }
+            ],
+            staticClass: "input",
+            attrs: { type: "text" },
+            domProps: { value: _vm.localOptions.external_deadline_uestc },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(
+                  _vm.localOptions,
+                  "external_deadline_uestc",
                   $event.target.value
                 )
               }

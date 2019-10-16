@@ -2,30 +2,28 @@
 
 namespace App\Console\Commands;
 
-use App\Paper;
-use App\Course;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\ExternalHasPapersToLookAt;
+use App\Mail\NotifyTeachingOfficeExternalDeadline as Notification;
 
-class NotifyExternals extends Command
+class NotifyTeachingOfficeExternalDeadline extends Command
 {
-    protected $validAreas = [ 'glasgow', 'uestc' ];
+    protected $validAreas = ['glasgow', 'uestc'];
 
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'exampapers:notify-externals {--area= : either glasgow or uestc}';
+    protected $signature = 'exampapers:notifyteachingofficeexternals {--area= : either glasgow or uestc}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Notify externals about papers they need to look at';
+    protected $description = 'Notify the teaching office that the external deadline is up';
 
     /**
      * Create a new command instance.
@@ -61,13 +59,18 @@ class NotifyExternals extends Command
             return;
         }
 
-        $emails = Course::forArea($area)->externalsNotNotified()->whereHas('papers')->get()->map(function ($course) {
-            $course->markExternalNotified();
-            return $course->externals->pluck('email');
-        })->flatten()->unique();
+        $emailAddress = option("teaching_office_contact_{$area}");
+        if (!$emailAddress) {
+            abort(500, "No 'teaching_office_contact' set for area {$area}");
+        }
 
-        $emails->each(function ($email) {
-            Mail::to($email)->queue(new ExternalHasPapersToLookAt);
-        });
+        $lastNotifiedDate = option("teaching_office_notified_externals_{$area}");
+        if ($lastNotifiedDate) {
+            return;
+        }
+
+        Mail::to($emailAddress)->queue(new Notification($area));
+
+        option(["teaching_office_notified_externals_{$area}" => now()->format('Y-m-d H:i')]);
     }
 }

@@ -22,7 +22,7 @@ class ExternalsNotificationTest extends TestCase
         $this->withoutExceptionHandling();
 
         // set the deadline to tomorrow
-        option(['main_deadline_glasgow' => now()->addDays(1)->format('Y-m-d')]);
+        option(['external_deadline_glasgow' => now()->addDays(1)->format('Y-m-d')]);
 
         $course = create(Course::class, ['code' => 'ENG1234']);
         $paper = create(Paper::class, ['course_id' => $course->id]);
@@ -40,7 +40,7 @@ class ExternalsNotificationTest extends TestCase
         Mail::fake();
         $this->withoutExceptionHandling();
         // set the deadline to yesterday
-        option(['main_deadline_glasgow' => now()->subDays(1)->format('Y-m-d')]);
+        option(['external_deadline_glasgow' => now()->subDays(1)->format('Y-m-d')]);
         $external1 = create(User::class);
         $external2 = create(User::class);
         $external3 = create(User::class); // just to check this external isn't notified
@@ -65,7 +65,7 @@ class ExternalsNotificationTest extends TestCase
     {
         $this->withoutExceptionHandling();
         // set the deadline to yesterday
-        option(['main_deadline_glasgow' => now()->subDays(1)->format('Y-m-d')]);
+        option(['external_deadline_glasgow' => now()->subDays(1)->format('Y-m-d')]);
         $paper1 = create(Paper::class);
         $external1 = create(User::class);
         $external1->markAsExternal($paper1->course);
@@ -88,7 +88,7 @@ class ExternalsNotificationTest extends TestCase
     {
         $this->withoutExceptionHandling();
         // set the deadline to yesterday
-        option(['main_deadline_glasgow' => now()->subDays(1)->format('Y-m-d')]);
+        option(['external_deadline_glasgow' => now()->subDays(1)->format('Y-m-d')]);
         $paper1 = create(Paper::class);
         $paper2 = create(Paper::class);
         $external1 = create(User::class);
@@ -107,8 +107,8 @@ class ExternalsNotificationTest extends TestCase
     {
         $this->withoutExceptionHandling();
         // set the deadline to yesterday
-        option(['main_deadline_glasgow' => now()->subDays(1)->format('Y-m-d')]);
-        option(['main_deadline_uestc' => now()->subDays(1)->format('Y-m-d')]);
+        option(['external_deadline_glasgow' => now()->subDays(1)->format('Y-m-d')]);
+        option(['external_deadline_uestc' => now()->subDays(1)->format('Y-m-d')]);
         $glasgowCourse = create(Course::class, ['code' => 'ENG1234']);
         $uestcCourse = create(Course::class, ['code' => 'UESTC1234']);
         $paper1 = create(Paper::class, ['course_id' => $glasgowCourse->id]);
@@ -130,7 +130,7 @@ class ExternalsNotificationTest extends TestCase
     {
         $this->withoutExceptionHandling();
         // set the deadline to yesterday
-        option(['main_deadline_glasgow' => now()->subDays(1)->format('Y-m-d')]);
+        option(['external_deadline_glasgow' => now()->subDays(1)->format('Y-m-d')]);
         $course = create(Course::class);
         $external1 = create(User::class);
         $external1->markAsExternal($course);
@@ -147,7 +147,7 @@ class ExternalsNotificationTest extends TestCase
     {
         $this->withoutExceptionHandling();
         // set the deadline to yesterday
-        option(['main_deadline_glasgow' => now()->subDays(1)->format('Y-m-d')]);
+        option(['external_deadline_glasgow' => now()->subDays(1)->format('Y-m-d')]);
         $paper1 = create(Paper::class);
         $external1 = create(User::class);
         $external1->markAsExternal($paper1->course);

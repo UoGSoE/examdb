@@ -21,24 +21,44 @@ class OptionsController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'main_deadline_glasgow' => 'nullable|date_format:d/m/Y',
-            'main_deadline_uestc' => 'nullable|date_format:d/m/Y',
+            'external_deadline_glasgow' => 'nullable|date_format:d/m/Y',
+            'external_deadline_uestc' => 'nullable|date_format:d/m/Y',
+            'internal_deadline_glasgow' => 'nullable|date_format:d/m/Y',
+            'internal_deadline_uestc' => 'nullable|date_format:d/m/Y',
             'teaching_office_contact_glasgow' => 'nullable|email',
             'teaching_office_contact_uestc' => 'nullable|email',
         ]);
 
-        if ($request->filled('main_deadline_glasgow')) {
+        if ($request->filled('external_deadline_glasgow')) {
+            $date = Carbon::createFromFormat('d/m/Y', $request->external_deadline_glasgow)
+                ->format('Y-m-d');
+            if ($date != option('external_deadline_glasgow')) {
+                option(['teaching_office_notified_externals_glasgow' => 0]);
+            }
+            option(['external_deadline_glasgow' => $date]);
+        }
+
+        if ($request->filled('external_deadline_uestc')) {
+            $date = Carbon::createFromFormat('d/m/Y', $request->external_deadline_uestc)
+                ->format('Y-m-d');
+            if ($date != option('external_deadline_uestc')) {
+                option(['teaching_office_notified_externals_uestc' => 0]);
+            }
+            option(['external_deadline_uestc' => $date]);
+        }
+
+        if ($request->filled('internal_deadline_glasgow')) {
             option([
-                'main_deadline_glasgow' =>
-                Carbon::createFromFormat('d/m/Y', $request->main_deadline_glasgow)
+                'internal_deadline_glasgow' =>
+                Carbon::createFromFormat('d/m/Y', $request->internal_deadline_glasgow)
                     ->format('Y-m-d')
             ]);
         }
 
-        if ($request->filled('main_deadline_uestc')) {
+        if ($request->filled('internal_deadline_uestc')) {
             option([
-                'main_deadline_uestc' =>
-                Carbon::createFromFormat('d/m/Y', $request->main_deadline_uestc)
+                'internal_deadline_uestc' =>
+                Carbon::createFromFormat('d/m/Y', $request->internal_deadline_uestc)
                     ->format('Y-m-d')
             ]);
         }

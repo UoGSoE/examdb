@@ -27,6 +27,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('activitylog:clean')->daily();
         $schedule->command('exampapers:notify-paperwork-incomplete main')->dailyAt('02:00');
         $schedule->command('exampapers:notify-paperwork-incomplete resit')->dailyAt('02:30');
+        $schedule->command('exampapers:notifyteachingofficeexternals --area=glasgow')->dailyAt('03:30');
+        $schedule->command('exampapers:notifyteachingofficeexternals --area=uestc')->dailyAt('03:40');
     }
 
     /**

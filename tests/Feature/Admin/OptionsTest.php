@@ -38,20 +38,37 @@ class OptionsTest extends TestCase
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
 
-        $this->assertNull(option('main_deadline_glasgow'));
+        // external deadlines
+        $this->assertNull(option('external_deadline_glasgow'));
         $response = $this->actingAs($admin)->postJson(route('admin.options.update'), [
-            'main_deadline_glasgow' => '30/01/2019'
+            'external_deadline_glasgow' => '30/01/2019'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals('2019-01-30', option('main_deadline_glasgow'));
+        $this->assertEquals('2019-01-30', option('external_deadline_glasgow'));
 
-        $this->assertNull(option('main_deadline_uestc'));
+        $this->assertNull(option('external_deadline_uestc'));
         $response = $this->actingAs($admin)->postJson(route('admin.options.update'), [
-            'main_deadline_uestc' => '28/02/2019'
+            'external_deadline_uestc' => '28/02/2019'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals('2019-02-28', option('main_deadline_uestc'));
+        $this->assertEquals('2019-02-28', option('external_deadline_uestc'));
 
+        // internal deadlines
+        $this->assertNull(option('internal_deadline_glasgow'));
+        $response = $this->actingAs($admin)->postJson(route('admin.options.update'), [
+            'internal_deadline_glasgow' => '30/01/2019'
+        ]);
+        $response->assertStatus(200);
+        $this->assertEquals('2019-01-30', option('internal_deadline_glasgow'));
+
+        $this->assertNull(option('internal_deadline_uestc'));
+        $response = $this->actingAs($admin)->postJson(route('admin.options.update'), [
+            'internal_deadline_uestc' => '28/02/2019'
+        ]);
+        $response->assertStatus(200);
+        $this->assertEquals('2019-02-28', option('internal_deadline_uestc'));
+
+        // contacts
         $this->assertNull(option('teaching_office_contact_glasgow'));
         $response = $this->actingAs($admin)->postJson(route('admin.options.update'), [
             'teaching_office_contact_glasgow' => 'jenny@example.com'
@@ -72,12 +89,19 @@ class OptionsTest extends TestCase
     {
         $admin = create(User::class, ['is_admin' => true]);
 
-        $this->assertNull(option('main_deadline_glasgow'));
+        $this->assertNull(option('internal_deadline_glasgow'));
         $response = $this->actingAs($admin)->postJson(route('admin.options.update'), [
-            'main_deadline_glasgow' => 'MUFFINS FOR EVERYONE!'
+            'internal_deadline_glasgow' => 'MUFFINS FOR EVERYONE!'
         ]);
         $response->assertStatus(422);
-        $this->assertNull(option('main_deadline_glasgow'));
+        $this->assertNull(option('internal_deadline_glasgow'));
+
+        $this->assertNull(option('external_deadline_glasgow'));
+        $response = $this->actingAs($admin)->postJson(route('admin.options.update'), [
+            'external_deadline_glasgow' => 'MUFFINS FOR EVERYONE!'
+        ]);
+        $response->assertStatus(422);
+        $this->assertNull(option('external_deadline_glasgow'));
 
         $this->assertNull(option('teaching_office_contact_uestc'));
         $response = $this->actingAs($admin)->postJson(route('admin.options.update'), [
@@ -85,5 +109,30 @@ class OptionsTest extends TestCase
         ]);
         $response->assertStatus(422);
         $this->assertNull(option('teaching_office_contact_uestc'));
+    }
+
+    /** @test */
+    public function changing_a_deadline_clears_the_teaching_office_notification_flag()
+    {
+        $this->withoutExceptionHandling();
+        $admin = create(User::class, ['is_admin' => true]);
+
+        option(["teaching_office_notified_externals_glasgow" => now()->format('Y-m-d H:i')]);
+
+        $response = $this->actingAs($admin)->postJson(route('admin.options.update'), [
+            'external_deadline_glasgow' => now()->format('d/m/Y')
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertEquals(0, option('teaching_office_notified_externals_uestc'));
+
+        option(["teaching_office_notified_externals_uestc" => now()->format('Y-m-d H:i')]);
+
+        $response = $this->actingAs($admin)->postJson(route('admin.options.update'), [
+            'external_deadline_uestc' => now()->format('d/m/Y')
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertEquals(0, option('teaching_office_notified_externals_uestc'));
     }
 }
