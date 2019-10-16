@@ -7,10 +7,10 @@
     <div class="column">
         <h3 class="title is-3 has-text-grey">
             <span class="icon has-text-grey-lighter"><i class="fas fa-book-open"></i></span>
-            <span>&nbsp;Moderating</span>
+            <span>&nbsp;Setting</span>
         </h3>
         <ul>
-            @foreach ($moderatedCourses as $course)
+            @foreach ($setterCourses as $course)
             <li>
                 <a href="{{ route('course.show', $course->id) }}">
                     {{ $course->code }} {{ $course->title }}
@@ -22,10 +22,10 @@
     <div class="column">
         <h3 class="title is-3 has-text-grey">
             <span class="icon has-text-grey-lighter"><i class="fas fa-book-open"></i></span>
-            <span>&nbsp;Setting</span>
+            <span>&nbsp;Moderating</span>
         </h3>
         <ul>
-            @foreach ($setterCourses as $course)
+            @foreach ($moderatedCourses as $course)
             <li>
                 <a href="{{ route('course.show', $course->id) }}">
                     {{ $course->code }} {{ $course->title }}
@@ -83,4 +83,4 @@
     <br />
     @endforeach
 </ul>
-@endsection 
+@endsection
