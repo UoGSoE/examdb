@@ -9,6 +9,7 @@ class Paper extends Model
     const PAPER_FOR_REGISTRY = 'Paper For Registry';
     const PAPER_CHECKLIST = 'Paper Checklist';
     const EXTERNAL_COMMENTS = 'External Examiner Comments';
+    const VALID_CATEGORIES = ['main', 'resit'];
 
     protected $guarded = [];
 
@@ -17,8 +18,6 @@ class Paper extends Model
     ];
 
     protected $appends = ['icon', 'formatted_date', 'diff_for_humans', 'formatted_size'];
-
-    const VALID_CATEGORIES = ['main', 'resit'];
 
     public function user()
     {
