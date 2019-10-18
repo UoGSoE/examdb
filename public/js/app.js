@@ -11248,6 +11248,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["course", "subcategories", "category"],
   filters: {
+    pretty: function pretty(value) {
+      if (value == 'resit2') {
+        return '2nd Resit';
+      }
+
+      return value;
+    },
     capitalize: function capitalize(value) {
       if (!value) return "";
       value = value.toString();
@@ -44400,7 +44407,11 @@ var render = function() {
           "h3",
           { staticClass: "title has-text-grey" },
           [
-            _c("span", [_vm._v(_vm._s(_vm._f("capitalize")(_vm.category)))]),
+            _c("span", [
+              _vm._v(
+                _vm._s(_vm._f("capitalize")(_vm._f("pretty")(_vm.category)))
+              )
+            ]),
             _vm._v(" "),
             _c("transition", { attrs: { name: "fade", mode: "in-out" } }, [
               !_vm.secondResit && _vm.isApproved

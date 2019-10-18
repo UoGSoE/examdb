@@ -4,7 +4,7 @@
 
             <span class="level-item">
                 <h3 class="title has-text-grey">
-                    <span>{{ category | capitalize }}</span>
+                    <span>{{ category | pretty | capitalize }}</span>
                     <transition name="fade" mode="in-out">
                         <span v-if="!secondResit && isApproved" title="Approved" key="approved">
                             <span class="icon has-text-success">
@@ -69,6 +69,12 @@
 export default {
   props: ["course", "subcategories", "category"],
   filters: {
+    pretty(value) {
+      if (value == 'resit2') {
+        return '2nd Resit';
+      }
+      return value;
+    },
     capitalize: function(value) {
       if (!value) return "";
       value = value.toString();
