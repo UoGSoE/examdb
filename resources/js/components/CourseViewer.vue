@@ -12,7 +12,7 @@
         <hr />
       </span>
     </div>
-    <div class="column is-one-quarter">
+    <div class="column is-one-quarter is-hidden-mobile">
       <div v-if="!user.is_admin">
         <table class="table">
           <tbody>

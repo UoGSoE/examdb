@@ -43416,7 +43416,7 @@ var render = function() {
           : _vm._e()
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "column is-one-quarter" }, [
+      _c("div", { staticClass: "column is-one-quarter is-hidden-mobile" }, [
         !_vm.user.is_admin
           ? _c("div", [
               _c("table", { staticClass: "table" }, [
