@@ -10,7 +10,6 @@ return [
         'main' => [
             "Pre-Internally Moderated Paper",
             "Moderator Comments",
-            "Response To Moderator",
             "Post-Internally Moderated Paper",
             "Paper Checklist",
             "Response To External Examiner",
@@ -19,7 +18,6 @@ return [
         'solution' => [
             "Pre-Internally Moderated Solutions",
             "Moderator Solution Comments",
-            "Response To Moderator (Solutions)",
             "Post-Internally Moderated Solutions",
             "Paper Checklist",
             "Response To External Examiner (Solutions)",
