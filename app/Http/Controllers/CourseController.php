@@ -17,12 +17,14 @@ class CourseController extends Controller
         $course->load('setters');
         $course->load('moderators');
         $course->load('externals');
+        $course->append('is_uestc');
 
         return view('course.show', [
             'course' => $course,
             'papers' => collect([
                 'main' => $course->mainPapers()->with(['user', 'comments'])->latest()->get(),
                 'resit' => $course->resitPapers()->with(['user', 'comments'])->latest()->get(),
+                'resit2' => $course->resit2Papers()->with(['user', 'comments'])->latest()->get(),
             ]),
             'staff' => User::getStaffForVueSelect(),
             'externals' => User::getExternalsForVueSelect(),

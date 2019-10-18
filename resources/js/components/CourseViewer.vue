@@ -1,14 +1,40 @@
 <template>
 <div>
-  <h2 class="title is-2 has-text-grey-dark">
-    {{ theCourse.code }} {{ theCourse.title }}
-  </h2>
+  <div class="columns">
+    <div class="column">
+      <h2 class="title is-2 has-text-grey-dark">
+        {{ theCourse.code }} {{ theCourse.title }}
+      </h2>
+      <p class="subtitle"><b>Note:</b> the system will only notify other people of any changes when you upload a Paper Checklist</p>
 
-  <span v-if="user.is_admin">
-    <staff-course-editor v-if="user.is_admin" :staff="staff" :externals="externals" :course="theCourse"></staff-course-editor>
-    <hr />
-  </span>
+      <span v-if="user.is_admin">
+        <staff-course-editor v-if="user.is_admin" :staff="staff" :externals="externals" :course="theCourse"></staff-course-editor>
+        <hr />
+      </span>
+    </div>
+    <div class="column is-one-quarter">
+      <div v-if="!user.is_admin">
+        <table class="table">
+          <tbody>
+            <tr>
+              <th>Setters</th>
+              <td>{{ course.setters.map(user => user.full_name).join(', ') }}</td>
+            </tr>
+            <tr>
+              <th>Moderators</th>
+              <td>{{ course.moderators.map(user => user.full_name).join(', ') }}</td>
+            </tr>
+            <tr>
+              <th>Externals</th>
+              <td>{{ course.externals.map(user => user.full_name).join(', ') }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
+  <hr />
   <div class="columns">
     <div class="column">
 
@@ -19,8 +45,16 @@
     </div><!-- /main-papers -->
 
     <div class="column">
-      <h3 class="title has-text-grey">Resit</h3>
+      <paper-heading :course="theCourse" :subcategories="subcategories" category="resit" @paper-added="paperAdded" @approval-toggled="approvalToggled"></paper-heading>
+
+      <paper-list :course="theCourse" :papers="thePapers.resit" category="resit" @paper-removed="paperRemoved"></paper-list>
     </div><!-- /resit-papers-heading -->
+
+    <div class="column" v-if="course.is_uestc">
+      <paper-heading :course="theCourse" :subcategories="subcategories" category="resit2" @paper-added="paperAdded"></paper-heading>
+
+      <paper-list :course="theCourse" :papers="thePapers.resit2" category="resit2" @paper-removed="paperRemoved"></paper-list>
+    </div>
   </div><!-- /resit-papers -->
 </div>
 

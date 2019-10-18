@@ -16,19 +16,19 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('login-form', require('./components/LoginForm.vue'));
-Vue.component('main-paper-uploader', require('./components/MainPaperUploader.vue'));
-Vue.component('course-viewer', require('./components/CourseViewer.vue'));
-Vue.component('paper-list', require('./components/PaperList.vue'));
-Vue.component('paper-heading', require('./components/PaperHeading.vue'));
-Vue.component('add-local-user', require('./components/AddLocalUser.vue'));
-Vue.component('add-external-user', require('./components/AddExternalUser.vue'));
-Vue.component('staff-course-editor', require('./components/StaffCourseEditor.vue'));
-Vue.component('wlm-importer', require('./components/WlmImporter.vue'));
-Vue.component('user-list', require('./components/UserList.vue'));
-Vue.component('impersonate-button', require('./components/ImpersonateButton.vue'));
-Vue.component('admin-toggle-button', require('./components/AdminToggleButton.vue'));
-Vue.component('options-editor', require('./components/OptionsEditor.vue'));
+Vue.component('login-form', require('./components/LoginForm.vue').default);
+Vue.component('main-paper-uploader', require('./components/MainPaperUploader.vue').default);
+Vue.component('course-viewer', require('./components/CourseViewer.vue').default);
+Vue.component('paper-list', require('./components/PaperList.vue').default);
+Vue.component('paper-heading', require('./components/PaperHeading.vue').default);
+Vue.component('add-local-user', require('./components/AddLocalUser.vue').default);
+Vue.component('add-external-user', require('./components/AddExternalUser.vue').default);
+Vue.component('staff-course-editor', require('./components/StaffCourseEditor.vue').default);
+Vue.component('wlm-importer', require('./components/WlmImporter.vue').default);
+Vue.component('user-list', require('./components/UserList.vue').default);
+Vue.component('impersonate-button', require('./components/ImpersonateButton.vue').default);
+Vue.component('admin-toggle-button', require('./components/AdminToggleButton.vue').default);
+Vue.component('options-editor', require('./components/OptionsEditor.vue').default);
 import vSelect from 'vue-select'
 
 import PortalVue from 'portal-vue'
