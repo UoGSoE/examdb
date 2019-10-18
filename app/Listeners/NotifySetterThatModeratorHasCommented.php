@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Paper;
 use App\Events\PaperAdded;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Queue\InteractsWithQueue;
@@ -32,6 +33,9 @@ class NotifySetterThatModeratorHasCommented
             return;
         }
         if (!request()->user()->isModeratorFor($event->paper->course)) {
+            return;
+        }
+        if ($event->paper->category == Paper::SECOND_RESIT_CATEGORY) {
             return;
         }
 
