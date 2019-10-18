@@ -14,8 +14,10 @@ class Course extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'setter_approved' => 'boolean',
-        'moderator_approved' => 'boolean',
+        'setter_approved_main' => 'boolean',
+        'setter_approved_resit' => 'boolean',
+        'moderator_approved_main' => 'boolean',
+        'moderator_approved_resit' => 'boolean',
         'external_approved' => 'boolean',
         'external_notified' => 'boolean',
     ];
@@ -187,6 +189,17 @@ class Course extends Model
         }
 
         throw new \DomainException('User is not associated with this course');
+    }
+
+    public function isFullyApproved(): bool
+    {
+        return $this->setter_approved_main and $this->setter_approved_resit and
+            $this->moderator_approved_main and $this->moderator_approved_resit;
+    }
+
+    public function isntFullyApproved(): bool
+    {
+        return ! $this->isFullyApproved();
     }
 
     public function getUserApprovedMainAttribute(? User $user): bool

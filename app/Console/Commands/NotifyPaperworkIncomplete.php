@@ -16,14 +16,14 @@ class NotifyPaperworkIncomplete extends Command
      *
      * @var string
      */
-    protected $signature = 'exampapers:notify-paperwork-incomplete {type : "main" or "resit"}';
+    protected $signature = 'exampapers:notify-paperwork-incomplete {--area= : glasgow or uestc}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Notify setters their paperwork is incomplete';
+    protected $description = 'Notify staff their papers arent complete';
 
     /**
      * Create a new command instance.
@@ -42,26 +42,38 @@ class NotifyPaperworkIncomplete extends Command
      */
     public function handle()
     {
-        $deadlineField = 'resit_deadline';
-        if ($this->argument('type') == 'main') {
-            $deadlineField = 'main_deadline';
-        }
+        $area = $this->option('area');
+        $deadlineField = "internal_deadline_{$area}";
         if (!option_exists($deadlineField)) {
             abort(500, "No {$deadlineField} option set");
         }
-        $deadline = Carbon::createFromFormat('Y-m-d', option($deadlineField));
-        if ($deadline->gt(now())) {
+        // check if it is one week before or one day after the deadline - otherwise we don't send emails
+        $deadline = Carbon::createFromFormat('Y-m-d', option($deadlineField))->format('d/m/Y');
+        if ($this->isntADayToSendAlerts($deadline)) {
             return;
         }
 
-        $setterEmails = Course::with('papers')->whereDoesntHave('papers', function ($query) {
-            $query->where('category', '=', $this->argument('type'))->where('subcategory', '=', Paper::PAPER_CHECKLIST);
-        })->get()->map(function ($course) {
-            return $course->setters->pluck('email');
+        $peopleToContact = Course::forArea($area)->with('staff')->get()->filter(function ($course) {
+            return $course->isntFullyApproved();
+        })->map(function ($course) {
+            return $course->staff->filter(function ($staffMember) use ($course) {
+                if ($staffMember->isExternalFor($course)) {
+                    return false;
+                }
+                if ($course->isApprovedBy($staffMember, 'main') and $course->isApprovedBy($staffMember, 'resit')) {
+                    return false;
+                }
+                return true;
+            })->pluck('email');
         })->flatten()->unique();
 
-        $setterEmails->each(function ($email) {
+        $peopleToContact->each(function ($email) {
             Mail::to($email)->queue(new PaperworkIncomplete);
         });
+    }
+
+    public function isntADayToSendAlerts($deadline)
+    {
+        return ($deadline != now()->addWeeks(1)->format('d/m/Y')) && ($deadline != now()->subDays(1)->format('d/m/Y'));
     }
 }
