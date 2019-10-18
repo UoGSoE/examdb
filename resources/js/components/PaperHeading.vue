@@ -6,7 +6,7 @@
                 <h3 class="title has-text-grey">
                     <span>{{ category | capitalize }}</span>
                     <transition name="fade" mode="in-out">
-                        <span v-show="course.user_approved_main" title="Approved" key="approved">
+                        <span v-if="!secondResit && isApproved" title="Approved" key="approved">
                             <span class="icon has-text-success">
                                 <i class="fas fa-check"></i>
                             </span>
@@ -18,33 +18,17 @@
             <span class="level-item" v-if="is_local">
                 <main-paper-uploader
                     :course="course"
-                    category="main"
-                    :subcategories='subcategories.main'
+                    :category="category"
+                    :subcategories='subcategories["main"]'
                     @added="paperAdded"
                 >
-                </main-paper-uploader>
-            </span>
-
-            <span class="level-item" v-if="is_local">
-                <main-paper-uploader
-                    :course="course"
-                    category="main"
-                    :subcategories='subcategories.solution'
-                    @added="paperAdded"
-                >
-                    <template slot="button-content">
-                        <span class="icon has-text-success">
-                        <i class="far fa-check-circle"></i>
-                        </span>
-                        <span>Add Solution</span>
-                    </template>
                 </main-paper-uploader>
             </span>
 
             <span class="level-item" v-if="is_external">
                 <main-paper-uploader
                     :course="course"
-                    category="main"
+                    :category="category"
                     :subcategories='subcategories.external.main'
                     @added="paperAdded"
                 >
@@ -60,7 +44,7 @@
             <span class="level-item" v-if="is_external">
                 <main-paper-uploader
                     :course="course"
-                    category="main"
+                    :category="category"
                     :subcategories='subcategories.external.solution'
                     @added="paperAdded"
                 >
@@ -73,8 +57,8 @@
                 </main-paper-uploader>
             </span>
 
-        <span class="level-item" v-if="is_local">
-            <button class="button" @click.prevent="toggleApproval('main')" v-html="approvalButtonText('main')">
+        <span class="level-item" v-if="is_local && !secondResit">
+            <button class="button" @click.prevent="toggleApproval(category)" v-html="approvalButtonText(category)">
             </button>
         </span>
 
@@ -89,6 +73,14 @@ export default {
       if (!value) return "";
       value = value.toString();
       return value.charAt(0).toUpperCase() + value.slice(1);
+    }
+  },
+  computed: {
+    isApproved() {
+      return this.course[`user_approved_${this.category}`];
+    },
+    secondResit() {
+      return this.category == 'resit2';
     }
   },
   data() {

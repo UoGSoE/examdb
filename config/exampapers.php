@@ -8,18 +8,17 @@ return [
     'api_key' => env('API_KEY', 'SET_ME_TO_SOMETHING_RANDOM'),
     'paper_subcategories' => [
         'main' => [
+            "Paper Checklist",
+            "---", // divider - disabled in the UI
             "Pre-Internally Moderated Paper",
             "Moderator Comments",
             "Post-Internally Moderated Paper",
-            "Paper Checklist",
             "Response To External Examiner",
             "Paper For Registry",
-        ],
-        'solution' => [
+            "---", // divider - disabled in the UI
             "Pre-Internally Moderated Solutions",
             "Moderator Solution Comments",
             "Post-Internally Moderated Solutions",
-            "Paper Checklist",
             "Response To External Examiner (Solutions)",
             "Solutions For Archive",
         ],

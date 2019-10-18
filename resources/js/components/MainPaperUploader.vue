@@ -9,7 +9,7 @@
           <div class="control is-expanded">
             <div class="select is-fullwidth">
               <select v-model="subcategory" required>
-                <option v-for="sub in subcategories" :key="sub" :value="sub">{{ sub }}</option>
+                <option v-for="(sub, index) in applicableSubcategories" :key="`sub-${index}`" :value="sub" :disabled="sub == '---'">{{ sub }}</option>
               </select>
             </div>
           </div>
@@ -77,6 +77,17 @@ export default {
       busy: false,
       error: false
     };
+  },
+  computed: {
+    secondResit() {
+      return this.category == 'resit2';
+    },
+    applicableSubcategories() {
+      if (this.secondResit) {
+        return ['Second Resit File'];
+      }
+      return this.subcategories;
+    }
   },
   methods: {
     closePopup() {

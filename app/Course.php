@@ -62,6 +62,11 @@ class Course extends Model
         return $this->papers()->resit();
     }
 
+    public function resit2Papers()
+    {
+        return $this->papers()->resit2();
+    }
+
     public function scopeExternalsNotNotified($query)
     {
         return $query->where('external_notified', '=', false);
@@ -275,5 +280,10 @@ class Course extends Model
     public function isUestc()
     {
         return preg_match('/^UESTC/i', $this->code) === 1;
+    }
+
+    public function getIsUestcAttribute()
+    {
+        return $this->isUestc();
     }
 }

@@ -75,6 +75,7 @@ class PaperController extends Controller
             'papers' => collect([
                 'main' => $course->mainPapers()->with(['user', 'comments'])->latest()->get(),
                 'resit' => $course->resitPapers()->with(['user', 'comments'])->latest()->get(),
+                'resit2' => $course->resit2Papers()->with(['user', 'comments'])->latest()->get(),
             ]),
         ]);
     }

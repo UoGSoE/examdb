@@ -10643,6 +10643,40 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["course", "papers", "subcategories", "user", "staff", "externals"],
   data: function data() {
@@ -10925,6 +10959,18 @@ __webpack_require__.r(__webpack_exports__);
       error: false
     };
   },
+  computed: {
+    secondResit: function secondResit() {
+      return this.category == 'resit2';
+    },
+    applicableSubcategories: function applicableSubcategories() {
+      if (this.secondResit) {
+        return ['Second Resit File'];
+      }
+
+      return this.subcategories;
+    }
+  },
   methods: {
     closePopup: function closePopup() {
       this.show = false;
@@ -11199,22 +11245,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["course", "subcategories", "category"],
   filters: {
@@ -11222,6 +11252,14 @@ __webpack_require__.r(__webpack_exports__);
       if (!value) return "";
       value = value.toString();
       return value.charAt(0).toUpperCase() + value.slice(1);
+    }
+  },
+  computed: {
+    isApproved: function isApproved() {
+      return this.course["user_approved_".concat(this.category)];
+    },
+    secondResit: function secondResit() {
+      return this.category == 'resit2';
     }
   },
   data: function data() {
@@ -43336,35 +43374,101 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("h2", { staticClass: "title is-2 has-text-grey-dark" }, [
-      _vm._v(
-        "\n    " +
-          _vm._s(_vm.theCourse.code) +
-          " " +
-          _vm._s(_vm.theCourse.title) +
-          "\n  "
-      )
+    _c("div", { staticClass: "columns" }, [
+      _c("div", { staticClass: "column" }, [
+        _c("h2", { staticClass: "title is-2 has-text-grey-dark" }, [
+          _vm._v(
+            "\n        " +
+              _vm._s(_vm.theCourse.code) +
+              " " +
+              _vm._s(_vm.theCourse.title) +
+              "\n      "
+          )
+        ]),
+        _vm._v(" "),
+        _vm._m(0),
+        _vm._v(" "),
+        _vm.user.is_admin
+          ? _c(
+              "span",
+              [
+                _vm.user.is_admin
+                  ? _c("staff-course-editor", {
+                      attrs: {
+                        staff: _vm.staff,
+                        externals: _vm.externals,
+                        course: _vm.theCourse
+                      }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _c("hr")
+              ],
+              1
+            )
+          : _vm._e()
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "column is-one-quarter" }, [
+        !_vm.user.is_admin
+          ? _c("div", [
+              _c("table", { staticClass: "table" }, [
+                _c("tbody", [
+                  _c("tr", [
+                    _c("th", [_vm._v("Setters")]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _vm._v(
+                        _vm._s(
+                          _vm.course.setters
+                            .map(function(user) {
+                              return user.full_name
+                            })
+                            .join(", ")
+                        )
+                      )
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("tr", [
+                    _c("th", [_vm._v("Moderators")]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _vm._v(
+                        _vm._s(
+                          _vm.course.moderators
+                            .map(function(user) {
+                              return user.full_name
+                            })
+                            .join(", ")
+                        )
+                      )
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("tr", [
+                    _c("th", [_vm._v("Externals")]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _vm._v(
+                        _vm._s(
+                          _vm.course.externals
+                            .map(function(user) {
+                              return user.full_name
+                            })
+                            .join(", ")
+                        )
+                      )
+                    ])
+                  ])
+                ])
+              ])
+            ])
+          : _vm._e()
+      ])
     ]),
     _vm._v(" "),
-    _vm.user.is_admin
-      ? _c(
-          "span",
-          [
-            _vm.user.is_admin
-              ? _c("staff-course-editor", {
-                  attrs: {
-                    staff: _vm.staff,
-                    externals: _vm.externals,
-                    course: _vm.theCourse
-                  }
-                })
-              : _vm._e(),
-            _vm._v(" "),
-            _c("hr")
-          ],
-          1
-        )
-      : _vm._e(),
+    _c("hr"),
     _vm._v(" "),
     _c("div", { staticClass: "columns" }, [
       _c(
@@ -43395,7 +43499,60 @@ var render = function() {
         1
       ),
       _vm._v(" "),
-      _vm._m(0)
+      _c(
+        "div",
+        { staticClass: "column" },
+        [
+          _c("paper-heading", {
+            attrs: {
+              course: _vm.theCourse,
+              subcategories: _vm.subcategories,
+              category: "resit"
+            },
+            on: {
+              "paper-added": _vm.paperAdded,
+              "approval-toggled": _vm.approvalToggled
+            }
+          }),
+          _vm._v(" "),
+          _c("paper-list", {
+            attrs: {
+              course: _vm.theCourse,
+              papers: _vm.thePapers.resit,
+              category: "resit"
+            },
+            on: { "paper-removed": _vm.paperRemoved }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _vm.course.is_uestc
+        ? _c(
+            "div",
+            { staticClass: "column" },
+            [
+              _c("paper-heading", {
+                attrs: {
+                  course: _vm.theCourse,
+                  subcategories: _vm.subcategories,
+                  category: "resit2"
+                },
+                on: { "paper-added": _vm.paperAdded }
+              }),
+              _vm._v(" "),
+              _c("paper-list", {
+                attrs: {
+                  course: _vm.theCourse,
+                  papers: _vm.thePapers.resit2,
+                  category: "resit2"
+                },
+                on: { "paper-removed": _vm.paperRemoved }
+              })
+            ],
+            1
+          )
+        : _vm._e()
     ])
   ])
 }
@@ -43404,8 +43561,11 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "column" }, [
-      _c("h3", { staticClass: "title has-text-grey" }, [_vm._v("Resit")])
+    return _c("p", { staticClass: "subtitle" }, [
+      _c("b", [_vm._v("Note:")]),
+      _vm._v(
+        " the system will only notify other people of any changes when you upload a Paper Checklist"
+      )
     ])
   }
 ]
@@ -43740,10 +43900,14 @@ var render = function() {
                           }
                         }
                       },
-                      _vm._l(_vm.subcategories, function(sub) {
+                      _vm._l(_vm.applicableSubcategories, function(sub, index) {
                         return _c(
                           "option",
-                          { key: sub, domProps: { value: sub } },
+                          {
+                            key: "sub-" + index,
+                            attrs: { disabled: sub == "---" },
+                            domProps: { value: sub }
+                          },
                           [_vm._v(_vm._s(sub))]
                         )
                       }),
@@ -44239,26 +44403,17 @@ var render = function() {
             _c("span", [_vm._v(_vm._s(_vm._f("capitalize")(_vm.category)))]),
             _vm._v(" "),
             _c("transition", { attrs: { name: "fade", mode: "in-out" } }, [
-              _c(
-                "span",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.course.user_approved_main,
-                      expression: "course.user_approved_main"
-                    }
-                  ],
-                  key: "approved",
-                  attrs: { title: "Approved" }
-                },
-                [
-                  _c("span", { staticClass: "icon has-text-success" }, [
-                    _c("i", { staticClass: "fas fa-check" })
-                  ])
-                ]
-              )
+              !_vm.secondResit && _vm.isApproved
+                ? _c(
+                    "span",
+                    { key: "approved", attrs: { title: "Approved" } },
+                    [
+                      _c("span", { staticClass: "icon has-text-success" }, [
+                        _c("i", { staticClass: "fas fa-check" })
+                      ])
+                    ]
+                  )
+                : _vm._e()
             ])
           ],
           1
@@ -44273,42 +44428,11 @@ var render = function() {
               _c("main-paper-uploader", {
                 attrs: {
                   course: _vm.course,
-                  category: "main",
-                  subcategories: _vm.subcategories.main
+                  category: _vm.category,
+                  subcategories: _vm.subcategories["main"]
                 },
                 on: { added: _vm.paperAdded }
               })
-            ],
-            1
-          )
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.is_local
-        ? _c(
-            "span",
-            { staticClass: "level-item" },
-            [
-              _c(
-                "main-paper-uploader",
-                {
-                  attrs: {
-                    course: _vm.course,
-                    category: "main",
-                    subcategories: _vm.subcategories.solution
-                  },
-                  on: { added: _vm.paperAdded }
-                },
-                [
-                  _c("template", { slot: "button-content" }, [
-                    _c("span", { staticClass: "icon has-text-success" }, [
-                      _c("i", { staticClass: "far fa-check-circle" })
-                    ]),
-                    _vm._v(" "),
-                    _c("span", [_vm._v("Add Solution")])
-                  ])
-                ],
-                2
-              )
             ],
             1
           )
@@ -44324,7 +44448,7 @@ var render = function() {
                 {
                   attrs: {
                     course: _vm.course,
-                    category: "main",
+                    category: _vm.category,
                     subcategories: _vm.subcategories.external.main
                   },
                   on: { added: _vm.paperAdded }
@@ -44355,7 +44479,7 @@ var render = function() {
                 {
                   attrs: {
                     course: _vm.course,
-                    category: "main",
+                    category: _vm.category,
                     subcategories: _vm.subcategories.external.solution
                   },
                   on: { added: _vm.paperAdded }
@@ -44376,15 +44500,17 @@ var render = function() {
           )
         : _vm._e(),
       _vm._v(" "),
-      _vm.is_local
+      _vm.is_local && !_vm.secondResit
         ? _c("span", { staticClass: "level-item" }, [
             _c("button", {
               staticClass: "button",
-              domProps: { innerHTML: _vm._s(_vm.approvalButtonText("main")) },
+              domProps: {
+                innerHTML: _vm._s(_vm.approvalButtonText(_vm.category))
+              },
               on: {
                 click: function($event) {
                   $event.preventDefault()
-                  return _vm.toggleApproval("main")
+                  return _vm.toggleApproval(_vm.category)
                 }
               }
             })
@@ -57113,19 +57239,19 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('login-form', __webpack_require__(/*! ./components/LoginForm.vue */ "./resources/js/components/LoginForm.vue"));
-Vue.component('main-paper-uploader', __webpack_require__(/*! ./components/MainPaperUploader.vue */ "./resources/js/components/MainPaperUploader.vue"));
-Vue.component('course-viewer', __webpack_require__(/*! ./components/CourseViewer.vue */ "./resources/js/components/CourseViewer.vue"));
-Vue.component('paper-list', __webpack_require__(/*! ./components/PaperList.vue */ "./resources/js/components/PaperList.vue"));
-Vue.component('paper-heading', __webpack_require__(/*! ./components/PaperHeading.vue */ "./resources/js/components/PaperHeading.vue"));
-Vue.component('add-local-user', __webpack_require__(/*! ./components/AddLocalUser.vue */ "./resources/js/components/AddLocalUser.vue"));
-Vue.component('add-external-user', __webpack_require__(/*! ./components/AddExternalUser.vue */ "./resources/js/components/AddExternalUser.vue"));
-Vue.component('staff-course-editor', __webpack_require__(/*! ./components/StaffCourseEditor.vue */ "./resources/js/components/StaffCourseEditor.vue"));
-Vue.component('wlm-importer', __webpack_require__(/*! ./components/WlmImporter.vue */ "./resources/js/components/WlmImporter.vue"));
-Vue.component('user-list', __webpack_require__(/*! ./components/UserList.vue */ "./resources/js/components/UserList.vue"));
-Vue.component('impersonate-button', __webpack_require__(/*! ./components/ImpersonateButton.vue */ "./resources/js/components/ImpersonateButton.vue"));
-Vue.component('admin-toggle-button', __webpack_require__(/*! ./components/AdminToggleButton.vue */ "./resources/js/components/AdminToggleButton.vue"));
-Vue.component('options-editor', __webpack_require__(/*! ./components/OptionsEditor.vue */ "./resources/js/components/OptionsEditor.vue"));
+Vue.component('login-form', __webpack_require__(/*! ./components/LoginForm.vue */ "./resources/js/components/LoginForm.vue")["default"]);
+Vue.component('main-paper-uploader', __webpack_require__(/*! ./components/MainPaperUploader.vue */ "./resources/js/components/MainPaperUploader.vue")["default"]);
+Vue.component('course-viewer', __webpack_require__(/*! ./components/CourseViewer.vue */ "./resources/js/components/CourseViewer.vue")["default"]);
+Vue.component('paper-list', __webpack_require__(/*! ./components/PaperList.vue */ "./resources/js/components/PaperList.vue")["default"]);
+Vue.component('paper-heading', __webpack_require__(/*! ./components/PaperHeading.vue */ "./resources/js/components/PaperHeading.vue")["default"]);
+Vue.component('add-local-user', __webpack_require__(/*! ./components/AddLocalUser.vue */ "./resources/js/components/AddLocalUser.vue")["default"]);
+Vue.component('add-external-user', __webpack_require__(/*! ./components/AddExternalUser.vue */ "./resources/js/components/AddExternalUser.vue")["default"]);
+Vue.component('staff-course-editor', __webpack_require__(/*! ./components/StaffCourseEditor.vue */ "./resources/js/components/StaffCourseEditor.vue")["default"]);
+Vue.component('wlm-importer', __webpack_require__(/*! ./components/WlmImporter.vue */ "./resources/js/components/WlmImporter.vue")["default"]);
+Vue.component('user-list', __webpack_require__(/*! ./components/UserList.vue */ "./resources/js/components/UserList.vue")["default"]);
+Vue.component('impersonate-button', __webpack_require__(/*! ./components/ImpersonateButton.vue */ "./resources/js/components/ImpersonateButton.vue")["default"]);
+Vue.component('admin-toggle-button', __webpack_require__(/*! ./components/AdminToggleButton.vue */ "./resources/js/components/AdminToggleButton.vue")["default"]);
+Vue.component('options-editor', __webpack_require__(/*! ./components/OptionsEditor.vue */ "./resources/js/components/OptionsEditor.vue")["default"]);
 
 
 Vue.use(portal_vue__WEBPACK_IMPORTED_MODULE_1___default.a);

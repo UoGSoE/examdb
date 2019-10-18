@@ -50,6 +50,11 @@ class Paper extends Model
         return $query->where('category', '=', 'resit');
     }
 
+    public function scopeResit2($query)
+    {
+        return $query->where('category', '=', 'resit2');
+    }
+
     public function addComment($comment)
     {
         $this->comments()->create([
