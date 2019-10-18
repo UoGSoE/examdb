@@ -229,4 +229,37 @@ class PaperUploadTest extends TestCase
             return $mail->hasTo(option('teaching_office_contact_glasgow'));
         });
     }
+
+    /** @test */
+    public function uestc_courses_have_an_extra_category_of_uploads_of_resit2_which_doesnt_trigger_emails_even_if_it_was_set_to_the_paper_checklist()
+    {
+        Mail::fake();
+        $this->withoutExceptionHandling();
+        Storage::fake('exampapers');
+        $staff = create(User::class);
+        $course = create(Course::class, ['code' => 'UESTC1234']);
+        $staff->markAsSetter($course);
+        $moderator1 = create(User::class);
+        $moderator2 = create(User::class);
+        $moderator1->markAsModerator($course);
+        $moderator2->markAsModerator($course);
+        $file = UploadedFile::fake()->create('main_paper_1.pdf', 1);
+
+        $response = $this->actingAs($staff)->postJson(route('course.paper.store', $course->id), [
+            'paper' => $file,
+            'category' => 'resit2',
+            'subcategory' => Paper::PAPER_CHECKLIST,
+            'comment' => 'Whatever',
+        ]);
+
+        $response->assertStatus(201);
+        $this->assertCount(1, $course->papers);
+        $this->assertCount(1, $course->papers->first()->comments);
+        $paper = $course->papers->first();
+        $this->assertEquals('resit2', $paper->category);
+
+        // check an email wasn't sent to anyone about the new upload
+        Mail::assertNothingSent();
+        Mail::assertNothingQueued();
+    }
 }

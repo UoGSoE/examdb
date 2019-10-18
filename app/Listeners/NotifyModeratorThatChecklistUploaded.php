@@ -34,6 +34,10 @@ class NotifyModeratorThatChecklistUploaded
             return;
         }
 
+        if ($event->paper->category == Paper::SECOND_RESIT_CATEGORY) {
+            return;
+        }
+
         if ($event->user->isSetterFor($event->paper->course)) {
             $event->paper->course->moderators->each(function ($moderator) use ($event) {
                 Mail::to($moderator)->queue(new ChecklistUploaded($event->paper));

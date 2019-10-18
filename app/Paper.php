@@ -9,7 +9,8 @@ class Paper extends Model
     const PAPER_FOR_REGISTRY = 'Paper For Registry';
     const PAPER_CHECKLIST = 'Paper Checklist';
     const EXTERNAL_COMMENTS = 'External Examiner Comments';
-    const VALID_CATEGORIES = ['main', 'resit'];
+    const SECOND_RESIT_CATEGORY = 'resit2';
+    const VALID_CATEGORIES = ['main', 'resit', 'resit2'];
 
     protected $guarded = [];
 

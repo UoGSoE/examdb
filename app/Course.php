@@ -102,7 +102,6 @@ class Course extends Model
         $randomName = Str::random(64) . '_' . now()->format('d-m-Y');
         $filename = "papers/{$this->id}/{$category}/{$randomName}.dat";
         Storage::disk('exampapers')->put($filename, encrypt($file->get()));
-        // $filename = $file->store("papers/{$this->id}/{$category}", 'exampapers');
 
         return $this->papers()->create([
             'category' => $category,
