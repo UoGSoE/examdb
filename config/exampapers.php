@@ -5,7 +5,7 @@ return [
     'check_passwords' => env('PASSWORD_CHECK', false),
     'sysadmin_email' => env('SYSADMIN_EMAIL'),
     'wlm_uri' => env('WLM_URI'),
-    'api_key' => env('API_KEY'),
+    'api_key' => env('API_KEY', 'SET_ME_TO_SOMETHING_RANDOM'),
     'paper_subcategories' => [
         'main' => [
             "Pre-Internally Moderated Paper",

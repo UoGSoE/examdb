@@ -34,18 +34,21 @@ class CourseStaffTest extends TestCase
                     [
                         'id' => $setter->id,
                         'surname' => $setter->surname,
+                        'email' => $setter->email,
                     ]
                 ],
                 'moderators' => [
                     [
                         'id' => $moderator->id,
                         'surname' => $moderator->surname,
+                        'email' => $moderator->email,
                     ]
                 ],
                 'externals' => [
                     [
                         'id' => $external->id,
                         'surname' => $external->surname,
+                        'email' => $external->email,
                     ]
                 ],
             ]
