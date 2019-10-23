@@ -21,6 +21,14 @@ class NotifyExternalsController extends Controller
 
         NotifyExternals::dispatch($request->area);
 
-        return response()->json([], 200);
+        activity()
+            ->causedBy($request->user())
+            ->log("Notified externals for " . ucfirst($request->area));
+
+        if ($request->wantsJson()) {
+            return response()->json([], 200);
+        }
+
+        return redirect()->route('paper.index');
     }
 }

@@ -4,7 +4,7 @@
 
 <h3 class="title is-3">
     Exam Paper List
-    <a href="{{ route('admin.notify.externals.show') }}">Notify Externals</a>
+    <a class="button is-pulled-right" href="{{ route('admin.notify.externals.show') }}">Notify Externals</a>
 </h3>
 
 <table class="table is-fullwidth is-striped is-hoverable is-bordered">
