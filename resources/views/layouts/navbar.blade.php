@@ -34,7 +34,7 @@
                         Papers
                     </a>
                     <hr class="navbar-divider">
-                    <a class="navbar-item">
+                    <a class="navbar-item" href="{{ route('archive.index') }}">
                         Archives
                     </a>
                     <a class="navbar-item" href="{{ route('admin.options.edit') }}">
@@ -56,4 +56,4 @@
             </div>
         </div>
     </div>
-</nav> 
+</nav>

@@ -51,11 +51,36 @@ class SetterTest extends TestCase
         $staff->markAsSetter($course1);
         $mainPaper = create(Paper::class, ['course_id' => $course1->id, 'category' => 'main']);
         $resitPaper = create(Paper::class, ['course_id' => $course1->id, 'category' => 'resit']);
+        $randomPaper = create(Paper::class);
 
         $response = $this->actingAs($staff)->get(route('course.show', $course1->id));
 
         $response->assertSuccessful();
         $this->assertTrue($response->data('course')->is($course1));
+        $this->assertTrue($response->data('course')->papers->contains($mainPaper));
+        $this->assertTrue($response->data('course')->papers->contains($resitPaper));
+        $this->assertFalse($response->data('course')->papers->contains($randomPaper));
+    }
+
+    /** @test */
+    public function archived_papers_dont_show_up_on_the_course_view()
+    {
+        $this->withoutExceptionHandling();
+        $staff = create(User::class);
+        $course1 = create(Course::class);
+        $staff->markAsSetter($course1);
+        $mainPaper = create(Paper::class, ['course_id' => $course1->id, 'category' => 'main']);
+        $resitPaper = create(Paper::class, ['course_id' => $course1->id, 'category' => 'resit']);
+        $randomPaper = create(Paper::class);
+        $resitPaper->archive();
+
+        $response = $this->actingAs($staff)->get(route('course.show', $course1->id));
+
+        $response->assertSuccessful();
+        $this->assertTrue($response->data('course')->is($course1));
+        $this->assertTrue($response->data('course')->papers->contains($mainPaper));
+        $this->assertFalse($response->data('course')->papers->contains($resitPaper));
+        $this->assertFalse($response->data('course')->papers->contains($randomPaper));
     }
 
     /** @test */

@@ -10677,6 +10677,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["course", "papers", "subcategories", "user", "staff", "externals"],
   data: function data() {
@@ -10684,6 +10691,11 @@ __webpack_require__.r(__webpack_exports__);
       thePapers: this.papers,
       theCourse: this.course
     };
+  },
+  computed: {
+    archiveRoute: function archiveRoute() {
+      return route('course.papers.archive_form', this.course.id);
+    }
   },
   methods: {
     approvalButtonText: function approvalButtonText(category) {
@@ -43383,14 +43395,33 @@ var render = function() {
   return _c("div", [
     _c("div", { staticClass: "columns" }, [
       _c("div", { staticClass: "column" }, [
-        _c("h2", { staticClass: "title is-2 has-text-grey-dark" }, [
-          _vm._v(
-            "\n        " +
-              _vm._s(_vm.theCourse.code) +
-              " " +
-              _vm._s(_vm.theCourse.title) +
-              "\n      "
-          )
+        _c("div", { staticClass: "level" }, [
+          _c("div", { staticClass: "level-left" }, [
+            _c(
+              "h2",
+              { staticClass: "title is-2 has-text-grey-dark level-item" },
+              [
+                _vm._v(
+                  "\n            " +
+                    _vm._s(_vm.theCourse.code) +
+                    " " +
+                    _vm._s(_vm.theCourse.title) +
+                    "\n          "
+                )
+              ]
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "level-right" }, [
+            _c(
+              "a",
+              {
+                staticClass: "button level-item",
+                attrs: { href: _vm.archiveRoute }
+              },
+              [_vm._v("Archive Papers")]
+            )
+          ])
         ]),
         _vm._v(" "),
         _vm._m(0),
@@ -43416,9 +43447,9 @@ var render = function() {
           : _vm._e()
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "column is-one-quarter is-hidden-mobile" }, [
-        !_vm.user.is_admin
-          ? _c("div", [
+      !_vm.user.is_admin
+        ? _c("div", { staticClass: "column is-one-quarter is-hidden-mobile" }, [
+            _c("div", [
               _c("table", { staticClass: "table" }, [
                 _c("tbody", [
                   _c("tr", [
@@ -43471,8 +43502,8 @@ var render = function() {
                 ])
               ])
             ])
-          : _vm._e()
-      ])
+          ])
+        : _vm._e()
     ]),
     _vm._v(" "),
     _c("hr"),

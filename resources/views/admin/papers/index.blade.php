@@ -2,10 +2,17 @@
 
 @section('content')
 
-<h3 class="title is-3">
-    Exam Paper List
-    <a class="button is-pulled-right" href="{{ route('admin.notify.externals.show') }}">Notify Externals</a>
-</h3>
+<div class="level">
+    <div class="level-left">
+        <h3 class="title is-3 level-item">
+            Exam Paper List
+        </h3>
+    </div>
+    <div class="level-right">
+        <a class="button level-item" href="{{ route('area.papers.archive_form') }}">Archive Papers</a>
+        <a class="button level-item" href="{{ route('admin.notify.externals.show') }}">Notify Externals</a>
+    </div>
+</div>
 
 <table class="table is-fullwidth is-striped is-hoverable is-bordered">
     <thead>
@@ -20,28 +27,28 @@
     </thead>
     <tbody>
         @foreach($courses as $course)
-            @foreach(['main', 'resit'] as $category)
-                <tr>
-                    <td>
-                        {{ $course->code }} <span class="tag">{{ $category }}</span>
-                    </td>
-                    <td>
-                        {{ $course->datePaperAdded($category, 'Pre-Internally Moderated Paper') }}
-                    </td>
-                    <td>
-                        {{ $course->datePaperAdded($category, 'Moderator Comments') }}
-                    </td>
-                    <td>
-                        {{ $course->datePaperAdded($category, 'Post-Internally Moderated Paper') }}
-                    </td>
-                    <td>
-                        {{ $course->datePaperAdded($category, 'External Examiner Comments') }}
-                    </td>
-                    <td>
-                        {{ $course->datePaperAdded($category, 'Paper For Registry') }}
-                    </td>
-                </tr>
-            @endforeach
+        @foreach(['main', 'resit'] as $category)
+        <tr>
+            <td>
+                {{ $course->code }} <span class="tag">{{ $category }}</span>
+            </td>
+            <td>
+                {{ $course->datePaperAdded($category, 'Pre-Internally Moderated Paper') }}
+            </td>
+            <td>
+                {{ $course->datePaperAdded($category, 'Moderator Comments') }}
+            </td>
+            <td>
+                {{ $course->datePaperAdded($category, 'Post-Internally Moderated Paper') }}
+            </td>
+            <td>
+                {{ $course->datePaperAdded($category, 'External Examiner Comments') }}
+            </td>
+            <td>
+                {{ $course->datePaperAdded($category, 'Paper For Registry') }}
+            </td>
+        </tr>
+        @endforeach
         @endforeach
     </tbody>
 </table>

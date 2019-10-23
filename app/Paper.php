@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Scopes\CurrentScope;
 use Illuminate\Database\Eloquent\Model;
 
 class Paper extends Model
@@ -16,9 +17,17 @@ class Paper extends Model
 
     protected $casts = [
         'approved_setter' => 'boolean',
+        'archived_at' => 'datetime',
     ];
 
     protected $appends = ['icon', 'formatted_date', 'diff_for_humans', 'formatted_size'];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new CurrentScope);
+    }
 
     public function user()
     {
@@ -53,6 +62,26 @@ class Paper extends Model
     public function scopeResit2($query)
     {
         return $query->where('category', '=', 'resit2');
+    }
+
+    public function scopeCurrent($query)
+    {
+        return $query->where('archived_at', '=', null);
+    }
+
+    public function scopeArchived($query)
+    {
+        return $query->where('archived_at', '!=', null);
+    }
+
+    public function isArchived(): bool
+    {
+        return $this->archived_at != null;
+    }
+
+    public function archive()
+    {
+        $this->update(['archived_at' => now()]);
     }
 
     public function addComment($comment)

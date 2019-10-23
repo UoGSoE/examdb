@@ -2,9 +2,16 @@
 <div>
   <div class="columns">
     <div class="column">
-      <h2 class="title is-2 has-text-grey-dark">
-        {{ theCourse.code }} {{ theCourse.title }}
-      </h2>
+      <div class="level">
+        <div class="level-left">
+          <h2 class="title is-2 has-text-grey-dark level-item">
+            {{ theCourse.code }} {{ theCourse.title }}
+          </h2>
+        </div>
+        <div class="level-right">
+          <a :href="archiveRoute" class="button level-item">Archive Papers</a>
+        </div>
+      </div>
       <p class="subtitle"><b>Note:</b> the system will only notify other people of any changes when you upload a Paper Checklist</p>
 
       <span v-if="user.is_admin">
@@ -12,8 +19,8 @@
         <hr />
       </span>
     </div>
-    <div class="column is-one-quarter is-hidden-mobile">
-      <div v-if="!user.is_admin">
+    <div class="column is-one-quarter is-hidden-mobile" v-if="!user.is_admin">
+      <div>
         <table class="table">
           <tbody>
             <tr>
@@ -68,6 +75,11 @@ export default {
       theCourse: this.course
     };
   },
+  computed: {
+    archiveRoute() {
+      return route('course.papers.archive_form', this.course.id);
+    }
+  },
   methods: {
     approvalButtonText(category) {
       let key = `user_approved_${category}`;
@@ -109,7 +121,7 @@ export default {
     },
     approvalToggled(course) {
       this.theCourse = course;
-    },
+    }
   }
 };
 </script>

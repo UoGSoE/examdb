@@ -25,8 +25,8 @@ class NotifyExternalsTest extends TestCase
             'area' => 'glasgow',
         ]));
 
-        $response->assertStatus(200);
-        $response->assertJsonMissingValidationErrors();
+        $response->assertStatus(302);
+        $response->assertSessionDoesntHaveErrors();
 
         Bus::assertDispatched(NotifyExternals::class, function ($job) {
             return $job->area === 'glasgow';

@@ -50,6 +50,16 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('options', 'Admin\OptionsController@edit')->name('admin.options.edit');
         Route::post('options', 'Admin\OptionsController@update')->name('admin.options.update');
 
+        Route::get('archives', 'Admin\ArchiveController@index')->name('archive.index');
+        Route::get('course/{course}/archive', 'Admin\ArchiveCourseController@show')
+            ->name('course.papers.archive_form')
+            ->middleware('password.confirm');
+        Route::post('course/{course}/archive', 'Admin\ArchiveCourseController@store')->name('course.papers.archive');
+        Route::get('area/archive', 'Admin\ArchiveAreaController@show')
+                ->name('area.papers.archive_form')
+                ->middleware('password.confirm');
+        Route::post('area/archive', 'Admin\ArchiveAreaController@store')->name('area.papers.archive');
+
         Route::get('/notify/externals', 'Admin\NotifyExternalsController@show')
                 ->name('admin.notify.externals.show')
                 ->middleware('password.confirm');
