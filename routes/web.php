@@ -50,6 +50,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('options', 'Admin\OptionsController@edit')->name('admin.options.edit');
         Route::post('options', 'Admin\OptionsController@update')->name('admin.options.update');
 
+        Route::get('/notify/externals', 'Admin\NotifyExternalsController@show')
+                ->name('admin.notify.externals.show')
+                ->middleware('password.confirm');
         Route::post('notify/externals', 'Admin\NotifyExternalsController@store')->name('admin.notify.externals');
     });
     // Route::post('impersonate-stop', 'Admin\ImpersonationController@destroy')->name('impersonate.stop');

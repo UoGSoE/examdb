@@ -8,6 +8,11 @@ use App\Http\Controllers\Controller;
 
 class NotifyExternalsController extends Controller
 {
+    public function show()
+    {
+        return view('admin.email_externals');
+    }
+
     public function store(Request $request)
     {
         $request->validate([
