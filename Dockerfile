@@ -45,8 +45,6 @@ RUN mkdir -p database
 COPY database/seeds database/seeds
 COPY database/factories database/factories
 
-RUN ls -lR database
-
 COPY composer.* ./
 
 RUN composer install \
