@@ -46,6 +46,8 @@ RUN mkdir -p database
 #- copy the seeds and factories so that composer generates autoload entries for them
 COPY database/seeds database/factories database/
 
+RUN ls -lR database
+
 COPY composer.* ./
 
 RUN composer install \
@@ -126,4 +128,3 @@ RUN curl -o /usr/local/bin/security-checker https://get.sensiolabs.org/security-
     curl -OL -o /usr/local/bin/phpcs https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar && \
     php /var/www/html/artisan view:clear && \
     php /var/www/html/artisan cache:clear
-
