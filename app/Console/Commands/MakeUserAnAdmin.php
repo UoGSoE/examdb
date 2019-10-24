@@ -31,11 +31,6 @@ class MakeUserAnAdmin extends Command
         parent::__construct();
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
     public function handle()
     {
         $user = User::where('username', '=', $this->argument('username'))->firstOrFail();
