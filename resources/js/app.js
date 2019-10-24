@@ -36,18 +36,6 @@ Vue.use(PortalVue)
 
 Vue.component('v-select', vSelect)
 
-Echo.private('notifications')
-    .listen('WlmImportComplete', (e) => {
-        Vue.toasted.show('WLM Data Imported Successfully!');
-    });
-
-import Toasted from 'vue-toasted';
-Vue.use(Toasted, {
-    theme: "primary",
-    position: "bottom-right",
-    duration: 5000
-});
-
 import * as Sentry from '@sentry/browser'
 
 Sentry.init({

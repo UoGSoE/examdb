@@ -9,7 +9,7 @@ class WlmImportController extends Controller
 {
     public function update()
     {
-        ImportFromWlm::dispatch();
+        ImportFromWlm::dispatch(request()->user());
 
         return response()->json([
             'message' => 'Imported',

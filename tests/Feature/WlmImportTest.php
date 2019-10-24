@@ -3,20 +3,22 @@
 
 namespace Tests\Feature;
 
-use App\Course;
-use App\Discipline;
-use App\Events\WlmImportComplete;
-use App\Jobs\ImportFromWlm;
 use App\User;
-use App\Wlm\FakeWlmClient;
-use App\Wlm\WlmClient;
-use App\Wlm\WlmClientInterface;
-use App\Wlm\WlmImporter;
+use App\Course;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Discipline;
+use Tests\TestCase;
+use App\Wlm\WlmClient;
+use App\Wlm\WlmImporter;
+use App\Wlm\FakeWlmClient;
+use App\Jobs\ImportFromWlm;
+use App\Wlm\WlmClientInterface;
+use App\Events\WlmImportComplete;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
-use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Mail\WlmImportComplete as MailableWlmImportComplete;
 
 class WlmImportTest extends TestCase
 {
@@ -117,11 +119,12 @@ class WlmImportTest extends TestCase
         app()->singleton(WlmClientInterface::class, function () {
             return new FakeWlmClient;
         });
+        $user = create(User::class, ['username' => 'test', 'email' => 'test@glasgow.ac.uk']);
 
-        ImportFromWlm::dispatch();
+        ImportFromWlm::dispatch($user);
 
         $this->assertCount(2, Course::all());
-        $this->assertCount(3, User::all());
+        $this->assertCount(4, User::all());
         Course::all()->each(function ($course) {
             $this->assertCount(2, $course->staff()->get());
         });
@@ -132,6 +135,19 @@ class WlmImportTest extends TestCase
         $this->assertEquals('TEST1234', $courseA->code);
         $this->assertEquals('Fake Course 1234', $courseA->title);
         Event::assertDispatched(WlmImportComplete::class);
+    }
+
+    /** @test */
+    public function the_wlm_complete_event_triggers_an_email_to_the_user_who_initiated_the_sync()
+    {
+        Mail::fake();
+        $user = create(User::class);
+
+        WlmImportComplete::dispatch($user);
+
+        Mail::assertQueued(MailableWlmImportComplete::class, function ($mail) use ($user) {
+            return $mail->hasTo($user->email);
+        });
     }
 
     /** @test */

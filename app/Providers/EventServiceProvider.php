@@ -33,6 +33,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\PaperUnapproved' => [
             'App\Listeners\PaperWasUnapproved',
         ],
+        'App\Events\WlmImportComplete' => [
+            'App\Listeners\NotifyUserWlmImportFinished',
+        ],
         'Lab404\Impersonate\Events\TakeImpersonation' => [
             'App\Listeners\ImpersonationStarted',
         ],
