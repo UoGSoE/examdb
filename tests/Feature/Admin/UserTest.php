@@ -5,6 +5,7 @@ namespace Tests\Feature\Admin;
 use App\Course;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Ohffs\Ldap\FakeLdapConnection;
 use Spatie\Activitylog\Models\Activity;
 use Tests\TestCase;
@@ -362,5 +363,17 @@ class UserTest extends TestCase
 
         $response->assertStatus(409);
         $this->assertTrue($admin->fresh()->isAdmin());
+    }
+
+    /** @test */
+    public function there_is_an_artisan_command_to_make_a_user_an_admin()
+    {
+        $user = create(User::class, ['username' => 'jenny']);
+
+        $this->assertFalse($user->isAdmin());
+
+        Artisan::call('exampapers:makeadmin jenny');
+
+        $this->assertTrue($user->fresh()->isAdmin());
     }
 }

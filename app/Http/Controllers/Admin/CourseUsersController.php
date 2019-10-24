@@ -37,6 +37,10 @@ class CourseUsersController extends Controller
             $course->staff()->sync([]);
         });
 
+        activity()
+            ->causedBy(request()->user())
+            ->log("Removed all staff from all courses");
+
         return redirect()->route('course.index');
     }
 }

@@ -110,9 +110,14 @@ class User extends Authenticatable
             );
     }
 
+    public function makeAdmin()
+    {
+        $this->update(['is_admin' => true]);
+    }
+
     public function isAdmin()
     {
-        return $this->is_admin;
+        return !! $this->is_admin;
     }
 
     public function isExternal()

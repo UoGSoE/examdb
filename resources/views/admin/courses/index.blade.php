@@ -89,9 +89,9 @@
                 <td>
                     {!! $course->externals->userLinks()->implode(', ') !!}
                 </td>
-                </tr>
-                @endforeach
-                </tbody>
-                </table>
+            </tr>
+        @endforeach
+    </tbody>
+</table>
 
-                @endsection
+@endsection
