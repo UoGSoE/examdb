@@ -19,12 +19,10 @@ RUN ln -s /home/node/public /public
 USER node
 WORKDIR /home/node
 
-RUN mkdir -p /home/node/public/css /home/node/public/js /home/node/resources
+RUN mkdir -p /home/node/public/css /home/node/public/sass /home/node/public/js /home/node/resources
 
 COPY --chown=node:node package*.json webpack.mix.js .babelrc* /home/node/
 COPY --chown=node:node resources/js* /home/node/resources/js
-COPY --chown=node:node resources/sass* /home/node/resources/sass
-COPY --chown=node:node resources/scss* /home/node/resources/scss
 COPY --chown=node:node resources/css* /home/node/resources/css
 
 RUN npm install && \
@@ -44,7 +42,8 @@ USER nobody
 #- make paths that the laravel composer.json expects to exist
 RUN mkdir -p database
 #- copy the seeds and factories so that composer generates autoload entries for them
-COPY database/seeds database/factories database/
+COPY database/seeds database/seeds
+COPY database/factories database/factories
 
 RUN ls -lR database
 
