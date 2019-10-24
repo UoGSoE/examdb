@@ -8,12 +8,14 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\URL;
 use Lab404\Impersonate\Models\Impersonate;
 use Spatie\Activitylog\Models\Activity;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
     use Notifiable;
     use CanBeCreatedFromOutsideSources;
     use Impersonate;
+    use SoftDeletes;
 
     protected $guarded = [];
 

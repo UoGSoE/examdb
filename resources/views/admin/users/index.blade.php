@@ -16,6 +16,13 @@
             <add-external-user></add-external-user>
         </span>
     </div>
+    <div class="level-right">
+        <div class="level-item">
+            <a href="{{ route('user.index', ['withtrashed' => true]) }}" class="button">
+                Include disabled users
+            </a>
+        </div>
+    </div>
 </div>
 <user-list :users='@json($users)'></user-list>
 @endsection

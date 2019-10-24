@@ -10735,6 +10735,40 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/DeleteUserButton.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/DeleteUserButton.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ["user"],
+  data: function data() {
+    return {};
+  },
+  methods: {
+    deleteUser: function deleteUser() {
+      axios["delete"](route("admin.user.delete", this.user.id)).then(function (response) {
+        window.location = route('user.index');
+      })["catch"](function (error) {
+        console.error(error);
+      });
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ImpersonateButton.vue?vue&type=script&lang=js&":
 /*!****************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ImpersonateButton.vue?vue&type=script&lang=js& ***!
@@ -11536,6 +11570,40 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UndeleteUserButton.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UndeleteUserButton.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ["user"],
+  data: function data() {
+    return {};
+  },
+  methods: {
+    unDelete: function unDelete() {
+      axios.post(route("admin.user.undelete", this.user.id)).then(function (response) {
+        window.location = route('user.index');
+      })["catch"](function (error) {
+        console.error(error);
+      });
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserList.vue?vue&type=script&lang=js&":
 /*!*******************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UserList.vue?vue&type=script&lang=js& ***!
@@ -11553,6 +11621,8 @@ function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
+//
+//
 //
 //
 //
@@ -33252,16 +33322,18 @@ var render = function() {
             )
           ]),
           _vm._v(" "),
-          _c("div", { staticClass: "level-right" }, [
-            _c(
-              "a",
-              {
-                staticClass: "button level-item",
-                attrs: { href: _vm.archiveRoute }
-              },
-              [_vm._v("Archive Papers")]
-            )
-          ])
+          _vm.user.is_admin
+            ? _c("div", { staticClass: "level-right" }, [
+                _c(
+                  "a",
+                  {
+                    staticClass: "button level-item",
+                    attrs: { href: _vm.archiveRoute }
+                  },
+                  [_vm._v("Archive Papers")]
+                )
+              ])
+            : _vm._e()
         ]),
         _vm._v(" "),
         _vm._m(0),
@@ -33447,6 +33519,44 @@ var staticRenderFns = [
     ])
   }
 ]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/DeleteUserButton.vue?vue&type=template&id=515d2153&":
+/*!*******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/DeleteUserButton.vue?vue&type=template&id=515d2153& ***!
+  \*******************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c(
+      "button",
+      {
+        staticClass: "button",
+        on: {
+          click: function($event) {
+            $event.preventDefault()
+            return _vm.deleteUser($event)
+          }
+        }
+      },
+      [_vm._v("\n        Disable User\n    ")]
+    )
+  ])
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -34715,6 +34825,44 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UndeleteUserButton.vue?vue&type=template&id=f7877ea8&":
+/*!*********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UndeleteUserButton.vue?vue&type=template&id=f7877ea8& ***!
+  \*********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c(
+      "button",
+      {
+        staticClass: "button is-small",
+        on: {
+          click: function($event) {
+            $event.preventDefault()
+            return _vm.unDelete($event)
+          }
+        }
+      },
+      [_vm._v("\n        Re-enable\n    ")]
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserList.vue?vue&type=template&id=3c9e9bf4&":
 /*!***********************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UserList.vue?vue&type=template&id=3c9e9bf4& ***!
@@ -34737,61 +34885,81 @@ var render = function() {
       _c(
         "tbody",
         _vm._l(_vm.theUsers, function(user) {
-          return _c("tr", { key: user.id }, [
-            _c("td", [
-              _c("a", { attrs: { href: _vm.showUser(user) } }, [
-                user.is_external
-                  ? _c(
-                      "span",
-                      {
-                        staticClass: "icon has-text-info",
-                        attrs: { title: "External" }
-                      },
-                      [_c("i", { staticClass: "fas fa-globe-americas" })]
+          return _c(
+            "tr",
+            { key: user.id, class: { "is-italic": user.deleted_at } },
+            [
+              _c("td", [
+                _c(
+                  "a",
+                  {
+                    attrs: { href: user.deleted_at ? "" : _vm.showUser(user) }
+                  },
+                  [
+                    user.is_external
+                      ? _c(
+                          "span",
+                          {
+                            staticClass: "icon has-text-info",
+                            attrs: { title: "External" }
+                          },
+                          [_c("i", { staticClass: "fas fa-globe-americas" })]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    user.deleted_at
+                      ? _c("span", { staticClass: "tag is-warning" }, [
+                          _vm._v("Disabled")
+                        ])
+                      : _vm._e(),
+                    _vm._v(
+                      "\n                        " +
+                        _vm._s(user.full_name) +
+                        "\n                    "
                     )
-                  : _vm._e(),
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("td", [
                 _vm._v(
-                  "\n                        " +
-                    _vm._s(user.full_name) +
-                    "\n                    "
+                  "\n                    " +
+                    _vm._s(user.username) +
+                    "\n                "
+                )
+              ]),
+              _vm._v(" "),
+              _c("td", [
+                _c("a", { attrs: { href: "mailto:" + user.email } }, [
+                  _vm._v(
+                    "\n                        " +
+                      _vm._s(user.email) +
+                      "\n                    "
+                  )
+                ])
+              ]),
+              _vm._v(" "),
+              _c("td", [
+                _c(
+                  "div",
+                  { staticClass: "field is-grouped" },
+                  [
+                    _c("admin-toggle-button", {
+                      attrs: { value: user },
+                      on: { update: _vm.update }
+                    }),
+                    _vm._v(" "),
+                    _c("impersonate-button", { attrs: { user: user } }),
+                    _vm._v(" "),
+                    user.deleted_at
+                      ? _c("undelete-user-button", { attrs: { user: user } })
+                      : _vm._e()
+                  ],
+                  1
                 )
               ])
-            ]),
-            _vm._v(" "),
-            _c("td", [
-              _vm._v(
-                "\n                    " +
-                  _vm._s(user.username) +
-                  "\n                "
-              )
-            ]),
-            _vm._v(" "),
-            _c("td", [
-              _c("a", { attrs: { href: "mailto:" + user.email } }, [
-                _vm._v(
-                  "\n                        " +
-                    _vm._s(user.email) +
-                    "\n                    "
-                )
-              ])
-            ]),
-            _vm._v(" "),
-            _c("td", [
-              _c(
-                "div",
-                { staticClass: "field is-grouped" },
-                [
-                  _c("admin-toggle-button", {
-                    attrs: { value: user },
-                    on: { update: _vm.update }
-                  }),
-                  _vm._v(" "),
-                  _c("impersonate-button", { attrs: { user: user } })
-                ],
-                1
-              )
-            ])
-          ])
+            ]
+          )
         }),
         0
       )
@@ -47119,6 +47287,8 @@ Vue.component('staff-course-editor', __webpack_require__(/*! ./components/StaffC
 Vue.component('wlm-importer', __webpack_require__(/*! ./components/WlmImporter.vue */ "./resources/js/components/WlmImporter.vue")["default"]);
 Vue.component('user-list', __webpack_require__(/*! ./components/UserList.vue */ "./resources/js/components/UserList.vue")["default"]);
 Vue.component('impersonate-button', __webpack_require__(/*! ./components/ImpersonateButton.vue */ "./resources/js/components/ImpersonateButton.vue")["default"]);
+Vue.component('undelete-user-button', __webpack_require__(/*! ./components/UndeleteUserButton.vue */ "./resources/js/components/UndeleteUserButton.vue")["default"]);
+Vue.component('delete-user-button', __webpack_require__(/*! ./components/DeleteUserButton.vue */ "./resources/js/components/DeleteUserButton.vue")["default"]);
 Vue.component('admin-toggle-button', __webpack_require__(/*! ./components/AdminToggleButton.vue */ "./resources/js/components/AdminToggleButton.vue")["default"]);
 Vue.component('options-editor', __webpack_require__(/*! ./components/OptionsEditor.vue */ "./resources/js/components/OptionsEditor.vue")["default"]);
 
@@ -47453,6 +47623,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CourseViewer_vue_vue_type_template_id_6676e378___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CourseViewer_vue_vue_type_template_id_6676e378___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/DeleteUserButton.vue":
+/*!******************************************************!*\
+  !*** ./resources/js/components/DeleteUserButton.vue ***!
+  \******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _DeleteUserButton_vue_vue_type_template_id_515d2153___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./DeleteUserButton.vue?vue&type=template&id=515d2153& */ "./resources/js/components/DeleteUserButton.vue?vue&type=template&id=515d2153&");
+/* harmony import */ var _DeleteUserButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./DeleteUserButton.vue?vue&type=script&lang=js& */ "./resources/js/components/DeleteUserButton.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _DeleteUserButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _DeleteUserButton_vue_vue_type_template_id_515d2153___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _DeleteUserButton_vue_vue_type_template_id_515d2153___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/DeleteUserButton.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/DeleteUserButton.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************!*\
+  !*** ./resources/js/components/DeleteUserButton.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_DeleteUserButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./DeleteUserButton.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/DeleteUserButton.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_DeleteUserButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/DeleteUserButton.vue?vue&type=template&id=515d2153&":
+/*!*************************************************************************************!*\
+  !*** ./resources/js/components/DeleteUserButton.vue?vue&type=template&id=515d2153& ***!
+  \*************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DeleteUserButton_vue_vue_type_template_id_515d2153___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./DeleteUserButton.vue?vue&type=template&id=515d2153& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/DeleteUserButton.vue?vue&type=template&id=515d2153&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DeleteUserButton_vue_vue_type_template_id_515d2153___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DeleteUserButton_vue_vue_type_template_id_515d2153___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -47936,6 +48175,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_StaffCourseEditor_vue_vue_type_template_id_bbed64e6___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_StaffCourseEditor_vue_vue_type_template_id_bbed64e6___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/UndeleteUserButton.vue":
+/*!********************************************************!*\
+  !*** ./resources/js/components/UndeleteUserButton.vue ***!
+  \********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _UndeleteUserButton_vue_vue_type_template_id_f7877ea8___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./UndeleteUserButton.vue?vue&type=template&id=f7877ea8& */ "./resources/js/components/UndeleteUserButton.vue?vue&type=template&id=f7877ea8&");
+/* harmony import */ var _UndeleteUserButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UndeleteUserButton.vue?vue&type=script&lang=js& */ "./resources/js/components/UndeleteUserButton.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _UndeleteUserButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _UndeleteUserButton_vue_vue_type_template_id_f7877ea8___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _UndeleteUserButton_vue_vue_type_template_id_f7877ea8___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/UndeleteUserButton.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/UndeleteUserButton.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************!*\
+  !*** ./resources/js/components/UndeleteUserButton.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UndeleteUserButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./UndeleteUserButton.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UndeleteUserButton.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UndeleteUserButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/UndeleteUserButton.vue?vue&type=template&id=f7877ea8&":
+/*!***************************************************************************************!*\
+  !*** ./resources/js/components/UndeleteUserButton.vue?vue&type=template&id=f7877ea8& ***!
+  \***************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UndeleteUserButton_vue_vue_type_template_id_f7877ea8___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./UndeleteUserButton.vue?vue&type=template&id=f7877ea8& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UndeleteUserButton.vue?vue&type=template&id=f7877ea8&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UndeleteUserButton_vue_vue_type_template_id_f7877ea8___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UndeleteUserButton_vue_vue_type_template_id_f7877ea8___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

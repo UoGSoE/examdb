@@ -18,6 +18,11 @@
             </form>
         </span>
     </div>
+    <div class="level-right">
+        <div class="level-item">
+            <delete-user-button :user="{{ $user->toJson() }}"></delete-user-button>
+        </div>
+    </div>
 </div>
 
 <table class="table">

@@ -11,8 +11,13 @@ class UserController extends Controller
 {
     public function index()
     {
+        $query = User::orderBy('surname');
+        if (request()->withtrashed) {
+            $query = $query->withTrashed();
+        }
+
         return view('admin.users.index', [
-            'users' => User::orderBy('surname')->get(),
+            'users' => $query->get(),
         ]);
     }
 
@@ -56,5 +61,28 @@ class UserController extends Controller
         return response()->json([
             'user' => $user,
         ], 201);
+    }
+
+    public function destroy(User $user)
+    {
+        $user->delete();
+
+        activity()
+            ->causedBy(request()->user())
+            ->log("Deleted " . $user->username);
+
+        return response()->json([
+            'message' => 'deleted',
+        ]);
+    }
+
+    public function reenable($id)
+    {
+        $user = User::withTrashed()->findOrFail($id);
+        $user->restore();
+
+        return response()->json([
+            'message' => 'restored',
+        ]);
     }
 }

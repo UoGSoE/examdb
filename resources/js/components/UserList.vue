@@ -16,12 +16,13 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="user in theUsers" :key="user.id">
+                <tr v-for="user in theUsers" :key="user.id" :class="{'is-italic': user.deleted_at}">
                     <td>
-                        <a :href="showUser(user)">
+                        <a :href="user.deleted_at ? '' : showUser(user)">
                             <span v-if="user.is_external" class="icon has-text-info" title="External">
                                 <i class="fas fa-globe-americas"></i>
                             </span>
+                            <span class="tag is-warning" v-if="user.deleted_at">Disabled</span>
                             {{ user.full_name }}
                         </a>
                     </td>
@@ -37,6 +38,7 @@
                         <div class="field is-grouped">
                             <admin-toggle-button :value="user" @update="update"></admin-toggle-button>
                             <impersonate-button :user="user"></impersonate-button>
+                            <undelete-user-button :user="user" v-if="user.deleted_at"></undelete-user-button>
                         </div>
                     </td>
                 </tr>

@@ -8,7 +8,7 @@
             {{ theCourse.code }} {{ theCourse.title }}
           </h2>
         </div>
-        <div class="level-right">
+        <div v-if="user.is_admin" class="level-right">
           <a :href="archiveRoute" class="button level-item">Archive Papers</a>
         </div>
       </div>

@@ -39,9 +39,13 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('log', 'Admin\ActivityLogController@index')->name('activity.index');
         Route::get('course', 'Admin\CourseController@index')->name('course.index');
         Route::get('paper', 'Admin\PaperController@index')->name('paper.index');
+
         Route::get('user', 'Admin\UserController@index')->name('user.index');
         Route::get('user/{user}', 'Admin\UserController@show')->name('user.show');
         Route::post('user', 'Admin\UserController@store')->name('user.store');
+        Route::delete('user/{user}', 'Admin\UserController@destroy')->name('admin.user.delete');
+        Route::post('user/{id}/undelete', 'Admin\UserController@reenable')->name('admin.user.undelete');
+
         Route::get('search/user', 'Admin\UserSearchController@show')->name('user.search');
         // Route::post('user/{user}/impersonate', 'Admin\ImpersonationController@store')->name('impersonate.start');
         Route::post('course/{course}/users', 'Admin\CourseUsersController@update')->name('course.users.update');

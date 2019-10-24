@@ -24,6 +24,7 @@ class CreateUsersTable extends Migration
             $table->boolean('is_external')->default(false);
             $table->string('password');
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

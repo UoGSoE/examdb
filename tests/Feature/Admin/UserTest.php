@@ -43,6 +43,28 @@ class UserTest extends TestCase
     }
 
     /** @test */
+    public function admins_can_see_a_list_of_all_users_including_soft_deleted_ones()
+    {
+        $admin = create(User::class, ['is_admin' => true]);
+        $internal1 = create(User::class);
+        $internal2 = create(User::class);
+        $external1 = factory(User::class)->states('external')->create();
+        $external2 = factory(User::class)->states('external')->create();
+        $deletedUser = create(User::class);
+        $deletedUser->delete();
+
+        $response = $this->actingAs($admin)->get(route('user.index', ['withtrashed' => true]));
+
+        $response->assertOk();
+        $response->assertSee("Current Users");
+        $response->assertSee($internal1->surname);
+        $response->assertSee($internal2->surname);
+        $response->assertSee($external1->surname);
+        $response->assertSee($external2->surname);
+        $response->assertSee($deletedUser->surname);
+    }
+
+    /** @test */
     public function admins_can_see_the_details_for_a_given_user()
     {
         $admin = create(User::class, ['is_admin' => true]);
@@ -243,6 +265,32 @@ class UserTest extends TestCase
             'forenames' => 'Test',
             'is_external' => true,
         ]);
+    }
+
+    /** @test */
+    public function admins_can_soft_delete_users()
+    {
+        $admin = create(User::class, ['is_admin' => true]);
+        $user = create(User::class, ['is_admin' => false]);
+
+        $response = $this->actingAs($admin)->deleteJson(route('admin.user.delete', $user->id));
+
+        $response->assertOk();
+        $response->assertJsonMissingValidationErrors();
+        $this->assertTrue($user->fresh()->trashed());
+    }
+
+    /** @test */
+    public function admins_can_un_soft_delete_users()
+    {
+        $admin = create(User::class, ['is_admin' => true]);
+        $user = create(User::class, ['is_admin' => false]);
+        $user->delete();
+
+        $response = $this->actingAs($admin)->post(route('admin.user.undelete', $user->id));
+
+        $response->assertOk();
+        $this->assertFalse($user->fresh()->trashed());
     }
 
     /** @test */
