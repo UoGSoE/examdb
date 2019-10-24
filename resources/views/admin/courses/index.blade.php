@@ -12,6 +12,12 @@
     </div>
     <div class="level-right">
         <span class="level-item">
+            <form method="POST" action="{{ route('admin.courses.clear_staff') }}">
+                @csrf
+                <button class="button">Clear all staff from courses</button>
+            </form>
+        </span>
+        <span class="level-item">
             <wlm-importer></wlm-importer>
         </span>
     </div>
@@ -33,59 +39,59 @@
         <tr>
             <td>
                 <a href="{{ route('course.show', $course) }}">
-                    {{ $course->code }}
+                {{ $course->code }}
                 </a>
-            </td>
-            <td>
-                <div class="field has-addons">
-                    <p class="control">
-                        <span class="icon {{ $course->isApprovedBySetter('main') ? 'has-text-info' : 'has-text-grey-light' }}" title="Setter approved?">
-                            <i class="fas fa-user"></i>
-                        </span>
-                    </p>
-                    <p class="control">
-                        <span class="icon {{ $course->isApprovedByModerator('main') ? 'has-text-info' : 'has-text-grey-light' }}" title="Moderator approved?">
-                            <i class="fas fa-user-graduate"></i>
-                        </span>
-                    </p>
-                    <p class="control">
-                        <span class="icon has-text-grey-light" title="External approved?">
-                            <i class="fas fa-user-lock"></i>
-                        </span>
-                    </p>
-                </div>
-            </td>
-            <td>
-                <div class="field has-addons">
-                    <p class="control">
-                        <span class="icon {{ $course->isApprovedBySetter('resit') ? 'has-text-success' : 'has-text-grey-light' }}" title="Setter approved?">
-                            <i class="fas fa-user"></i>
-                        </span>
-                    </p>
-                    <p class="control">
-                        <span class="icon {{ $course->isApprovedByModerator('resit') ? 'has-text-success' : 'has-text-grey-light' }}" title="Moderator approved?">
-                            <i class="fas fa-user-graduate"></i>
-                        </span>
-                    </p>
-                    <p class="control">
-                        <span class="icon has-text-grey-light" title="External approved?">
-                            <i class="fas fa-user-lock"></i>
-                        </span>
-                    </p>
-                </div>
-            </td>
-            <td>
-                {!! $course->setters->userLinks()->implode(', ') !!}
-            </td>
-            <td>
-                {!! $course->moderators->userLinks()->implode(', ') !!}
-            </td>
-            <td>
-                {!! $course->externals->userLinks()->implode(', ') !!}
-            </td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
+                </td>
+                <td>
+                    <div class="field has-addons">
+                        <p class="control">
+                            <span class="icon {{ $course->isApprovedBySetter('main') ? 'has-text-info' : 'has-text-grey-light' }}" title="Setter approved?">
+                                <i class="fas fa-user"></i>
+                            </span>
+                        </p>
+                        <p class="control">
+                            <span class="icon {{ $course->isApprovedByModerator('main') ? 'has-text-info' : 'has-text-grey-light' }}" title="Moderator approved?">
+                                <i class="fas fa-user-graduate"></i>
+                            </span>
+                        </p>
+                        <p class="control">
+                            <span class="icon has-text-grey-light" title="External approved?">
+                                <i class="fas fa-user-lock"></i>
+                            </span>
+                        </p>
+                    </div>
+                </td>
+                <td>
+                    <div class="field has-addons">
+                        <p class="control">
+                            <span class="icon {{ $course->isApprovedBySetter('resit') ? 'has-text-success' : 'has-text-grey-light' }}" title="Setter approved?">
+                                <i class="fas fa-user"></i>
+                            </span>
+                        </p>
+                        <p class="control">
+                            <span class="icon {{ $course->isApprovedByModerator('resit') ? 'has-text-success' : 'has-text-grey-light' }}" title="Moderator approved?">
+                                <i class="fas fa-user-graduate"></i>
+                            </span>
+                        </p>
+                        <p class="control">
+                            <span class="icon has-text-grey-light" title="External approved?">
+                                <i class="fas fa-user-lock"></i>
+                            </span>
+                        </p>
+                    </div>
+                </td>
+                <td>
+                    {!! $course->setters->userLinks()->implode(', ') !!}
+                </td>
+                <td>
+                    {!! $course->moderators->userLinks()->implode(', ') !!}
+                </td>
+                <td>
+                    {!! $course->externals->userLinks()->implode(', ') !!}
+                </td>
+                </tr>
+                @endforeach
+                </tbody>
+                </table>
 
-@endsection
+                @endsection

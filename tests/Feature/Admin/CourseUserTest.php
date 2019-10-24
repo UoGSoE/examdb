@@ -93,4 +93,51 @@ class CourseUserTest extends TestCase
         $this->assertCount(1, $course->externals);
         $this->assertTrue($course->externals->contains($external2));
     }
+
+    /** @test */
+    public function admins_can_remove_all_staff_from_all_courses()
+    {
+        $this->withoutExceptionHandling();
+        $admin = create(User::class, ['is_admin' => true]);
+        $course1 = create(Course::class);
+        $course2 = create(Course::class);
+
+        $setter1 = create(User::class);
+        $setter1->markAsSetter($course1);
+        $setter2 = create(User::class);
+        $setter2->markAsSetter($course2);
+
+        $moderator1 = create(User::class);
+        $moderator2 = create(User::class);
+        $moderator2->markAsModerator($course1);
+        $moderator1->markAsModerator($course1);
+
+        $external1 = create(User::class);
+        $external1->markAsExternal($course2);
+
+        $this->pretendPasswordConfirmed();
+
+        $response = $this->actingAs($admin)->post(route('admin.courses.clear_staff'));
+
+        $response->assertRedirect(route('course.index'));
+        $response->assertSessionHasNoErrors();
+        $this->assertEquals(0, $course1->fresh()->staff()->count());
+        $this->assertEquals(0, $course2->fresh()->staff()->count());
+    }
+
+    /** @test */
+    public function admins_must_give_confirmation_before_removing_all_staff_from_all_courses()
+    {
+        $this->withoutExceptionHandling();
+        $admin = create(User::class, ['is_admin' => true]);
+
+        $response = $this->actingAs($admin)->post(route('admin.courses.clear_staff'));
+
+        $response->assertRedirect(route('password.confirm'));
+    }
+
+    protected function pretendPasswordConfirmed()
+    {
+        session(['auth' => ['password_confirmed_at' => now()->timestamp]]);  // pretend we have confirmed our password
+    }
 }

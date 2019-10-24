@@ -30,4 +30,13 @@ class CourseUsersController extends Controller
             'message' => 'Updated'
         ], 200);
     }
+
+    public function destroy()
+    {
+        Course::all()->each(function ($course) {
+            $course->staff()->sync([]);
+        });
+
+        return redirect()->route('course.index');
+    }
 }
