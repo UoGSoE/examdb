@@ -44,9 +44,8 @@ class WlmImporter
                 $course->staff()->syncWithoutDetaching($this->staffFromWlm($wlmCourse, $setterFlag));
             });
         } catch (\Exception $e) {
-            dd($e->getMessage());
             Mail::to(config('exampapers.sysadmin_email'))->send(new WlmImportProblem($e->getMessage()));
-            return false;
+            throw $e;
         }
         return true;
     }
