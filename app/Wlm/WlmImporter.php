@@ -29,7 +29,7 @@ class WlmImporter
             if ($this->client->statusCode != 200) {
                 throw new \Exception('Failed to get data from the WLM');
             }
-            $courseIds = $courses->filter(function ($wlmCourse) {
+            $courses->filter(function ($wlmCourse) {
                 if (!preg_match('/^(ENG|UESTC|SIT|TEST)/', $wlmCourse['Code'])) {
                     return false;
                 }
@@ -37,11 +37,7 @@ class WlmImporter
             })->take($maximumCourses)->each(function ($wlmCourse) {
                 $course = $this->courseFromWlm($wlmCourse);
                 $this->courseList[$course->code] = $course;
-                $setterFlag = false;
-                if ($course->setters->isEmpty()) {
-                    $setterFlag = true;
-                }
-                $course->staff()->syncWithoutDetaching($this->staffFromWlm($wlmCourse, $setterFlag));
+                $this->staffFromWlm($wlmCourse, false);
             });
         } catch (\Exception $e) {
             Mail::to(config('exampapers.sysadmin_email'))->send(new WlmImportProblem($e->getMessage()));
