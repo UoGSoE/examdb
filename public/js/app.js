@@ -47425,7 +47425,7 @@ module.exports = function(module) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function(process) {/* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-select */ "./node_modules/vue-select/dist/vue-select.js");
+/* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-select */ "./node_modules/vue-select/dist/vue-select.js");
 /* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue_select__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var portal_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! portal-vue */ "./node_modules/portal-vue/dist/portal-vue.js");
 /* harmony import */ var portal_vue__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(portal_vue__WEBPACK_IMPORTED_MODULE_1__);
@@ -47471,7 +47471,7 @@ Vue.use(portal_vue__WEBPACK_IMPORTED_MODULE_1___default.a);
 Vue.component('v-select', vue_select__WEBPACK_IMPORTED_MODULE_0___default.a);
 
 _sentry_browser__WEBPACK_IMPORTED_MODULE_2__["init"]({
-  dsn: process.env.MIX_SENTRY_DSN,
+  dsn: "http://35d4965b01d04d4fa7e602b7630fae70@ultravixen.elec.gla.ac.uk:9001/2",
   integrations: [new _sentry_browser__WEBPACK_IMPORTED_MODULE_2__["Integrations"].Vue({
     Vue: Vue
   })]
@@ -47479,7 +47479,6 @@ _sentry_browser__WEBPACK_IMPORTED_MODULE_2__["init"]({
 var app = new Vue({
   el: '#app'
 });
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../node_modules/process/browser.js */ "./node_modules/process/browser.js")))
 
 /***/ }),
 
