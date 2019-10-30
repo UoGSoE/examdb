@@ -7,7 +7,7 @@
         <label
           class="label"
           :class="{'has-text-danger': hasError('teaching_office_contact_glasgow')}"
-        >Glasgow Teaching Office Contact</label>
+        >Glasgow General Teaching Office Email</label>
         <div class="control">
           <input class="input" type="email" v-model="localOptions.teaching_office_contact_glasgow">
         </div>
@@ -17,7 +17,7 @@
         <label
           class="label"
           :class="{'has-text-danger': hasError('teaching_office_contact_uestc')}"
-        >UESTC Teaching Office Contact</label>
+        >UESTC General Teaching Office Email</label>
         <div class="control">
           <input class="input" type="email" v-model="localOptions.teaching_office_contact_uestc">
         </div>

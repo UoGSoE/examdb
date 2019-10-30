@@ -32,7 +32,7 @@ class NotifyTeachingOfficeThatExternalHasCommented
             return;
         }
 
-        $contact = $event->paper->getTeachingOfficeContact();
+        $contact = $event->paper->getDisciplineContact();
         if (!$contact) {
             // @TODO something better...
             abort(500);

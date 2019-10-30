@@ -8,7 +8,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Course;
 
-class NotifyTeachingOffice extends Mailable
+class PaperForRegistry extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -31,6 +31,7 @@ class NotifyTeachingOffice extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.notify_teaching_office');
+        return $this->subject('Paper for registry ' . $this->course->code)
+                    ->markdown('emails.notify_teaching_office');
     }
 }

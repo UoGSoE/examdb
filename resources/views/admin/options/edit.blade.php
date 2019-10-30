@@ -2,6 +2,14 @@
 
 @section('content')
 
-<options-editor :options='@json($options)' />
+<div class="columns">
+    <div class="column">
+        <options-editor :options='@json($options)'></options-editor>
+    </div>
+    <div class="column">
+        <discipline-contacts-editor :disciplines='@json($disciplines)'></discipline-contacts-editor>
+    </div>
+</div>
 
-@endsection 
+
+@endsection

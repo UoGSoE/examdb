@@ -5,10 +5,11 @@ namespace Tests\Feature;
 use App\User;
 use App\Paper;
 use App\Course;
+use App\Discipline;
 use Tests\TestCase;
 use App\Mail\ChecklistUploaded;
 use Illuminate\Http\UploadedFile;
-use App\Mail\NotifyTeachingOffice;
+use App\Mail\PaperForRegistry;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
@@ -157,7 +158,7 @@ class PaperUploadTest extends TestCase
     }
 
     /** @test */
-    public function an_external_can_upload_thier_comments_which_triggers_an_email_to_the_setter_and_teaching_office()
+    public function an_external_can_upload_thier_comments_which_triggers_an_email_to_the_setter_and_teaching_office_contact()
     {
         $this->withoutExceptionHandling();
         Mail::fake();
@@ -165,7 +166,8 @@ class PaperUploadTest extends TestCase
 
         option(['teaching_office_contact_glasgow' => 'jenny@example.com']);
         $setter = create(User::class);
-        $course = create(Course::class);
+        $discipline = create(Discipline::class, ['contact' => 'someone@example.com']);
+        $course = create(Course::class, ['discipline_id' => $discipline->id]);
         $setter->markAsSetter($course);
         $external = create(User::class);
         $external->markAsExternal($course);
@@ -195,8 +197,8 @@ class PaperUploadTest extends TestCase
             return $mail->hasTo($setter->email);
         });
         // check an email was sent to the teaching office about the new upload
-        Mail::assertQueued(NotifyTeachingOfficeExternalHasCommented::class, function ($mail) {
-            return $mail->hasTo(option('teaching_office_contact_glasgow'));
+        Mail::assertQueued(NotifyTeachingOfficeExternalHasCommented::class, function ($mail) use ($discipline) {
+            return $mail->hasTo($discipline->contact);
         });
     }
 
@@ -209,7 +211,8 @@ class PaperUploadTest extends TestCase
 
         option(['teaching_office_contact_glasgow' => 'jenny@example.com']);
         $setter = create(User::class);
-        $course = create(Course::class, ['code' => 'ENG1234']);
+        $discipline = create(Discipline::class, ['contact' => 'someone@example.com']);
+        $course = create(Course::class, ['code' => 'ENG1234', 'discipline_id' => $discipline->id]);
         $setter->markAsSetter($course);
 
         $response = $this->actingAs($setter)->postJson(route('course.paper.store', $course->id), [
@@ -225,8 +228,8 @@ class PaperUploadTest extends TestCase
         $paper = $course->papers->first();
 
         // check an email was sent to all the course moderators about the new upload
-        Mail::assertQueued(NotifyTeachingOffice::class, function ($mail) {
-            return $mail->hasTo(option('teaching_office_contact_glasgow'));
+        Mail::assertQueued(PaperForRegistry::class, function ($mail) use ($discipline) {
+            return $mail->hasTo($discipline->contact);
         });
     }
 

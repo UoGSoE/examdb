@@ -3,6 +3,7 @@
 use Illuminate\Database\Seeder;
 use App\User;
 use App\Course;
+use App\Discipline;
 
 class TestDataSeeder extends Seeder
 {
@@ -47,5 +48,8 @@ class TestDataSeeder extends Seeder
             $moderator->courses()->attach($course->id, ['is_setter' => true]);
             $external->courses()->attach($course->id, ['is_external' => true]);
         }
+        collect(['Elec', 'MBE', 'Civil', 'UESTC'])->map(function ($title) {
+            return Discipline::create(['title' => $title]);
+        });
     }
 }

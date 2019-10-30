@@ -51,6 +51,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('course/{course}/users', 'Admin\CourseUsersController@update')->name('course.users.update');
         Route::post('courses/remove-staff', 'Admin\CourseUsersController@destroy')->name('admin.courses.clear_staff')->middleware('password.confirm');
 
+        Route::post('discipline/contacts', 'Admin\DisciplineContactController@update')->name('discipline.contacts.update');
+
         Route::post('wlm/import', 'Admin\WlmImportController@update')->name('wlm.import');
         Route::post('user/{user}/toggle-admin', 'Admin\AdminPermissionController@update')->name('admin.toggle');
         Route::get('options', 'Admin\OptionsController@edit')->name('admin.options.edit');

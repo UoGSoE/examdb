@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\PaperAdded;
-use App\Mail\NotifyTeachingOffice;
+use App\Mail\PaperForRegistry;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -32,11 +32,11 @@ class NotifyTechingOfficePaperForRegistryUploaded
             return;
         }
 
-        $contact = $event->paper->getTeachingOfficeContact();
+        $contact = $event->paper->getDisciplineContact();
         if (!$contact) {
             // @TODO something better...
             abort(500);
         }
-        Mail::to($contact)->queue(new NotifyTeachingOffice($event->paper->course));
+        Mail::to($contact)->queue(new PaperForRegistry($event->paper->course));
     }
 }

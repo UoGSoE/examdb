@@ -1,10 +1,10 @@
 @component('mail::message')
-# Introduction
+# ExamDB - Paper for registry uploaded
 
-The body of your message.
+The paper for registry has been uploaded for {{ $course->code }}.
 
-@component('mail::button', ['url' => ''])
-Button Text
+@component('mail::button', ['url' => route('course.show', $course->id)])
+View {{ $course->code }}
 @endcomponent
 
 Thanks,<br>

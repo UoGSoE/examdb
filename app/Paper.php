@@ -185,4 +185,9 @@ class Paper extends Model
         }
         return option('teaching_office_contact_glasgow');
     }
+
+    public function getDisciplineContact()
+    {
+        return $this->course->discipline->contact;
+    }
 }
