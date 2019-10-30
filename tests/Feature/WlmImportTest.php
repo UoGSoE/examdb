@@ -35,7 +35,7 @@ class WlmImportTest extends TestCase
         $this->assertCount(3, User::all());
         $this->assertCount(2, Discipline::all());
         Course::all()->each(function ($course) {
-            $this->assertCount(2, $course->staff()->get());
+            $this->assertCount(0, $course->staff()->get());
             $this->assertNotNull($course->discipline);
         });
         User::all()->each(function ($staff) {
@@ -48,33 +48,6 @@ class WlmImportTest extends TestCase
     }
 
     /** @test */
-    public function if_there_are_no_setters_for_a_course_then_staff_teaching_it_in_the_wlm_are_made_setters_by_default()
-    {
-        $course1 = create(Course::class, ['code' => 'TEST1234']);
-        $course2 = create(Course::class, ['code' => 'TEST4321']);
-        $existingSetter = create(User::class);
-        $existingSetter->markAsSetter($course1);
-        $this->assertTrue($existingSetter->fresh()->isSetterFor($course1));
-        $importer = new WlmImporter(new FakeWlmClient);
-
-        $importer->run();
-
-        $this->assertCount(2, Course::all());
-        $this->assertCount(4, User::all());
-
-        // the existing setter should still be there as setter for $course1
-        $this->assertTrue($existingSetter->fresh()->isSetterFor($course1));
-        // and the new user imported from the WLM should _not_ be marked as a setter for $course1 as
-        // it had an existing setter
-        $newStaff = $course1->staff()->where('username', '=', 'fake1x')->first();
-        $this->assertFalse($newStaff->isSetterFor($course1));
-        // but all of the new staff for $course2 _should_ be marked as setters as it had no existing setters
-        $course2->staff->each(function ($staff) use ($course2) {
-            $this->assertTrue($staff->isSetterFor($course2));
-        });
-    }
-
-    /** @test */
     public function can_limit_course_numbers_while_importing_the_data_from_the_fake_wlm()
     {
         $importer = new WlmImporter(new FakeWlmClient);
@@ -84,7 +57,7 @@ class WlmImportTest extends TestCase
         $this->assertCount(1, Course::all());
         $this->assertCount(2, User::all());
         Course::all()->each(function ($course) {
-            $this->assertCount(2, $course->staff()->get());
+            $this->assertCount(0, $course->staff()->get());
         });
     }
 
@@ -123,10 +96,10 @@ class WlmImportTest extends TestCase
 
         ImportFromWlm::dispatch($user);
 
-        $this->assertCount(2, Course::all());
+        $this->assertEquals(2, Course::count());
         $this->assertCount(4, User::all());
         Course::all()->each(function ($course) {
-            $this->assertCount(2, $course->staff()->get());
+            $this->assertCount(0, $course->staff()->get());
         });
         User::all()->each(function ($staff) {
             $this->assertEquals("{$staff->username}@glasgow.ac.uk", $staff->email);
