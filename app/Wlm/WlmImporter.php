@@ -30,7 +30,7 @@ class WlmImporter
                 throw new \Exception('Failed to get data from the WLM');
             }
             $courseIds = $courses->filter(function ($wlmCourse) {
-                if (!preg_match('/^(ENG|TEST)/', $wlmCourse['Code'])) {
+                if (!preg_match('/^(ENG|UESTC|SIT|TEST)/', $wlmCourse['Code'])) {
                     return false;
                 }
                 return true;
