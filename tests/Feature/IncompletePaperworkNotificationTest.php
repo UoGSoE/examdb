@@ -129,6 +129,51 @@ class IncompletePaperworkNotificationTest extends TestCase
     }
 
     /** @test */
+    public function staff_are_not_notified_about_disabled_courses()
+    {
+        Mail::fake();
+        $this->withoutExceptionHandling();
+        // set the deadline to yesterday
+        option(['internal_deadline_glasgow' => now()->subDays(1)->format('Y-m-d')]);
+        $mainPaper = create(Paper::class, ['category' => 'main']);
+        $resitPaper = create(Paper::class, ['course_id' => $mainPaper->course_id, 'category' => 'resit']);
+        $setter1 = create(User::class);
+        $moderator1 = create(User::class);
+        $setter1->markAsSetter($mainPaper->course);
+        $moderator1->markAsModerator($mainPaper->course);
+        $mainPaper->course->disable();
+
+        Artisan::call('exampapers:notify-paperwork-incomplete --area=glasgow');
+
+        // check an email wasn't sent to anyone
+        Mail::assertNotQueued(PaperworkIncomplete::class);
+    }
+
+    /** @test */
+    public function disabled_staff_are_not_notified()
+    {
+        Mail::fake();
+        $this->withoutExceptionHandling();
+        // set the deadline to yesterday
+        option(['internal_deadline_glasgow' => now()->subDays(1)->format('Y-m-d')]);
+        $mainPaper = create(Paper::class, ['category' => 'main']);
+        $resitPaper = create(Paper::class, ['course_id' => $mainPaper->course_id, 'category' => 'resit']);
+        $setter1 = create(User::class);
+        $moderator1 = create(User::class);
+        $setter1->markAsSetter($mainPaper->course);
+        $moderator1->markAsModerator($mainPaper->course);
+        $setter1->delete();
+
+        Artisan::call('exampapers:notify-paperwork-incomplete --area=glasgow');
+
+        // check an email wasn't sent to anyone
+        Mail::assertQueued(PaperworkIncomplete::class, 1);
+        Mail::assertQueued(PaperworkIncomplete::class, function ($mail) use ($moderator1) {
+            return $mail->hasTo($moderator1->email);
+        });
+    }
+
+    /** @test */
     public function externals_are_not_notified_about_any_of_this_stuff()
     {
         Mail::fake();

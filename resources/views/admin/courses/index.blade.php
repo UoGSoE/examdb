@@ -42,7 +42,7 @@
         @foreach ($courses as $course)
         <tr>
             <td>
-                <a href="{{ route('course.show', $course) }}">
+                <a @if (!$course->trashed()) href="{{ route('course.show', $course) }}" @endif>
                     {{ $course->code }}
                     @if ($course->trashed())
                         <span class="tag is-warning">Disabled</span>
