@@ -48,6 +48,23 @@ class WlmImportTest extends TestCase
     }
 
     /** @test */
+    public function importing_data_doesnt_duplicate_or_crash_on_soft_deleted_entries()
+    {
+        $deletedUser = create(User::class, ['username' => 'fake1x']);
+        $deletedUser->delete();
+        $deletedCourse = create(Course::class, ['code' => 'TEST1234']);
+        $deletedCourse->delete();
+        $importer = new WlmImporter(new FakeWlmClient);
+
+        $importer->run();
+
+        $this->assertCount(2, Course::withTrashed()->get());
+        $this->assertCount(3, User::withTrashed()->get());
+        $this->assertNotNull($deletedUser->deleted_at);
+        $this->assertNotNull($deletedCourse->deleted_at);
+    }
+
+    /** @test */
     public function can_limit_course_numbers_while_importing_the_data_from_the_fake_wlm()
     {
         $importer = new WlmImporter(new FakeWlmClient);

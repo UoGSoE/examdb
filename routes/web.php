@@ -51,6 +51,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('course/{course}/users', 'Admin\CourseUsersController@update')->name('course.users.update');
         Route::post('courses/remove-staff', 'Admin\CourseUsersController@destroy')->name('admin.courses.clear_staff')->middleware('password.confirm');
 
+        Route::post('course/{course}/disable', 'Admin\CourseStatusController@disable')->name('course.disable');
+        Route::post('course/{id}/enable', 'Admin\CourseStatusController@enable')->name('course.enable');
+
         Route::post('discipline/contacts', 'Admin\DisciplineContactController@update')->name('discipline.contacts.update');
 
         Route::post('wlm/import', 'Admin\WlmImportController@update')->name('wlm.import');

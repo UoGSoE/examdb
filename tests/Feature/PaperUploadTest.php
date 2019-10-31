@@ -117,6 +117,12 @@ class PaperUploadTest extends TestCase
 
         // check an email was sent to all the course moderators about the new upload
         Mail::assertQueued(ChecklistUploaded::class, 2);
+        Mail::assertQueued(ChecklistUploaded::class, function ($mail) use ($moderator1) {
+            return $mail->hasTo($moderator1->email);
+        });
+        Mail::assertQueued(ChecklistUploaded::class, function ($mail) use ($moderator2) {
+            return $mail->hasTo($moderator2->email);
+        });
     }
 
     /** @test */
@@ -152,7 +158,7 @@ class PaperUploadTest extends TestCase
         });
 
         // check an email was sent to all the course setters about the new upload
-        Mail::assertQueued(NotifySetterAboutModeratorComments::class, function ($mail) use ($setter) {
+        Mail::assertQueued(ChecklistUploaded::class, function ($mail) use ($setter) {
             return $mail->hasTo($setter->email);
         });
     }

@@ -14,8 +14,7 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         'App\Events\PaperAdded' => [
-            'App\Listeners\NotifyModeratorThatChecklistUploaded',
-            'App\Listeners\NotifySetterThatModeratorHasCommented',
+            'App\Listeners\NotifyStaffThatChecklistUploaded',
             'App\Listeners\NotifySetterThatExternalHasCommented',
             'App\Listeners\NotifyTeachingOfficeThatExternalHasCommented',
             'App\Listeners\NotifyTechingOfficePaperForRegistryUploaded',

@@ -10,6 +10,7 @@
         </div>
         <div v-if="user.is_admin" class="level-right">
           <a :href="archiveRoute" class="button level-item">Archive Papers</a>
+          <a @click.prevent="disableCourse" class="button level-item">Disable Course</a>
         </div>
       </div>
       <p class="subtitle"><b>Note:</b> the system will only notify other people of any changes when you upload a Paper Checklist</p>
@@ -78,6 +79,9 @@ export default {
   computed: {
     archiveRoute() {
       return route('course.papers.archive_form', this.course.id);
+    },
+    disableRoute() {
+      return route('course.disable', this.course.id);
     }
   },
   methods: {
@@ -121,6 +125,15 @@ export default {
     },
     approvalToggled(course) {
       this.theCourse = course;
+    },
+    disableCourse() {
+      axios.post(route('course.disable', this.course.id))
+        .then(res => {
+          window.location = route('course.index');
+        })
+        .catch(err => {
+          console.error(err);
+        });
     }
   }
 };

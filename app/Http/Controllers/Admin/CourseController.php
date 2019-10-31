@@ -10,8 +10,13 @@ class CourseController extends Controller
 {
     public function index()
     {
+        $query = Course::with(['setters', 'moderators', 'externals'])->orderBy('code');
+        if (request()->withtrashed) {
+            $query = $query->withTrashed();
+        }
+
         return view('admin.courses.index', [
-            'courses' => Course::with(['setters', 'moderators', 'externals'])->orderBy('code')->get(),
+            'courses' => $query->get(),
         ]);
     }
 }

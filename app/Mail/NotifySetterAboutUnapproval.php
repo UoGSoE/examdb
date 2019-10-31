@@ -2,6 +2,8 @@
 
 namespace App\Mail;
 
+use App\Paper;
+use App\Course;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -11,14 +13,19 @@ class NotifySetterAboutUnapproval extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $course;
+
+    public $category;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Course $course, string $category)
     {
-        //
+        $this->course = $course;
+        $this->category = $category;
     }
 
     /**

@@ -1,7 +1,7 @@
 @component('mail::message')
-# Student Assessments
+# ExamDB
 
-There was a problem while importing the WLM data into the student assessment system.  Exception message was :
+There was a problem while importing the WLM data into the ExamDB.  Exception message was :
 
 {{ $exceptionMessage }}
 

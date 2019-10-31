@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bc0babb21f0a8944fca097373c8d3ced",
+    "content-hash": "429356967beadd17da82a3cefa4b1d67",
     "packages": [
         {
             "name": "anahkiasen/underscore-php",
@@ -1280,6 +1280,57 @@
                 "versions"
             ],
             "time": "2018-06-13T13:22:40+00:00"
+        },
+        {
+            "name": "joggapp/laravel-mail-viewer",
+            "version": "v5.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/JoggApp/laravel-mail-viewer.git",
+                "reference": "d7f288d825ae4c210b74d22634ea3e529a5f4d9b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/JoggApp/laravel-mail-viewer/zipball/d7f288d825ae4c210b74d22634ea3e529a5f4d9b",
+                "reference": "d7f288d825ae4c210b74d22634ea3e529a5f4d9b",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "5.8.*|6.*",
+                "illuminate/routing": "5.8.*|6.*",
+                "illuminate/support": "5.8.*|6.*",
+                "php": "^7.2"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.1",
+                "orchestra/testbench": "~4.0",
+                "phpunit/phpunit": "^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "JoggApp\\MailViewer\\MailViewerServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "JoggApp\\MailViewer\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Harish Toshniwal",
+                    "email": "harish@jogg.co"
+                }
+            ],
+            "description": "View all your mailables at a single place",
+            "time": "2019-09-04T07:22:55+00:00"
         },
         {
             "name": "lab404/laravel-impersonate",

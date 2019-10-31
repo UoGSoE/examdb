@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Paper;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -11,14 +12,16 @@ class ChecklistUploaded extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $paper;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Paper $paper)
     {
-        //
+        $this->paper = $paper;
     }
 
     /**

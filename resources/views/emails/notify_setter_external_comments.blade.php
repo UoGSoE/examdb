@@ -1,10 +1,10 @@
 @component('mail::message')
-# Introduction
+# External Comments
 
-The body of your message.
+The external for {{ $course->code }} has uploaded their comments.  Please log in to have a look.
 
-@component('mail::button', ['url' => ''])
-Button Text
+@component('mail::button', ['url' => route('course.show', $course->id)])
+{{ $course->code }}
 @endcomponent
 
 Thanks,<br>

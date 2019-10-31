@@ -53,7 +53,7 @@ class NotifyPaperworkIncomplete extends Command
             return;
         }
 
-        $peopleToContact = Course::forArea($area)->with('staff')->get()->filter(function ($course) {
+        $peopleToContact = Course::forArea($area)->has('staff')->with('staff')->get()->filter(function ($course) {
             return $course->isntFullyApproved();
         })->map(function ($course) {
             return $course->staff->filter(function ($staffMember) use ($course) {

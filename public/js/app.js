@@ -10684,6 +10684,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["course", "papers", "subcategories", "user", "staff", "externals"],
   data: function data() {
@@ -10695,6 +10696,9 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     archiveRoute: function archiveRoute() {
       return route('course.papers.archive_form', this.course.id);
+    },
+    disableRoute: function disableRoute() {
+      return route('course.disable', this.course.id);
     }
   },
   methods: {
@@ -10729,6 +10733,13 @@ __webpack_require__.r(__webpack_exports__);
     },
     approvalToggled: function approvalToggled(course) {
       this.theCourse = course;
+    },
+    disableCourse: function disableCourse() {
+      axios.post(route('course.disable', this.course.id)).then(function (res) {
+        window.location = route('course.index');
+      })["catch"](function (err) {
+        console.error(err);
+      });
     }
   }
 });
@@ -33406,6 +33417,20 @@ var render = function() {
                     attrs: { href: _vm.archiveRoute }
                   },
                   [_vm._v("Archive Papers")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "a",
+                  {
+                    staticClass: "button level-item",
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        return _vm.disableCourse($event)
+                      }
+                    }
+                  },
+                  [_vm._v("Disable Course")]
                 )
               ])
             : _vm._e()

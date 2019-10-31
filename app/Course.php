@@ -8,9 +8,12 @@ use App\Events\PaperUnapproved;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Course extends Model
 {
+    use SoftDeletes;
+
     protected $guarded = [];
 
     protected $casts = [
@@ -242,7 +245,7 @@ class Course extends Model
 
     public static function findByCode($code)
     {
-        return static::where('code', '=', $code)->first();
+        return static::withTrashed()->where('code', '=', $code)->first();
     }
 
     /**
@@ -285,5 +288,20 @@ class Course extends Model
     public function getIsUestcAttribute()
     {
         return $this->isUestc();
+    }
+
+    public function isDisabled()
+    {
+        return $this->deleted_at != null;
+    }
+
+    public function disable()
+    {
+        $this->delete();
+    }
+
+    public function enable()
+    {
+        $this->restore();
     }
 }

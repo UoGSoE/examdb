@@ -10,7 +10,7 @@ use App\Mail\NotifyModeratorAboutUpload;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class NotifyModeratorThatChecklistUploaded
+class NotifyStaffThatChecklistUploaded
 {
     /**
      * Create the event listener.
@@ -41,6 +41,11 @@ class NotifyModeratorThatChecklistUploaded
         if ($event->user->isSetterFor($event->paper->course)) {
             $event->paper->course->moderators->each(function ($moderator) use ($event) {
                 Mail::to($moderator)->queue(new ChecklistUploaded($event->paper));
+            });
+        }
+        if ($event->user->isModeratorFor($event->paper->course)) {
+            $event->paper->course->setters->each(function ($setter) use ($event) {
+                Mail::to($setter)->queue(new ChecklistUploaded($event->paper));
             });
         }
     }

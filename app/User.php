@@ -146,7 +146,7 @@ class User extends Authenticatable
 
     public static function findByUsername($username)
     {
-        return static::where('username', '=', $username)->first();
+        return static::withTrashed()->where('username', '=', $username)->first();
     }
 
     public function canImpersonate()

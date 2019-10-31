@@ -4,6 +4,7 @@ namespace App\Events;
 
 use App\User;
 use App\Course;
+use App\Paper;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -17,9 +18,7 @@ class PaperApproved
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $course;
-
     public $user;
-
     public $category;
 
     /**

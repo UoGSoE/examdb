@@ -1,10 +1,9 @@
 @component('mail::message')
-# Introduction
+# Exam Papers
 
-The body of your message.
-
-@component('mail::button', ['url' => ''])
-Button Text
+The paperwork for some courses you set/moderate is still incomplete.  Please log in to the system and have a look.
+@component('mail::button', ['url' => route('home')])
+Exam Database
 @endcomponent
 
 Thanks,<br>
