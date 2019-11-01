@@ -29,7 +29,8 @@
 <table class="table is-striped is-fullwidth">
     <thead>
         <tr>
-            <th>Course</th>
+            <th width="5%">Course</th>
+            <th width="7%">Discipline</th>
             <th>Main</th>
             <th>Resit</th>
             <th>Setters</th>
@@ -49,6 +50,7 @@
                     @endif
                 </a>
             </td>
+            <td>{{ optional($course->discipline)->title }}</td>
             <td>
                 <div class="field has-addons">
                     <p class="control">
