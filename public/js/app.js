@@ -10607,6 +10607,64 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AnonymiseUserButton.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/AnonymiseUserButton.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ["user"],
+  data: function data() {
+    return {
+      showModal: false
+    };
+  },
+  methods: {
+    anonymiseUser: function anonymiseUser() {
+      var _this = this;
+
+      axios.post(route("gdpr.anonymise.user", this.user.id)).then(function (response) {
+        window.location = route("user.show", _this.user.id);
+      })["catch"](function (error) {
+        console.error(error);
+      });
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CourseViewer.vue?vue&type=script&lang=js&":
 /*!***********************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CourseViewer.vue?vue&type=script&lang=js& ***!
@@ -33395,6 +33453,113 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AnonymiseUserButton.vue?vue&type=template&id=0a8e20bd&":
+/*!**********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/AnonymiseUserButton.vue?vue&type=template&id=0a8e20bd& ***!
+  \**********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c(
+        "button",
+        {
+          staticClass: "button",
+          on: {
+            click: function($event) {
+              $event.preventDefault()
+              _vm.showModal = true
+            }
+          }
+        },
+        [_vm._v("Anonymise User")]
+      ),
+      _vm._v(" "),
+      _vm.showModal
+        ? _c("portal", { attrs: { to: "portal-modal" } }, [
+            _c("div", { staticClass: "modal is-active" }, [
+              _c("div", { staticClass: "modal-background" }),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-card" }, [
+                _c("header", { staticClass: "modal-card-head" }, [
+                  _c("p", { staticClass: "modal-card-title" }, [
+                    _vm._v("Confirm anonymising user")
+                  ]),
+                  _vm._v(" "),
+                  _c("button", {
+                    staticClass: "delete",
+                    attrs: { "aria-label": "close" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.showModal = false
+                      }
+                    }
+                  })
+                ]),
+                _vm._v(" "),
+                _c("section", { staticClass: "modal-card-body" }, [
+                  _vm._v("\n          Are you\n          "),
+                  _c("strong", [_c("em", [_vm._v("sure")])]),
+                  _vm._v(" you want do anonymise this user? This\n          "),
+                  _c("em", [_vm._v("cannot")]),
+                  _vm._v(" be undone!\n        ")
+                ]),
+                _vm._v(" "),
+                _c("footer", { staticClass: "modal-card-foot" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "button is-danger",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.anonymiseUser($event)
+                        }
+                      }
+                    },
+                    [_vm._v("Yes")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "button",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          _vm.showModal = false
+                        }
+                      }
+                    },
+                    [_vm._v("Cancel")]
+                  )
+                ])
+              ])
+            ])
+          ])
+        : _vm._e()
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CourseViewer.vue?vue&type=template&id=6676e378&":
 /*!***************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CourseViewer.vue?vue&type=template&id=6676e378& ***!
@@ -47544,6 +47709,7 @@ Vue.component('user-list', __webpack_require__(/*! ./components/UserList.vue */ 
 Vue.component('impersonate-button', __webpack_require__(/*! ./components/ImpersonateButton.vue */ "./resources/js/components/ImpersonateButton.vue")["default"]);
 Vue.component('undelete-user-button', __webpack_require__(/*! ./components/UndeleteUserButton.vue */ "./resources/js/components/UndeleteUserButton.vue")["default"]);
 Vue.component('delete-user-button', __webpack_require__(/*! ./components/DeleteUserButton.vue */ "./resources/js/components/DeleteUserButton.vue")["default"]);
+Vue.component('anonymise-user-button', __webpack_require__(/*! ./components/AnonymiseUserButton.vue */ "./resources/js/components/AnonymiseUserButton.vue")["default"]);
 Vue.component('admin-toggle-button', __webpack_require__(/*! ./components/AdminToggleButton.vue */ "./resources/js/components/AdminToggleButton.vue")["default"]);
 Vue.component('options-editor', __webpack_require__(/*! ./components/OptionsEditor.vue */ "./resources/js/components/OptionsEditor.vue")["default"]);
 Vue.component('discipline-contacts-editor', __webpack_require__(/*! ./components/DisciplineContactsEditor.vue */ "./resources/js/components/DisciplineContactsEditor.vue")["default"]);
@@ -47811,6 +47977,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminToggleButton_vue_vue_type_template_id_5961533a___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminToggleButton_vue_vue_type_template_id_5961533a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/AnonymiseUserButton.vue":
+/*!*********************************************************!*\
+  !*** ./resources/js/components/AnonymiseUserButton.vue ***!
+  \*********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _AnonymiseUserButton_vue_vue_type_template_id_0a8e20bd___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AnonymiseUserButton.vue?vue&type=template&id=0a8e20bd& */ "./resources/js/components/AnonymiseUserButton.vue?vue&type=template&id=0a8e20bd&");
+/* harmony import */ var _AnonymiseUserButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AnonymiseUserButton.vue?vue&type=script&lang=js& */ "./resources/js/components/AnonymiseUserButton.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _AnonymiseUserButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _AnonymiseUserButton_vue_vue_type_template_id_0a8e20bd___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _AnonymiseUserButton_vue_vue_type_template_id_0a8e20bd___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/AnonymiseUserButton.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/AnonymiseUserButton.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************!*\
+  !*** ./resources/js/components/AnonymiseUserButton.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AnonymiseUserButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./AnonymiseUserButton.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AnonymiseUserButton.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AnonymiseUserButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/AnonymiseUserButton.vue?vue&type=template&id=0a8e20bd&":
+/*!****************************************************************************************!*\
+  !*** ./resources/js/components/AnonymiseUserButton.vue?vue&type=template&id=0a8e20bd& ***!
+  \****************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AnonymiseUserButton_vue_vue_type_template_id_0a8e20bd___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./AnonymiseUserButton.vue?vue&type=template&id=0a8e20bd& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AnonymiseUserButton.vue?vue&type=template&id=0a8e20bd&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AnonymiseUserButton_vue_vue_type_template_id_0a8e20bd___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AnonymiseUserButton_vue_vue_type_template_id_0a8e20bd___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

@@ -17,8 +17,18 @@
                 </button>
             </form>
         </span>
+        <span class="level-item">
+            <a href="{{ route('gdpr.export.user', $user->id) }}" class="button">
+                GDPR Export
+            </a>
+        </span>
     </div>
     <div class="level-right">
+        @if ($user->isExternal())
+        <div class="level-item">
+            <anonymise-user-button :user="{{ $user->toJson() }}"></anonymise-user-button>
+        </div>
+        @endif
         <div class="level-item">
             <delete-user-button :user="{{ $user->toJson() }}"></delete-user-button>
         </div>
@@ -40,59 +50,59 @@
     </tr>
 </table>
 
-<hr/>
+<hr />
 
 <div class="columns">
     @if ($user->isInternal())
-        <div class="column">
-            <h4 class="title is-4 has-text-grey">
-                Setting
-            </h4>
-            <ul>
-                @foreach ($user->courses as $course)
-                    @if ($course->pivot->is_setter)
-                        <li>
-                            <a href="{{ route('course.show', $course) }}">
-                                {{ $course->full_name }}
-                            </a>
-                        </li>
-                    @endif
-                @endforeach
-            </ul>
-        </div>
-        <div class="column">
-            <h4 class="title is-4 has-text-grey">
-                Moderating
-            </h4>
-            <ul>
-                @foreach ($user->courses as $course)
-                    @if ($course->pivot->is_moderator)
-                        <li>
-                            <a href="{{ route('course.show', $course) }}">
-                                {{ $course->full_name }}
-                            </a>
-                        </li>
-                    @endif
-                @endforeach
-            </ul>
-        </div>
+    <div class="column">
+        <h4 class="title is-4 has-text-grey">
+            Setting
+        </h4>
+        <ul>
+            @foreach ($user->courses as $course)
+            @if ($course->pivot->is_setter)
+            <li>
+                <a href="{{ route('course.show', $course) }}">
+                    {{ $course->full_name }}
+                </a>
+            </li>
+            @endif
+            @endforeach
+        </ul>
+    </div>
+    <div class="column">
+        <h4 class="title is-4 has-text-grey">
+            Moderating
+        </h4>
+        <ul>
+            @foreach ($user->courses as $course)
+            @if ($course->pivot->is_moderator)
+            <li>
+                <a href="{{ route('course.show', $course) }}">
+                    {{ $course->full_name }}
+                </a>
+            </li>
+            @endif
+            @endforeach
+        </ul>
+    </div>
     @else
-        <div class="column">
-            <h4 class="title is-4 has-text-grey">
-                External
-            </h4>
-            <ul>
-                @foreach ($user->courses as $course)
-                    @if ($course->pivot->is_external)
-                        <li>
-                            <a href="{{ route('course.show', $course) }}">
-                                {{ $course->full_name }}
-                            </a>
-                        </li>
-                    @endif
-                @endforeach
-            </ul>
-        </div>
+    <div class="column">
+        <h4 class="title is-4 has-text-grey">
+            External
+        </h4>
+        <ul>
+            @foreach ($user->courses as $course)
+            @if ($course->pivot->is_external)
+            <li>
+                <a href="{{ route('course.show', $course) }}">
+                    {{ $course->full_name }}
+                </a>
+            </li>
+            @endif
+            @endforeach
+        </ul>
+    </div>
     @endif
 </div>
 

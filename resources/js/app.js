@@ -29,6 +29,7 @@ Vue.component('user-list', require('./components/UserList.vue').default);
 Vue.component('impersonate-button', require('./components/ImpersonateButton.vue').default);
 Vue.component('undelete-user-button', require('./components/UndeleteUserButton.vue').default);
 Vue.component('delete-user-button', require('./components/DeleteUserButton.vue').default);
+Vue.component('anonymise-user-button', require('./components/AnonymiseUserButton.vue').default);
 Vue.component('admin-toggle-button', require('./components/AdminToggleButton.vue').default);
 Vue.component('options-editor', require('./components/OptionsEditor.vue').default);
 Vue.component('discipline-contacts-editor', require('./components/DisciplineContactsEditor.vue').default);

@@ -153,4 +153,14 @@ class User extends Authenticatable
     {
         return $this->isAdmin();
     }
+
+    public function anonymise()
+    {
+        $this->update([
+            'username' => 'gdpr' . $this->id,
+            'email' => 'gdpr' . $this->id . '@glasgow.ac.uk',
+            'surname' => 'anon',
+            'forenames' => 'anon',
+        ]);
+    }
 }
