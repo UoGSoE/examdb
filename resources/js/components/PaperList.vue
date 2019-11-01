@@ -25,7 +25,7 @@
               <br>
               <span v-if="paper.comments && paper.comments.length > 0">
                 <small>
-                  <strong>{{ paper.user.full_name }}</strong>
+                  <strong v-html="getUserName(paper)"></strong>
                 </small>
                 <span class="icon is-small">
                   <i class="far fa-comment"></i>
@@ -80,6 +80,9 @@ export default {
     };
   },
   methods: {
+    getUserName(paper) {
+      return paper.user ? paper.user.full_name : '<span class="tag">Disabled</span>'
+    },
     paperAdded(paper) {
       this.$emit("paper-added", paper);
     },

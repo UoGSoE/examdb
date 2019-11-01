@@ -11534,6 +11534,9 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    getUserName: function getUserName(paper) {
+      return paper.user ? paper.user.full_name : '<span class="tag">Disabled</span>';
+    },
     paperAdded: function paperAdded(paper) {
       this.$emit("paper-added", paper);
     },
@@ -34804,7 +34807,11 @@ var render = function() {
                   paper.comments && paper.comments.length > 0
                     ? _c("span", [
                         _c("small", [
-                          _c("strong", [_vm._v(_vm._s(paper.user.full_name))])
+                          _c("strong", {
+                            domProps: {
+                              innerHTML: _vm._s(_vm.getUserName(paper))
+                            }
+                          })
                         ]),
                         _vm._v(" "),
                         _c("span", { staticClass: "icon is-small" }, [
