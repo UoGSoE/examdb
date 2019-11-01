@@ -36,6 +36,6 @@
         "vue-clickaway": "^2.2.2",
         "vue-pikaday-directive": "^0.5.2",
         "vue-popperjs": "^1.6.3",
-        "vue-select": "^2.6.4"
+        "vue-select": "^3.0"
     }
 }

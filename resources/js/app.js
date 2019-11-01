@@ -32,6 +32,7 @@ Vue.component('delete-user-button', require('./components/DeleteUserButton.vue')
 Vue.component('admin-toggle-button', require('./components/AdminToggleButton.vue').default);
 Vue.component('options-editor', require('./components/OptionsEditor.vue').default);
 Vue.component('discipline-contacts-editor', require('./components/DisciplineContactsEditor.vue').default);
+import 'vue-select/dist/vue-select.css';
 import vSelect from 'vue-select'
 
 import PortalVue from 'portal-vue'
