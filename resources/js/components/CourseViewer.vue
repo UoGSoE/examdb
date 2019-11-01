@@ -9,7 +9,7 @@
           </h2>
         </div>
         <div v-if="user.is_admin" class="level-right">
-          <a :href="archiveRoute" class="button level-item">Archive Papers</a>
+          <course-archive-papers-button :course="theCourse"></course-archive-papers-button>
           <a @click.prevent="disableCourse" class="button level-item">Disable Course</a>
         </div>
       </div>
@@ -77,9 +77,6 @@ export default {
     };
   },
   computed: {
-    archiveRoute() {
-      return route('course.papers.archive_form', this.course.id);
-    },
     disableRoute() {
       return route('course.disable', this.course.id);
     }

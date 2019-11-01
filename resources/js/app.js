@@ -30,9 +30,15 @@ Vue.component('impersonate-button', require('./components/ImpersonateButton.vue'
 Vue.component('undelete-user-button', require('./components/UndeleteUserButton.vue').default);
 Vue.component('delete-user-button', require('./components/DeleteUserButton.vue').default);
 Vue.component('anonymise-user-button', require('./components/AnonymiseUserButton.vue').default);
+Vue.component('remove-staff-button', require('./components/RemoveStaffButton.vue').default);
+Vue.component('course-archive-papers-button', require('./components/CourseArchivePapersButton.vue').default);
+Vue.component('archive-all-papers-button', require('./components/ArchiveAllPapersButton.vue').default);
+Vue.component('notify-externals-button', require('./components/NotifyExternalsButton.vue').default);
 Vue.component('admin-toggle-button', require('./components/AdminToggleButton.vue').default);
 Vue.component('options-editor', require('./components/OptionsEditor.vue').default);
 Vue.component('discipline-contacts-editor', require('./components/DisciplineContactsEditor.vue').default);
+Vue.component('archive-area-form', require('./components/ArchiveAreaForm.vue').default);
+Vue.component('notify-externals-form', require('./components/NotifyExternalsForm.vue').default);
 import 'vue-select/dist/vue-select.css';
 import vSelect from 'vue-select'
 

@@ -1,23 +1,22 @@
 <template>
   <div>
-    <button class="button" @click.prevent="showModal = true">Anonymise User</button>
+    <button class="button" @click.prevent="showModal = true">Notify Externals</button>
     <portal to="portal-modal" v-if="showModal">
       <div class="modal is-active">
         <div class="modal-background"></div>
         <div class="modal-card">
           <header class="modal-card-head">
-            <p class="modal-card-title">Confirm anonymising user</p>
+            <p class="modal-card-title">Confirm notify externals</p>
             <button class="delete" aria-label="close" @click.prevent="showModal = false"></button>
           </header>
           <section class="modal-card-body">
             Are you
             <strong>
               <em>sure</em>
-            </strong> you want to anonymise this user? This
-            <em>cannot</em> be undone!
+            </strong> you want to notify the externals for {{ area }}?
           </section>
           <footer class="modal-card-foot">
-            <button class="button is-danger" @click.prevent="anonymiseUser">Yes</button>
+            <button class="button is-danger" @click.prevent="notifyExternals">Yes</button>
             <button class="button" @click.prevent="showModal = false">Cancel</button>
           </footer>
         </div>
@@ -27,18 +26,20 @@
 </template>
 <script>
 export default {
-  props: ["user"],
+  props: ["area"],
   data() {
     return {
         showModal: false,
     };
   },
   methods: {
-    anonymiseUser() {
+    notifyExternals() {
       axios
-        .post(route("gdpr.anonymise.user", this.user.id))
+        .post(route('admin.notify.externals', {
+            area: this.area
+        }))
         .then(response => {
-          window.location = route("user.show", this.user.id);
+          window.location = route('paper.index');
         })
         .catch(error => {
           console.error(error);

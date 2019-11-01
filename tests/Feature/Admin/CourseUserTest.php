@@ -125,17 +125,6 @@ class CourseUserTest extends TestCase
         $this->assertEquals(0, $course2->fresh()->staff()->count());
     }
 
-    /** @test */
-    public function admins_must_give_confirmation_before_removing_all_staff_from_all_courses()
-    {
-        $this->withoutExceptionHandling();
-        $admin = create(User::class, ['is_admin' => true]);
-
-        $response = $this->actingAs($admin)->post(route('admin.courses.clear_staff'));
-
-        $response->assertRedirect(route('password.confirm'));
-    }
-
     protected function pretendPasswordConfirmed()
     {
         session(['auth' => ['password_confirmed_at' => now()->timestamp]]);  // pretend we have confirmed our password

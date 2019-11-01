@@ -12,10 +12,7 @@
     </div>
     <div class="level-right">
         <span class="level-item">
-            <form method="POST" action="{{ route('admin.courses.clear_staff') }}">
-                @csrf
-                <button class="button">Clear all staff from courses</button>
-            </form>
+            <remove-staff-button></remove-staff-button>
         </span>
         <span class="level-item">
             <wlm-importer></wlm-importer>
