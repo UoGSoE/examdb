@@ -25,6 +25,18 @@ class PapersForRegistryBulkDownloadTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
+    public function regular_users_cant_do_the_export()
+    {
+        Queue::fake();
+        $user = create(User::class);
+
+        $response = $this->actingAs($user)->postJson(route('export.paper.registry'));
+
+        $response->assertStatus(403);
+        Queue::assertNotPushed(ExportPapersForRegistry::class);
+    }
+
+    /** @test */
     public function an_admin_can_kick_off_an_export_of_the_papers_for_registry()
     {
         $this->withoutExceptionHandling();
@@ -113,6 +125,29 @@ class PapersForRegistryBulkDownloadTest extends TestCase
             $this->assertTrue($log->causer->is($admin));
             $this->assertEquals("Downloaded papers for registry ZIP", $log->description);
         });
+    }
+
+    /** @test */
+    public function tampered_download_links_dont_work()
+    {
+        Mail::fake();
+        Storage::fake();
+        Queue::fake();
+        $admin1 = create(User::class, ['is_admin' => true]);
+        $admin2 = create(User::class, ['is_admin' => true]);
+        login($admin1);
+        $course1 = create(Course::class);
+        $course2 = create(Course::class);
+        $course1->addPaper('main', Paper::PAPER_FOR_REGISTRY, UploadedFile::fake()->create('document1.pdf', 1));
+        $course1->addPaper('resit', Paper::PAPER_FOR_REGISTRY, UploadedFile::fake()->create('document2.pdf', 1));
+        $course2->addPaper('main', Paper::PAPER_CHECKLIST, UploadedFile::fake()->create('document3.pdf', 1));
+        $course2->addPaper('main', Paper::PAPER_FOR_REGISTRY, UploadedFile::fake()->create('document4.pdf', 1));
+
+        $link = (new PaperExporter(Paper::PAPER_FOR_REGISTRY, $admin1))->export();
+
+        $response = $this->actingAs($admin2)->get($link . 'xyz');
+
+        $response->assertStatus(401);
     }
 
     /** @test */
