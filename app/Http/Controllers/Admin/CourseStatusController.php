@@ -12,6 +12,10 @@ class CourseStatusController extends Controller
     {
         $course->disable();
 
+        activity()->causedBy(request()->user())->log(
+            "Disabled course " . $course->code
+        );
+
         return response()->json([
             'message' => 'disabled'
         ]);
@@ -19,7 +23,12 @@ class CourseStatusController extends Controller
 
     public function enable($id)
     {
-        Course::withTrashed()->findOrFail($id)->enable();
+        $course = Course::withTrashed()->findOrFail($id);
+        $course->enable();
+
+        activity()->causedBy(request()->user())->log(
+            "Enabled course " . $course->code
+        );
 
         if (request()->wantsJson()) {
             return response()->json([

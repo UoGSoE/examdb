@@ -69,7 +69,7 @@ class UserController extends Controller
 
         activity()
             ->causedBy(request()->user())
-            ->log("Deleted " . $user->username);
+            ->log("Disabled " . $user->username);
 
         return response()->json([
             'message' => 'deleted',
@@ -80,6 +80,10 @@ class UserController extends Controller
     {
         $user = User::withTrashed()->findOrFail($id);
         $user->restore();
+
+        activity()
+            ->causedBy(request()->user())
+            ->log("Re-enabled " . $user->username);
 
         return response()->json([
             'message' => 'restored',

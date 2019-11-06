@@ -79,6 +79,10 @@ class OptionsController extends Controller
             ]);
         }
 
+        activity()->causedBy($request->user())->log(
+            "Updated the site options"
+        );
+
         return response()->json([
             'status' => 'ok'
         ], 200);

@@ -11,6 +11,10 @@ class WlmImportController extends Controller
     {
         ImportFromWlm::dispatch(request()->user());
 
+        activity()->causedBy(request()->user())->log(
+            "Started a WLM import"
+        );
+
         return response()->json([
             'message' => 'Imported',
         ], 200);
