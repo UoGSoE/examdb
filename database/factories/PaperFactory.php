@@ -3,6 +3,7 @@
 use Faker\Generator as Faker;
 use App\User;
 use App\Course;
+use App\Paper;
 
 $factory->define(App\Paper::class, function (Faker $faker) {
     return [
@@ -18,5 +19,11 @@ $factory->define(App\Paper::class, function (Faker $faker) {
         'course_id' => function () {
             return create(Course::class)->id;
         },
+    ];
+});
+
+$factory->state(App\Paper::class, 'registry', function (Faker $faker) {
+    return [
+        'subcategory' => Paper::PAPER_FOR_REGISTRY,
     ];
 });

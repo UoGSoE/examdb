@@ -188,6 +188,6 @@ class Paper extends Model
 
     public function getDisciplineContact()
     {
-        return $this->course->discipline->contact;
+        return $this->course->discipline->contact ?? config('exampapers.fallback_email');
     }
 }

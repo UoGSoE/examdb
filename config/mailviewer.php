@@ -18,6 +18,7 @@ use App\Mail\NotifySetterAboutExternalComments;
 use App\Mail\NotifySetterAboutModeratorComments;
 use App\Mail\NotifyTeachingOfficeExternalDeadline;
 use App\Mail\NotifyTeachingOfficeExternalHasCommented;
+use App\Mail\RegistryPapersExported;
 
 return [
     /*
@@ -110,6 +111,9 @@ return [
         ],
         PaperForRegistry::class => [
             Course::class
+        ],
+        RegistryPapersExported::class => [
+            'http://example.com'
         ],
     ],
 

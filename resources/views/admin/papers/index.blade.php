@@ -9,6 +9,7 @@
         </h3>
     </div>
     <div class="level-right">
+        <export-papers-registry-button></export-papers-registry-button>
         <a class="button level-item" href="{{ route('area.papers.archive_form') }}">Archive Papers</a>
         <a class="button level-item" href="{{ route('admin.notify.externals.show') }}">Notify Externals</a>
     </div>
