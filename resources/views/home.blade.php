@@ -43,6 +43,9 @@
         <ul>
             @foreach ($externalCourses as $course)
             <li>
+                @if ($course->isFullyApproved())
+                    <span class="tag is-info has-text-weight-bold">Approved Locally</span>
+                @endif
                 <a href="{{ route('course.show', $course->id) }}">
                     {{ $course->code }} {{ $course->title }}
                 </a>

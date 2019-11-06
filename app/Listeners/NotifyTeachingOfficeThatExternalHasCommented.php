@@ -33,10 +33,6 @@ class NotifyTeachingOfficeThatExternalHasCommented
         }
 
         $contact = $event->paper->getDisciplineContact();
-        if (!$contact) {
-            // @TODO something better...
-            abort(500);
-        }
 
         Mail::to($contact)->queue(new NotifyTeachingOfficeExternalHasCommented($event->paper->course));
     }
