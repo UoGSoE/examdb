@@ -6,8 +6,11 @@ use App\User;
 use Tests\TestCase;
 use Illuminate\Support\Str;
 use App\Jobs\CheckPasswordQuality;
+use App\Mail\PasswordQualityFailure;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
+use Spatie\Activitylog\Models\Activity;
 use App\Exceptions\PasswordQualityException;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -72,19 +75,25 @@ class PasswordCheckerTest extends TestCase
     }
 
     /** @test */
-    public function a_bad_password_triggers_an_exception_inside_the_dispatched_job()
+    public function a_bad_password_triggers_an_activity_log_entry_and_a_mail_to_a_sysadmin()
     {
         if (env('CI')) {
             $this->markTestSkipped('Skipping in CI');
             return;
         }
-        try {
-            (new CheckPasswordQuality(['username' => 'something', 'password' => 'password']))->handle();
-        } catch (PasswordQualityException $e) {
-            $this->assertTrue(true);
-            return;
-        }
-        $this->fail('Bad password supplied, but no exception thrown');
+        Mail::fake();
+
+        (new CheckPasswordQuality(['username' => 'something', 'password' => 'password']))->handle();
+
+        Mail::assertQueued(PasswordQualityFailure::class, function ($mail) {
+            return $mail->hasTo(config('exampapers.sysadmin_email')) && $mail->username === 'something';
+        });
+        tap(Activity::all()->last(), function ($log) {
+            $this->assertEquals(
+                'Password quality check for something failed. The password can not be a dictionary word., The password was found in a third party data breach, and can not be used.',
+                $log->description
+            );
+        });
     }
 
     /** @test */

@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Exceptions\PasswordQualityException;
+use App\Mail\PasswordQualityFailure;
+use Illuminate\Support\Facades\Mail;
 use LangleyFoxall\LaravelNISTPasswordRules\PasswordRules;
 
 class CheckPasswordQuality implements ShouldQueue
@@ -49,7 +51,14 @@ class CheckPasswordQuality implements ShouldQueue
         ]);
 
         if ($validator->fails()) {
-            throw new PasswordQualityException("Username {$this->username} - " . implode(", ", $validator->errors()->all()));
+            $logMessage = 'Password quality check for ' .
+                            $this->username .
+                            ' failed. ' .
+                            implode(', ', $validator->errors()->get('password'));
+            activity()->log($logMessage);
+            Mail::to(config('exampapers.sysadmin_email'))->queue(
+                new PasswordQualityFailure($this->username, $validator->errors()->get('password'))
+            );
         }
     }
 }
