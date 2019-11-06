@@ -48,7 +48,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
         $response = $this->actingAs($admin)->postJson(route('export.paper.registry'));
 
         $response->assertOk();
-        Queue::assertPushed(ExportPapersForRegistry::class);
+        Queue::assertPushedOn('long-running-queue', ExportPapersForRegistry::class);
         tap(Activity::all()->last(), function ($log) use ($admin) {
             $this->assertTrue($log->causer->is($admin));
             $this->assertEquals("Created a ZIP of the papers for registry", $log->description);
