@@ -103,11 +103,11 @@ class PasswordCheckerTest extends TestCase
             $this->markTestSkipped('Skipping in CI');
             return;
         }
-        try {
-            (new CheckPasswordQuality(['username' => 'something', 'password' => Str::random(64)]))->handle();
-            $this->assertTrue(true);
-        } catch (PasswordQualityException $e) {
-            $this->fail('Bad password supplied, but no exception thrown');
-        }
+
+        Mail::fake();
+
+        (new CheckPasswordQuality(['username' => 'something', 'password' => Str::random(64)]))->handle();
+
+        Mail::assertNotQueued(PasswordQualityFailure::class);
     }
 }

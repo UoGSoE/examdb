@@ -64,6 +64,12 @@ return [
             'retry_after' => 90,
             'block_for' => null,
         ],
+        'long-running' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => 'default',
+            'retry_after' => 1200,
+        ],
 
     ],
 

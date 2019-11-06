@@ -39,8 +39,7 @@ class PaperExporter
         unlink($localZipname);
 
         RemoveRegistryZip::dispatch($remoteFilename)
-            ->delay(now()->addHours(config('exampapers.zip_expire_hours', 12)))
-            ->onQueue('slow');
+            ->delay(now()->addHours(config('exampapers.zip_expire_hours', 12)));
 
         return URL::temporarySignedRoute(
             'download.papers.registry',

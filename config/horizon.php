@@ -94,6 +94,16 @@ return [
                 'processes' => 10,
                 'tries' => 3,
             ],
+            'supervisor-long-running' => [
+                'connection' => 'long-running',
+                'queue' => [
+                    'long-running-queue'
+                ],
+                'balance' => 'simple',
+                'processes' => 3,
+                'tries' => 2,
+                'timeout' => 900,
+            ],
         ],
 
         'local' => [
@@ -103,6 +113,16 @@ return [
                 'balance' => 'simple',
                 'processes' => 3,
                 'tries' => 3,
+            ],
+            'supervisor-long-running' => [
+                'connection' => 'long-running',
+                'queue' => [
+                    'long-running-queue'
+                ],
+                'balance' => 'simple',
+                'processes' => 3,
+                'tries' => 2,
+                'timeout' => 900,
             ],
         ],
     ],

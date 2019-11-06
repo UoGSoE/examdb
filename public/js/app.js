@@ -11083,16 +11083,21 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       done: false,
-      buttonText: 'Export Papers for Registry'
+      busy: false,
+      buttonText: "Export Papers for Registry"
     };
   },
   methods: {
     exportPapers: function exportPapers() {
       var _this = this;
 
-      axios.post(route('export.paper.registry')).then(function (res) {
-        _this.done = true;
-        _this.buttonText = 'Export started';
+      this.busy = true;
+      axios.post(route("export.paper.registry")).then(function (res) {
+        setTimeout(function () {
+          _this.buttonText = "Export started";
+          _this.done = true;
+          _this.busy = false;
+        }, 1000);
       })["catch"](function (err) {
         console.error(err);
       });
@@ -34618,6 +34623,7 @@ var render = function() {
   return _c("div", { staticClass: "level-item" }, [
     _c("button", {
       staticClass: "button",
+      class: { "is-loading": _vm.busy },
       attrs: { disabled: _vm.done },
       domProps: { textContent: _vm._s(_vm.buttonText) },
       on: {
