@@ -139,7 +139,7 @@ services:
       - private
 
   minio:
-    image: minio:minio
+    image: minio/minio
     deploy: *default-deploy
     entrypoint: sh
     command: -c 'mkdir -p /data/exampapers && /usr/bin/minio server /data'
