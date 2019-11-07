@@ -13,7 +13,7 @@
             Are you
             <strong>
               <em>sure</em>
-            </strong> you want to archive <em>all</em> papers on this courses? This
+            </strong> you want to archive <em>all</em> papers on this course? This
             <em>cannot</em> be undone!
           </section>
           <footer class="modal-card-foot">
@@ -35,12 +35,15 @@ export default {
   },
   methods: {
     archivePapers() {
+        console.log('here');
       axios
-        .post(route('course.papers.archive_form', this.course.id))
+        .post(route('course.papers.archive', this.course.id))
         .then(response => {
-          window.location = route('course.show', this.course.id);
+            console.log('there');
+            window.location.replace(route('course.show', this.course.id));
         })
         .catch(error => {
+            console.log('whaaa');
           console.error(error);
         });
     }

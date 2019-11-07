@@ -10809,9 +10809,12 @@ __webpack_require__.r(__webpack_exports__);
     archivePapers: function archivePapers() {
       var _this = this;
 
-      axios.post(route('course.papers.archive_form', this.course.id)).then(function (response) {
-        window.location = route('course.show', _this.course.id);
+      console.log('here');
+      axios.post(route('course.papers.archive', this.course.id)).then(function (response) {
+        console.log('there');
+        window.location.replace(route('course.show', _this.course.id));
       })["catch"](function (error) {
+        console.log('whaaa');
         console.error(error);
       });
     }
@@ -34182,7 +34185,7 @@ var render = function() {
                   _c("strong", [_c("em", [_vm._v("sure")])]),
                   _vm._v(" you want to archive "),
                   _c("em", [_vm._v("all")]),
-                  _vm._v(" papers on this courses? This\n          "),
+                  _vm._v(" papers on this course? This\n          "),
                   _c("em", [_vm._v("cannot")]),
                   _vm._v(" be undone!\n        ")
                 ]),
