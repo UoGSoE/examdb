@@ -11330,6 +11330,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["course", "category", "subcategories"],
@@ -11340,16 +11349,18 @@ __webpack_require__.r(__webpack_exports__);
       subcategory: "",
       show: false,
       busy: false,
-      error: false
+      error: false,
+      failed: false,
+      errorMessage: ''
     };
   },
   computed: {
     secondResit: function secondResit() {
-      return this.category == 'resit2';
+      return this.category == "resit2";
     },
     applicableSubcategories: function applicableSubcategories() {
       if (this.secondResit) {
-        return ['Second Resit File'];
+        return ["Second Resit File"];
       }
 
       return this.subcategories;
@@ -11377,10 +11388,13 @@ __webpack_require__.r(__webpack_exports__);
         _this.show = false;
         _this.comment = "";
         _this.subcategory = "";
+        _this.failed = false;
 
         _this.$emit("added", response.data);
       })["catch"](function (error) {
-        console.log(error);
+        _this.failed = true;
+        _this.busy = false;
+        _this.errorMessage = 'Could not upload paper...';
       });
     },
     getFormData: function getFormData() {
@@ -34998,9 +35012,7 @@ var render = function() {
                         ]),
                         _vm._v(" "),
                         _c("span", { staticClass: "file-label" }, [
-                          _vm._v(
-                            "\n                    Choose a file…\n                  "
-                          )
+                          _vm._v("Choose a file…")
                         ])
                       ])
                     ])
@@ -35053,11 +35065,16 @@ var render = function() {
                         _c("i", { staticClass: "fas fa-upload" })
                       ]),
                       _vm._v(" "),
-                      _c("span", [
-                        _vm._v("\n                Upload\n              ")
-                      ])
+                      _c("span", [_vm._v("Upload")])
                     ]
-                  )
+                  ),
+                  _vm._v(" "),
+                  _vm.failed
+                    ? _c("div", {
+                        staticClass: "notification is-danger",
+                        domProps: { textContent: _vm._s(_vm.errorMessage) }
+                      })
+                    : _vm._e()
                 ])
               ])
             ])
