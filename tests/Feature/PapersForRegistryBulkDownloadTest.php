@@ -28,6 +28,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
     public function regular_users_cant_do_the_export()
     {
         Queue::fake();
+        Storage::fake('exampapers');
         $user = create(User::class);
 
         $response = $this->actingAs($user)->postJson(route('export.paper.registry'));
@@ -41,7 +42,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
     {
         $this->withoutExceptionHandling();
         Mail::fake();
-        Storage::fake();
+        Storage::fake('exampapers');
         Queue::fake();
         $admin = create(User::class, ['is_admin' => true]);
 
@@ -60,7 +61,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
     {
         $this->withoutExceptionHandling();
         Mail::fake();
-        Storage::fake();
+        Storage::fake('exampapers');
         $admin = create(User::class, ['is_admin' => true]);
 
         $response = $this->actingAs($admin)->postJson(route('export.paper.registry'));
@@ -76,7 +77,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
     {
         $this->withoutExceptionHandling();
         Mail::fake();
-        Storage::fake();
+        Storage::fake('exampapers');
         Queue::fake();
         $admin = create(User::class, ['is_admin' => true]);
 
@@ -91,7 +92,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
     {
         $this->withoutExceptionHandling();
         Mail::fake();
-        Storage::fake();
+        Storage::fake('exampapers');
         Queue::fake();
         $admin = create(User::class, ['is_admin' => true]);
         login($admin);
@@ -131,7 +132,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
     public function tampered_download_links_dont_work()
     {
         Mail::fake();
-        Storage::fake();
+        Storage::fake('exampapers');
         Queue::fake();
         $admin1 = create(User::class, ['is_admin' => true]);
         $admin2 = create(User::class, ['is_admin' => true]);
@@ -155,7 +156,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
     {
         $this->withoutExceptionHandling();
         Mail::fake();
-        Storage::fake();
+        Storage::fake('exampapers');
         Queue::fake();
         config(['exampapers.zip_expire_hours' => 8]);
         $admin = create(User::class, ['is_admin' => true]);
@@ -174,7 +175,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
     {
         $this->withoutExceptionHandling();
         Mail::fake();
-        Storage::fake();
+        Storage::fake('exampapers');
         Queue::fake();
         config(['exampapers.zip_expire_hours' => 8]);
         $admin = create(User::class, ['is_admin' => true]);
