@@ -99,6 +99,9 @@ deploy_to_qa:
   - export TRAEFIK_HOSTNAME=$TRAEFIK_QA_HOSTNAME
   - export NOW=`date +%Y-%m-%d-%H-%M-%S`
   - export DOTENV_NAME="${CI_PROJECT_PATH_SLUG}-qa-dotenv-${NOW}"
+  - export MINIO_QA_KEY=${MINIO_QA_KEY}
+  - export MINIO_QA_SECRET=${MINIO_QA_SECRET}
+  - export MINIO_QA_ENDPOINT=${MINIO_QA_ENDPOINT}
   - echo "$QA_SSH_KEY" | tr -d '\r' | ssh-add - > /dev/null
   - mkdir ~/.ssh
   - chmod 700 ~/.ssh

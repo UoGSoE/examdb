@@ -138,10 +138,28 @@ services:
       - proxy
       - private
 
+  minio:
+    image: minio:minio
+    deploy: *default-deploy
+    entrypoint: sh
+    command: -c 'mkdir -p /data/exampapers && /usr/bin/minio server /data'
+    environment:
+      MINIO_KEY=${MINIO_QA_KEY}
+      MINIO_SECRET=${MINIO_QA_SECRET}
+      MINIO_REGION=us-east-1
+      MINIO_BUCKET=exampapers
+      MINIO_ENDPOINT=${MINIO_QA_ENDPOINT}
+    networks:
+      - private
+    volumes:
+      - minio:/data
+
 volumes:
   redis:
     driver: "local"
   mysql:
+    driver: "local"
+  minio:
     driver: "local"
 
 networks:
