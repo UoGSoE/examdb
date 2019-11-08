@@ -135,6 +135,28 @@ class PapersForRegistryBulkDownloadTest extends TestCase
         Storage::fake('exampapers');
         Queue::fake();
         $admin1 = create(User::class, ['is_admin' => true]);
+        login($admin1);
+        $course1 = create(Course::class);
+        $course2 = create(Course::class);
+        $course1->addPaper('main', Paper::PAPER_FOR_REGISTRY, UploadedFile::fake()->create('document1.pdf', 1));
+        $course1->addPaper('resit', Paper::PAPER_FOR_REGISTRY, UploadedFile::fake()->create('document2.pdf', 1));
+        $course2->addPaper('main', Paper::PAPER_CHECKLIST, UploadedFile::fake()->create('document3.pdf', 1));
+        $course2->addPaper('main', Paper::PAPER_FOR_REGISTRY, UploadedFile::fake()->create('document4.pdf', 1));
+
+        $link = (new PaperExporter(Paper::PAPER_FOR_REGISTRY, $admin1))->export();
+
+        $response = $this->actingAs($admin1)->get($link . 'xyz');
+
+        $response->assertStatus(401);
+    }
+
+    /** @test */
+    public function only_the_user_who_requested_the_download_can_access_it()
+    {
+        Mail::fake();
+        Storage::fake('exampapers');
+        Queue::fake();
+        $admin1 = create(User::class, ['is_admin' => true]);
         $admin2 = create(User::class, ['is_admin' => true]);
         login($admin1);
         $course1 = create(Course::class);
@@ -150,6 +172,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
 
         $response->assertStatus(401);
     }
+
 
     /** @test */
     public function when_the_zip_is_generated_a_job_is_queued_to_remove_it_again()
@@ -186,7 +209,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
 
         Storage::disk('exampapers')->assertMissing('test.zip');
         tap(Activity::all()->last(), function ($log) {
-            $this->assertEquals('Automatcally removed registry zip test.zip', $log->description);
+            $this->assertEquals('Automatically removed registry zip test.zip', $log->description);
         });
     }
 }

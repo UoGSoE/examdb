@@ -33,6 +33,6 @@ class RemoveRegistryZip implements ShouldQueue
     public function handle()
     {
         Storage::disk('exampapers')->delete($this->filename);
-        activity()->log('Automatcally removed registry zip ' . $this->filename);
+        activity()->log('Automatically removed registry zip ' . $this->filename);
     }
 }

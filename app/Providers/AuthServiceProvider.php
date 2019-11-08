@@ -30,5 +30,9 @@ class AuthServiceProvider extends ServiceProvider
         Blade::if('admin', function () {
             return auth()->check() and auth()->user()->isAdmin();
         });
+
+        Gate::define('download_registry', function ($user) {
+            return $user->is(request()->user());
+        });
     }
 }
