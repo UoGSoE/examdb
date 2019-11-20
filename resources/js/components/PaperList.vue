@@ -1,6 +1,6 @@
 <template>
   <div>
-    <transition-group name="flash" mode="in-out" tag="span">
+    <transition-group name="paper-flash" mode="in-out" tag="span">
       <article class="media" v-for="paper in papers" :key="paper.id">
         <figure class="media-left has-text-centered">
           <a :href="getDownloadRoute(paper)" class="image is-64x64">
@@ -105,3 +105,16 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.paper-flash-enter-active, .paper-flash-leave-active {
+  background-color: hsl(0, 0%, 100%);
+  transition: all .7s;
+  opacity: 100%;
+}
+.paper-flash-enter, .paper-flash-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  background-color: hsl(171, 100%, 41%);
+}
+
+</style>
