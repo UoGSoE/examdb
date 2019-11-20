@@ -36,20 +36,24 @@ class TestDataSeeder extends Seeder
             'email' => 'jenny@example.com'
         ]);
 
+        collect(['Elec', 'MBE', 'Civil', 'UESTC'])->map(function ($title) {
+            return Discipline::create(['title' => $title]);
+        });
         $courses = factory(Course::class, 10)->create();
         foreach ($courses as $course) {
             $setter->courses()->attach($course->id, ['is_setter' => true]);
             $moderator->courses()->attach($course->id, ['is_moderator' => true]);
             $external->courses()->attach($course->id, ['is_external' => true]);
+            $course->discipline()->associate(Discipline::inRandomOrder()->first());
+            $course->save();
         }
         $courses = factory(Course::class, 5)->create();
         foreach ($courses as $course) {
             $setter->courses()->attach($course->id, ['is_moderator' => true]);
             $moderator->courses()->attach($course->id, ['is_setter' => true]);
             $external->courses()->attach($course->id, ['is_external' => true]);
+            $course->discipline()->associate(Discipline::inRandomOrder()->first());
+            $course->save();
         }
-        collect(['Elec', 'MBE', 'Civil', 'UESTC'])->map(function ($title) {
-            return Discipline::create(['title' => $title]);
-        });
     }
 }
