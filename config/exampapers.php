@@ -26,12 +26,9 @@ return [
             "Solutions For Archive",
         ],
         'external' => [
-            'main' => [
-                "External Examiner Comments",
-            ],
-            'solution' => [
-                "External Examiner Solution Comments",
-            ],
+            "External Examiner Comments",
+            "---", // divider - disabled in the UI
+            "External Examiner Solution Comments",
         ],
     ],
 ];

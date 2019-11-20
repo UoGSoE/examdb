@@ -209,6 +209,51 @@ class PaperUploadTest extends TestCase
     }
 
     /** @test */
+    public function an_external_can_upload_thier_solution_comments_which_triggers_an_email_to_the_setter_and_teaching_office_contact()
+    {
+        $this->withoutExceptionHandling();
+        Mail::fake();
+        Storage::fake('exampapers');
+
+        option(['teaching_office_contact_glasgow' => 'jenny@example.com']);
+        $setter = create(User::class);
+        $discipline = create(Discipline::class, ['contact' => 'someone@example.com']);
+        $course = create(Course::class, ['discipline_id' => $discipline->id]);
+        $setter->markAsSetter($course);
+        $external = create(User::class);
+        $external->markAsExternal($course);
+
+        $response = $this->actingAs($external)->postJson(route('course.paper.store', $course->id), [
+            'paper' => UploadedFile::fake()->create('main_paper_1.pdf', 1),
+            'category' => 'main',
+            'subcategory' => Paper::EXTERNAL_SOLUTION_COMMENTS,
+            'comment' => 'Whatever',
+        ]);
+
+        $response->assertStatus(201);
+        $this->assertCount(1, $course->papers);
+        $this->assertCount(1, $course->papers->first()->comments);
+        $paper = $course->papers->first();
+        // and check we recorded this in the activity/audit log
+        tap(Activity::all()->last(), function ($log) use ($external, $paper) {
+            $this->assertTrue($log->causer->is($external));
+            $this->assertEquals(
+                "Uploaded a paper ({$paper->course->code} - {$paper->category} / {$paper->subcategory})",
+                $log->description
+            );
+        });
+
+        // check an email was sent to all the course setter about the new upload
+        Mail::assertQueued(NotifySetterAboutExternalComments::class, function ($mail) use ($setter) {
+            return $mail->hasTo($setter->email);
+        });
+        // check an email was sent to the teaching office about the new upload
+        Mail::assertQueued(NotifyTeachingOfficeExternalHasCommented::class, function ($mail) use ($discipline) {
+            return $mail->hasTo($discipline->contact);
+        });
+    }
+
+    /** @test */
     public function when_the_setter_uploads_the_paper_for_registry_an_email_is_sent_to_teaching_office_contact()
     {
         $this->withoutExceptionHandling();

@@ -13,7 +13,7 @@
           <a @click.prevent="disableCourse" class="button level-item">Disable Course</a>
         </div>
       </div>
-      <p class="subtitle"><b>Note:</b> the system will only notify other people of any changes when you upload a Paper Checklist</p>
+      <p v-if="! is_external" class="subtitle"><b>Note:</b> the system will only notify other people of any changes when you upload a Paper Checklist</p>
 
       <span v-if="user.is_admin">
         <staff-course-editor v-if="user.is_admin" :staff="staff" :externals="externals" :course="theCourse"></staff-course-editor>
@@ -73,7 +73,8 @@ export default {
   data() {
     return {
       thePapers: this.papers,
-      theCourse: this.course
+      theCourse: this.course,
+      is_external: window.is_external
     };
   },
   computed: {

@@ -10906,7 +10906,8 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       thePapers: this.papers,
-      theCourse: this.course
+      theCourse: this.course,
+      is_external: window.is_external
     };
   },
   computed: {
@@ -11674,22 +11675,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -34297,7 +34282,14 @@ var render = function() {
             : _vm._e()
         ]),
         _vm._v(" "),
-        _vm._m(0),
+        !_vm.is_external
+          ? _c("p", { staticClass: "subtitle" }, [
+              _c("b", [_vm._v("Note:")]),
+              _vm._v(
+                " the system will only notify other people of any changes when you upload a Paper Checklist"
+              )
+            ])
+          : _vm._e(),
         _vm._v(" "),
         _vm.user.is_admin
           ? _c(
@@ -34467,19 +34459,7 @@ var render = function() {
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("p", { staticClass: "subtitle" }, [
-      _c("b", [_vm._v("Note:")]),
-      _vm._v(
-        " the system will only notify other people of any changes when you upload a Paper Checklist"
-      )
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -35741,7 +35721,7 @@ var render = function() {
                   attrs: {
                     course: _vm.course,
                     category: _vm.category,
-                    subcategories: _vm.subcategories.external.main
+                    subcategories: _vm.subcategories["external"]
                   },
                   on: { added: _vm.paperAdded }
                 },
@@ -35751,38 +35731,7 @@ var render = function() {
                       _c("i", { staticClass: "far fa-check-circle" })
                     ]),
                     _vm._v(" "),
-                    _c("span", [_vm._v("Add Main Comments")])
-                  ])
-                ],
-                2
-              )
-            ],
-            1
-          )
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.is_external
-        ? _c(
-            "span",
-            { staticClass: "level-item" },
-            [
-              _c(
-                "main-paper-uploader",
-                {
-                  attrs: {
-                    course: _vm.course,
-                    category: _vm.category,
-                    subcategories: _vm.subcategories.external.solution
-                  },
-                  on: { added: _vm.paperAdded }
-                },
-                [
-                  _c("template", { slot: "button-content" }, [
-                    _c("span", { staticClass: "icon has-text-success" }, [
-                      _c("i", { staticClass: "far fa-check-circle" })
-                    ]),
-                    _vm._v(" "),
-                    _c("span", [_vm._v("Add Solution Comments")])
+                    _c("span", [_vm._v("Add Comments")])
                   ])
                 ],
                 2

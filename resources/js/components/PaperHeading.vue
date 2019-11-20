@@ -29,30 +29,14 @@
                 <main-paper-uploader
                     :course="course"
                     :category="category"
-                    :subcategories='subcategories.external.main'
+                    :subcategories='subcategories["external"]'
                     @added="paperAdded"
                 >
                     <template slot="button-content">
                         <span class="icon has-text-success">
                         <i class="far fa-check-circle"></i>
                         </span>
-                        <span>Add Main Comments</span>
-                    </template>
-                </main-paper-uploader>
-            </span>
-
-            <span class="level-item" v-if="is_external">
-                <main-paper-uploader
-                    :course="course"
-                    :category="category"
-                    :subcategories='subcategories.external.solution'
-                    @added="paperAdded"
-                >
-                    <template slot="button-content">
-                        <span class="icon has-text-success">
-                        <i class="far fa-check-circle"></i>
-                        </span>
-                        <span>Add Solution Comments</span>
+                        <span>Add Comments</span>
                     </template>
                 </main-paper-uploader>
             </span>
