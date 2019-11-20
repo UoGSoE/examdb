@@ -9,7 +9,7 @@ class WlmImportController extends Controller
 {
     public function update()
     {
-        ImportFromWlm::dispatch(request()->user());
+        ImportFromWlm::dispatch(request()->user())->onQueue('long-running-queue');
 
         activity()->causedBy(request()->user())->log(
             "Started a WLM import"

@@ -14,6 +14,7 @@ class WlmImporter
     protected $staffList;
     protected $studentList;
     protected $courseList;
+    protected $apiDelay = 1000000 / 10; // delay between api requests in millionths of a second
 
     public function __construct(WlmClientInterface $client)
     {
@@ -48,6 +49,7 @@ class WlmImporter
 
     protected function courseFromWlm($wlmCourse)
     {
+        usleep($this->apiDelay);
         return Course::fromWlmData($wlmCourse);
     }
 
@@ -72,6 +74,7 @@ class WlmImporter
 
     protected function getStaffEmail($wlmStaff)
     {
+        usleep($this->apiDelay);
         $staff = $this->client->getStaff($wlmStaff['GUID']);
         if (!preg_match('/\@/', $staff['Email'])) {
             $staff['Email'] = $wlmStaff['GUID'] . '@glasgow.ac.uk';
