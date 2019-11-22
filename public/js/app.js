@@ -10913,6 +10913,20 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     disableRoute: function disableRoute() {
       return route('course.disable', this.course.id);
+    },
+    canUploadPapers: function canUploadPapers() {
+      var _this = this;
+
+      var inSetters = this.course.setters.find(function (setter) {
+        return setter.id == _this.user.id;
+      });
+      var inModerators = this.course.moderators.find(function (moderator) {
+        return moderator.id == _this.user.id;
+      });
+      var inExternals = this.course.externals.find(function (external) {
+        return external.id == _this.user.id;
+      });
+      return inSetters || inModerators || inExternals;
     }
   },
   methods: {
@@ -10931,10 +10945,10 @@ __webpack_require__.r(__webpack_exports__);
       this.thePapers = tempPapers;
     },
     paperRemoved: function paperRemoved(paper) {
-      var _this = this;
+      var _this2 = this;
 
       axios["delete"](route("paper.delete", paper.id)).then(function (response) {
-        _this.thePapers = response.data.papers;
+        _this2.thePapers = response.data.papers;
       })["catch"](function (error) {
         console.error(error);
       });
@@ -11727,7 +11741,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ["course", "subcategories", "category"],
+  props: ["course", "subcategories", "category", "canUpload"],
   filters: {
     pretty: function pretty(value) {
       if (value == 'resit2') {
@@ -34431,6 +34445,7 @@ var render = function() {
             attrs: {
               course: _vm.theCourse,
               subcategories: _vm.subcategories,
+              "can-upload": _vm.canUploadPapers,
               category: "main"
             },
             on: {
@@ -34459,6 +34474,7 @@ var render = function() {
             attrs: {
               course: _vm.theCourse,
               subcategories: _vm.subcategories,
+              "can-upload": _vm.canUploadPapers,
               category: "resit"
             },
             on: {
@@ -34488,6 +34504,7 @@ var render = function() {
                 attrs: {
                   course: _vm.theCourse,
                   subcategories: _vm.subcategories,
+                  "can-upload": _vm.canUploadPapers,
                   category: "resit2"
                 },
                 on: { "paper-added": _vm.paperAdded }
@@ -35741,7 +35758,7 @@ var render = function() {
         )
       ]),
       _vm._v(" "),
-      _vm.is_local
+      _vm.is_local && _vm.canUpload
         ? _c(
             "span",
             { staticClass: "level-item" },
@@ -35759,7 +35776,7 @@ var render = function() {
           )
         : _vm._e(),
       _vm._v(" "),
-      _vm.is_external
+      _vm.is_external && _vm.canUpload
         ? _c(
             "span",
             { staticClass: "level-item" },
@@ -35790,7 +35807,7 @@ var render = function() {
           )
         : _vm._e(),
       _vm._v(" "),
-      _vm.is_local && !_vm.secondResit
+      _vm.is_local && !_vm.secondResit && _vm.canUpload
         ? _c("span", { staticClass: "level-item" }, [
             _c("button", {
               staticClass: "button",

@@ -15,7 +15,7 @@
                 </h3>
             </span>
 
-            <span class="level-item" v-if="is_local">
+            <span class="level-item" v-if="is_local && canUpload">
                 <main-paper-uploader
                     :course="course"
                     :category="category"
@@ -25,7 +25,7 @@
                 </main-paper-uploader>
             </span>
 
-            <span class="level-item" v-if="is_external">
+            <span class="level-item" v-if="is_external && canUpload">
                 <main-paper-uploader
                     :course="course"
                     :category="category"
@@ -41,7 +41,7 @@
                 </main-paper-uploader>
             </span>
 
-        <span class="level-item" v-if="is_local && !secondResit">
+        <span class="level-item" v-if="is_local && !secondResit && canUpload">
             <button class="button" @click.prevent="toggleApproval(category)" v-html="approvalButtonText(category)">
             </button>
         </span>
@@ -51,7 +51,7 @@
 </template>
 <script>
 export default {
-  props: ["course", "subcategories", "category"],
+  props: ["course", "subcategories", "category", "canUpload"],
   filters: {
     pretty(value) {
       if (value == 'resit2') {
@@ -71,7 +71,7 @@ export default {
     },
     secondResit() {
       return this.category == 'resit2';
-    }
+    },
   },
   data() {
     return {

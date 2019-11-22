@@ -46,20 +46,20 @@
   <div class="columns">
     <div class="column">
 
-      <paper-heading :course="theCourse" :subcategories="subcategories" category="main" @paper-added="paperAdded" @approval-toggled="approvalToggled"></paper-heading>
+      <paper-heading :course="theCourse" :subcategories="subcategories" :can-upload="canUploadPapers" category="main" @paper-added="paperAdded" @approval-toggled="approvalToggled"></paper-heading>
 
       <paper-list :course="theCourse" :papers="thePapers.main" category="main" @paper-removed="paperRemoved"></paper-list>
 
     </div><!-- /main-papers -->
 
     <div class="column">
-      <paper-heading :course="theCourse" :subcategories="subcategories" category="resit" @paper-added="paperAdded" @approval-toggled="approvalToggled"></paper-heading>
+      <paper-heading :course="theCourse" :subcategories="subcategories" :can-upload="canUploadPapers" category="resit" @paper-added="paperAdded" @approval-toggled="approvalToggled"></paper-heading>
 
       <paper-list :course="theCourse" :papers="thePapers.resit" category="resit" @paper-removed="paperRemoved"></paper-list>
     </div><!-- /resit-papers-heading -->
 
     <div class="column" v-if="course.is_uestc">
-      <paper-heading :course="theCourse" :subcategories="subcategories" category="resit2" @paper-added="paperAdded"></paper-heading>
+      <paper-heading :course="theCourse" :subcategories="subcategories" :can-upload="canUploadPapers" category="resit2" @paper-added="paperAdded"></paper-heading>
 
       <paper-list :course="theCourse" :papers="thePapers.resit2" category="resit2" @paper-removed="paperRemoved"></paper-list>
     </div>
@@ -80,6 +80,12 @@ export default {
   computed: {
     disableRoute() {
       return route('course.disable', this.course.id);
+    },
+    canUploadPapers() {
+      let inSetters = this.course.setters.find(setter => setter.id == this.user.id);
+      let inModerators = this.course.moderators.find(moderator => moderator.id == this.user.id);
+      let inExternals = this.course.externals.find(external => external.id == this.user.id);
+      return inSetters || inModerators || inExternals;
     }
   },
   methods: {
