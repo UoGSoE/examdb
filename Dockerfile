@@ -95,6 +95,9 @@ RUN rm -fr /var/www/html/bootstrap/cache/*.php
 #- If horizon is installed force it to rebuild it's public assets
 RUN if grep -q horizon composer.json; then php /var/www/html/artisan horizon:assets; fi
 
+#- Force-publish laravel's mail templates - see https://github.com/laravel/framework/issues/21493#issuecomment-427986812
+RUN php /var/www/html/artisan vendor:publish --tag=laravel-mail
+
 #- Symlink the docker secret to the local .env so Laravel can see it
 RUN ln -sf /run/secrets/.env /var/www/html/.env
 

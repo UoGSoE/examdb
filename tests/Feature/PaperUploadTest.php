@@ -316,4 +316,10 @@ class PaperUploadTest extends TestCase
         Mail::assertNothingSent();
         Mail::assertNothingQueued();
     }
+
+    /** @test */
+    public function people_not_associated_with_a_course_cant_upload_papers_for_it()
+    {
+        $this->fail('TODO');
+    }
 }
