@@ -6,6 +6,7 @@ use App\Paper;
 use App\Course;
 use App\Events\PaperAdded;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
 
@@ -13,6 +14,8 @@ class PaperController extends Controller
 {
     public function store(Course $course, Request $request)
     {
+        Gate::authorize('upload_paper', $course);
+
         $request->validate([
             'paper' => 'required|file',
             'category' => 'required',

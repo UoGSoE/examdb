@@ -320,6 +320,23 @@ class PaperUploadTest extends TestCase
     /** @test */
     public function people_not_associated_with_a_course_cant_upload_papers_for_it()
     {
-        $this->fail('TODO');
+        Mail::fake();
+        Storage::fake('exampapers');
+
+        $admin = create(User::class, ['is_admin' => true]);
+        $setter = create(User::class);
+        $discipline = create(Discipline::class, ['contact' => 'someone@example.com']);
+        $course = create(Course::class, ['code' => 'ENG1234', 'discipline_id' => $discipline->id]);
+        $setter->markAsSetter($course);
+
+        $response = $this->actingAs($admin)->postJson(route('course.paper.store', $course->id), [
+            'paper' => UploadedFile::fake()->create('main_paper_1.pdf', 1),
+            'category' => 'main',
+            'subcategory' => Paper::PAPER_FOR_REGISTRY,
+            'comment' => 'Whatever',
+        ]);
+
+        $response->assertStatus(403);
+        $this->assertCount(0, $course->fresh()->papers);
     }
 }
