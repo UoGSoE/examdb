@@ -52,7 +52,7 @@ class NotifyExternals implements ShouldQueue
                     ->unique();
 
         $emails->each(function ($email) {
-            Mail::to($email)->queue(new ExternalHasPapersToLookAt);
+            Mail::to($email)->later(now()->addSeconds(rand(1, 100)), new ExternalHasPapersToLookAt);
         });
     }
 }

@@ -68,7 +68,7 @@ class NotifyPaperworkIncomplete extends Command
         })->flatten()->unique();
 
         $peopleToContact->each(function ($email) {
-            Mail::to($email)->queue(new PaperworkIncomplete);
+            Mail::to($email)->later(now()->addSeconds(rand(1, 100)), new PaperworkIncomplete);
         });
     }
 
