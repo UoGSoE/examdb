@@ -67,7 +67,6 @@ services:
   queue:
     image: ${IMAGE_NAME}
     logging: *default-logging
-    deploy: *default-deploy
     stop_grace_period: 30s
     environment:
       CONTAINER_ROLE: queue
@@ -77,6 +76,12 @@ services:
       replicas: 1
       labels:
         - "traefik.enable=false"
+      limits:
+        cpus: "1"
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        order: start-first
     networks:
       - private
     secrets:
@@ -139,7 +144,7 @@ services:
       - private
 
   minio:
-    image: minio/minio
+    image: minio/minio:RELEASE.2019-10-12T01-39-57Z
     deploy: *default-deploy
     entrypoint: sh
     command: -c 'mkdir -p /data/exampapers && /usr/bin/minio server /data'
