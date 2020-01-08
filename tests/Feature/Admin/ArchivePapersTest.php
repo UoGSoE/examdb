@@ -75,4 +75,22 @@ class ArchivePapersTest extends TestCase
         $this->assertFalse($response->data('papers')->contains($paper2));
         $this->assertTrue($response->data('papers')->contains($paper3));
     }
+
+    /** @test */
+    public function we_can_get_a_list_of_just_archived_papers_for_a_course()
+    {
+        $this->withoutExceptionHandling();
+        $admin = create(User::class, ['is_admin' => true]);
+        $course = create(Course::class);
+        $paper1 = create(Paper::class, ['course_id' => $course->id]);
+        $paper2 = create(Paper::class, ['course_id' => $course->id]);
+        $paper3 = create(Paper::class, ['course_id' => $course->id]);
+
+        $paper1->archive();
+        $paper3->archive();
+
+        $this->assertEquals(2, $course->archivedPapers()->count());
+        $this->assertTrue($course->archivedPapers->contains($paper1));
+        $this->assertTrue($course->archivedPapers->contains($paper3));
+    }
 }

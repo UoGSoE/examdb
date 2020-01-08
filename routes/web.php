@@ -28,6 +28,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/paper/{paper}', 'PaperController@show')->name('paper.show');
     Route::delete('/paper/{paper}', 'PaperController@destroy')->name('paper.delete');
+    Route::get('/archivedpaper/{id}', 'ArchivedPaperController@show')->name('archived.paper.show');
 
     Route::group(['middleware' => 'admin', 'prefix' => '/admin'], function () {
 

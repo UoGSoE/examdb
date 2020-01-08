@@ -10762,6 +10762,102 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ArchivedPaperList.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ArchivedPaperList.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ["course", "papers"],
+  computed: {
+    filteredPapers: function filteredPapers() {
+      if (!this.filter) {
+        return this.papers;
+      }
+
+      var re = new RegExp(this.filter, "i");
+      return this.papers.filter(function (paper) {
+        if (re.test(paper.original_filename)) {
+          return true;
+        }
+
+        if (re.test(paper.subcategory)) {
+          return true;
+        }
+
+        return false;
+      });
+    }
+  },
+  data: function data() {
+    return {
+      user_id: window.user_id,
+      filter: ""
+    };
+  },
+  methods: {
+    getUserName: function getUserName(paper) {
+      return paper.user ? paper.user.full_name : '<span class="tag">Disabled</span>';
+    },
+    getDownloadRoute: function getDownloadRoute(paper) {
+      return route("archived.paper.show", paper.id);
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CourseArchivePapersButton.vue?vue&type=script&lang=js&":
 /*!************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CourseArchivePapersButton.vue?vue&type=script&lang=js& ***!
@@ -10818,6 +10914,36 @@ __webpack_require__.r(__webpack_exports__);
         console.error(error);
       });
     }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CourseArchivesViewer.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CourseArchivesViewer.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ArchivedPaperList__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ArchivedPaperList */ "./resources/js/components/ArchivedPaperList.vue");
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['course', 'papers'],
+  components: {
+    ArchivedPaperList: _ArchivedPaperList__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
+  data: function data() {
+    return {};
   }
 });
 
@@ -10902,6 +11028,53 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["course", "papers", "subcategories", "user", "staff", "externals"],
   data: function data() {
@@ -10914,10 +11087,10 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     disableRoute: function disableRoute() {
-      return route('course.disable', this.course.id);
+      return route("course.disable", this.course.id);
     },
     notifyButtonText: function notifyButtonText() {
-      return this.externalsNotified ? 'Notified!' : 'Notify Externals';
+      return this.externalsNotified ? "Notified!" : "Notify Externals";
     },
     canUploadPapers: function canUploadPapers() {
       var _this = this;
@@ -10968,8 +11141,8 @@ __webpack_require__.r(__webpack_exports__);
       this.theCourse = course;
     },
     disableCourse: function disableCourse() {
-      axios.post(route('course.disable', this.course.id)).then(function (res) {
-        window.location = route('course.index');
+      axios.post(route("course.disable", this.course.id)).then(function (res) {
+        window.location = route("course.index");
       })["catch"](function (err) {
         console.error(err);
       });
@@ -10977,7 +11150,7 @@ __webpack_require__.r(__webpack_exports__);
     notifyExternals: function notifyExternals() {
       var _this3 = this;
 
-      axios.post(route('admin.notify.externals_course', this.course.id)).then(function (res) {
+      axios.post(route("admin.notify.externals_course", this.course.id)).then(function (res) {
         _this3.externalsNotified = true;
       })["catch"](function (err) {
         console.error(err);
@@ -34187,6 +34360,152 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ArchivedPaperList.vue?vue&type=template&id=43a17fad&":
+/*!********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ArchivedPaperList.vue?vue&type=template&id=43a17fad& ***!
+  \********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("div", { staticClass: "field" }, [
+        _c("div", { staticClass: "control" }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.filter,
+                expression: "filter"
+              }
+            ],
+            staticClass: "input",
+            attrs: { type: "text", placeholder: "Filter..." },
+            domProps: { value: _vm.filter },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.filter = $event.target.value
+              }
+            }
+          })
+        ])
+      ]),
+      _vm._v(" "),
+      _vm.filteredPapers.length == 0
+        ? _c("div", [
+            _vm._v(
+              "\n      " +
+                _vm._s(_vm.filter ? "No matches..." : "None...") +
+                "\n  "
+            )
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _vm._l(_vm.filteredPapers, function(paper) {
+        return _c("article", { key: paper.id, staticClass: "media" }, [
+          _c("figure", { staticClass: "media-left has-text-centered" }, [
+            _c(
+              "a",
+              {
+                staticClass: "image is-64x64",
+                attrs: { href: _vm.getDownloadRoute(paper) }
+              },
+              [
+                _c("span", { staticClass: "icon is-large" }, [
+                  _c("i", { class: paper.icon + " fa-3x" })
+                ]),
+                _vm._v(" "),
+                _c("br"),
+                _vm._v(" "),
+                _c("span", [_vm._v(_vm._s(paper.formatted_size))])
+              ]
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "media-content" }, [
+            _c("div", { staticClass: "content" }, [
+              _c("p", [
+                _c("a", { attrs: { href: _vm.getDownloadRoute(paper) } }, [
+                  _c("strong", [_vm._v(_vm._s(paper.original_filename))])
+                ]),
+                _vm._v(" "),
+                _c("small", [
+                  _vm._v(
+                    _vm._s(paper.formatted_date) +
+                      " (" +
+                      _vm._s(paper.diff_for_humans) +
+                      ")"
+                  )
+                ]),
+                _vm._v(" "),
+                _c("br"),
+                _vm._v(" "),
+                _c("small", [
+                  _c("strong", [
+                    _vm._v(
+                      _vm._s(paper.category) + " - " + _vm._s(paper.subcategory)
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("br"),
+                _vm._v(" "),
+                paper.comments && paper.comments.length > 0
+                  ? _c("span", [
+                      _c("small", [
+                        _c("strong", {
+                          domProps: {
+                            innerHTML: _vm._s(_vm.getUserName(paper))
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _vm._m(0, true),
+                      _vm._v(
+                        "\n            " +
+                          _vm._s(paper.comments[0].comment) +
+                          "\n          "
+                      )
+                    ])
+                  : _vm._e()
+              ])
+            ])
+          ])
+        ])
+      })
+    ],
+    2
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon is-small" }, [
+      _c("i", { staticClass: "far fa-comment" })
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CourseArchivePapersButton.vue?vue&type=template&id=da5aff36&":
 /*!****************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CourseArchivePapersButton.vue?vue&type=template&id=da5aff36& ***!
@@ -34296,6 +34615,44 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CourseArchivesViewer.vue?vue&type=template&id=cc8c5f6e&":
+/*!***********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CourseArchivesViewer.vue?vue&type=template&id=cc8c5f6e& ***!
+  \***********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("hr"),
+      _vm._v(" "),
+      _c("h3", { staticClass: "title is-3 has-text-grey" }, [
+        _vm._v("Archives")
+      ]),
+      _vm._v(" "),
+      _c("archived-paper-list", {
+        attrs: { papers: _vm.papers, course: _vm.course }
+      })
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CourseViewer.vue?vue&type=template&id=6676e378&":
 /*!***************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CourseViewer.vue?vue&type=template&id=6676e378& ***!
@@ -34312,71 +34669,62 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
+    _c("div", { staticClass: "level" }, [
+      _c("div", { staticClass: "level-left" }, [
+        _c("h2", { staticClass: "title is-2 has-text-grey-dark level-item" }, [
+          _vm._v(_vm._s(_vm.theCourse.code) + " " + _vm._s(_vm.theCourse.title))
+        ])
+      ]),
+      _vm._v(" "),
+      _vm.user.is_admin
+        ? _c(
+            "div",
+            { staticClass: "level-right" },
+            [
+              _c("course-archive-papers-button", {
+                staticClass: "level-item",
+                attrs: { course: _vm.theCourse }
+              }),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  staticClass: "button level-item",
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.disableCourse($event)
+                    }
+                  }
+                },
+                [_vm._v("Disable Course")]
+              ),
+              _vm._v(" "),
+              _c("a", {
+                staticClass: "button level-item",
+                class: { "is-success": _vm.externalsNotified },
+                attrs: { disabled: _vm.externalsNotified },
+                domProps: { textContent: _vm._s(_vm.notifyButtonText) },
+                on: {
+                  click: function($event) {
+                    $event.preventDefault()
+                    return _vm.notifyExternals($event)
+                  }
+                }
+              })
+            ],
+            1
+          )
+        : _vm._e()
+    ]),
+    _vm._v(" "),
     _c("div", { staticClass: "columns" }, [
       _c("div", { staticClass: "column" }, [
-        _c("div", { staticClass: "level" }, [
-          _c("div", { staticClass: "level-left" }, [
-            _c(
-              "h2",
-              { staticClass: "title is-2 has-text-grey-dark level-item" },
-              [
-                _vm._v(
-                  "\n            " +
-                    _vm._s(_vm.theCourse.code) +
-                    " " +
-                    _vm._s(_vm.theCourse.title) +
-                    "\n          "
-                )
-              ]
-            )
-          ]),
-          _vm._v(" "),
-          _vm.user.is_admin
-            ? _c(
-                "div",
-                { staticClass: "level-right" },
-                [
-                  _c("course-archive-papers-button", {
-                    attrs: { course: _vm.theCourse }
-                  }),
-                  _vm._v(" "),
-                  _c(
-                    "a",
-                    {
-                      staticClass: "button level-item",
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          return _vm.disableCourse($event)
-                        }
-                      }
-                    },
-                    [_vm._v("Disable Course")]
-                  ),
-                  _vm._v(" "),
-                  _c("a", {
-                    staticClass: "button level-item",
-                    class: { "is-success": _vm.externalsNotified },
-                    attrs: { disabled: _vm.externalsNotified },
-                    domProps: { textContent: _vm._s(_vm.notifyButtonText) },
-                    on: {
-                      click: function($event) {
-                        $event.preventDefault()
-                        return _vm.notifyExternals($event)
-                      }
-                    }
-                  })
-                ],
-                1
-              )
-            : _vm._e()
-        ]),
-        _vm._v(" "),
         !_vm.is_external
           ? _c("p", { staticClass: "subtitle" }, [
               _c("b", [_vm._v("Note:")]),
               _vm._v(
-                " the system will only notify other people of any changes when you upload a Paper Checklist"
+                " the system will only notify other people of any changes when you upload a Paper Checklist\n      "
               )
             ])
           : _vm._e(),
@@ -34460,8 +34808,6 @@ var render = function() {
           ])
         : _vm._e()
     ]),
-    _vm._v(" "),
-    _c("hr"),
     _vm._v(" "),
     _c("div", { staticClass: "columns" }, [
       _c(
@@ -48767,7 +49113,9 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
 Vue.component('login-form', __webpack_require__(/*! ./components/LoginForm.vue */ "./resources/js/components/LoginForm.vue")["default"]);
 Vue.component('main-paper-uploader', __webpack_require__(/*! ./components/MainPaperUploader.vue */ "./resources/js/components/MainPaperUploader.vue")["default"]);
 Vue.component('course-viewer', __webpack_require__(/*! ./components/CourseViewer.vue */ "./resources/js/components/CourseViewer.vue")["default"]);
+Vue.component('course-archives-viewer', __webpack_require__(/*! ./components/CourseArchivesViewer.vue */ "./resources/js/components/CourseArchivesViewer.vue")["default"]);
 Vue.component('paper-list', __webpack_require__(/*! ./components/PaperList.vue */ "./resources/js/components/PaperList.vue")["default"]);
+Vue.component('archived-paper-list', __webpack_require__(/*! ./components/ArchivedPaperList.vue */ "./resources/js/components/ArchivedPaperList.vue")["default"]);
 Vue.component('paper-heading', __webpack_require__(/*! ./components/PaperHeading.vue */ "./resources/js/components/PaperHeading.vue")["default"]);
 Vue.component('add-local-user', __webpack_require__(/*! ./components/AddLocalUser.vue */ "./resources/js/components/AddLocalUser.vue")["default"]);
 Vue.component('add-external-user', __webpack_require__(/*! ./components/AddExternalUser.vue */ "./resources/js/components/AddExternalUser.vue")["default"]);
@@ -49264,6 +49612,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/ArchivedPaperList.vue":
+/*!*******************************************************!*\
+  !*** ./resources/js/components/ArchivedPaperList.vue ***!
+  \*******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ArchivedPaperList_vue_vue_type_template_id_43a17fad___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ArchivedPaperList.vue?vue&type=template&id=43a17fad& */ "./resources/js/components/ArchivedPaperList.vue?vue&type=template&id=43a17fad&");
+/* harmony import */ var _ArchivedPaperList_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ArchivedPaperList.vue?vue&type=script&lang=js& */ "./resources/js/components/ArchivedPaperList.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _ArchivedPaperList_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ArchivedPaperList_vue_vue_type_template_id_43a17fad___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ArchivedPaperList_vue_vue_type_template_id_43a17fad___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/ArchivedPaperList.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/ArchivedPaperList.vue?vue&type=script&lang=js&":
+/*!********************************************************************************!*\
+  !*** ./resources/js/components/ArchivedPaperList.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ArchivedPaperList_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./ArchivedPaperList.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ArchivedPaperList.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ArchivedPaperList_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/ArchivedPaperList.vue?vue&type=template&id=43a17fad&":
+/*!**************************************************************************************!*\
+  !*** ./resources/js/components/ArchivedPaperList.vue?vue&type=template&id=43a17fad& ***!
+  \**************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ArchivedPaperList_vue_vue_type_template_id_43a17fad___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./ArchivedPaperList.vue?vue&type=template&id=43a17fad& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ArchivedPaperList.vue?vue&type=template&id=43a17fad&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ArchivedPaperList_vue_vue_type_template_id_43a17fad___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ArchivedPaperList_vue_vue_type_template_id_43a17fad___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/CourseArchivePapersButton.vue":
 /*!***************************************************************!*\
   !*** ./resources/js/components/CourseArchivePapersButton.vue ***!
@@ -49328,6 +49745,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CourseArchivePapersButton_vue_vue_type_template_id_da5aff36___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CourseArchivePapersButton_vue_vue_type_template_id_da5aff36___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/CourseArchivesViewer.vue":
+/*!**********************************************************!*\
+  !*** ./resources/js/components/CourseArchivesViewer.vue ***!
+  \**********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _CourseArchivesViewer_vue_vue_type_template_id_cc8c5f6e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CourseArchivesViewer.vue?vue&type=template&id=cc8c5f6e& */ "./resources/js/components/CourseArchivesViewer.vue?vue&type=template&id=cc8c5f6e&");
+/* harmony import */ var _CourseArchivesViewer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CourseArchivesViewer.vue?vue&type=script&lang=js& */ "./resources/js/components/CourseArchivesViewer.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _CourseArchivesViewer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _CourseArchivesViewer_vue_vue_type_template_id_cc8c5f6e___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _CourseArchivesViewer_vue_vue_type_template_id_cc8c5f6e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/CourseArchivesViewer.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/CourseArchivesViewer.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************!*\
+  !*** ./resources/js/components/CourseArchivesViewer.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CourseArchivesViewer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./CourseArchivesViewer.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CourseArchivesViewer.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CourseArchivesViewer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/CourseArchivesViewer.vue?vue&type=template&id=cc8c5f6e&":
+/*!*****************************************************************************************!*\
+  !*** ./resources/js/components/CourseArchivesViewer.vue?vue&type=template&id=cc8c5f6e& ***!
+  \*****************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CourseArchivesViewer_vue_vue_type_template_id_cc8c5f6e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./CourseArchivesViewer.vue?vue&type=template&id=cc8c5f6e& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CourseArchivesViewer.vue?vue&type=template&id=cc8c5f6e&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CourseArchivesViewer_vue_vue_type_template_id_cc8c5f6e___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CourseArchivesViewer_vue_vue_type_template_id_cc8c5f6e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

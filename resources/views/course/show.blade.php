@@ -11,5 +11,9 @@
   :externals="{{ $externals->toJson() }}"
 >
 </course-viewer>
-
+<course-archives-viewer
+  :course="{{ $course->toJson() }}"
+  :papers="{{ $archivedPapers->toJson() }}"
+>
+</course-archives-viewer>
 @endsection

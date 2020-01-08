@@ -26,6 +26,7 @@ class CourseController extends Controller
                 'resit' => $course->resitPapers()->with(['user', 'comments'])->latest()->get(),
                 'resit2' => $course->resit2Papers()->with(['user', 'comments'])->latest()->get(),
             ]),
+            'archivedPapers' => $course->archivedPapers()->latest()->get(),
             'staff' => User::getStaffForVueSelect(),
             'externals' => User::getExternalsForVueSelect(),
         ]);

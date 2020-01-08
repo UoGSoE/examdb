@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Support\Str;
+use App\Scopes\CurrentScope;
 use App\Events\PaperApproved;
 use App\Events\PaperUnapproved;
 use Illuminate\Http\UploadedFile;
@@ -54,6 +55,11 @@ class Course extends Model
     public function papers()
     {
         return $this->hasMany(Paper::class);
+    }
+
+    public function archivedPapers()
+    {
+        return $this->hasMany(Paper::class)->withoutGlobalScope(CurrentScope::class)->archived();
     }
 
     public function mainPapers()
