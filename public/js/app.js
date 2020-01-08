@@ -10901,18 +10901,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["course", "papers", "subcategories", "user", "staff", "externals"],
   data: function data() {
     return {
       thePapers: this.papers,
       theCourse: this.course,
-      is_external: window.is_external
+      is_external: window.is_external,
+      externalsNotified: false
     };
   },
   computed: {
     disableRoute: function disableRoute() {
       return route('course.disable', this.course.id);
+    },
+    notifyButtonText: function notifyButtonText() {
+      return this.externalsNotified ? 'Notified!' : 'Notify Externals';
     },
     canUploadPapers: function canUploadPapers() {
       var _this = this;
@@ -10965,6 +10970,15 @@ __webpack_require__.r(__webpack_exports__);
     disableCourse: function disableCourse() {
       axios.post(route('course.disable', this.course.id)).then(function (res) {
         window.location = route('course.index');
+      })["catch"](function (err) {
+        console.error(err);
+      });
+    },
+    notifyExternals: function notifyExternals() {
+      var _this3 = this;
+
+      axios.post(route('admin.notify.externals_course', this.course.id)).then(function (res) {
+        _this3.externalsNotified = true;
       })["catch"](function (err) {
         console.error(err);
       });
@@ -34338,7 +34352,20 @@ var render = function() {
                       }
                     },
                     [_vm._v("Disable Course")]
-                  )
+                  ),
+                  _vm._v(" "),
+                  _c("a", {
+                    staticClass: "button level-item",
+                    class: { "is-success": _vm.externalsNotified },
+                    attrs: { disabled: _vm.externalsNotified },
+                    domProps: { textContent: _vm._s(_vm.notifyButtonText) },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        return _vm.notifyExternals($event)
+                      }
+                    }
+                  })
                 ],
                 1
               )

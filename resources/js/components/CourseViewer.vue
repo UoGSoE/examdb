@@ -11,6 +11,7 @@
         <div v-if="user.is_admin" class="level-right">
           <course-archive-papers-button :course="theCourse"></course-archive-papers-button>
           <a @click.prevent="disableCourse" class="button level-item">Disable Course</a>
+          <a @click.prevent="notifyExternals" class="button level-item" :class="{'is-success': externalsNotified}" :disabled="externalsNotified" v-text="notifyButtonText" />
         </div>
       </div>
       <p v-if="! is_external" class="subtitle"><b>Note:</b> the system will only notify other people of any changes when you upload a Paper Checklist</p>
@@ -74,12 +75,16 @@ export default {
     return {
       thePapers: this.papers,
       theCourse: this.course,
-      is_external: window.is_external
+      is_external: window.is_external,
+      externalsNotified: false,
     };
   },
   computed: {
     disableRoute() {
       return route('course.disable', this.course.id);
+    },
+    notifyButtonText() {
+      return this.externalsNotified ? 'Notified!' : 'Notify Externals';
     },
     canUploadPapers() {
       let inSetters = this.course.setters.find(setter => setter.id == this.user.id);
@@ -134,6 +139,15 @@ export default {
       axios.post(route('course.disable', this.course.id))
         .then(res => {
           window.location = route('course.index');
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
+    notifyExternals() {
+      axios.post(route('admin.notify.externals_course', this.course.id))
+        .then(res => {
+          this.externalsNotified = true;
         })
         .catch(err => {
           console.error(err);

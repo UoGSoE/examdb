@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Course;
 use Illuminate\Http\Request;
 use App\Jobs\NotifyExternals;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ExternalHasPapersToLookAt;
 
 class NotifyExternalsController extends Controller
 {
@@ -30,5 +33,12 @@ class NotifyExternalsController extends Controller
         }
 
         return redirect()->route('paper.index');
+    }
+
+    public function course(Course $course)
+    {
+        $course->externals->each(function ($external) {
+            Mail::to($external->email)->queue(new ExternalHasPapersToLookAt);
+        });
     }
 }

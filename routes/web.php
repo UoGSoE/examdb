@@ -68,6 +68,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/notify/externals', 'Admin\NotifyExternalsController@show')
                 ->name('admin.notify.externals.show');
         Route::post('notify/externals', 'Admin\NotifyExternalsController@store')->name('admin.notify.externals');
+        Route::post('notify/{course}/externals', 'Admin\NotifyExternalsController@course')->name('admin.notify.externals_course');
 
         Route::post('/export/registry', 'Admin\ExportPapersForRegistryController@store')->name('export.paper.registry');
         Route::get('/download/registry/{user}', 'Admin\DownloadPapersForRegistryController@show')->name('download.papers.registry');
