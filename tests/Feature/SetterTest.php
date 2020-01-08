@@ -214,6 +214,20 @@ class SetterTest extends TestCase
     }
 
     /** @test */
+    public function a_setter_cant_delete_a_paper_after_some_limited_time()
+    {
+        Storage::fake('exampapers');
+        config(['exampapers.delete_paper_limit_minutes' => 5]);
+        $user = create(User::class);
+        $paper = create(Paper::class, ['user_id' => $user->id, 'created_at' => now()->subMinutes(10)]);
+
+        $response = $this->actingAs($user)->deleteJson(route('paper.delete', $paper));
+
+        $response->assertStatus(403);
+        $this->assertDatabaseHas('papers', ['id' => $paper->id]);
+    }
+
+    /** @test */
     public function a_setter_can_download_any_paper_for_a_course_they_are_on()
     {
         $this->withoutExceptionHandling();

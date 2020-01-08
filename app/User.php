@@ -48,55 +48,76 @@ class User extends Authenticatable
 
     public static function getStaffForVueSelect()
     {
-        return static::where('is_external', '=', false)->orderBy('surname')->get()->map(function ($user) {
-            return [
-                'label' => $user->full_name . " ({$user->username})",
-                'value' => $user->id,
-            ];
-        });
+        return static::where('is_external', '=', false)
+            ->orderBy('surname')
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'label' => $user->full_name . " ({$user->username})",
+                    'value' => $user->id,
+                ];
+            });
     }
 
     public static function getExternalsForVueSelect()
     {
-        return static::where('is_external', '=', true)->orderBy('surname')->get()->map(function ($user) {
-            return [
-                'label' => $user->full_name . " ({$user->username})",
-                'value' => $user->id,
-            ];
-        });
+        return static::where('is_external', '=', true)
+            ->orderBy('surname')
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'label' => $user->full_name . " ({$user->username})",
+                    'value' => $user->id,
+                ];
+            });
     }
 
     public function markAsSetter(Course $course)
     {
         $this->courses()->syncWithoutDetaching([$course->id]);
-        $this->courses()->updateExistingPivot($course->id, ['is_setter' => true, 'is_moderator' => false, 'is_external' => false]);
+        $this->courses()->updateExistingPivot(
+            $course->id,
+            ['is_setter' => true, 'is_moderator' => false, 'is_external' => false]
+        );
     }
 
     public function markAsModerator(Course $course)
     {
         $this->courses()->syncWithoutDetaching([$course->id]);
-        $this->courses()->updateExistingPivot($course->id, ['is_setter' => false, 'is_moderator' => true, 'is_external' => false]);
+        $this->courses()->updateExistingPivot(
+            $course->id,
+            ['is_setter' => false, 'is_moderator' => true, 'is_external' => false]
+        );
     }
 
     public function markAsExternal(Course $course)
     {
         $this->courses()->syncWithoutDetaching([$course->id]);
-        $this->courses()->updateExistingPivot($course->id, ['is_setter' => false, 'is_moderator' => false, 'is_external' => true]);
+        $this->courses()->updateExistingPivot(
+            $course->id,
+            ['is_setter' => false, 'is_moderator' => false, 'is_external' => true]
+        );
     }
 
     public function isSetterFor(Course $course): bool
     {
-        return $this->courses()->where('course_user.course_id', '=', $course->id)->wherePivot('is_setter', true)->count() > 0;
+        return $this->courses()->where('course_user.course_id', '=', $course->id)
+            ->wherePivot('is_setter', true)
+            ->count() > 0;
     }
 
     public function isModeratorFor(Course $course): bool
     {
-        return $this->courses()->where('course_user.course_id', '=', $course->id)->wherePivot('is_moderator', true)->count() > 0;
+        return $this->courses()->where('course_user.course_id', '=', $course->id)
+            ->wherePivot('is_moderator', true)
+            ->count() > 0;
     }
 
     public function isExternalFor(Course $course): bool
     {
-        return $this->courses()->where('course_user.course_id', '=', $course->id)->wherePivot('is_external', true)->count() > 0;
+        return $this->courses()->where('course_user.course_id', '=', $course->id)
+            ->wherePivot('is_external', true)
+            ->count() > 0;
     }
 
     public function toggleAdmin()

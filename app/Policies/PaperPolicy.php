@@ -56,6 +56,9 @@ class PaperPolicy
      */
     public function delete(User $user, Paper $paper)
     {
+        if ($paper->created_at->diffInMinutes(now()) > config('exampapers.delete_paper_limit_minutes')) {
+            return false;
+        }
         return $paper->user_id == $user->id;
     }
 

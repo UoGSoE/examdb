@@ -9,6 +9,7 @@ return [
     'api_key' => env('API_KEY', 'SET_ME_TO_SOMETHING_RANDOM'),
     'zip_expire_hours' => 2, // length of download link is valid, and file removed after expires
     'registry_temp_file_prefix' => 'ARGH',
+    'delete_paper_limit_minutes' => 30,
     'paper_subcategories' => [
         'main' => [
             "Paper Checklist",

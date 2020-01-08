@@ -27,7 +27,8 @@ class Course extends Model
 
     public function staff()
     {
-        return $this->belongsToMany(User::class, 'course_user', 'course_id', 'user_id')->withPivot('is_moderator', 'is_setter', 'is_external');
+        return $this->belongsToMany(User::class, 'course_user', 'course_id', 'user_id')
+                    ->withPivot('is_moderator', 'is_setter', 'is_external');
     }
 
     public function moderators()
