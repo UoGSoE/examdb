@@ -11075,6 +11075,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["course", "papers", "subcategories", "user", "staff", "externals"],
   data: function data() {
@@ -34674,12 +34676,14 @@ var render = function() {
         _c("h2", { staticClass: "title is-2 has-text-grey-dark level-item" }, [
           _vm._v(_vm._s(_vm.theCourse.code) + " " + _vm._s(_vm.theCourse.title))
         ])
-      ]),
-      _vm._v(" "),
-      _vm.user.is_admin
-        ? _c(
+      ])
+    ]),
+    _vm._v(" "),
+    _vm.user.is_admin
+      ? _c("div", { staticClass: "level" }, [
+          _c(
             "div",
-            { staticClass: "level-right" },
+            { staticClass: "level-left" },
             [
               _c("course-archive-papers-button", {
                 staticClass: "level-item",
@@ -34715,8 +34719,8 @@ var render = function() {
             ],
             1
           )
-        : _vm._e()
-    ]),
+        ])
+      : _vm._e(),
     _vm._v(" "),
     _c("div", { staticClass: "columns" }, [
       _c("div", { staticClass: "column" }, [

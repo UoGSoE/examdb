@@ -18,7 +18,15 @@
         @foreach ($papers as $paper)
         <tr>
             <td>{{ $paper->course->code }}</td>
-            <td>{{ ucfirst($paper->category) }} {{ $paper->subcategory }}</td>
+            <td>
+                @if ($paper->subcategory == \App\Paper::PAPER_FOR_REGISTRY)
+                <a href="{{ route('archived.paper.show', $paper->id) }}">
+                    {{ ucfirst($paper->category) }} {{ $paper->subcategory }}
+                </a>
+                @else
+                {{ ucfirst($paper->category) }} {{ $paper->subcategory }}
+                @endif
+            </td>
             <td>{{ $paper->user->full_name }}</td>
             <td>{{ $paper->created_at->format('d/m/Y H:i') }}</td>
             <td>{{ $paper->archived_at->format('d/m/Y H:i') }}</td>

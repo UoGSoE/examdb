@@ -6,7 +6,9 @@
           class="title is-2 has-text-grey-dark level-item"
         >{{ theCourse.code }} {{ theCourse.title }}</h2>
       </div>
-      <div v-if="user.is_admin" class="level-right">
+    </div>
+    <div class="level" v-if="user.is_admin">
+      <div class="level-left">
         <course-archive-papers-button :course="theCourse" class="level-item"></course-archive-papers-button>
         <a @click.prevent="disableCourse" class="button level-item">Disable Course</a>
         <a

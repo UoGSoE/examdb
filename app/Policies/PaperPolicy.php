@@ -19,7 +19,9 @@ class PaperPolicy
      */
     public function view(User $user, Paper $paper)
     {
-        return $user->isSetterFor($paper->course) or
+        return
+            $user->isAdmin() or
+            $user->isSetterFor($paper->course) or
             $user->isModeratorFor($paper->course) or
             $user->isExternalFor($paper->course);
     }

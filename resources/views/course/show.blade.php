@@ -11,9 +11,13 @@
   :externals="{{ $externals->toJson() }}"
 >
 </course-viewer>
+
+@if (count($archivedPapers) > 0)
 <course-archives-viewer
   :course="{{ $course->toJson() }}"
   :papers="{{ $archivedPapers->toJson() }}"
 >
 </course-archives-viewer>
+@endif
+
 @endsection
