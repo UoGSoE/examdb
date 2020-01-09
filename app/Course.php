@@ -111,7 +111,7 @@ class Course extends Model
     public function addPaper(string $category, string $subcategory, UploadedFile $file): Paper
     {
         if (!in_array($category, Paper::VALID_CATEGORIES)) {
-            throw new \InvalidArgumentException('Invalid category');
+            throw new \InvalidArgumentException('Invalid category : ' . $category);
         }
 
         $randomName = Str::random(64) . '_' . now()->format('d-m-Y');

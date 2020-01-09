@@ -10858,6 +10858,112 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CommentBox.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CommentBox.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue_clickaway__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-clickaway */ "./node_modules/vue-clickaway/dist/vue-clickaway.common.js");
+/* harmony import */ var vue_clickaway__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue_clickaway__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ["course", "category"],
+  mixins: [vue_clickaway__WEBPACK_IMPORTED_MODULE_0__["mixin"]],
+  data: function data() {
+    return {
+      comment: "",
+      show: false,
+      busy: false,
+      error: false,
+      failed: false,
+      errorMessage: ''
+    };
+  },
+  methods: {
+    closePopup: function closePopup() {
+      this.show = false;
+    },
+    submit: function submit() {
+      var _this = this;
+
+      if (!this.$refs.paper.files[0]) {
+        return false;
+      }
+
+      if (!this.subcategory) {
+        return false;
+      }
+
+      this.busy = true;
+      var data = this.getFormData();
+      axios.post(route("course.paper.store", this.course.id), data).then(function (response) {
+        _this.busy = false;
+        _this.show = false;
+        _this.comment = "";
+        _this.subcategory = "";
+        _this.failed = false;
+
+        _this.$emit("added", response.data);
+      })["catch"](function (error) {
+        _this.failed = true;
+        _this.busy = false;
+        _this.errorMessage = 'Could not upload paper...';
+      });
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CourseArchivePapersButton.vue?vue&type=script&lang=js&":
 /*!************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CourseArchivePapersButton.vue?vue&type=script&lang=js& ***!
@@ -11878,6 +11984,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _CommentBox__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CommentBox */ "./resources/js/components/CommentBox.vue");
 //
 //
 //
@@ -11929,8 +12036,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["course", "subcategories", "category", "canUpload"],
+  components: {
+    CommentBox: _CommentBox__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
   filters: {
     pretty: function pretty(value) {
       if (value == 'resit2') {
@@ -34508,6 +34627,156 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CommentBox.vue?vue&type=template&id=e9a844d2&":
+/*!*************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CommentBox.vue?vue&type=template&id=e9a844d2& ***!
+  \*************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      directives: [
+        {
+          name: "on-clickaway",
+          rawName: "v-on-clickaway",
+          value: _vm.closePopup,
+          expression: "closePopup"
+        }
+      ],
+      staticStyle: { position: "relative" }
+    },
+    [
+      _c("transition", { attrs: { name: "fade", mode: "in-out" } }, [
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.show,
+                expression: "show"
+              }
+            ],
+            staticClass: "box shadow-lg paper-box"
+          },
+          [
+            _c("form", [
+              _c("div", { staticClass: "field" }, [
+                _c("div", { staticClass: "control" }, [
+                  _c("textarea", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.comment,
+                        expression: "comment"
+                      }
+                    ],
+                    staticClass: "textarea",
+                    attrs: { placeholder: "Comments..." },
+                    domProps: { value: _vm.comment },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.comment = $event.target.value
+                      }
+                    }
+                  })
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "field" }, [
+                _c("div", { staticClass: "control" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "button is-info is-fullwidth",
+                      class: { "is-loading": _vm.busy },
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.submit($event)
+                        }
+                      }
+                    },
+                    [
+                      _c("span", { staticClass: "icon" }, [
+                        _c("i", { staticClass: "far fa-comment" })
+                      ]),
+                      _vm._v(" "),
+                      _c("span", [_vm._v("Add Comment")])
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _vm.failed
+                    ? _c("div", {
+                        staticClass: "notification is-danger",
+                        domProps: { textContent: _vm._s(_vm.errorMessage) }
+                      })
+                    : _vm._e()
+                ])
+              ])
+            ])
+          ]
+        )
+      ]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "button",
+          class: { "is-loading": _vm.busy },
+          attrs: { slot: "reference" },
+          on: {
+            click: function($event) {
+              $event.preventDefault()
+              _vm.show = !_vm.show
+            }
+          },
+          slot: "reference"
+        },
+        [
+          _vm._t("button-content", [
+            _vm._m(0),
+            _vm._v(" "),
+            _c("span", [_vm._v("Add Comment")])
+          ])
+        ],
+        2
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon has-text-info" }, [
+      _c("i", { staticClass: "far fa-comment" })
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CourseArchivePapersButton.vue?vue&type=template&id=da5aff36&":
 /*!****************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CourseArchivePapersButton.vue?vue&type=template&id=da5aff36& ***!
@@ -36148,6 +36417,21 @@ var render = function() {
                 },
                 on: { added: _vm.paperAdded }
               })
+            ],
+            1
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.is_local && _vm.canUpload
+        ? _c(
+            "span",
+            { staticClass: "level-item" },
+            [
+              _c("comment-box", [
+                _vm._v(
+                  '\n                :course="course"\n                :category="category"\n                @added="commentAdded"\n            >\n            '
+                )
+              ])
             ],
             1
           )
@@ -49680,6 +49964,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ArchivedPaperList_vue_vue_type_template_id_43a17fad___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ArchivedPaperList_vue_vue_type_template_id_43a17fad___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/CommentBox.vue":
+/*!************************************************!*\
+  !*** ./resources/js/components/CommentBox.vue ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _CommentBox_vue_vue_type_template_id_e9a844d2___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CommentBox.vue?vue&type=template&id=e9a844d2& */ "./resources/js/components/CommentBox.vue?vue&type=template&id=e9a844d2&");
+/* harmony import */ var _CommentBox_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CommentBox.vue?vue&type=script&lang=js& */ "./resources/js/components/CommentBox.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _CommentBox_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _CommentBox_vue_vue_type_template_id_e9a844d2___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _CommentBox_vue_vue_type_template_id_e9a844d2___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/CommentBox.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/CommentBox.vue?vue&type=script&lang=js&":
+/*!*************************************************************************!*\
+  !*** ./resources/js/components/CommentBox.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CommentBox_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./CommentBox.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CommentBox.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CommentBox_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/CommentBox.vue?vue&type=template&id=e9a844d2&":
+/*!*******************************************************************************!*\
+  !*** ./resources/js/components/CommentBox.vue?vue&type=template&id=e9a844d2& ***!
+  \*******************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CommentBox_vue_vue_type_template_id_e9a844d2___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./CommentBox.vue?vue&type=template&id=e9a844d2& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CommentBox.vue?vue&type=template&id=e9a844d2&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CommentBox_vue_vue_type_template_id_e9a844d2___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CommentBox_vue_vue_type_template_id_e9a844d2___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

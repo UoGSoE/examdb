@@ -24,6 +24,14 @@
                 >
                 </main-paper-uploader>
             </span>
+            <span class="level-item" v-if="is_local && canUpload">
+                <comment-box>
+                    :course="course"
+                    :category="category"
+                    @added="commentAdded"
+                >
+                </comment-box>
+            </span>
 
             <span class="level-item" v-if="is_external && canUpload">
                 <main-paper-uploader
@@ -50,8 +58,12 @@
     </div><!-- /main-papers-heading -->
 </template>
 <script>
+import CommentBox from './CommentBox';
 export default {
   props: ["course", "subcategories", "category", "canUpload"],
+  components: {
+    CommentBox,
+  },
   filters: {
     pretty(value) {
       if (value == 'resit2') {
