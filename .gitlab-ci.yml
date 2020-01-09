@@ -99,9 +99,6 @@ deploy_to_qa:
   - export TRAEFIK_HOSTNAME=$TRAEFIK_QA_HOSTNAME
   - export NOW=`date +%Y-%m-%d-%H-%M-%S`
   - export DOTENV_NAME="${CI_PROJECT_PATH_SLUG}-qa-dotenv-${NOW}"
-  - export MINIO_QA_KEY=${MINIO_QA_KEY}
-  - export MINIO_QA_SECRET=${MINIO_QA_SECRET}
-  - export MINIO_QA_ENDPOINT=${MINIO_QA_ENDPOINT}
   - echo "$QA_SSH_KEY" | tr -d '\r' | ssh-add - > /dev/null
   - mkdir ~/.ssh
   - chmod 700 ~/.ssh
@@ -109,8 +106,8 @@ deploy_to_qa:
   - chmod 644 ~/.ssh/known_hosts
   - echo "${QA_DOTENV}" | docker -H ssh://deployer@${QA_SERVER} secret create ${DOTENV_NAME} -
   - echo "Deploying stack ${STACK_NAME} image ${IMAGE_NAME} with secret ${DOTENV_NAME}"
-  - docker -H ssh://deployer@${QA_SERVER} stack deploy -c qa-stack.yml ${STACK_NAME}
-  - curl -X POST -H 'Content-type:application/json' --data "{\"username\":\"gitlab\", \"text\":\"Deployed QA ${STACK_NAME}\", \"channel\":\"#deployments\", \"icon_emoji\":\":ghost:\"}" ${SLACK_WEBHOOK}
+  - docker -H ssh://deployer@${QA_SERVER} stack deploy -c qa-stack.yml --prune ${STACK_NAME}
+  - if [ ! -z "${SLACK_WEBHOOK}" ]; then curl -X POST -H 'Content-type:application/json' --data "{\"username\":\"gitlab\", \"text\":\"Deployed QA ${STACK_NAME}\", \"channel\":\"#deployments\", \"icon_emoji\":\":ghost:\"}" ${SLACK_WEBHOOK}; fi
 
 deploy_to_prod:
   stage: deploy
@@ -134,5 +131,5 @@ deploy_to_prod:
   - chmod 644 ~/.ssh/known_hosts
   - echo "${PROD_DOTENV}" | docker -H ssh://deployer@${PROD_SERVER} secret create ${DOTENV_NAME} -
   - echo "Deploying stack ${STACK_NAME} image ${IMAGE_NAME} with secret ${DOTENV_NAME}"
-  - docker -H ssh://deployer@${PROD_SERVER} stack deploy -c prod-stack.yml ${STACK_NAME}
-  - curl -X POST -H 'Content-type:application/json' --data "{\"username\":\"gitlab\", \"text\":\"Deployed Production ${STACK_NAME}\", \"channel\":\"#deployments\", \"icon_emoji\":\":ghost:\"}" ${SLACK_WEBHOOK}
+  - docker -H ssh://deployer@${PROD_SERVER} stack deploy -c prod-stack.yml --prune ${STACK_NAME}
+  - if [ ! -z "${SLACK_WEBHOOK}" ]; then curl -X POST -H 'Content-type:application/json' --data "{\"username\":\"gitlab\", \"text\":\"Deployed Production ${STACK_NAME}\", \"channel\":\"#deployments\", \"icon_emoji\":\":ghost:\"}" ${SLACK_WEBHOOK}; fi
