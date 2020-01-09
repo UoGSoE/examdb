@@ -12,7 +12,7 @@ class ArchiveController extends Controller
     public function index()
     {
         return view('admin.archive.index', [
-            'papers' => Paper::withoutGlobalScope(CurrentScope::class)->archived()->orderByDesc('archived_at')->get(),
+            'papers' => Paper::withoutGlobalScope(CurrentScope::class)->archived()->withoutComments()->orderByDesc('archived_at')->get(),
         ]);
     }
 }

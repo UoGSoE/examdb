@@ -3,23 +3,28 @@
     <transition-group name="paper-flash" mode="in-out" tag="span">
       <article class="media" v-for="paper in papers" :key="paper.id">
         <figure class="media-left has-text-centered">
-          <a :href="getDownloadRoute(paper)" class="image is-64x64">
+          <a v-if="paper.subcategory != 'comment'" :href="getDownloadRoute(paper)" class="image is-64x64">
             <span class="icon is-large">
               <i :class="paper.icon + ' fa-3x'"></i>
             </span>
             <br>
             <span>{{ paper.formatted_size }}</span>
           </a>
+          <span v-else class="image is-64x64 has-text-grey-light">
+            <span class="icon is-large">
+              <i class="far fa-comment fa-3x"></i>
+            </span>
+          </span>
         </figure>
         <div class="media-content">
           <div class="content">
             <p>
-              <a :href="getDownloadRoute(paper)">
+              <a v-if="paper.subcategory != 'comment'" :href="getDownloadRoute(paper)">
                 <strong>{{ paper.original_filename }}</strong>
               </a>
               <small>{{ paper.formatted_date }} ({{ paper.diff_for_humans }})</small>
               <br>
-              <small>
+              <small v-if="paper.subcategory != 'comment'">
                 <strong>{{ paper.subcategory }}</strong>
               </small>
               <br>
@@ -92,6 +97,9 @@ export default {
       this.paperToDelete = null;
     },
     getDownloadRoute(paper) {
+      if (paper.subcategory == 'comment') {
+        return '';
+      }
       return route("paper.show", paper.id);
     },
     openModal(paper) {

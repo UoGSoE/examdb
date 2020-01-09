@@ -34,7 +34,7 @@
 
           <div class="field">
             <div class="control">
-              <textarea v-model="comment" class="textarea" placeholder="Comments..."></textarea>
+              <textarea v-model="comment" class="textarea" placeholder="Optional Comments..."></textarea>
             </div>
           </div>
 

@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Paper;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -25,8 +26,12 @@ class LogThatPaperWasAdded
      */
     public function handle($event)
     {
+        $prefix = 'Uploaded a paper';
+        if ($event->paper->subcategory == Paper::COMMENT_SUBCATEGORY) {
+            $prefix = 'Added a comment';
+        }
         activity()->causedBy($event->user)->log(
-            "Uploaded a paper ({$event->paper->course->code} - {$event->paper->category} / {$event->paper->subcategory})"
+            "{$prefix} ({$event->paper->course->code} - {$event->paper->category} / {$event->paper->subcategory})"
         );
     }
 }

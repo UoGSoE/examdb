@@ -15,9 +15,10 @@
                 class="button is-info is-fullwidth"
                 :class="{'is-loading': busy}"
                 @click.prevent="submit"
+                :disabled="!this.comment"
               >
                 <span class="icon">
-                    <i class="far fa-comment"></i>
+                  <i class="far fa-comment"></i>
                 </span>
                 <span>Add Comment</span>
               </button>
@@ -56,7 +57,7 @@ export default {
       busy: false,
       error: false,
       failed: false,
-      errorMessage: '',
+      errorMessage: ""
     };
   },
   methods: {
@@ -64,30 +65,28 @@ export default {
       this.show = false;
     },
     submit() {
-      if (!this.$refs.paper.files[0]) {
-        return false;
-      }
-      if (!this.subcategory) {
+      if (!this.comment) {
         return false;
       }
       this.busy = true;
-      let data = this.getFormData();
       axios
-        .post(route("course.paper.store", this.course.id), data)
+        .post(route("course.comment.store", this.course.id), {
+          category: this.category,
+          comment: this.comment
+        })
         .then(response => {
           this.busy = false;
           this.show = false;
           this.comment = "";
-          this.subcategory = "";
           this.failed = false;
           this.$emit("added", response.data);
         })
         .catch(error => {
           this.failed = true;
           this.busy = false;
-          this.errorMessage = 'Could not upload paper...';
+          this.errorMessage = "Could not add comment";
         });
-    },
+    }
   }
 };
 </script>

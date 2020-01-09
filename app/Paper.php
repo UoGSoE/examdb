@@ -13,6 +13,7 @@ class Paper extends Model
     const EXTERNAL_SOLUTION_COMMENTS = 'External Examiner Solution Comments';
     const SECOND_RESIT_CATEGORY = 'resit2';
     const VALID_CATEGORIES = ['main', 'resit', 'resit2'];
+    const COMMENT_SUBCATEGORY = 'comment';
 
     protected $guarded = [];
 
@@ -73,6 +74,11 @@ class Paper extends Model
     public function scopeArchived($query)
     {
         return $query->where('archived_at', '!=', null);
+    }
+
+    public function scopeWithoutComments($query)
+    {
+        return $query->where('subcategory', '!=', Paper::COMMENT_SUBCATEGORY);
     }
 
     public function isArchived(): bool

@@ -10914,6 +10914,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["course", "category"],
@@ -10925,7 +10926,7 @@ __webpack_require__.r(__webpack_exports__);
       busy: false,
       error: false,
       failed: false,
-      errorMessage: ''
+      errorMessage: ""
     };
   },
   methods: {
@@ -10935,28 +10936,25 @@ __webpack_require__.r(__webpack_exports__);
     submit: function submit() {
       var _this = this;
 
-      if (!this.$refs.paper.files[0]) {
-        return false;
-      }
-
-      if (!this.subcategory) {
+      if (!this.comment) {
         return false;
       }
 
       this.busy = true;
-      var data = this.getFormData();
-      axios.post(route("course.paper.store", this.course.id), data).then(function (response) {
+      axios.post(route("course.comment.store", this.course.id), {
+        category: this.category,
+        comment: this.comment
+      }).then(function (response) {
         _this.busy = false;
         _this.show = false;
         _this.comment = "";
-        _this.subcategory = "";
         _this.failed = false;
 
         _this.$emit("added", response.data);
       })["catch"](function (error) {
         _this.failed = true;
         _this.busy = false;
-        _this.errorMessage = 'Could not upload paper...';
+        _this.errorMessage = "Could not add comment";
       });
     }
   }
@@ -12195,6 +12193,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["course", "papers", "category"],
   data: function data() {
@@ -12217,6 +12220,10 @@ __webpack_require__.r(__webpack_exports__);
       this.paperToDelete = null;
     },
     getDownloadRoute: function getDownloadRoute(paper) {
+      if (paper.subcategory == 'comment') {
+        return '';
+      }
+
       return route("paper.show", paper.id);
     },
     openModal: function openModal(paper) {
@@ -34705,6 +34712,7 @@ var render = function() {
                     {
                       staticClass: "button is-info is-fullwidth",
                       class: { "is-loading": _vm.busy },
+                      attrs: { disabled: !this.comment },
                       on: {
                         click: function($event) {
                           $event.preventDefault()
@@ -35727,7 +35735,7 @@ var render = function() {
                       }
                     ],
                     staticClass: "textarea",
-                    attrs: { placeholder: "Comments..." },
+                    attrs: { placeholder: "Optional Comments..." },
                     domProps: { value: _vm.comment },
                     on: {
                       input: function($event) {
@@ -36427,11 +36435,10 @@ var render = function() {
             "span",
             { staticClass: "level-item" },
             [
-              _c("comment-box", [
-                _vm._v(
-                  '\n                :course="course"\n                :category="category"\n                @added="commentAdded"\n            >\n            '
-                )
-              ])
+              _c("comment-box", {
+                attrs: { course: _vm.course, category: _vm.category },
+                on: { added: _vm.paperAdded }
+              })
             ],
             1
           )
@@ -36518,30 +36525,48 @@ var render = function() {
         _vm._l(_vm.papers, function(paper) {
           return _c("article", { key: paper.id, staticClass: "media" }, [
             _c("figure", { staticClass: "media-left has-text-centered" }, [
-              _c(
-                "a",
-                {
-                  staticClass: "image is-64x64",
-                  attrs: { href: _vm.getDownloadRoute(paper) }
-                },
-                [
-                  _c("span", { staticClass: "icon is-large" }, [
-                    _c("i", { class: paper.icon + " fa-3x" })
-                  ]),
-                  _vm._v(" "),
-                  _c("br"),
-                  _vm._v(" "),
-                  _c("span", [_vm._v(_vm._s(paper.formatted_size))])
-                ]
-              )
+              paper.subcategory != "comment"
+                ? _c(
+                    "a",
+                    {
+                      staticClass: "image is-64x64",
+                      attrs: { href: _vm.getDownloadRoute(paper) }
+                    },
+                    [
+                      _c("span", { staticClass: "icon is-large" }, [
+                        _c("i", { class: paper.icon + " fa-3x" })
+                      ]),
+                      _vm._v(" "),
+                      _c("br"),
+                      _vm._v(" "),
+                      _c("span", [_vm._v(_vm._s(paper.formatted_size))])
+                    ]
+                  )
+                : _c(
+                    "span",
+                    { staticClass: "image is-64x64 has-text-grey-light" },
+                    [
+                      _c("span", { staticClass: "icon is-large" }, [
+                        _c("i", { staticClass: "far fa-comment fa-3x" })
+                      ])
+                    ]
+                  )
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "media-content" }, [
               _c("div", { staticClass: "content" }, [
                 _c("p", [
-                  _c("a", { attrs: { href: _vm.getDownloadRoute(paper) } }, [
-                    _c("strong", [_vm._v(_vm._s(paper.original_filename))])
-                  ]),
+                  paper.subcategory != "comment"
+                    ? _c(
+                        "a",
+                        { attrs: { href: _vm.getDownloadRoute(paper) } },
+                        [
+                          _c("strong", [
+                            _vm._v(_vm._s(paper.original_filename))
+                          ])
+                        ]
+                      )
+                    : _vm._e(),
                   _vm._v(" "),
                   _c("small", [
                     _vm._v(
@@ -36554,9 +36579,11 @@ var render = function() {
                   _vm._v(" "),
                   _c("br"),
                   _vm._v(" "),
-                  _c("small", [
-                    _c("strong", [_vm._v(_vm._s(paper.subcategory))])
-                  ]),
+                  paper.subcategory != "comment"
+                    ? _c("small", [
+                        _c("strong", [_vm._v(_vm._s(paper.subcategory))])
+                      ])
+                    : _vm._e(),
                   _vm._v(" "),
                   _c("br"),
                   _vm._v(" "),

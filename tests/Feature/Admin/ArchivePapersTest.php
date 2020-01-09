@@ -64,9 +64,11 @@ class ArchivePapersTest extends TestCase
         $paper1 = create(Paper::class);
         $paper2 = create(Paper::class);
         $paper3 = create(Paper::class);
+        $commentPaper = create(Paper::class, ['subcategory' => Paper::COMMENT_SUBCATEGORY]);
 
         $paper1->archive();
         $paper3->archive();
+        $commentPaper->archive();
 
         $response = $this->actingAs($admin)->get(route('archive.index'));
 
@@ -74,6 +76,8 @@ class ArchivePapersTest extends TestCase
         $this->assertTrue($response->data('papers')->contains($paper1));
         $this->assertFalse($response->data('papers')->contains($paper2));
         $this->assertTrue($response->data('papers')->contains($paper3));
+        // archived comments don't show up
+        $this->assertFalse($response->data('papers')->contains($commentPaper));
     }
 
     /** @test */
@@ -85,12 +89,15 @@ class ArchivePapersTest extends TestCase
         $paper1 = create(Paper::class, ['course_id' => $course->id]);
         $paper2 = create(Paper::class, ['course_id' => $course->id]);
         $paper3 = create(Paper::class, ['course_id' => $course->id]);
+        $commentPaper = create(Paper::class, ['course_id' => $course->id, 'subcategory' => Paper::COMMENT_SUBCATEGORY]);
 
         $paper1->archive();
         $paper3->archive();
+        $commentPaper->archive();
 
-        $this->assertEquals(2, $course->archivedPapers()->count());
+        $this->assertEquals(3, $course->archivedPapers()->count());
         $this->assertTrue($course->archivedPapers->contains($paper1));
         $this->assertTrue($course->archivedPapers->contains($paper3));
+        $this->assertTrue($course->archivedPapers->contains($commentPaper));
     }
 }

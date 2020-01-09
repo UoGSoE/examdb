@@ -25,10 +25,10 @@
                 </main-paper-uploader>
             </span>
             <span class="level-item" v-if="is_local && canUpload">
-                <comment-box>
+                <comment-box
                     :course="course"
                     :category="category"
-                    @added="commentAdded"
+                    @added="paperAdded"
                 >
                 </comment-box>
             </span>
