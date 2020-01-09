@@ -207,8 +207,7 @@ class Course extends Model
 
     public function isFullyApproved(): bool
     {
-        return $this->setter_approved_main and $this->setter_approved_resit and
-            $this->moderator_approved_main and $this->moderator_approved_resit;
+        return $this->moderator_approved_main and $this->moderator_approved_resit;
     }
 
     public function isntFullyApproved(): bool

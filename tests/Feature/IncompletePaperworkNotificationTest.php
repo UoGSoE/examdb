@@ -15,7 +15,7 @@ class IncompletePaperworkNotificationTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function staff_are_notified_about_any_incomplete_papers_one_day_after_the_deadline()
+    public function moderators_are_notified_about_any_incomplete_papers_one_day_after_the_deadline()
     {
         Mail::fake();
         $this->withoutExceptionHandling();
@@ -33,25 +33,24 @@ class IncompletePaperworkNotificationTest extends TestCase
         $moderator1->markAsModerator($mainPaper1->course);
         $moderator2->markAsModerator($mainPaper1->course);
         $mainPaper1->approvedBy($moderator1);
-        $resitPaper1->approvedBy($moderator1);
 
-        // at this stage the moderator1 has approved everything, but neither setter has or moderator2
+        // at this stage the moderator1 has approved the main paper, but the resit paper is still waiting
 
         Artisan::call('exampapers:notify-paperwork-incomplete --area=glasgow');
 
-        // check an email was sent to setter 1 & 2 and moderator2 about the course they are associated with
-        // which means that the setters should get emailed, but not the moderators as only one has to do it
+        // check an email was sent to moderator1 and moderator2 about the course they are associated with
+        // both the main and resit papers have to be approved, so both will be notified
         Mail::assertQueued(PaperworkIncomplete::class, 2);
-        Mail::assertQueued(PaperworkIncomplete::class, function ($mail) use ($setter1) {
-            return $mail->hasTo($setter1->email);
+        Mail::assertQueued(PaperworkIncomplete::class, function ($mail) use ($moderator1) {
+            return $mail->hasTo($moderator1->email);
         });
-        Mail::assertQueued(PaperworkIncomplete::class, function ($mail) use ($setter2) {
-            return $mail->hasTo($setter2->email);
+        Mail::assertQueued(PaperworkIncomplete::class, function ($mail) use ($moderator2) {
+            return $mail->hasTo($moderator2->email);
         });
     }
 
     /** @test */
-    public function staff_are_notified_about_any_incomplete_papers_one_week_before_the_deadline()
+    public function moderators_are_notified_about_any_incomplete_papers_one_week_before_the_deadline()
     {
         Mail::fake();
         $this->withoutExceptionHandling();
@@ -68,36 +67,34 @@ class IncompletePaperworkNotificationTest extends TestCase
         $setter2->markAsSetter($mainPaper1->course);
         $moderator1->markAsModerator($mainPaper1->course);
         $moderator2->markAsModerator($mainPaper1->course);
-        $mainPaper1->approvedBy($moderator1);
         $resitPaper1->approvedBy($moderator1);
 
-        // at this stage the moderator1 has approved everything, but neither setter has or moderator2
+        // at this stage the moderator1 has approved the main paper, but the resit paper is still waiting
 
         Artisan::call('exampapers:notify-paperwork-incomplete --area=glasgow');
 
-        // check an email was sent to setter 1 & 2 and moderator2 about the course they are associated with
-        // which means that the setters should get emailed, but not the moderators as only one has to do it
+        // check an email was sent to moderator1 and moderator2 about the course they are associated with
+        // both the main and resit papers have to be approved, so both will be notified
         Mail::assertQueued(PaperworkIncomplete::class, 2);
-        Mail::assertQueued(PaperworkIncomplete::class, function ($mail) use ($setter1) {
-            return $mail->hasTo($setter1->email);
+        Mail::assertQueued(PaperworkIncomplete::class, function ($mail) use ($moderator1) {
+            return $mail->hasTo($moderator1->email);
         });
-        Mail::assertQueued(PaperworkIncomplete::class, function ($mail) use ($setter2) {
-            return $mail->hasTo($setter2->email);
+        Mail::assertQueued(PaperworkIncomplete::class, function ($mail) use ($moderator2) {
+            return $mail->hasTo($moderator2->email);
         });
     }
 
     /** @test */
-    public function staff_are_not_sent_an_emails_if_it_is_not_one_week_before_the_deadline_or_one_day_after()
+    public function moderators_are_not_sent_an_emails_if_it_is_not_one_week_before_the_deadline_or_one_day_after()
     {
         Mail::fake();
 
         // set the deadline to some time way in the future
         option(['internal_deadline_glasgow' => now()->addDays(54)->format('Y-m-d')]);
 
-        // the Paper::PAPER_CHECKLIST is the trigger that means 'this paper is ready'
         $paper = create(Paper::class, ['category' => 'main']);
-        $setter = create(User::class);
-        $setter->markAsSetter($paper->course);
+        $moderator = create(User::class);
+        $moderator->markAsModerator($paper->course);
 
         Artisan::call('exampapers:notify-paperwork-incomplete --area=glasgow');
 
@@ -105,7 +102,7 @@ class IncompletePaperworkNotificationTest extends TestCase
     }
 
     /** @test */
-    public function staff_are_not_notified_about_papers_which_are_fully_set()
+    public function moderators_are_not_notified_about_papers_which_are_fully_set()
     {
         Mail::fake();
         $this->withoutExceptionHandling();
@@ -115,12 +112,12 @@ class IncompletePaperworkNotificationTest extends TestCase
         $resitPaper = create(Paper::class, ['course_id' => $mainPaper->course_id, 'category' => 'resit']);
         $setter1 = create(User::class);
         $moderator1 = create(User::class);
+        $moderator2 = create(User::class);
         $setter1->markAsSetter($mainPaper->course);
         $moderator1->markAsModerator($mainPaper->course);
-        $mainPaper->approvedBy($setter1);
+        $moderator2->markAsModerator($mainPaper->course);
         $mainPaper->approvedBy($moderator1);
-        $resitPaper->approvedBy($setter1);
-        $resitPaper->approvedBy($moderator1);
+        $resitPaper->approvedBy($moderator2);
 
         Artisan::call('exampapers:notify-paperwork-incomplete --area=glasgow');
 
@@ -129,7 +126,7 @@ class IncompletePaperworkNotificationTest extends TestCase
     }
 
     /** @test */
-    public function staff_are_not_notified_about_disabled_courses()
+    public function moderators_are_not_notified_about_disabled_courses()
     {
         Mail::fake();
         $this->withoutExceptionHandling();
@@ -193,10 +190,12 @@ class IncompletePaperworkNotificationTest extends TestCase
 
         Artisan::call('exampapers:notify-paperwork-incomplete --area=glasgow');
 
-        // check an email wasn sent only to the setter
-        Mail::assertQueued(PaperworkIncomplete::class, 1);
-        Mail::assertQueued(PaperworkIncomplete::class, function ($mail) use ($setter1) {
-            return $mail->hasTo($setter1->email);
-        });
+        Mail::assertNotQueued(PaperworkIncomplete::class);
+    }
+
+    /** @test */
+    public function the_teaching_office_are_notified_about_incomplete_courses()
+    {
+        $this->fail('TODO');
     }
 }

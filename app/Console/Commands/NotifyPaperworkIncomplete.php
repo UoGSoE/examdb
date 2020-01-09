@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Paper;
 use App\Course;
 use Carbon\Carbon;
+use App\Mail\IncompleteCourses;
 use Illuminate\Console\Command;
 use App\Mail\PaperworkIncomplete;
 use Illuminate\Support\Facades\Mail;
@@ -53,23 +54,23 @@ class NotifyPaperworkIncomplete extends Command
             return;
         }
 
-        $peopleToContact = Course::forArea($area)->has('staff')->with('staff')->get()->filter(function ($course) {
+        $notApprovedCourses = Course::forArea($area)->has('staff')->with('staff')->get()->filter(function ($course) {
             return $course->isntFullyApproved();
-        })->map(function ($course) {
-            return $course->staff->filter(function ($staffMember) use ($course) {
-                if ($staffMember->isExternalFor($course)) {
-                    return false;
-                }
-                if ($course->isApprovedBy($staffMember, 'main') and $course->isApprovedBy($staffMember, 'resit')) {
-                    return false;
-                }
-                return true;
-            })->pluck('email');
+        });
+
+        $peopleToContact = $notApprovedCourses->map(function ($course) {
+            return $course->moderators->pluck('email');
         })->flatten()->unique();
 
         $peopleToContact->each(function ($email) {
-            Mail::to($email)->later(now()->addSeconds(rand(1, 100)), new PaperworkIncomplete);
+            Mail::to($email)->later(now()->addSeconds(rand(1, 180)), new PaperworkIncomplete);
         });
+
+        if ($notApprovedCourses->count() > 0) {
+            Mail::to(
+                option('teaching_office_contact_glasgow')
+            )->later(now()->addSeconds(rand(1, 180)), new IncompleteCourses($notApprovedCourses));
+        }
     }
 
     public function isntADayToSendAlerts($deadline)

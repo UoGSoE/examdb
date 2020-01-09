@@ -12,6 +12,9 @@
         <ul>
             @foreach ($setterCourses as $course)
             <li>
+                @if ($course->isFullyApproved())
+                <span class="tag is-info has-text-weight-bold">Approved</span>
+                @endif
                 <a href="{{ route('course.show', $course->id) }}">
                     {{ $course->code }} {{ $course->title }}
                 </a>
@@ -27,6 +30,9 @@
         <ul>
             @foreach ($moderatedCourses as $course)
             <li>
+                @if ($course->isFullyApproved())
+                <span class="tag is-info has-text-weight-bold">Approved</span>
+                @endif
                 <a href="{{ route('course.show', $course->id) }}">
                     {{ $course->code }} {{ $course->title }}
                 </a>
@@ -44,7 +50,7 @@
             @foreach ($externalCourses as $course)
             <li>
                 @if ($course->isFullyApproved())
-                    <span class="tag is-info has-text-weight-bold">Approved Locally</span>
+                <span class="tag is-info has-text-weight-bold">Approved</span>
                 @endif
                 <a href="{{ route('course.show', $course->id) }}">
                     {{ $course->code }} {{ $course->title }}
