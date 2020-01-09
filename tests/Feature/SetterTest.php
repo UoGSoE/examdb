@@ -95,10 +95,8 @@ class SetterTest extends TestCase
     }
 
     /** @test */
-    public function a_setter_can_approve_a_paper_for_a_course()
+    public function a_setter_cant_approve_a_paper_for_a_course()
     {
-        $this->withoutExceptionHandling();
-        Mail::fake();
         $user = create(User::class);
         $paper = create(Paper::class, ['category' => 'main']);
         $user->markAsSetter($paper->course);
@@ -109,28 +107,13 @@ class SetterTest extends TestCase
 
         $response = $this->actingAs($user)->postJson(route('paper.approve', [$paper->course, 'main']));
 
-        $response->assertStatus(200);
-        $this->assertTrue($paper->course->fresh()->isApprovedBySetter('main'));
-
-        // and check we recorded this in the activity/audit log
-        tap(Activity::all()->last(), function ($log) use ($user, $paper) {
-            $this->assertTrue($log->causer->is($user));
-            $this->assertEquals(
-                "Approved {$paper->category} paper for {$paper->course->code}",
-                $log->description
-            );
-        });
-
-        // and check the moderator was notified
-        Mail::assertQueued(NotifyModeratorAboutApproval::class, function ($mail) use ($moderator) {
-            return $mail->hasTo($moderator->email);
-        });
+        $response->assertStatus(403);
+        $this->assertFalse($paper->course->fresh()->isApprovedBySetter('main'));
     }
 
     /** @test */
-    public function a_setter_can_unapprove_a_paper_for_a_course()
+    public function a_setter_cant_unapprove_a_paper_for_a_course()
     {
-        $this->withoutExceptionHandling();
         Mail::fake();
         $user = create(User::class);
         $paper = create(Paper::class, ['category' => 'main']);
@@ -143,22 +126,8 @@ class SetterTest extends TestCase
 
         $response = $this->actingAs($user)->postJson(route('paper.unapprove', [$paper->course, 'main']));
 
-        $response->assertStatus(200);
-        $this->assertFalse($paper->course->fresh()->isApprovedBySetter('main'));
-
-        // and check we recorded this in the activity/audit log
-        tap(Activity::all()->last(), function ($log) use ($user, $paper) {
-            $this->assertTrue($log->causer->is($user));
-            $this->assertEquals(
-                "Unapproved {$paper->category} paper for {$paper->course->code}",
-                $log->description
-            );
-        });
-
-        // and check the moderator was notified
-        Mail::assertQueued(NotifyModeratorAboutUnapproval::class, function ($mail) use ($moderator) {
-            return $mail->hasTo($moderator->email);
-        });
+        $response->assertStatus(403);
+        $this->assertTrue($paper->course->fresh()->isApprovedBySetter('main'));
     }
 
     /** @test */

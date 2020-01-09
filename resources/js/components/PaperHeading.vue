@@ -49,7 +49,7 @@
                 </main-paper-uploader>
             </span>
 
-        <span class="level-item" v-if="is_local && !secondResit && canUpload">
+        <span class="level-item" v-if="is_local && !secondResit && canUpload && is_moderator">
             <button class="button" @click.prevent="toggleApproval(category)" v-html="approvalButtonText(category)">
             </button>
         </span>
@@ -88,7 +88,8 @@ export default {
   data() {
     return {
       is_local: !window.is_external,
-      is_external: window.is_external
+      is_external: window.is_external,
+      is_moderator: window.is_moderator,
     };
   },
   methods: {

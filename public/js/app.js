@@ -12073,7 +12073,8 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       is_local: !window.is_external,
-      is_external: window.is_external
+      is_external: window.is_external,
+      is_moderator: window.is_moderator
     };
   },
   methods: {
@@ -36475,7 +36476,7 @@ var render = function() {
           )
         : _vm._e(),
       _vm._v(" "),
-      _vm.is_local && !_vm.secondResit && _vm.canUpload
+      _vm.is_local && !_vm.secondResit && _vm.canUpload && _vm.is_moderator
         ? _c("span", { staticClass: "level-item" }, [
             _c("button", {
               staticClass: "button",

@@ -10,7 +10,7 @@ class PaperApprovalController extends Controller
 {
     public function store(Course $course, string $category, Request $request)
     {
-        $this->authorize('update', $course);
+        $this->authorize('approve', $course);
 
         $course->paperApprovedBy($request->user(), $category);
 
@@ -29,7 +29,7 @@ class PaperApprovalController extends Controller
 
     public function destroy(Course $course, string $category, Request $request)
     {
-        $this->authorize('update', $course);
+        $this->authorize('approve', $course);
 
         $course->paperUnapprovedBy($request->user(), $category);
 

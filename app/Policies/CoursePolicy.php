@@ -29,4 +29,9 @@ class CoursePolicy
         return $user->isSetterFor($course) or
             $user->isModeratorFor($course);
     }
+
+    public function approve(User $user, Course $course)
+    {
+        return $user->isModeratorFor($course);
+    }
 }
