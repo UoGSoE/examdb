@@ -133,7 +133,8 @@ export default {
       return route("course.disable", this.course.id);
     },
     notifyButtonText() {
-      return this.externalsNotified ? "Notified!" : "Notify Externals";
+      const suffix = this.course.external_notified ? ' Again' : '';
+      return this.externalsNotified ? "Notified!" : "Notify Externals" + suffix;
     },
     canUploadPapers() {
       let inSetters = this.course.setters.find(

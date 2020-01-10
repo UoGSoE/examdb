@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Mail\IncompleteCourses;
 use App\User;
 use App\Paper;
 use Tests\TestCase;
@@ -196,6 +197,28 @@ class IncompletePaperworkNotificationTest extends TestCase
     /** @test */
     public function the_teaching_office_are_notified_about_incomplete_courses()
     {
-        $this->fail('TODO');
+        Mail::fake();
+        $this->withoutExceptionHandling();
+        // set the deadline to yesterday
+        option(['internal_deadline_glasgow' => now()->subDays(1)->format('Y-m-d')]);
+        option(['teaching_office_contact_glasgow' => 'someone@example.com']);
+        $moderator1 = create(User::class);
+        $mainPaper1 = create(Paper::class, ['category' => 'main']);
+        $mainPaper2 = create(Paper::class, ['category' => 'main']);
+        $mainPaper3 = create(Paper::class, ['category' => 'main']);
+        $moderator1->markAsModerator($mainPaper1->course);
+        $moderator1->markAsModerator($mainPaper2->course);
+        $moderator1->markAsModerator($mainPaper3->course);
+        $mainPaper2->approvedBy($moderator1);
+
+        // at this stage mainPaper 1 & 3 are not approved
+
+        Artisan::call('exampapers:notify-paperwork-incomplete --area=glasgow');
+
+        // check an email was sent to the teaching office with the unapproved courses
+        Mail::assertQueued(IncompleteCourses::class, function ($mail) use ($mainPaper1, $mainPaper3) {
+            return $mail->courses = collect([$mainPaper1->course, $mainPaper3->course]) &&
+                   $mail->hasTo('someone@example.com');
+        });
     }
 }

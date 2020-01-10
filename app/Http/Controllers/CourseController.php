@@ -18,6 +18,7 @@ class CourseController extends Controller
         $course->load('moderators');
         $course->load('externals');
         $course->append('is_uestc');
+        $course->append('external_notified');
 
         return view('course.show', [
             'course' => $course,

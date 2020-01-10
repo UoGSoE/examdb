@@ -8,6 +8,7 @@ use App\Jobs\NotifyExternals;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ExternalHasPapersToLookAt;
+use App\Mail\NotifyExternalSpecificCourse;
 
 class NotifyExternalsController extends Controller
 {
@@ -37,8 +38,9 @@ class NotifyExternalsController extends Controller
 
     public function course(Course $course)
     {
-        $course->externals->each(function ($external) {
-            Mail::to($external->email)->queue(new ExternalHasPapersToLookAt);
+        $course->externals->each(function ($external) use ($course) {
+            Mail::to($external->email)->queue(new NotifyExternalSpecificCourse($course));
         });
+        $course->markExternalNotified();
     }
 }

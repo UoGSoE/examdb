@@ -11196,7 +11196,8 @@ __webpack_require__.r(__webpack_exports__);
       return route("course.disable", this.course.id);
     },
     notifyButtonText: function notifyButtonText() {
-      return this.externalsNotified ? "Notified!" : "Notify Externals";
+      var suffix = this.course.external_notified ? ' Again' : '';
+      return this.externalsNotified ? "Notified!" : "Notify Externals" + suffix;
     },
     canUploadPapers: function canUploadPapers() {
       var _this = this;
