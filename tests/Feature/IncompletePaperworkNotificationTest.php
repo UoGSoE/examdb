@@ -22,6 +22,7 @@ class IncompletePaperworkNotificationTest extends TestCase
         $this->withoutExceptionHandling();
         // set the deadline to yesterday
         option(['internal_deadline_glasgow' => now()->subDays(1)->format('Y-m-d')]);
+        option(['teaching_office_contact_glasgow' => 'someone@example.com']);
         $setter1 = create(User::class);
         $setter2 = create(User::class);
         $moderator1 = create(User::class);
@@ -57,6 +58,7 @@ class IncompletePaperworkNotificationTest extends TestCase
         $this->withoutExceptionHandling();
         // set the deadline in a weeks time
         option(['internal_deadline_glasgow' => now()->addWeeks(1)->format('Y-m-d')]);
+        option(['teaching_office_contact_glasgow' => 'someone@example.com']);
         $setter1 = create(User::class);
         $setter2 = create(User::class);
         $moderator1 = create(User::class);
@@ -99,11 +101,11 @@ class IncompletePaperworkNotificationTest extends TestCase
 
         Artisan::call('exampapers:notify-paperwork-incomplete --area=glasgow');
 
-        Mail::assertNotQueued(PaperworkIncomplete::class);
+        Mail::assertNothingQueued();
     }
 
     /** @test */
-    public function moderators_are_not_notified_about_papers_which_are_fully_set()
+    public function moderators_and_the_teaching_office_are_not_notified_about_papers_which_are_fully_set()
     {
         Mail::fake();
         $this->withoutExceptionHandling();
@@ -124,6 +126,7 @@ class IncompletePaperworkNotificationTest extends TestCase
 
         // check an email wasn't sent to anyone
         Mail::assertNotQueued(PaperworkIncomplete::class);
+        Mail::assertNotQueued(IncompleteCourses::class);
     }
 
     /** @test */
@@ -144,7 +147,7 @@ class IncompletePaperworkNotificationTest extends TestCase
         Artisan::call('exampapers:notify-paperwork-incomplete --area=glasgow');
 
         // check an email wasn't sent to anyone
-        Mail::assertNotQueued(PaperworkIncomplete::class);
+        Mail::assertNothingQueued();
     }
 
     /** @test */
@@ -154,17 +157,18 @@ class IncompletePaperworkNotificationTest extends TestCase
         $this->withoutExceptionHandling();
         // set the deadline to yesterday
         option(['internal_deadline_glasgow' => now()->subDays(1)->format('Y-m-d')]);
+        option(['teaching_office_contact_glasgow' => 'someone@example.com']);
         $mainPaper = create(Paper::class, ['category' => 'main']);
         $resitPaper = create(Paper::class, ['course_id' => $mainPaper->course_id, 'category' => 'resit']);
-        $setter1 = create(User::class);
         $moderator1 = create(User::class);
-        $setter1->markAsSetter($mainPaper->course);
         $moderator1->markAsModerator($mainPaper->course);
-        $setter1->delete();
+        $moderator2 = create(User::class);
+        $moderator2->markAsModerator($mainPaper->course);
+        $moderator2->delete();
 
         Artisan::call('exampapers:notify-paperwork-incomplete --area=glasgow');
 
-        // check an email wasn't sent to anyone
+        // check an email was only sent to moderator 1
         Mail::assertQueued(PaperworkIncomplete::class, 1);
         Mail::assertQueued(PaperworkIncomplete::class, function ($mail) use ($moderator1) {
             return $mail->hasTo($moderator1->email);
