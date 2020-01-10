@@ -52,6 +52,11 @@ class Course extends Model
         return $this->belongsTo(Discipline::class);
     }
 
+    public function checklists()
+    {
+        return $this->hasMany(PaperChecklist::class);
+    }
+
     public function papers()
     {
         return $this->hasMany(Paper::class);
@@ -86,6 +91,24 @@ class Course extends Model
     {
         $codePrefix = $area == 'uestc' ? 'UESTC' : 'ENG';
         return $query->where('code', 'like', $codePrefix . '%');
+    }
+
+    public function hasPreviousChecklists(PaperChecklist $checklist, string $category): bool
+    {
+        if ($this->checklists()->where('category', '=', $category)->count() == 0) {
+            return false;
+        }
+
+        return ! $this->checklists()->where('category', '=', $category)->first()->is($checklist);
+    }
+
+    public function hasMoreChecklists(PaperChecklist $checklist, string $category): bool
+    {
+        if ($this->checklists()->where('category', '=', $category)->count() == 0) {
+            return false;
+        }
+
+        return !$this->checklists()->where('category', '=', $category)->latest()->first()->is($checklist);
     }
 
     public function markExternalNotified()

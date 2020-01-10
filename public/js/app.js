@@ -11181,6 +11181,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["course", "papers", "subcategories", "user", "staff", "externals"],
   data: function data() {
@@ -11188,7 +11196,8 @@ __webpack_require__.r(__webpack_exports__);
       thePapers: this.papers,
       theCourse: this.course,
       is_external: window.is_external,
-      externalsNotified: false
+      externalsNotified: false,
+      checklistRoute: route('course.checklist.create', this.course.id)
     };
   },
   computed: {
@@ -35097,6 +35106,21 @@ var render = function() {
         "div",
         { staticClass: "column" },
         [
+          _c("div", { staticClass: "mb-2" }, [
+            _c(
+              "a",
+              {
+                staticClass: "button",
+                attrs: { href: _vm.checklistRoute + "?category=main" }
+              },
+              [
+                _vm._m(0),
+                _vm._v(" "),
+                _c("span", [_vm._v("View/Edit Paper Checklist")])
+              ]
+            )
+          ]),
+          _vm._v(" "),
           _c("paper-heading", {
             attrs: {
               course: _vm.theCourse,
@@ -35181,7 +35205,16 @@ var render = function() {
     ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon" }, [
+      _c("i", { staticClass: "fas fa-tasks" })
+    ])
+  }
+]
 render._withStripped = true
 
 

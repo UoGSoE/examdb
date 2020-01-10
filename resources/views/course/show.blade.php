@@ -14,6 +14,6 @@
 
 @push('scripts')
 <script>
-  window.is_moderator = {{ Auth::check() && Auth::user()->isModeratorFor($course) }};
+  window.is_moderator = @json(Auth::check() && Auth::user()->isModeratorFor($course));
 </script>
 @endpush

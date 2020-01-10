@@ -60,6 +60,14 @@
 
     <div class="columns">
       <div class="column">
+        <div class="mb-2">
+          <a class="button" :href="checklistRoute + '?category=main'">
+            <span class="icon">
+              <i class="fas fa-tasks"></i>
+            </span>
+            <span>View/Edit Paper Checklist</span>
+          </a>
+        </div>
         <paper-heading
           :course="theCourse"
           :subcategories="subcategories"
@@ -125,7 +133,8 @@ export default {
       thePapers: this.papers,
       theCourse: this.course,
       is_external: window.is_external,
-      externalsNotified: false
+      externalsNotified: false,
+      checklistRoute: route('course.checklist.create', this.course.id),
     };
   },
   computed: {
