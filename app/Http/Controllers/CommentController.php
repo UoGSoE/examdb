@@ -19,6 +19,8 @@ class CommentController extends Controller
             'comment' => 'required',
         ]);
 
+        // here we create a fake file so the rest of the code that _requires_ a file to associate
+        // with the Paper can still work as-is.  See gitlab issue #61
         $fakePaper = UploadedFile::fake()->create('paper_comment', 1);
         $paper = $course->addPaper($request->category, 'comment', $fakePaper);
 
