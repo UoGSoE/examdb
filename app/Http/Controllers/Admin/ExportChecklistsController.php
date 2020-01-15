@@ -13,6 +13,8 @@ class ExportChecklistsController extends Controller
     {
         BulkExportChecklists::dispatch($request->user());
 
+        activity()->causedBy($request->user())->log("Created a ZIP of the paper checklists");
+
         return redirect()->back();
     }
 }
