@@ -30,6 +30,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/checklist/{checklist}', 'ChecklistController@show')->name('course.checklist.show');
     Route::get('/course/{course}/checklist', 'ChecklistController@create')->name('course.checklist.create');
     Route::post('/course/{course}/checklist', 'ChecklistController@store')->name('course.checklist.store');
+    Route::get('/checklist/{checklist}/pdf', 'ChecklistPdfController@show')->name('course.checklist.pdf');
 
     Route::get('/paper/{paper}', 'PaperController@show')->name('paper.show');
     Route::delete('/paper/{paper}', 'PaperController@destroy')->name('paper.delete');

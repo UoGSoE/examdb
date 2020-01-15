@@ -10,6 +10,7 @@
     "require": {
         "php": "^7.2",
         "appstract/laravel-options": "^2.2",
+        "barryvdh/laravel-dompdf": "^0.8.5",
         "box/spout": "^2.7",
         "fideloper/proxy": "^4.0",
         "joggapp/laravel-mail-viewer": "^5.0",

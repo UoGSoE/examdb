@@ -22,11 +22,17 @@ class PaperChecklist extends Model
 
     public function getPreviousChecklist()
     {
-        return $this->where('id', '<', $this->id)->max('id');
+        return $this->where('id', '<', $this->id)
+                ->where('course_id', '=', $this->course_id)
+                ->where('category', '=', $this->category)
+                ->max('id');
     }
 
     public function getNextChecklist()
     {
-        return $this->where('id', '>', $this->id)->min('id');
+        return $this->where('id', '>', $this->id)
+            ->where('course_id', '=', $this->course_id)
+            ->where('category', '=', $this->category)
+            ->min('id');
     }
 }

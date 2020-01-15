@@ -21,6 +21,18 @@
                 {{ ucfirst($checklist->category) }} Paper Checklist for <a href="{{ route('course.show', $checklist->course->id) }}" class="has-text-info">{{ $checklist->course->code }}</a>.
             </h3>
         </div>
+        @if ($checklist->id)
+        <div class="level-item">
+            <a href="{{ route('course.checklist.pdf', $checklist->id) }}" class="button" title="Download PDF" aria-label="Download a PDF of the checklist">
+                <span class="icon is-large">
+                    <i class="fas fa-file-download"></i>
+                </span>
+                <span>
+                    Download PDF
+                </span>
+            </a>
+        </div>
+        @endif
     </div>
     <div class="level-right">
         <div class="level-item">

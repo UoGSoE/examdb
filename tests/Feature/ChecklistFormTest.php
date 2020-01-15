@@ -148,6 +148,53 @@ class ChecklistFormTest extends TestCase
     /** @test */
     public function test_we_can_get_previous_and_next_checklists()
     {
-        $this->fail('TODO - this should probably be a unit test');
+        $course1 = create(Course::class);
+        $course2 = create(Course::class);
+        $existingChecklist1 = create(PaperChecklist::class, [
+            'course_id' => $course1->id,
+            'category' => 'main',
+        ]);
+        $existingChecklist2 = create(PaperChecklist::class, [
+            'course_id' => $course1->id,
+            'category' => 'main',
+        ]);
+        $existingChecklist3 = create(PaperChecklist::class, [
+            'course_id' => $course1->id,
+            'category' => 'main',
+        ]);
+        $existingChecklist4 = create(PaperChecklist::class, [
+            'course_id' => $course1->id,
+            'category' => 'resit',
+        ]);
+
+        $this->assertEquals($existingChecklist1->id, $existingChecklist2->getPreviousChecklist());
+        $this->assertEquals($existingChecklist3->id, $existingChecklist2->getNextChecklist());
+        $this->assertNull($existingChecklist3->getNextChecklist());
+        $this->assertNull($existingChecklist1->getPreviousChecklist());
+        $this->assertNull($existingChecklist4->getNextChecklist());
+        $this->assertNull($existingChecklist4->getPreviousChecklist());
+    }
+
+    /** @test */
+    public function we_can_download_a_pdf_of_the_paper_checklist()
+    {
+        $this->withoutExceptionHandling();
+        $user = create(User::class);
+        $course = create(Course::class);
+        $user->markAsSetter($course);
+        $existingChecklist1 = create(PaperChecklist::class, [
+            'course_id' => $course->id,
+            'category' => 'main',
+        ]);
+
+        $response = $this->actingAs($user)->get(route('course.checklist.pdf', [
+            'checklist' => $existingChecklist1->id,
+        ]));
+
+        $response->assertOk();
+        $this->assertEquals(
+            $response->headers->get('content-disposition'),
+            'attachment; filename="' . $course->code . '_paper_checklist.pdf"'
+        );
     }
 }
