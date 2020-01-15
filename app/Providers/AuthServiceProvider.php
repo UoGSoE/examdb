@@ -31,8 +31,8 @@ class AuthServiceProvider extends ServiceProvider
             return auth()->check() and auth()->user()->isAdmin();
         });
 
-        Gate::define('download_registry', function ($user) {
-            return $user->is(request()->user());
+        Gate::define('download_registry', function ($user, $routeUser) {
+            return $routeUser->is($user);
         });
 
         Gate::define('upload_paper', function ($user, $course) {

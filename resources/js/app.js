@@ -42,6 +42,7 @@ Vue.component('discipline-contacts-editor', require('./components/DisciplineCont
 Vue.component('archive-area-form', require('./components/ArchiveAreaForm.vue').default);
 Vue.component('notify-externals-form', require('./components/NotifyExternalsForm.vue').default);
 Vue.component('export-papers-registry-button', require('./components/ExportPapersRegistryButton.vue').default);
+Vue.component('export-checklists-button', require('./components/ExportChecklistsButton.vue').default);
 import 'vue-select/dist/vue-select.css';
 import vSelect from 'vue-select'
 

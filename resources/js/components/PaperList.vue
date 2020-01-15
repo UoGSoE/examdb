@@ -114,10 +114,7 @@ export default {
       this.showModal = false;
     },
     recentlyUploaded(paper) {
-      console.log(paper.created_at);
       const paperDate = parseISO(paper.created_at);
-      console.log(paperDate);
-      console.log(differenceInMinutes(new Date(), paperDate));
       return differenceInMinutes(new Date(), paperDate) < 30;
     }
   }

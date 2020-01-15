@@ -79,5 +79,8 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::post('/export/registry', 'Admin\ExportPapersForRegistryController@store')->name('export.paper.registry');
         Route::get('/download/registry/{user}', 'Admin\DownloadPapersForRegistryController@show')->name('download.papers.registry');
+
+        Route::post('/export/checklists', 'Admin\ExportChecklistsController@store')->name('checklist.bulk_download');
+        Route::get('/download/checklists/{user}', 'Admin\DownloadChecklistsController@show')->name('download.checklists');
     });
 });

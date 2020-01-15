@@ -168,7 +168,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
 
         $link = (new PaperExporter(Paper::PAPER_FOR_REGISTRY, $admin1))->export();
 
-        $response = $this->actingAs($admin2)->get($link . 'xyz');
+        $response = $this->actingAs($admin2)->get($link);
 
         $response->assertStatus(401);
     }

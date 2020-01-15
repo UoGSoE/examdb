@@ -1,6 +1,6 @@
 <template>
   <div class="level-item">
-    <button class="button" :class="{'is-loading': busy}" @click.prevent="exportPapers" :disabled="done" v-text="buttonText"></button>
+    <button class="button" :class="{'is-loading': busy}" @click.prevent="exportChecklists" :disabled="done" v-text="buttonText"></button>
   </div>
 </template>
 <script>
@@ -9,14 +9,14 @@ export default {
     return {
       done: false,
       busy: false,
-      buttonText: "Export Papers for Registry"
+      buttonText: "Export Checklists"
     };
   },
   methods: {
-    exportPapers() {
+    exportChecklists() {
         this.busy = true;
       axios
-        .post(route("export.paper.registry"))
+        .post(route("checklist.bulk_download"))
         .then(res => {
           setTimeout(() => {
             this.buttonText = "Email will be sent when ready";
