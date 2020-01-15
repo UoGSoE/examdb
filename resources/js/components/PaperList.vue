@@ -45,7 +45,7 @@
             class="delete"
             title="Delete Paper"
             @click.prevent="openModal(paper)"
-            v-if="paper.user_id == user_id"
+            v-if="paper.user_id == user_id && recentlyUploaded(paper)"
           ></button>
         </div>
       </article>
@@ -75,6 +75,9 @@
   </div>
 </template>
 <script>
+import parseISO from 'date-fns/parseISO';
+import differenceInMinutes from 'date-fns/differenceInMinutes';
+
 export default {
   props: ["course", "papers", "category"],
   data() {
@@ -109,6 +112,13 @@ export default {
     closeModal() {
       this.paperToDelete = null;
       this.showModal = false;
+    },
+    recentlyUploaded(paper) {
+      console.log(paper.created_at);
+      const paperDate = parseISO(paper.created_at);
+      console.log(paperDate);
+      console.log(differenceInMinutes(new Date(), paperDate));
+      return differenceInMinutes(new Date(), paperDate) < 30;
     }
   }
 };
