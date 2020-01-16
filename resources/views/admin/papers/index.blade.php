@@ -19,7 +19,8 @@
 <table class="table is-fullwidth is-striped is-hoverable is-bordered">
     <thead>
         <tr>
-            <th>Course</th>
+            <th width="15%">Course</th>
+            <th>Check Lists</th>
             <th>Pre Internally moderated</th>
             <th>Moderator Comments</th>
             <th>Post Internally moderated</th>
@@ -33,6 +34,14 @@
         <tr>
             <td>
                 {{ $course->code }} <span class="tag">{{ $category }}</span>
+            </td>
+            <td>
+                <span class="icon {{ $course->hasSetterChecklist($category) ? 'has-text-info' : 'has-text-grey-light' }}" title="Setter Checklist">
+                    <i class="fas fa-user-tie"></i>
+                </span>
+                <span class="icon {{ $course->hasModeratorChecklist($category) ? 'has-text-info' : 'has-text-grey-light' }}" title="Moderator Checklist">
+                    <i class="fas fa-user-graduate"></i>
+                </span>
             </td>
             <td>
                 {{ $course->datePaperAdded($category, 'Pre-Internally Moderated Paper') }}

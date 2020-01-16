@@ -90,6 +90,22 @@ class Course extends Model
         return $query->where('code', 'like', $codePrefix . '%');
     }
 
+    public function hasSetterChecklist(string $category)
+    {
+        return $this->checklists
+            ->where('category', $category)
+            ->whereIn('user_id', $this->setters->pluck('id'))
+            ->count() > 0;
+    }
+
+    public function hasModeratorChecklist(string $category)
+    {
+        return $this->checklists
+            ->where('category', $category)
+            ->whereIn('user_id', $this->moderators->pluck('id'))
+            ->count() > 0;
+    }
+
     public function hasPreviousChecklists(PaperChecklist $checklist, string $category): bool
     {
         if ($this->checklists()->where('category', '=', $category)->count() == 0) {

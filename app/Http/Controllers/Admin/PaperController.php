@@ -11,7 +11,7 @@ class PaperController extends Controller
     public function index()
     {
         return view('admin.papers.index', [
-            'courses' => Course::with('papers')->orderBy('code')->get(),
+            'courses' => Course::with(['papers', 'setters', 'moderators', 'checklists'])->orderBy('code')->get(),
         ]);
     }
 }
