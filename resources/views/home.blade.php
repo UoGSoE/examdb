@@ -9,7 +9,7 @@
             <span class="icon has-text-grey-lighter"><i class="fas fa-book-open"></i></span>
             <span>&nbsp;Setting</span>
         </h3>
-        <ul>
+        <ul class="leading-loose">
             @foreach ($setterCourses as $course)
             <li>
                 @if ($course->isFullyApproved())
@@ -27,7 +27,7 @@
             <span class="icon has-text-grey-lighter"><i class="fas fa-book-open"></i></span>
             <span>&nbsp;Moderating</span>
         </h3>
-        <ul>
+        <ul class="leading-loose">
             @foreach ($moderatedCourses as $course)
             <li>
                 @if ($course->isFullyApproved())
@@ -46,7 +46,7 @@
             <span class="icon has-text-grey-lighter"><i class="fas fa-book-open"></i></span>
             <span>&nbsp;External</span>
         </h3>
-        <ul>
+        <ul class="leading-loose">
             @foreach ($externalCourses as $course)
             <li>
                 @if ($course->isFullyApproved())
@@ -56,7 +56,7 @@
                     {{ $course->code }} {{ $course->title }}
                 </a>
                 <span class="has-text-grey">
-                    Last update {{ $course->latest_upload ? $course->latest_upload->created_at->diffForHumans() : 'n/a' }}
+                    Last update {{ $course->updated_at->diffForHumans() }}
                 </span>
             </li>
             @endforeach

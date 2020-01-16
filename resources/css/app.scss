@@ -10,6 +10,10 @@ $fa-font-path: '~@fortawesome/fontawesome-free/webfonts';
   display: none;
 }
 
+.leading-loose {
+  line-height: 2;
+}
+
 // fix for firefox level-right expanding outside it's container - see https://github.com/jgthms/bulma/issues/1751#issuecomment-424419988
 .level-item {
   flex-shrink: 1;

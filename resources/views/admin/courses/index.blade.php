@@ -60,7 +60,7 @@
             <td>
                 <div class="field has-addons">
                     <p class="control">
-                        <span class="icon {{ $course->isApprovedByModerator('resit') ? 'has-text-success' : 'has-text-grey-light' }}" title="Moderator approved?">
+                        <span class="icon {{ $course->isApprovedByModerator('resit') ? 'has-text-info' : 'has-text-grey-light' }}" title="Moderator approved?">
                             <i class="fas fa-user-graduate"></i>
                         </span>
                     </p>

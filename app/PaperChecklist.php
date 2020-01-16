@@ -10,6 +10,8 @@ class PaperChecklist extends Model
 
     protected $guarded = [];
 
+    protected $touches = ['course'];
+
     public function course()
     {
         return $this->belongsTo(Course::class);

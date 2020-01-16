@@ -16,6 +16,8 @@ class Paper extends Model
 
     protected $guarded = [];
 
+    protected $touches = ['course'];
+
     protected $casts = [
         'approved_setter' => 'boolean',
         'archived_at' => 'datetime',

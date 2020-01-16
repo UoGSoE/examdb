@@ -123,11 +123,6 @@ class Course extends Model
         return $this->external_notified;
     }
 
-    public function getLatestUploadAttribute()
-    {
-        return $this->papers()->latest()->first();
-    }
-
     public function addPaper(string $category, string $subcategory, UploadedFile $file): Paper
     {
         if (!in_array($category, Paper::VALID_CATEGORIES)) {
