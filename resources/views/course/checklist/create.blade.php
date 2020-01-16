@@ -17,7 +17,7 @@
 <div class="level">
     <div class="level-left">
         <div class="level-item">
-            <h3 class="title is-3 has-text-grey">
+            <h3 class="title is-3 has-text-grey-dark">
                 {{ ucfirst($checklist->category) }} Paper Checklist for <a href="{{ route('course.show', $checklist->course->id) }}" class="has-text-info">{{ $checklist->course->code }}</a>.
             </h3>
         </div>
@@ -69,7 +69,7 @@
 
     <div class="columns">
         <div class="column">
-            <h4 class="title is-4 has-text-grey">Setter</h4>
+            <h4 class="title is-4 has-text-grey-dark">Setter</h4>
             <div class="field">
                 <label class="label has-text-grey" for="q1">Question 1</label>
                 <div class="control">
@@ -85,7 +85,7 @@
             </div>
         </div>
         <div class="column">
-            <h4 class="title is-4 has-text-grey">Moderator</h4>
+            <h4 class="title is-4 has-text-grey-dark">Moderator</h4>
             <div class="field">
                 <label class="label has-text-grey" for="q1">Question 1</label>
                 <div class="control">

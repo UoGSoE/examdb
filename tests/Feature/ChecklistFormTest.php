@@ -4,8 +4,10 @@ namespace Tests\Feature;
 
 use App\User;
 use App\Course;
-use App\PaperChecklist;
 use Tests\TestCase;
+use App\PaperChecklist;
+use App\Mail\ChecklistUpdated;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -196,5 +198,66 @@ class ChecklistFormTest extends TestCase
             $response->headers->get('content-disposition'),
             'attachment; filename="' . $course->code . '_paper_checklist.pdf"'
         );
+    }
+
+    /** @test */
+    public function when_a_setter_updates_the_checklist_an_email_is_sent_to_the_moderators()
+    {
+        $this->withoutExceptionHandling();
+        Mail::fake();
+        $setter = create(User::class);
+        $moderator1 = create(User::class);
+        $moderator2 = create(User::class);
+        $moderator3 = create(User::class);
+        $course = create(Course::class);
+        $setter->markAsSetter($course);
+        $moderator1->markAsModerator($course);
+        $moderator2->markAsModerator($course);
+
+        $response = $this->actingAs($setter)->post(route('course.checklist.store', $course->id), [
+            'course_id' => $course->id,
+            'category' => 'main',
+            'q1' => 'hello',
+            'q2' => 'there',
+        ]);
+
+        Mail::assertQueued(ChecklistUpdated::class, 2);
+        Mail::assertQueued(ChecklistUpdated::class, function ($mail) use ($moderator1) {
+            return $mail->hasTo($moderator1);
+        });
+        Mail::assertQueued(ChecklistUpdated::class, function ($mail) use ($moderator2) {
+            return $mail->hasTo($moderator2);
+        });
+    }
+
+    /** @test */
+    public function when_a_moderator_updates_the_checklist_an_email_is_sent_to_the_setters()
+    {
+        $this->withoutExceptionHandling();
+        Mail::fake();
+        $setter1 = create(User::class);
+        $setter2 = create(User::class);
+        $setter3 = create(User::class);
+        $moderator = create(User::class);
+        $course = create(Course::class);
+        $setter1->markAsSetter($course);
+        $setter2->markAsSetter($course);
+        $moderator->markAsModerator($course);
+
+        $response = $this->actingAs($moderator)->post(route('course.checklist.store', $course->id), [
+            'course_id' => $course->id,
+            'category' => 'main',
+            'q1' => 'hello',
+            'q2' => 'there',
+        ]);
+
+        Mail::assertQueued(ChecklistUpdated::class, 2);
+        Mail::assertQueued(ChecklistUpdated::class, function ($mail) use ($setter1) {
+            $mail->build();
+            return $mail->hasTo($setter1);
+        });
+        Mail::assertQueued(ChecklistUpdated::class, function ($mail) use ($setter2) {
+            return $mail->hasTo($setter2);
+        });
     }
 }

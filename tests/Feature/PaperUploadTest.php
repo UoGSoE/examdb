@@ -75,95 +75,6 @@ class PaperUploadTest extends TestCase
     }
 
     /** @test */
-    public function when_the_setter_uploads_the_paper_checklist_a_mail_is_triggered_to_the_moderators()
-    {
-        Mail::fake();
-        $this->withoutExceptionHandling();
-        Storage::fake('exampapers');
-        $staff = create(User::class);
-        $course = create(Course::class);
-        $staff->markAsSetter($course);
-        $moderator1 = create(User::class);
-        $moderator2 = create(User::class);
-        $moderator1->markAsModerator($course);
-        $moderator2->markAsModerator($course);
-
-        $response = $this->actingAs($staff)->postJson(route('course.paper.store', $course->id), [
-            'paper' => UploadedFile::fake()->create('main_paper_1.pdf', 1),
-            'category' => 'main',
-            'subcategory' => Paper::PAPER_CHECKLIST,
-            'comment' => 'Whatever',
-        ]);
-
-        $response->assertStatus(201);
-        $this->assertCount(1, $course->papers);
-        $this->assertCount(1, $course->papers->first()->comments);
-        $paper = $course->papers->first();
-        Storage::disk('exampapers')->assertExists($paper->filename);
-        $this->assertEquals('main', $paper->category);
-        $this->assertEquals(Paper::PAPER_CHECKLIST, $paper->subcategory);
-        $this->assertEquals('Whatever', $paper->comments->first()->comment);
-        $this->assertTrue($paper->user->is($staff));
-        $this->assertTrue($paper->course->is($course));
-
-        // and check we recorded this in the activity/audit log
-        tap(Activity::all()->last(), function ($log) use ($staff, $paper) {
-            $this->assertTrue($log->causer->is($staff));
-            $this->assertEquals(
-                "Uploaded a paper ({$paper->course->code} - {$paper->category} / {$paper->subcategory})",
-                $log->description
-            );
-        });
-
-        // check an email was sent to all the course moderators about the new upload
-        Mail::assertQueued(ChecklistUploaded::class, 2);
-        Mail::assertQueued(ChecklistUploaded::class, function ($mail) use ($moderator1) {
-            return $mail->hasTo($moderator1->email);
-        });
-        Mail::assertQueued(ChecklistUploaded::class, function ($mail) use ($moderator2) {
-            return $mail->hasTo($moderator2->email);
-        });
-    }
-
-    /** @test */
-    public function a_moderator_can_upload_thier_checklist_which_triggers_an_email_to_the_setter()
-    {
-        Mail::fake();
-        $this->withoutExceptionHandling();
-        Storage::fake('exampapers');
-        $setter = create(User::class);
-        $course = create(Course::class);
-        $setter->markAsSetter($course);
-        $moderator = create(User::class);
-        $moderator->markAsModerator($course);
-
-        $response = $this->actingAs($moderator)->postJson(route('course.paper.store', $course->id), [
-            'paper' => UploadedFile::fake()->create('main_paper_1.pdf', 1),
-            'category' => 'main',
-            'subcategory' => Paper::PAPER_CHECKLIST,
-            'comment' => 'Whatever',
-        ]);
-
-        $response->assertStatus(201);
-        $this->assertCount(1, $course->papers);
-        $this->assertCount(1, $course->papers->first()->comments);
-        $paper = $course->papers->first();
-        // and check we recorded this in the activity/audit log
-        tap(Activity::all()->last(), function ($log) use ($moderator, $paper) {
-            $this->assertTrue($log->causer->is($moderator));
-            $this->assertEquals(
-                "Uploaded a paper ({$paper->course->code} - {$paper->category} / {$paper->subcategory})",
-                $log->description
-            );
-        });
-
-        // check an email was sent to all the course setters about the new upload
-        Mail::assertQueued(ChecklistUploaded::class, function ($mail) use ($setter) {
-            return $mail->hasTo($setter->email);
-        });
-    }
-
-    /** @test */
     public function an_external_can_upload_thier_comments_which_triggers_an_email_to_the_setter_and_teaching_office_contact()
     {
         $this->withoutExceptionHandling();
@@ -302,7 +213,7 @@ class PaperUploadTest extends TestCase
         $response = $this->actingAs($staff)->postJson(route('course.paper.store', $course->id), [
             'paper' => $file,
             'category' => 'resit2',
-            'subcategory' => Paper::PAPER_CHECKLIST,
+            'subcategory' => 'flump',
             'comment' => 'Whatever',
         ]);
 

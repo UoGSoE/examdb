@@ -11181,14 +11181,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["course", "papers", "subcategories", "user", "staff", "externals"],
   data: function data() {
@@ -11196,8 +11188,7 @@ __webpack_require__.r(__webpack_exports__);
       thePapers: this.papers,
       theCourse: this.course,
       is_external: window.is_external,
-      externalsNotified: false,
-      checklistRoute: route('course.checklist.create', this.course.id)
+      externalsNotified: false
     };
   },
   computed: {
@@ -12094,6 +12085,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["course", "subcategories", "category", "canUpload"],
@@ -12126,7 +12129,8 @@ __webpack_require__.r(__webpack_exports__);
     return {
       is_local: !window.is_external,
       is_external: window.is_external,
-      is_moderator: window.is_moderator
+      is_moderator: window.is_moderator,
+      checklistRoute: route('course.checklist.create', this.course.id)
     };
   },
   methods: {
@@ -35626,7 +35630,7 @@ var render = function() {
           ? _c("p", { staticClass: "subtitle" }, [
               _c("b", [_vm._v("Note:")]),
               _vm._v(
-                " the system will only notify other people of any changes when you upload a Paper Checklist\n      "
+                " the system will only notify other people of any changes when you update the Paper Checklist\n      "
               )
             ])
           : _vm._e(),
@@ -35716,21 +35720,6 @@ var render = function() {
         "div",
         { staticClass: "column" },
         [
-          _c("div", { staticClass: "mb-2" }, [
-            _c(
-              "a",
-              {
-                staticClass: "button",
-                attrs: { href: _vm.checklistRoute + "?category=main" }
-              },
-              [
-                _vm._m(0),
-                _vm._v(" "),
-                _c("span", [_vm._v("View/Edit Paper Checklist")])
-              ]
-            )
-          ]),
-          _vm._v(" "),
           _c("paper-heading", {
             attrs: {
               course: _vm.theCourse,
@@ -35815,16 +35804,7 @@ var render = function() {
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("span", { staticClass: "icon" }, [
-      _c("i", { staticClass: "fas fa-tasks" })
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -37063,120 +37043,142 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "level" }, [
-    _c("div", { staticClass: "level-left" }, [
-      _c("span", { staticClass: "level-item" }, [
-        _c(
-          "h3",
-          { staticClass: "title has-text-grey" },
-          [
-            _c("span", [
-              _vm._v(
-                _vm._s(_vm._f("capitalize")(_vm._f("pretty")(_vm.category)))
-              )
-            ]),
-            _vm._v(" "),
-            _c("transition", { attrs: { name: "fade", mode: "in-out" } }, [
-              !_vm.secondResit && _vm.isApproved
-                ? _c(
-                    "span",
-                    { key: "approved", attrs: { title: "Approved" } },
-                    [
-                      _c("span", { staticClass: "icon has-text-success" }, [
-                        _c("i", { staticClass: "fas fa-check" })
-                      ])
-                    ]
-                  )
-                : _vm._e()
-            ])
-          ],
-          1
-        )
-      ]),
-      _vm._v(" "),
-      _vm.is_local && _vm.canUpload
-        ? _c(
-            "span",
-            { staticClass: "level-item" },
+  return _c("div", { staticClass: "mb-8" }, [
+    _c("div", { staticClass: "level" }, [
+      _c("div", { staticClass: "level-left" }, [
+        _c("div", { staticClass: "level-item" }, [
+          _c(
+            "h3",
+            { staticClass: "title has-text-grey" },
             [
-              _c("main-paper-uploader", {
-                attrs: {
-                  course: _vm.course,
-                  category: _vm.category,
-                  subcategories: _vm.subcategories["main"]
-                },
-                on: { added: _vm.paperAdded }
-              })
+              _c("span", [
+                _vm._v(
+                  _vm._s(_vm._f("capitalize")(_vm._f("pretty")(_vm.category)))
+                )
+              ]),
+              _vm._v(" "),
+              _c("transition", { attrs: { name: "fade", mode: "in-out" } }, [
+                !_vm.secondResit && _vm.isApproved
+                  ? _c(
+                      "span",
+                      { key: "approved", attrs: { title: "Approved" } },
+                      [
+                        _c("span", { staticClass: "icon has-text-success" }, [
+                          _c("i", { staticClass: "fas fa-check" })
+                        ])
+                      ]
+                    )
+                  : _vm._e()
+              ])
             ],
             1
           )
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.is_local && _vm.canUpload
-        ? _c(
-            "span",
-            { staticClass: "level-item" },
-            [
-              _c("comment-box", {
-                attrs: { course: _vm.course, category: _vm.category },
-                on: { added: _vm.paperAdded }
-              })
-            ],
-            1
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "level-item" }, [
+          _c(
+            "a",
+            {
+              staticClass: "button",
+              attrs: { href: _vm.checklistRoute + "?category=" + _vm.category }
+            },
+            [_vm._m(0), _vm._v(" "), _c("span", [_vm._v("Paper Checklist")])]
           )
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.is_external && _vm.canUpload
-        ? _c(
-            "span",
-            { staticClass: "level-item" },
-            [
-              _c(
-                "main-paper-uploader",
-                {
+        ]),
+        _vm._v(" "),
+        _vm.is_local && _vm.canUpload
+          ? _c(
+              "span",
+              { staticClass: "level-item" },
+              [
+                _c("main-paper-uploader", {
                   attrs: {
                     course: _vm.course,
                     category: _vm.category,
-                    subcategories: _vm.subcategories["external"]
+                    subcategories: _vm.subcategories["main"]
                   },
                   on: { added: _vm.paperAdded }
+                })
+              ],
+              1
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.is_local && _vm.canUpload
+          ? _c(
+              "span",
+              { staticClass: "level-item" },
+              [
+                _c("comment-box", {
+                  attrs: { course: _vm.course, category: _vm.category },
+                  on: { added: _vm.paperAdded }
+                })
+              ],
+              1
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.is_external && _vm.canUpload
+          ? _c(
+              "span",
+              { staticClass: "level-item" },
+              [
+                _c(
+                  "main-paper-uploader",
+                  {
+                    attrs: {
+                      course: _vm.course,
+                      category: _vm.category,
+                      subcategories: _vm.subcategories["external"]
+                    },
+                    on: { added: _vm.paperAdded }
+                  },
+                  [
+                    _c("template", { slot: "button-content" }, [
+                      _c("span", { staticClass: "icon has-text-success" }, [
+                        _c("i", { staticClass: "far fa-check-circle" })
+                      ]),
+                      _vm._v(" "),
+                      _c("span", [_vm._v("Add Comments")])
+                    ])
+                  ],
+                  2
+                )
+              ],
+              1
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.is_local && !_vm.secondResit && _vm.canUpload && _vm.is_moderator
+          ? _c("span", { staticClass: "level-item" }, [
+              _c("button", {
+                staticClass: "button",
+                domProps: {
+                  innerHTML: _vm._s(_vm.approvalButtonText(_vm.category))
                 },
-                [
-                  _c("template", { slot: "button-content" }, [
-                    _c("span", { staticClass: "icon has-text-success" }, [
-                      _c("i", { staticClass: "far fa-check-circle" })
-                    ]),
-                    _vm._v(" "),
-                    _c("span", [_vm._v("Add Comments")])
-                  ])
-                ],
-                2
-              )
-            ],
-            1
-          )
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.is_local && !_vm.secondResit && _vm.canUpload && _vm.is_moderator
-        ? _c("span", { staticClass: "level-item" }, [
-            _c("button", {
-              staticClass: "button",
-              domProps: {
-                innerHTML: _vm._s(_vm.approvalButtonText(_vm.category))
-              },
-              on: {
-                click: function($event) {
-                  $event.preventDefault()
-                  return _vm.toggleApproval(_vm.category)
+                on: {
+                  click: function($event) {
+                    $event.preventDefault()
+                    return _vm.toggleApproval(_vm.category)
+                  }
                 }
-              }
-            })
-          ])
-        : _vm._e()
+              })
+            ])
+          : _vm._e()
+      ])
     ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon" }, [
+      _c("i", { staticClass: "fas fa-tasks" })
+    ])
+  }
+]
 render._withStripped = true
 
 

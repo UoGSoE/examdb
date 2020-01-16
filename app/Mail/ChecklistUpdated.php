@@ -3,25 +3,26 @@
 namespace App\Mail;
 
 use App\Paper;
+use App\PaperChecklist;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ChecklistUploaded extends Mailable
+class ChecklistUpdated extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $paper;
+    public $checklist;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Paper $paper)
+    public function __construct(PaperChecklist $checklist)
     {
-        $this->paper = $paper;
+        $this->checklist = $checklist;
     }
 
     /**
@@ -31,6 +32,6 @@ class ChecklistUploaded extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.checklist_uploaded');
+        return $this->markdown('emails.checklist_updated');
     }
 }

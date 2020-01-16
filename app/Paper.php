@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Paper extends Model
 {
     const PAPER_FOR_REGISTRY = 'Paper For Registry';
-    const PAPER_CHECKLIST = 'Paper Checklist';
     const EXTERNAL_COMMENTS = 'External Examiner Comments';
     const EXTERNAL_SOLUTION_COMMENTS = 'External Examiner Solution Comments';
     const SECOND_RESIT_CATEGORY = 'resit2';
@@ -44,11 +43,6 @@ class Paper extends Model
     public function comments()
     {
         return $this->morphMany(Comment::class, 'commentable');
-    }
-
-    public function scopeReadyForExternals($query)
-    {
-        return $query->where('subcategory', '=', Paper::PAPER_CHECKLIST);
     }
 
     public function scopeMain($query)
@@ -173,16 +167,6 @@ class Paper extends Model
     public function getDiffForHumansAttribute()
     {
         return $this->created_at->diffForHumans();
-    }
-
-    public function isntChecklist()
-    {
-        return $this->subcategory != Paper::PAPER_CHECKLIST;
-    }
-
-    public function isChecklist()
-    {
-        return ! $this->isntChecklist();
     }
 
     public function getTeachingOfficeContact()

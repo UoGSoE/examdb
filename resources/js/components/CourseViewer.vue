@@ -23,7 +23,7 @@
     <div class="columns">
       <div class="column">
         <p v-if="! is_external" class="subtitle">
-          <b>Note:</b> the system will only notify other people of any changes when you upload a Paper Checklist
+          <b>Note:</b> the system will only notify other people of any changes when you update the Paper Checklist
         </p>
 
         <span v-if="user.is_admin">
@@ -60,14 +60,6 @@
 
     <div class="columns">
       <div class="column">
-        <div class="mb-2">
-          <a class="button" :href="checklistRoute + '?category=main'">
-            <span class="icon">
-              <i class="fas fa-tasks"></i>
-            </span>
-            <span>View/Edit Paper Checklist</span>
-          </a>
-        </div>
         <paper-heading
           :course="theCourse"
           :subcategories="subcategories"
@@ -134,7 +126,6 @@ export default {
       theCourse: this.course,
       is_external: window.is_external,
       externalsNotified: false,
-      checklistRoute: route('course.checklist.create', this.course.id),
     };
   },
   computed: {

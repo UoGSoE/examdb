@@ -52,7 +52,6 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('user/{id}/undelete', 'Admin\UserController@reenable')->name('admin.user.undelete');
 
         Route::get('search/user', 'Admin\UserSearchController@show')->name('user.search');
-        // Route::post('user/{user}/impersonate', 'Admin\ImpersonationController@store')->name('impersonate.start');
         Route::post('course/{course}/users', 'Admin\CourseUsersController@update')->name('course.users.update');
         Route::post('courses/remove-staff', 'Admin\CourseUsersController@destroy')->name('admin.courses.clear_staff');
 

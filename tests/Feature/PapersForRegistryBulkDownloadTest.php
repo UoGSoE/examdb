@@ -100,8 +100,8 @@ class PapersForRegistryBulkDownloadTest extends TestCase
         $course2 = create(Course::class);
         $course1->addPaper('main', Paper::PAPER_FOR_REGISTRY, UploadedFile::fake()->create('document1.pdf', 1));
         $course1->addPaper('resit', Paper::PAPER_FOR_REGISTRY, UploadedFile::fake()->create('document2.pdf', 1));
-        $course2->addPaper('main', Paper::PAPER_CHECKLIST, UploadedFile::fake()->create('document3.pdf', 1));
         $course2->addPaper('main', Paper::PAPER_FOR_REGISTRY, UploadedFile::fake()->create('document4.pdf', 1));
+        $course2->addPaper('main', 'flump', UploadedFile::fake()->create('document4.pdf', 1));
 
         $link = (new PaperExporter(Paper::PAPER_FOR_REGISTRY, $admin))->export();
 
@@ -117,7 +117,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
             $stat = $zip->statIndex($i);
             $filenames->push(basename($stat['name']));
         }
-        $this->assertCount(4, $filenames); // only 3 registry papers, shouldn't include the checklist - but there is always a placeholder file
+        $this->assertCount(4, $filenames); // only 3 registry papers, shouldn't include the 'flump' one - but there is always a placeholder file
         $this->assertTrue($filenames->contains($course1->code . '_Main_document1.pdf'));
         $this->assertTrue($filenames->contains($course1->code . '_Resit_document2.pdf'));
         $this->assertTrue($filenames->contains($course2->code . '_Main_document4.pdf'));
@@ -140,7 +140,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
         $course2 = create(Course::class);
         $course1->addPaper('main', Paper::PAPER_FOR_REGISTRY, UploadedFile::fake()->create('document1.pdf', 1));
         $course1->addPaper('resit', Paper::PAPER_FOR_REGISTRY, UploadedFile::fake()->create('document2.pdf', 1));
-        $course2->addPaper('main', Paper::PAPER_CHECKLIST, UploadedFile::fake()->create('document3.pdf', 1));
+        $course2->addPaper('main', 'flump', UploadedFile::fake()->create('document3.pdf', 1));
         $course2->addPaper('main', Paper::PAPER_FOR_REGISTRY, UploadedFile::fake()->create('document4.pdf', 1));
 
         $link = (new PaperExporter(Paper::PAPER_FOR_REGISTRY, $admin1))->export();
@@ -163,7 +163,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
         $course2 = create(Course::class);
         $course1->addPaper('main', Paper::PAPER_FOR_REGISTRY, UploadedFile::fake()->create('document1.pdf', 1));
         $course1->addPaper('resit', Paper::PAPER_FOR_REGISTRY, UploadedFile::fake()->create('document2.pdf', 1));
-        $course2->addPaper('main', Paper::PAPER_CHECKLIST, UploadedFile::fake()->create('document3.pdf', 1));
+        $course2->addPaper('main', 'flump', UploadedFile::fake()->create('document3.pdf', 1));
         $course2->addPaper('main', Paper::PAPER_FOR_REGISTRY, UploadedFile::fake()->create('document4.pdf', 1));
 
         $link = (new PaperExporter(Paper::PAPER_FOR_REGISTRY, $admin1))->export();
@@ -172,7 +172,6 @@ class PapersForRegistryBulkDownloadTest extends TestCase
 
         $response->assertStatus(401);
     }
-
 
     /** @test */
     public function when_the_zip_is_generated_a_job_is_queued_to_remove_it_again()

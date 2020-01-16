@@ -14,11 +14,13 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         'App\Events\PaperAdded' => [
-            'App\Listeners\NotifyStaffThatChecklistUploaded',
             'App\Listeners\NotifySetterThatExternalHasCommented',
             'App\Listeners\NotifyTeachingOfficeThatExternalHasCommented',
             'App\Listeners\NotifyTechingOfficePaperForRegistryUploaded',
             'App\Listeners\LogThatPaperWasAdded',
+        ],
+        'App\Events\ChecklistUpdated' => [
+            'App\Listeners\NotifyStaffThatChecklistUpdated',
         ],
         'Illuminate\Auth\Events\Login' => [
             'App\Listeners\UserLoggedIn',

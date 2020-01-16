@@ -7,6 +7,7 @@ use App\Course;
 use App\PaperChecklist;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Events\ChecklistUpdated;
 
 class ChecklistController extends Controller
 {
@@ -64,6 +65,8 @@ class ChecklistController extends Controller
             'q1' => $request->q1,
             'q2' => $request->q2,
         ]);
+
+        event(new ChecklistUpdated($checklist));
 
         return redirect()->route('course.show', $course->id);
     }

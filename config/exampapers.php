@@ -13,8 +13,6 @@ return [
     'delete_paper_limit_minutes' => 30,
     'paper_subcategories' => [
         'main' => [
-            "Paper Checklist",
-            "---", // divider - disabled in the UI
             "Pre-Internally Moderated Paper",
             "Moderator Comments",
             "Post-Internally Moderated Paper",
