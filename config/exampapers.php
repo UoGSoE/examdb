@@ -24,6 +24,8 @@ return [
             "Post-Internally Moderated Solutions",
             "Response To External Examiner (Solutions)",
             "Solutions For Archive",
+            "---",
+            "In Term Assessment"
         ],
         'external' => [
             "External Examiner Comments",
