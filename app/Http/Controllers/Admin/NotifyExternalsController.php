@@ -41,6 +41,12 @@ class NotifyExternalsController extends Controller
         $course->externals->each(function ($external) use ($course) {
             Mail::to($external->email)->queue(new NotifyExternalSpecificCourse($course));
         });
+
         $course->markExternalNotified();
+
+        activity()
+            ->causedBy(request()->user())
+            ->log("Notified externals for " . $course->code);
+
     }
 }
