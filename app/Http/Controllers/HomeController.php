@@ -26,27 +26,10 @@ class HomeController extends Controller
     public function index()
     {
         return view('home', [
-            'moderatedCourses' => auth()->user()
-                                    ->courses()
-                                    ->wherePivot('is_moderator', true)
-                                    ->latest('updated_at')
-                                    ->get(),
-            'setterCourses' => auth()->user()
-                                ->courses()
-                                ->wherePivot('is_setter', true)
-                                ->latest('updated_at')
-                                ->get(),
-            'externalCourses' => auth()->user()
-                                    ->courses()
-                                    ->wherePivot('is_external', true)
-                                    ->latest('updated_at')
-                                    ->get(),
-            'paperList' => auth()->user()
-                            ->papers()
-                            ->where('subcategory', '!=', Paper::COMMENT_SUBCATEGORY)
-                            ->with('course')
-                            ->orderByDesc('created_at')
-                            ->get(),
+            'moderatedCourses' => auth()->user()->getCourses('is_moderator'),
+            'setterCourses' => auth()->user()->getCourses('is_setter'),
+            'externalCourses' => auth()->user()->getCourses('is_external'),
+            'paperList' => auth()->user()->getAllUploads(),
         ]);
     }
 }

@@ -34,6 +34,7 @@
         </div>
         @endif
     </div>
+    @if (! Auth::user()->isExternalFor($checklist->course))
     <div class="level-right">
         <div class="level-item">
             @if ($checklist->course->hasPreviousChecklists($checklist, $checklist->category))
@@ -54,7 +55,7 @@
             @endif
         </div>
     </div>
-
+    @endif
 </div>
 <p class="subtitle">
     Last edited by {{ $checklist->user->full_name }}
@@ -102,12 +103,14 @@
         </div>
     </div>
 
+    @if (! Auth::user()->isExternalFor($checklist->course))
     <hr />
     <div class="field">
         <div class="control">
             <button class="button">Save</button>
         </div>
     </div>
+    @endif
 </form>
 
 @endsection

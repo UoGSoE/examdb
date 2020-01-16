@@ -72,6 +72,24 @@ class User extends Authenticatable
             });
     }
 
+    public function getCourses(string $userTypeField = null)
+    {
+        $query = $this->courses();
+        if ($userTypeField) {
+            $query = $query->wherePivot($userTypeField, true);
+        }
+        return $query->latest('updated_at')->get();
+    }
+
+    public function getAllUploads()
+    {
+        return $this->papers()
+            ->where('subcategory', '!=', Paper::COMMENT_SUBCATEGORY)
+            ->with('course')
+            ->orderByDesc('created_at')
+            ->get();
+    }
+
     public function markAsSetter(Course $course)
     {
         $this->courses()->syncWithoutDetaching([$course->id]);
