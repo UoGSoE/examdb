@@ -227,6 +227,11 @@ class Course extends Model
         return $this->isApprovedByModerator('main') && $this->isApprovedByModerator('resit');
     }
 
+    public function isntFullyApprovedByModerator()
+    {
+        return ! $this->isFullyApprovedByModerator();
+    }
+
     public function getUserApprovedMainAttribute(? User $user): bool
     {
         if (!$user) {

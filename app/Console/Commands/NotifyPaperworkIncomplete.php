@@ -55,7 +55,7 @@ class NotifyPaperworkIncomplete extends Command
         }
 
         $notApprovedCourses = Course::forArea($area)->has('staff')->with('staff')->get()->filter(function ($course) {
-            return $course->isntFullyApproved();
+            return $course->isntFullyApprovedByModerator();
         });
 
         $peopleToContact = $notApprovedCourses->map(function ($course) {
