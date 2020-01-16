@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Paper;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -42,6 +43,7 @@ class HomeController extends Controller
                                     ->get(),
             'paperList' => auth()->user()
                             ->papers()
+                            ->where('subcategory', '!=', Paper::COMMENT_SUBCATEGORY)
                             ->with('course')
                             ->orderByDesc('created_at')
                             ->get(),

@@ -10818,6 +10818,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["course", "papers"],
   computed: {
@@ -10851,6 +10856,10 @@ __webpack_require__.r(__webpack_exports__);
       return paper.user ? paper.user.full_name : '<span class="tag">Disabled</span>';
     },
     getDownloadRoute: function getDownloadRoute(paper) {
+      if (paper.subcategory == 'comment') {
+        return '';
+      }
+
       return route("archived.paper.show", paper.id);
     }
   }
@@ -35170,22 +35179,28 @@ var render = function() {
       _vm._l(_vm.filteredPapers, function(paper) {
         return _c("article", { key: paper.id, staticClass: "media" }, [
           _c("figure", { staticClass: "media-left has-text-centered" }, [
-            _c(
-              "a",
-              {
-                staticClass: "image is-64x64",
-                attrs: { href: _vm.getDownloadRoute(paper) }
-              },
-              [
-                _c("span", { staticClass: "icon is-large" }, [
-                  _c("i", { class: paper.icon + " fa-3x" })
-                ]),
-                _vm._v(" "),
-                _c("br"),
-                _vm._v(" "),
-                _c("span", [_vm._v(_vm._s(paper.formatted_size))])
-              ]
-            )
+            paper.subcategory != "comment"
+              ? _c(
+                  "a",
+                  {
+                    staticClass: "image is-64x64",
+                    attrs: { href: _vm.getDownloadRoute(paper) }
+                  },
+                  [
+                    _c("span", { staticClass: "icon is-large" }, [
+                      _c("i", { class: paper.icon + " fa-3x" })
+                    ]),
+                    _vm._v(" "),
+                    _c("br"),
+                    _vm._v(" "),
+                    _c("span", [_vm._v(_vm._s(paper.formatted_size))])
+                  ]
+                )
+              : _c(
+                  "span",
+                  { staticClass: "image is-64x64 has-text-grey-light" },
+                  [_vm._m(0, true)]
+                )
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "media-content" }, [
@@ -35226,7 +35241,7 @@ var render = function() {
                         })
                       ]),
                       _vm._v(" "),
-                      _vm._m(0, true),
+                      _vm._m(1, true),
                       _vm._v(
                         "\n            " +
                           _vm._s(paper.comments[0].comment) +
@@ -35244,6 +35259,14 @@ var render = function() {
   )
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon is-large" }, [
+      _c("i", { staticClass: "far fa-comment fa-3x" })
+    ])
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement

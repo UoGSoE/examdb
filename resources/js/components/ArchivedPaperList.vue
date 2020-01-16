@@ -10,13 +10,18 @@
     </div>
     <article class="media" v-for="paper in filteredPapers" :key="paper.id">
       <figure class="media-left has-text-centered">
-        <a :href="getDownloadRoute(paper)" class="image is-64x64">
-          <span class="icon is-large">
-            <i :class="paper.icon + ' fa-3x'"></i>
+          <a v-if="paper.subcategory != 'comment'" :href="getDownloadRoute(paper)" class="image is-64x64">
+            <span class="icon is-large">
+              <i :class="paper.icon + ' fa-3x'"></i>
+            </span>
+            <br>
+            <span>{{ paper.formatted_size }}</span>
+          </a>
+          <span v-else class="image is-64x64 has-text-grey-light">
+            <span class="icon is-large">
+              <i class="far fa-comment fa-3x"></i>
+            </span>
           </span>
-          <br />
-          <span>{{ paper.formatted_size }}</span>
-        </a>
       </figure>
       <div class="media-content">
         <div class="content">
@@ -78,6 +83,9 @@ export default {
         : '<span class="tag">Disabled</span>';
     },
     getDownloadRoute(paper) {
+      if (paper.subcategory == 'comment') {
+        return '';
+      }
       return route("archived.paper.show", paper.id);
     }
   }
