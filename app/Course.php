@@ -18,11 +18,8 @@ class Course extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'setter_approved_main' => 'boolean',
-        'setter_approved_resit' => 'boolean',
         'moderator_approved_main' => 'boolean',
         'moderator_approved_resit' => 'boolean',
-        'external_approved' => 'boolean',
         'external_notified' => 'boolean',
     ];
 
@@ -154,50 +151,20 @@ class Course extends Model
 
     public function paperApprovedBy(User $user, string $category)
     {
-        if ($user->isSetterFor($this)) {
-            $this->update(["setter_approved_{$category}" => true]);
-            event(new PaperApproved($this, $user, $category));
+        if (! $user->isModeratorFor($this)) {
             return;
         }
-        if ($user->isModeratorFor($this)) {
-            $this->update(["moderator_approved_{$category}" => true]);
-            event(new PaperApproved($this, $user, $category));
-            return;
-        }
-        if ($user->isExternalFor($this)) {
-            $this->update(["external_approved_{$category}" => true]);
-            event(new PaperApproved($this, $user, $category));
-            return;
-        }
-
-        throw new \DomainException('User is not associated with this course');
+        $this->update(["moderator_approved_{$category}" => true]);
+        event(new PaperApproved($this, $user, $category));
     }
 
     public function paperUnapprovedBy(User $user, string $category)
     {
-        if ($user->isSetterFor($this)) {
-            $this->update(["setter_approved_{$category}" => false]);
-            event(new PaperUnapproved($this, $user, $category));
+        if (! $user->isModeratorFor($this)) {
             return;
         }
-        if ($user->isModeratorFor($this)) {
-            $this->update(["moderator_approved_{$category}" => false]);
-            event(new PaperUnapproved($this, $user, $category));
-            return;
-        }
-        if ($user->isExternalFor($this)) {
-            $this->update(["external_approved_{$category}" => false]);
-            event(new PaperUnapproved($this, $user, $category));
-            return;
-        }
-
-        throw new \DomainException('User is not associated with this course');
-    }
-
-    public function isApprovedBySetter(string $category): bool
-    {
-        $key = "setter_approved_{$category}";
-        return $this->$key;
+        $this->update(["moderator_approved_{$category}" => false]);
+        event(new PaperUnapproved($this, $user, $category));
     }
 
     public function isApprovedByModerator(string $category): bool
@@ -208,24 +175,12 @@ class Course extends Model
 
     public function isApprovedBy(User $user, string $category): bool
     {
-        if ($user->isSetterFor($this)) {
-            $key = "setter_approved_{$category}";
-            return $this->$key;
-        }
         if ($user->isModeratorFor($this)) {
             $key = "moderator_approved_{$category}";
             return $this->$key;
         }
-        if ($user->isExternalFor($this)) {
-            $key = "external_approved_{$category}";
-            return $this->$key;
-        }
 
-        if ($user->isAdmin()) {
-            return false;
-        }
-
-        throw new \DomainException('User is not associated with this course');
+        return false;
     }
 
     public function isFullyApproved(): bool

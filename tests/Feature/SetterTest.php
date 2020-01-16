@@ -103,12 +103,9 @@ class SetterTest extends TestCase
         $moderator = create(User::class);
         $moderator->markAsModerator($paper->course);
 
-        $this->assertFalse($paper->course->fresh()->isApprovedBySetter('main'));
-
         $response = $this->actingAs($user)->postJson(route('paper.approve', [$paper->course, 'main']));
 
         $response->assertStatus(403);
-        $this->assertFalse($paper->course->fresh()->isApprovedBySetter('main'));
     }
 
     /** @test */
@@ -122,12 +119,9 @@ class SetterTest extends TestCase
         $moderator = create(User::class);
         $moderator->markAsModerator($paper->course);
 
-        $this->assertTrue($paper->course->fresh()->isApprovedBySetter('main'));
-
         $response = $this->actingAs($user)->postJson(route('paper.unapprove', [$paper->course, 'main']));
 
         $response->assertStatus(403);
-        $this->assertTrue($paper->course->fresh()->isApprovedBySetter('main'));
     }
 
     /** @test */
