@@ -37172,7 +37172,9 @@ var render = function() {
             )
           : _vm._e(),
         _vm._v(" "),
-        _vm.is_local && !_vm.secondResit && _vm.canUpload && _vm.is_moderator
+        !_vm.secondResit &&
+        _vm.canUpload &&
+        (_vm.is_moderator || _vm.is_external)
           ? _c("span", { staticClass: "level-item" }, [
               _c("button", {
                 staticClass: "button",

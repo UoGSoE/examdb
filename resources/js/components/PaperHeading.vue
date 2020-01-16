@@ -60,7 +60,7 @@
                 </main-paper-uploader>
             </span>
 
-        <span class="level-item" v-if="is_local && !secondResit && canUpload && is_moderator">
+        <span class="level-item" v-if="!secondResit && canUpload && (is_moderator || is_external)">
             <button class="button" @click.prevent="toggleApproval(category)" v-html="approvalButtonText(category)">
             </button>
         </span>

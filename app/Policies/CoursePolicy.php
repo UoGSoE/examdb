@@ -32,6 +32,6 @@ class CoursePolicy
 
     public function approve(User $user, Course $course)
     {
-        return $user->isModeratorFor($course);
+        return $user->isModeratorFor($course) or $user->isExternalFor($course);
     }
 }

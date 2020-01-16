@@ -12,9 +12,7 @@
         <ul class="leading-loose">
             @foreach ($setterCourses as $course)
             <li>
-                @if ($course->isFullyApproved())
-                <span class="tag is-info has-text-weight-bold">Approved</span>
-                @endif
+                @include('partials.course_status_badge')
                 <a href="{{ route('course.show', $course->id) }}">
                     {{ $course->code }} {{ $course->title }}
                 </a>
@@ -30,9 +28,7 @@
         <ul class="leading-loose">
             @foreach ($moderatedCourses as $course)
             <li>
-                @if ($course->isFullyApproved())
-                <span class="tag is-info has-text-weight-bold">Approved</span>
-                @endif
+                @include('partials.course_status_badge')
                 <a href="{{ route('course.show', $course->id) }}">
                     {{ $course->code }} {{ $course->title }}
                 </a>
@@ -49,9 +45,7 @@
         <ul class="leading-loose">
             @foreach ($externalCourses as $course)
             <li>
-                @if ($course->isFullyApproved())
-                <span class="tag is-info has-text-weight-bold">Approved</span>
-                @endif
+                @include('partials.course_status_badge')
                 <a href="{{ route('course.show', $course->id) }}">
                     {{ $course->code }} {{ $course->title }}
                 </a>

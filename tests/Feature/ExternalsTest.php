@@ -71,19 +71,24 @@ class ExternalsTest extends TestCase
     }
 
     /** @test */
-    public function an_external_cant_approve_or_unapprove_any_papers()
+    public function an_external_can_approve_or_unapprove_any_papers_they_are_associated_with()
     {
         $staff = factory(User::class)->states('external')->create();
         $paper = create(Paper::class);
         $staff->markAsExternal($paper->course);
 
-        $response = $this->actingAs($staff)->postJson(route('paper.unapprove', [$paper->course, 'main']));
-
-        $response->assertStatus(403);
+        $this->assertFalse($paper->course->fresh()->isApprovedByExternal('main'));
 
         $response = $this->actingAs($staff)->postJson(route('paper.approve', [$paper->course, 'main']));
 
-        $response->assertStatus(403);
+        $response->assertStatus(200);
+
+        $this->assertTrue($paper->course->fresh()->isApprovedByExternal('main'));
+
+        $response = $this->actingAs($staff)->postJson(route('paper.unapprove', [$paper->course, 'main']));
+
+        $response->assertStatus(200);
+        $this->assertFalse($paper->course->fresh()->isApprovedByExternal('main'));
     }
 
     /** @test */

@@ -162,25 +162,35 @@ class Course extends Model
 
     public function paperApprovedBy(User $user, string $category)
     {
-        if (! $user->isModeratorFor($this)) {
-            return;
+        if ($user->isModeratorFor($this)) {
+            $this->update(["moderator_approved_{$category}" => true]);
         }
-        $this->update(["moderator_approved_{$category}" => true]);
+        if ($user->isExternalFor($this)) {
+            $this->update(["external_approved_{$category}" => true]);
+        }
         event(new PaperApproved($this, $user, $category));
     }
 
     public function paperUnapprovedBy(User $user, string $category)
     {
-        if (! $user->isModeratorFor($this)) {
-            return;
+        if ($user->isModeratorFor($this)) {
+            $this->update(["moderator_approved_{$category}" => false]);
         }
-        $this->update(["moderator_approved_{$category}" => false]);
+        if ($user->isExternalFor($this)) {
+            $this->update(["external_approved_{$category}" => false]);
+        }
         event(new PaperUnapproved($this, $user, $category));
     }
 
     public function isApprovedByModerator(string $category): bool
     {
         $key = "moderator_approved_{$category}";
+        return $this->$key;
+    }
+
+    public function isApprovedByExternal(string $category): bool
+    {
+        $key = "external_approved_{$category}";
         return $this->$key;
     }
 
@@ -191,17 +201,30 @@ class Course extends Model
             return $this->$key;
         }
 
+        if ($user->isExternalFor($this)) {
+            $key = "external_approved_{$category}";
+            return $this->$key;
+        }
+
         return false;
     }
 
     public function isFullyApproved(): bool
     {
-        return $this->moderator_approved_main and $this->moderator_approved_resit;
+        return $this->moderator_approved_main and
+               $this->moderator_approved_resit and
+               $this->external_approved_main and
+               $this->external_approved_resit;
     }
 
     public function isntFullyApproved(): bool
     {
         return ! $this->isFullyApproved();
+    }
+
+    public function isFullyApprovedByModerator()
+    {
+        return $this->isApprovedByModerator('main') && $this->isApprovedByModerator('resit');
     }
 
     public function getUserApprovedMainAttribute(? User $user): bool
