@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Scopes\CurrentScope;
 use Illuminate\Database\Eloquent\Model;
 
 class PaperChecklist extends Model
@@ -12,6 +13,17 @@ class PaperChecklist extends Model
 
     protected $touches = ['course'];
 
+    protected $casts = [
+        'archived_at' => 'datetime',
+    ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new CurrentScope);
+    }
+
     public function course()
     {
         return $this->belongsTo(Course::class);
@@ -20,6 +32,16 @@ class PaperChecklist extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function isArchived(): bool
+    {
+        return $this->archived_at != null;
+    }
+
+    public function archive()
+    {
+        $this->update(['archived_at' => now()]);
     }
 
     public function getPreviousChecklist()

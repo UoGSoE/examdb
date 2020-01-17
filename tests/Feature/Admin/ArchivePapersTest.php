@@ -5,6 +5,7 @@ namespace Tests\Feature\Admin;
 use App\User;
 use App\Paper;
 use App\Course;
+use App\PaperChecklist;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -18,9 +19,13 @@ class ArchivePapersTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
-        $course = create(Course::class);
+        $course = create(Course::class, ['moderator_approved_resit' => true]);
         $paper1 = create(Paper::class, ['course_id' => $course->id]);
         $paper2 = create(Paper::class);
+        $checklist1 = create(PaperChecklist::class, ['course_id' => $course->id]);
+        $checklist2 = create(PaperChecklist::class);
+
+        $this->assertTrue($course->fresh()->isApprovedByModerator('resit'));
 
         $response = $this->actingAs($admin)->post(route('course.papers.archive', $course->id));
 
@@ -30,6 +35,10 @@ class ArchivePapersTest extends TestCase
         $this->assertTrue($paper1->fresh()->isArchived());
         $this->assertEquals(now()->format('d-m-Y'), $paper1->fresh()->archived_at->format('d-m-Y'));
         $this->assertFalse($paper2->fresh()->isArchived());
+        $this->assertTrue($checklist1->fresh()->isArchived());
+        $this->assertEquals(now()->format('d-m-Y'), $checklist1->fresh()->archived_at->format('d-m-Y'));
+        $this->assertFalse($checklist2->fresh()->isArchived());
+        $this->assertFalse($course->fresh()->isApprovedByModerator('resit'));
     }
 
     /** @test */
@@ -37,12 +46,20 @@ class ArchivePapersTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
-        $course1 = create(Course::class, ['code' => 'ENG1234']);
-        $course2 = create(Course::class, ['code' => 'ENG4567']);
-        $course3 = create(Course::class, ['code' => 'UESTC4567']);
+        $user1 = create(User::class);
+        $course1 = create(Course::class, ['code' => 'ENG1234', "moderator_approved_main" => true]);
+        $course2 = create(Course::class, ['code' => 'ENG4567', "external_approved_resit" => true]);
+        $course3 = create(Course::class, ['code' => 'UESTC4567', "moderator_approved_main" => true]);
         $paper1 = create(Paper::class, ['course_id' => $course1->id]);
         $paper2 = create(Paper::class, ['course_id' => $course2->id]);
         $paper3 = create(Paper::class, ['course_id' => $course3->id]);
+        $checklist1 = create(PaperChecklist::class, ['course_id' => $course1->id]);
+        $checklist2 = create(PaperChecklist::class, ['course_id' => $course2->id]);
+        $checklist3 = create(PaperChecklist::class, ['course_id' => $course3->id]);
+
+        $this->assertTrue($course1->fresh()->isApprovedByModerator('main'));
+        $this->assertTrue($course2->fresh()->isApprovedByExternal('resit'));
+        $this->assertTrue($course3->fresh()->isApprovedByModerator('main'));
 
         $response = $this->actingAs($admin)->post(route('area.papers.archive'), [
             'area' => 'glasgow',
@@ -54,6 +71,12 @@ class ArchivePapersTest extends TestCase
         $this->assertTrue($paper1->fresh()->isArchived());
         $this->assertTrue($paper2->fresh()->isArchived());
         $this->assertFalse($paper3->fresh()->isArchived());
+        $this->assertTrue($checklist1->fresh()->isArchived());
+        $this->assertTrue($checklist2->fresh()->isArchived());
+        $this->assertFalse($checklist3->fresh()->isArchived());
+        $this->assertFalse($course1->fresh()->isApprovedByModerator('main'));
+        $this->assertFalse($course2->fresh()->isApprovedByExternal('resit'));
+        $this->assertTrue($course3->fresh()->isApprovedByModerator('main'));
     }
 
     /** @test */

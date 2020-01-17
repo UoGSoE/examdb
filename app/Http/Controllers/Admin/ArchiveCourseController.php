@@ -18,6 +18,8 @@ class ArchiveCourseController extends Controller
     public function store(Course $course, Request $request)
     {
         $course->papers->each->archive();
+        $course->checklists->each->archive();
+        $course->removeAllApprovals();
 
         activity()
             ->causedBy($request->user())

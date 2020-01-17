@@ -33,17 +33,8 @@ class PaperWasApproved
             "Approved {$event->category} paper for {$event->course->code}"
         );
 
-        if ($event->user->isSetterFor($event->course)) {
-            $event->course->moderators->each(function ($moderator) use ($event) {
-                Mail::to($moderator)->queue(new NotifyModeratorAboutApproval($event->course, $event->category));
-            });
-            return;
-        }
-        if ($event->user->isModeratorFor($event->course)) {
-            $event->course->setters->each(function ($setter) use ($event) {
-                Mail::to($setter)->queue(new NotifySetterAboutApproval($event->course, $event->category));
-            });
-            return;
-        }
+        $event->course->setters->each(function ($setter) use ($event) {
+            Mail::to($setter)->queue(new NotifySetterAboutApproval($event->course, $event->category, $event->user));
+        });
     }
 }

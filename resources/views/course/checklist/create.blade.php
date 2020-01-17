@@ -57,6 +57,7 @@
     </div>
     @endif
 </div>
+@if ($checklist->user)
 <p class="subtitle">
     Last edited by {{ $checklist->user->full_name }}
     @if ($checklist->created_at)
@@ -64,6 +65,7 @@
     @endif
     .
 </p>
+@endif
 <form action="{{ route('course.checklist.store', $course->id) }}" method="POST">
     @csrf
     <input type="hidden" name="category" value="{{ $category }}">

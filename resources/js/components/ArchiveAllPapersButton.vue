@@ -13,7 +13,7 @@
             Are you
             <strong>
               <em>sure</em>
-            </strong> you want to archive <em>all</em> papers for <em>all {{ area }}</em> courses? This
+            </strong> you want to archive <em>all</em> papers and checklists for <em>all {{ area }}</em> courses? This
             <em>cannot</em> be undone!
           </section>
           <footer class="modal-card-foot">

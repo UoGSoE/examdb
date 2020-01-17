@@ -58,6 +58,8 @@
       </div>
     </div>
 
+    <hr />
+
     <div class="columns">
       <div class="column">
         <paper-heading

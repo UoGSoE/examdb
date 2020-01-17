@@ -23,6 +23,7 @@ class CreatePaperChecklistsTable extends Migration
             $table->string('category');
             $table->text('q1')->nullable();
             $table->text('q2')->nullable();
+            $table->dateTime('archived_at')->nullable();
             $table->timestamps();
         });
     }

@@ -232,6 +232,18 @@ class Course extends Model
         return ! $this->isFullyApprovedByModerator();
     }
 
+    public function removeAllApprovals()
+    {
+        collect([
+            'moderator_approved_main',
+            'moderator_approved_resit',
+            'external_approved_main',
+            'external_approved_resit'
+        ])->each(function ($field) {
+            $this->update([$field => false]);
+        });
+    }
+
     public function getUserApprovedMainAttribute(? User $user): bool
     {
         if (!$user) {

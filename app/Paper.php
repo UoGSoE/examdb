@@ -10,6 +10,9 @@ class Paper extends Model
     const PAPER_FOR_REGISTRY = 'Paper For Registry';
     const EXTERNAL_COMMENTS = 'External Examiner Comments';
     const EXTERNAL_SOLUTION_COMMENTS = 'External Examiner Solution Comments';
+    const PRE_INTERNALLY_MODERATED = 'Pre-Internally Moderated Paper';
+    const POST_INTERNALLY_MODERATED = 'Post-Internally Moderated Paper';
+    const MODERATOR_COMMENTS = 'Moderator Comments';
     const SECOND_RESIT_CATEGORY = 'resit2';
     const VALID_CATEGORIES = ['main', 'resit', 'resit2'];
     const COMMENT_SUBCATEGORY = 'comment';

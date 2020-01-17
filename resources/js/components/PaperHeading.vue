@@ -1,9 +1,8 @@
 <template>
 <div class="mb-8">
-    <div class="level">
-        <div class="level-left">
-          <div class="level-item">
-
+  <div class="level">
+    <div class="level-left pl-4">
+      <div class="level-item">
             <h3 class="title has-text-grey">
                 <span>{{ category | pretty | capitalize }}</span>
                 <transition name="fade" mode="in-out">
@@ -15,8 +14,8 @@
                 </transition>
 
             </h3>
-          </div>
 
+      </div>
             <div class="level-item">
               <a class="button" :href="checklistRoute + '?category=' + category">
                 <span class="icon">
@@ -25,6 +24,15 @@
                 <span>Paper Checklist</span>
               </a>
             </div>
+
+    </div>
+  </div>
+    <div class="level">
+        <div class="level-left">
+          <div class="level-item">
+
+          </div>
+
 
             <span class="level-item" v-if="is_local && canUpload">
                 <main-paper-uploader

@@ -35,7 +35,6 @@ class ChecklistController extends Controller
             $checklist = new PaperChecklist([
                 'course_id' => $course->id,
                 'category' => $category,
-                'user_id' => request()->user()->id,
                 'version' => PaperChecklist::CURRENT_VERSION,
             ]);
         }

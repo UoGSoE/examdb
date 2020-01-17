@@ -11190,6 +11190,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["course", "papers", "subcategories", "user", "staff", "externals"],
   data: function data() {
@@ -12035,6 +12037,14 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _CommentBox__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CommentBox */ "./resources/js/components/CommentBox.vue");
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -34979,7 +34989,7 @@ var render = function() {
                   _c("strong", [_c("em", [_vm._v("sure")])]),
                   _vm._v(" you want to archive "),
                   _c("em", [_vm._v("all")]),
-                  _vm._v(" papers for "),
+                  _vm._v(" papers and checklists for "),
                   _c("em", [_vm._v("all " + _vm._s(_vm.area))]),
                   _vm._v(" courses? This\n          "),
                   _c("em", [_vm._v("cannot")]),
@@ -35493,7 +35503,9 @@ var render = function() {
                   _c("strong", [_c("em", [_vm._v("sure")])]),
                   _vm._v(" you want to archive "),
                   _c("em", [_vm._v("all")]),
-                  _vm._v(" papers on this course? This\n          "),
+                  _vm._v(
+                    " papers and checklists on this course? This\n          "
+                  ),
                   _c("em", [_vm._v("cannot")]),
                   _vm._v(" be undone!\n        ")
                 ]),
@@ -35737,6 +35749,8 @@ var render = function() {
           ])
         : _vm._e()
     ]),
+    _vm._v(" "),
+    _c("hr"),
     _vm._v(" "),
     _c("div", { staticClass: "columns" }, [
       _c(
@@ -37068,7 +37082,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "mb-8" }, [
     _c("div", { staticClass: "level" }, [
-      _c("div", { staticClass: "level-left" }, [
+      _c("div", { staticClass: "level-left pl-4" }, [
         _c("div", { staticClass: "level-item" }, [
           _c(
             "h3",
@@ -37107,7 +37121,13 @@ var render = function() {
             },
             [_vm._m(0), _vm._v(" "), _c("span", [_vm._v("Paper Checklist")])]
           )
-        ]),
+        ])
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "level" }, [
+      _c("div", { staticClass: "level-left" }, [
+        _c("div", { staticClass: "level-item" }),
         _vm._v(" "),
         _vm.is_local && _vm.canUpload
           ? _c(

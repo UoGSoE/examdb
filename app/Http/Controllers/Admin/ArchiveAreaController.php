@@ -22,6 +22,8 @@ class ArchiveAreaController extends Controller
 
         Course::forArea($request->area)->with('papers')->get()->each(function ($course) {
             $course->papers->each->archive();
+            $course->checklists->each->archive();
+            $course->removeAllApprovals();
         });
 
         activity()

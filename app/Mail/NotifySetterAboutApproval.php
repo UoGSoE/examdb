@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\User;
 use App\Paper;
 use App\Course;
 use Illuminate\Bus\Queueable;
@@ -17,15 +18,21 @@ class NotifySetterAboutApproval extends Mailable
 
     public $category;
 
+    public $user;
+
+    public $userType;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Course $course, string $category)
+    public function __construct(Course $course, string $category, User $user)
     {
         $this->course = $course;
         $this->category = $category;
+        $this->user = $user;
+        $this->userType = $user->isModeratorFor($course) ? 'moderator' : 'external';
     }
 
     /**
