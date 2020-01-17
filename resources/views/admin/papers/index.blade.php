@@ -53,7 +53,7 @@
                 {{ $course->code }} <span class="tag">{{ $category }}</span>
             </td>
             <td>
-                {{ $course->discipline->title }}
+                {{ optional($course->discipline)->title }}
             </td>
             <td>
                 <span class="icon {{ $course->hasSetterChecklist($category) ? 'has-text-info' : 'has-text-grey-light' }}" title="Setter Checklist">
