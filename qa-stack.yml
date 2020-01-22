@@ -15,8 +15,9 @@ x-deploy:
     parallelism: 1
     failure_action: rollback
     order: start-first
-  limits:
-    cpus: "1"
+  resources:
+    limits:
+      cpus: "1"
 
 services:
   app:
