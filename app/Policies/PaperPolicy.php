@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\User;
 use App\Paper;
+use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PaperPolicy
@@ -61,6 +61,7 @@ class PaperPolicy
         if ($paper->created_at->diffInMinutes(now()) > config('exampapers.delete_paper_limit_minutes')) {
             return false;
         }
+
         return $paper->user_id == $user->id;
     }
 

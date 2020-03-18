@@ -2,15 +2,15 @@
 
 namespace App\Jobs;
 
+use App\Events\WlmImportComplete;
 use App\User;
+use App\Wlm\WlmClientInterface;
 use App\Wlm\WlmImporter;
 use Illuminate\Bus\Queueable;
-use App\Wlm\WlmClientInterface;
-use App\Events\WlmImportComplete;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class ImportFromWlm implements ShouldQueue
 {

@@ -2,16 +2,16 @@
 
 namespace Tests\Feature\Admin;
 
-use App\User;
 use App\Course;
-use Tests\TestCase;
 use App\Jobs\NotifyExternals;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Mail;
 use App\Mail\ExternalHasPapersToLookAt;
 use App\Mail\NotifyExternalSpecificCourse;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Mail;
+use Tests\TestCase;
 
 class NotifyExternalsTest extends TestCase
 {

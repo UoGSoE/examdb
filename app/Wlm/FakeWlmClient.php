@@ -23,12 +23,14 @@ class FakeWlmClient implements WlmClientInterface
     public function getCourses()
     {
         $this->statusCode = 200;
+
         return collect(['TEST1234' => $this->getCourse1(), 'TEST4321' => $this->getCourse2()]);
     }
 
     public function getCourse($code)
     {
         $this->statusCode = 200;
+
         return $this->getCourse1();
     }
 
@@ -38,12 +40,13 @@ class FakeWlmClient implements WlmClientInterface
         if ($guid == 'NONEXISTANT') {
             $this->responseCode = -1;
             $this->responseMessage = 'No such GUID';
+
             return collect([]);
         }
         if ($guid == 'WLMDOWN') {
             throw new \Exception('WLM Error');
         }
-        if (!$this->wlmStaff->has($guid)) {
+        if (! $this->wlmStaff->has($guid)) {
             $this->wlmStaff[$guid] = collect([
                 'GUID' => $guid,
                 'Email' => "{$guid}@glasgow.ac.uk",
@@ -51,6 +54,7 @@ class FakeWlmClient implements WlmClientInterface
                 'Forenames' => 'Jake',
             ]);
         }
+
         return $this->wlmStaff[$guid];
     }
 
@@ -58,7 +62,7 @@ class FakeWlmClient implements WlmClientInterface
     {
         return [
             'Code' => 'TEST1234',
-            'Title' => "Fake Course 1234",
+            'Title' => 'Fake Course 1234',
             'ActiveFlag' => 'Yes',
             'Discipline' => 'Discipline the first',
             'Staff' => [
@@ -80,7 +84,7 @@ class FakeWlmClient implements WlmClientInterface
     {
         return [
             'Code' => 'TEST4321',
-            'Title' => "Fake Course 4321",
+            'Title' => 'Fake Course 4321',
             'ActiveFlag' => 'Yes',
             'Discipline' => 'Discipline the second',
             'Staff' => [

@@ -133,7 +133,7 @@ return [
             'supervisor-long-running' => [
                 'connection' => 'long-running',
                 'queue' => [
-                    'long-running-queue'
+                    'long-running-queue',
                 ],
                 'balance' => 'simple',
                 'processes' => 3,
@@ -153,7 +153,7 @@ return [
             'supervisor-long-running' => [
                 'connection' => 'long-running',
                 'queue' => [
-                    'long-running-queue'
+                    'long-running-queue',
                 ],
                 'balance' => 'simple',
                 'processes' => 3,

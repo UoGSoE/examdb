@@ -2,14 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\User;
 use App\Course;
-use Tests\TestCase;
-use App\PaperChecklist;
 use App\Mail\ChecklistUpdated;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\PaperChecklist;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Mail;
+use Tests\TestCase;
 
 class ChecklistFormTest extends TestCase
 {
@@ -25,7 +25,7 @@ class ChecklistFormTest extends TestCase
 
         $response = $this->actingAs($user)->get(route('course.checklist.create', [
             'course' => $course->id,
-            'category' => 'main'
+            'category' => 'main',
         ]));
 
         $response->assertOk();
@@ -42,7 +42,7 @@ class ChecklistFormTest extends TestCase
 
         $response = $this->actingAs($user)->get(route('course.checklist.create', [
             'course' => $course->id,
-            'category' => 'main'
+            'category' => 'main',
         ]));
 
         $response->assertStatus(403);
@@ -106,7 +106,7 @@ class ChecklistFormTest extends TestCase
 
         $response = $this->actingAs($user)->get(route('course.checklist.create', [
             'course' => $course->id,
-            'category' => 'main'
+            'category' => 'main',
         ]));
 
         $response->assertOk();
@@ -196,7 +196,7 @@ class ChecklistFormTest extends TestCase
         $response->assertOk();
         $this->assertEquals(
             $response->headers->get('content-disposition'),
-            'attachment; filename="' . $course->code . '_paper_checklist.pdf"'
+            'attachment; filename="'.$course->code.'_paper_checklist.pdf"'
         );
     }
 
@@ -254,6 +254,7 @@ class ChecklistFormTest extends TestCase
         Mail::assertQueued(ChecklistUpdated::class, 2);
         Mail::assertQueued(ChecklistUpdated::class, function ($mail) use ($setter1) {
             $mail->build();
+
             return $mail->hasTo($setter1);
         });
         Mail::assertQueued(ChecklistUpdated::class, function ($mail) use ($setter2) {

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Course;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PaperResource;
+use Illuminate\Http\Request;
 
 class CoursePaperController extends Controller
 {

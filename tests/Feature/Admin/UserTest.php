@@ -26,7 +26,7 @@ class UserTest extends TestCase
         $response = $this->actingAs($admin)->get(route('user.index'));
 
         $response->assertOk();
-        $response->assertSee("Current Users");
+        $response->assertSee('Current Users');
         $response->assertSee($internal1->surname);
         $response->assertSee($internal2->surname);
         $response->assertSee($external1->surname);
@@ -57,7 +57,7 @@ class UserTest extends TestCase
         $response = $this->actingAs($admin)->get(route('user.index', ['withtrashed' => true]));
 
         $response->assertOk();
-        $response->assertSee("Current Users");
+        $response->assertSee('Current Users');
         $response->assertSee($internal1->surname);
         $response->assertSee($internal2->surname);
         $response->assertSee($external1->surname);
@@ -120,7 +120,7 @@ class UserTest extends TestCase
         $response->assertJson([
             'user' => [
                 'username' => 'validuser',
-            ]
+            ],
         ]);
     }
 
@@ -215,7 +215,6 @@ class UserTest extends TestCase
                 $log->description
             );
         });
-
     }
 
     /** @test */

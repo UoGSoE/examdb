@@ -31,9 +31,10 @@ class WlmImporter
                 throw new \Exception('Failed to get data from the WLM');
             }
             $courses->filter(function ($wlmCourse) {
-                if (!preg_match('/^(ENG|UESTC|SIT|TEST)/', $wlmCourse['Code'])) {
+                if (! preg_match('/^(ENG|UESTC|SIT|TEST)/', $wlmCourse['Code'])) {
                     return false;
                 }
+
                 return true;
             })->take($maximumCourses)->each(function ($wlmCourse) {
                 $course = $this->courseFromWlm($wlmCourse);
@@ -44,31 +45,35 @@ class WlmImporter
             Mail::to(config('exampapers.sysadmin_email'))->send(new WlmImportProblem($e->getMessage()));
             throw $e;
         }
+
         return true;
     }
 
     protected function courseFromWlm($wlmCourse)
     {
         usleep($this->apiDelay);
+
         return Course::fromWlmData($wlmCourse);
     }
 
     protected function staffFromWlm($wlmCourse, $setterFlag = false)
     {
-        if (!array_key_exists('Staff', $wlmCourse)) {
+        if (! array_key_exists('Staff', $wlmCourse)) {
             return collect([]);
         }
         $staff = [];
         $staffIds = collect($wlmCourse['Staff'])->map(function ($wlmStaff) {
-            if (!$this->staffList->has($wlmStaff['GUID'])) {
+            if (! $this->staffList->has($wlmStaff['GUID'])) {
                 $wlmStaff['Email'] = $this->getStaffEmail($wlmStaff);
                 $this->staffList[$wlmStaff['GUID']] = User::staffFromWlmData($wlmStaff);
             }
+
             return $this->staffList[$wlmStaff['GUID']];
         })->pluck('id');
         foreach ($staffIds as $id) {
             $staff[$id] = ['is_setter' => $setterFlag];
         }
+
         return $staff;
     }
 
@@ -76,9 +81,10 @@ class WlmImporter
     {
         usleep($this->apiDelay);
         $staff = $this->client->getStaff($wlmStaff['GUID']);
-        if (!preg_match('/\@/', $staff['Email'])) {
-            $staff['Email'] = $wlmStaff['GUID'] . '@glasgow.ac.uk';
+        if (! preg_match('/\@/', $staff['Email'])) {
+            $staff['Email'] = $wlmStaff['GUID'].'@glasgow.ac.uk';
         }
+
         return $staff['Email'];
     }
 }

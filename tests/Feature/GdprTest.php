@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\User;
 use App\Paper;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class GdprTest extends TestCase
 {
@@ -38,17 +38,17 @@ class GdprTest extends TestCase
                         'filename' => $paper1->original_filename,
                         'comments' => [
                             [
-                                'comment' => 'hello there'
-                            ]
-                        ]
+                                'comment' => 'hello there',
+                            ],
+                        ],
                             ],
                     [
                         'category' => $paper2->category,
                         'subcategory' => $paper2->subcategory,
                         'filename' => $paper2->original_filename,
-                    ]
+                    ],
                 ],
-            ]
+            ],
         ]);
     }
 
@@ -62,8 +62,8 @@ class GdprTest extends TestCase
 
         $response->assertRedirect(route('user.show', $user->id));
         $response->assertSessionDoesntHaveErrors();
-        $this->assertEquals('gdpr' . $user->id, $user->fresh()->username);
-        $this->assertEquals('gdpr' . $user->id . '@glasgow.ac.uk', $user->fresh()->email);
+        $this->assertEquals('gdpr'.$user->id, $user->fresh()->username);
+        $this->assertEquals('gdpr'.$user->id.'@glasgow.ac.uk', $user->fresh()->email);
         $this->assertEquals('anon', $user->fresh()->surname);
         $this->assertEquals('anon', $user->fresh()->forenames);
     }

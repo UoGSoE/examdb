@@ -77,7 +77,7 @@ class Paper extends Model
 
     public function scopeWithoutComments($query)
     {
-        return $query->where('subcategory', '!=', Paper::COMMENT_SUBCATEGORY);
+        return $query->where('subcategory', '!=', self::COMMENT_SUBCATEGORY);
     }
 
     public function isArchived(): bool
@@ -106,18 +106,18 @@ class Paper extends Model
     public function getIconAttribute()
     {
         if ($this->isAPdf()) {
-            return "far fa-file-pdf";
+            return 'far fa-file-pdf';
         }
 
         if ($this->isAWordDocument()) {
-            return "far fa-file-word";
+            return 'far fa-file-word';
         }
 
         if ($this->isAZip()) {
-            return "far fa-file-archive";
+            return 'far fa-file-archive';
         }
 
-        return "far fa-file";
+        return 'far fa-file';
     }
 
     public function getFormattedSizeAttribute()
@@ -128,7 +128,8 @@ class Paper extends Model
         $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
         $pow = min($pow, count($units) - 1);
         $bytes /= pow(1024, $pow);
-        return round($bytes) . ' ' . $units[$pow];
+
+        return round($bytes).' '.$units[$pow];
     }
 
     protected function isAPdf()
@@ -139,6 +140,7 @@ class Paper extends Model
         if (preg_match('/.pdf$/i', $this->original_filename) === 1) {
             return true;
         }
+
         return false;
     }
 
@@ -150,6 +152,7 @@ class Paper extends Model
         if (preg_match('/.doc(?x)$/i', $this->original_filename) === 1) {
             return true;
         }
+
         return false;
     }
 
@@ -161,6 +164,7 @@ class Paper extends Model
         if (preg_match('/.zip$/i', $this->original_filename) === 1) {
             return true;
         }
+
         return false;
     }
 
@@ -179,6 +183,7 @@ class Paper extends Model
         if ($this->course->isUestc()) {
             return option('teaching_office_contact_uestc');
         }
+
         return option('teaching_office_contact_glasgow');
     }
 

@@ -1,24 +1,25 @@
 <?php
+
 // @codingStandardsIgnoreFile
 
 namespace Tests\Feature;
 
-use App\User;
 use App\Course;
-use Carbon\Carbon;
 use App\Discipline;
-use Tests\TestCase;
-use App\Wlm\WlmClient;
-use App\Wlm\WlmImporter;
-use App\Wlm\FakeWlmClient;
-use App\Jobs\ImportFromWlm;
-use App\Wlm\WlmClientInterface;
 use App\Events\WlmImportComplete;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Queue;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Jobs\ImportFromWlm;
 use App\Mail\WlmImportComplete as MailableWlmImportComplete;
+use App\User;
+use App\Wlm\FakeWlmClient;
+use App\Wlm\WlmClient;
+use App\Wlm\WlmClientInterface;
+use App\Wlm\WlmImporter;
+use Carbon\Carbon;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Queue;
+use Tests\TestCase;
 
 class WlmImportTest extends TestCase
 {
@@ -169,5 +170,4 @@ class WlmImportTest extends TestCase
         // $this->assertGreaterThan(0, Course::count());
         // $this->assertGreaterThan(0, User::count());
     }
-
 }

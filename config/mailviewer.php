@@ -1,24 +1,24 @@
 <?php
 
-use App\User;
-use App\Paper;
 use App\Course;
-use App\Mail\ExternalLoginUrl;
-use App\Mail\PaperForRegistry;
-use App\Mail\WlmImportProblem;
 use App\Mail\ChecklistUploaded;
-use App\Mail\WlmImportComplete;
-use App\Mail\PaperworkIncomplete;
 use App\Mail\ExternalHasPapersToLookAt;
-use App\Mail\NotifySetterAboutApproval;
-use App\Mail\NotifySetterAboutUnapproval;
+use App\Mail\ExternalLoginUrl;
 use App\Mail\NotifyModeratorAboutApproval;
 use App\Mail\NotifyModeratorAboutUnapproval;
+use App\Mail\NotifySetterAboutApproval;
 use App\Mail\NotifySetterAboutExternalComments;
 use App\Mail\NotifySetterAboutModeratorComments;
+use App\Mail\NotifySetterAboutUnapproval;
 use App\Mail\NotifyTeachingOfficeExternalDeadline;
 use App\Mail\NotifyTeachingOfficeExternalHasCommented;
+use App\Mail\PaperForRegistry;
+use App\Mail\PaperworkIncomplete;
 use App\Mail\RegistryPapersExported;
+use App\Mail\WlmImportComplete;
+use App\Mail\WlmImportProblem;
+use App\Paper;
+use App\User;
 
 return [
     /*
@@ -73,47 +73,47 @@ return [
 
     'mailables' => [
         ChecklistUploaded::class => [
-            Paper::class
+            Paper::class,
         ],
         NotifyModeratorAboutApproval::class => [
             Course::class,
-            'main'
+            'main',
         ],
         NotifyModeratorAboutUnapproval::class => [
             Course::class,
-            'main'
+            'main',
         ],
         NotifySetterAboutApproval::class => [
             Course::class,
-            'main'
+            'main',
         ],
         NotifySetterAboutUnapproval::class => [
             Course::class,
-            'main'
+            'main',
         ],
         PaperworkIncomplete::class => [],
         ExternalHasPapersToLookAt::class => [],
         NotifyTeachingOfficeExternalDeadline::class => [
-            'glasgow'
+            'glasgow',
         ],
         WlmImportComplete::class => [],
         ExternalLoginUrl::class => [
-            User::class
+            User::class,
         ],
         NotifySetterAboutExternalComments::class => [
-            Course::class
+            Course::class,
         ],
         NotifyTeachingOfficeExternalHasCommented::class => [
-            Course::class
+            Course::class,
         ],
         WlmImportProblem::class => [
-            'HTTP timeout'
+            'HTTP timeout',
         ],
         PaperForRegistry::class => [
-            Course::class
+            Course::class,
         ],
         RegistryPapersExported::class => [
-            'http://example.com'
+            'http://example.com',
         ],
     ],
 

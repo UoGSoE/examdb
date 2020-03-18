@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Course;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CourseResource;
+use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
@@ -17,6 +17,7 @@ class CourseController extends Controller
     public function show(string $code)
     {
         $course = Course::where('code', '=', $code)->firstOrFail();
+
         return new CourseResource($course);
     }
 }

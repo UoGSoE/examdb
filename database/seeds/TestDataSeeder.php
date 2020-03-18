@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Database\Seeder;
-use App\User;
 use App\Course;
 use App\Discipline;
+use App\User;
+use Illuminate\Database\Seeder;
 
 class TestDataSeeder extends Seeder
 {
@@ -33,7 +33,7 @@ class TestDataSeeder extends Seeder
         factory(User::class, 5)->states('external')->create();
         $external = factory(User::class)->states('external')->create([
             'username' => 'jenny@example.com',
-            'email' => 'jenny@example.com'
+            'email' => 'jenny@example.com',
         ]);
 
         collect(['Elec', 'MBE', 'Civil', 'UESTC'])->map(function ($title) {

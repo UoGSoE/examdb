@@ -2,23 +2,23 @@
 
 namespace Tests\Feature;
 
-use App\User;
-use App\Paper;
 use App\Course;
-use ZipArchive;
-use Tests\TestCase;
-use App\Jobs\RemoveRegistryZip;
 use App\Exporters\PaperExporter;
-use Illuminate\Http\UploadedFile;
-use App\Mail\RegistryPapersExported;
-use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\Admin\ExportPapersForRegistryController;
 use App\Jobs\ExportPapersForRegistry;
+use App\Jobs\RemoveRegistryZip;
+use App\Mail\RegistryPapersExported;
+use App\Paper;
+use App\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Http\Controllers\Admin\ExportPapersForRegistryController;
+use Tests\TestCase;
+use ZipArchive;
 
 class PapersForRegistryBulkDownloadTest extends TestCase
 {
@@ -52,7 +52,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
         Queue::assertPushedOn('long-running-queue', ExportPapersForRegistry::class);
         tap(Activity::all()->last(), function ($log) use ($admin) {
             $this->assertTrue($log->causer->is($admin));
-            $this->assertEquals("Created a ZIP of the papers for registry", $log->description);
+            $this->assertEquals('Created a ZIP of the papers for registry', $log->description);
         });
     }
 
@@ -80,7 +80,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
         Storage::fake('exampapers');
         Queue::fake();
         // pre-remove any temp files left if this test fails
-        $tempFiles = glob(sys_get_temp_dir() . '/' . config('exampapers.registry_temp_file_prefix') . '*');
+        $tempFiles = glob(sys_get_temp_dir().'/'.config('exampapers.registry_temp_file_prefix').'*');
         foreach ($tempFiles as $filename) {
             unlink($filename);
         }
@@ -88,8 +88,8 @@ class PapersForRegistryBulkDownloadTest extends TestCase
 
         ExportPapersForRegistry::dispatchNow($admin);
 
-        Storage::disk('exampapers')->assertExists('registry/papers_' . $admin->id . '.zip');
-        $this->assertEmpty(glob(sys_get_temp_dir() . '/' . config('exampapers.registry_temp_file_prefix') . '*'));
+        Storage::disk('exampapers')->assertExists('registry/papers_'.$admin->id.'.zip');
+        $this->assertEmpty(glob(sys_get_temp_dir().'/'.config('exampapers.registry_temp_file_prefix').'*'));
     }
 
     /** @test */
@@ -123,13 +123,13 @@ class PapersForRegistryBulkDownloadTest extends TestCase
             $filenames->push(basename($stat['name']));
         }
         $this->assertCount(4, $filenames); // only 3 registry papers, shouldn't include the 'flump' one - but there is always a placeholder file
-        $this->assertTrue($filenames->contains($course1->code . '_Main_document1.pdf'));
-        $this->assertTrue($filenames->contains($course1->code . '_Resit_document2.pdf'));
-        $this->assertTrue($filenames->contains($course2->code . '_Main_document4.pdf'));
-        $this->assertFalse($filenames->contains($course2->code . '_Main_document3.pdf'));
+        $this->assertTrue($filenames->contains($course1->code.'_Main_document1.pdf'));
+        $this->assertTrue($filenames->contains($course1->code.'_Resit_document2.pdf'));
+        $this->assertTrue($filenames->contains($course2->code.'_Main_document4.pdf'));
+        $this->assertFalse($filenames->contains($course2->code.'_Main_document3.pdf'));
         tap(Activity::all()->last(), function ($log) use ($admin) {
             $this->assertTrue($log->causer->is($admin));
-            $this->assertEquals("Downloaded papers for registry ZIP", $log->description);
+            $this->assertEquals('Downloaded papers for registry ZIP', $log->description);
         });
     }
 
@@ -150,7 +150,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
 
         $link = (new PaperExporter(Paper::PAPER_FOR_REGISTRY, $admin1))->export();
 
-        $response = $this->actingAs($admin1)->get($link . 'xyz');
+        $response = $this->actingAs($admin1)->get($link.'xyz');
 
         $response->assertStatus(401);
     }

@@ -27,7 +27,7 @@ class ImpersonationStopped
         activity()
             ->causedBy($event->impersonator)
             ->log(
-                "Stopped impersonating " . $event->impersonated->full_name
+                'Stopped impersonating '.$event->impersonated->full_name
             );
     }
 }

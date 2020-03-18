@@ -33,6 +33,6 @@ class RemoveChecklistZip implements ShouldQueue
     public function handle()
     {
         Storage::disk('exampapers')->delete($this->filename);
-        activity()->log('Automatically removed checklist zip ' . $this->filename);
+        activity()->log('Automatically removed checklist zip '.$this->filename);
     }
 }

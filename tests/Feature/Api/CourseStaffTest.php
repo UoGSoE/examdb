@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Api;
 
-use App\User;
 use App\Course;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class CourseStaffTest extends TestCase
 {
@@ -35,23 +35,23 @@ class CourseStaffTest extends TestCase
                         'id' => $setter->id,
                         'surname' => $setter->surname,
                         'email' => $setter->email,
-                    ]
+                    ],
                 ],
                 'moderators' => [
                     [
                         'id' => $moderator->id,
                         'surname' => $moderator->surname,
                         'email' => $moderator->email,
-                    ]
+                    ],
                 ],
                 'externals' => [
                     [
                         'id' => $external->id,
                         'surname' => $external->surname,
                         'email' => $external->email,
-                    ]
+                    ],
                 ],
-            ]
+            ],
         ]);
     }
 

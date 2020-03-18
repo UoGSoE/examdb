@@ -17,7 +17,7 @@ class ArchiveAreaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'area' => 'required|in:glasgow,uestc'
+            'area' => 'required|in:glasgow,uestc',
         ]);
 
         Course::forArea($request->area)->with('papers')->get()->each(function ($course) {
@@ -28,7 +28,7 @@ class ArchiveAreaController extends Controller
 
         activity()
             ->causedBy($request->user())
-            ->log("Archived papers for " . ucfirst($request->area));
+            ->log('Archived papers for '.ucfirst($request->area));
 
         return redirect()->route('paper.index');
     }

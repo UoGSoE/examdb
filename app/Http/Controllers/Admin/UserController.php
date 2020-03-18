@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\User;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -55,7 +55,7 @@ class UserController extends Controller
         activity()
             ->causedBy($request->user())
             ->log(
-                "Created new " . ($user->isExternal() ? 'external' : 'local user') . " '{$user->username}'"
+                'Created new '.($user->isExternal() ? 'external' : 'local user')." '{$user->username}'"
             );
 
         return response()->json([
@@ -69,7 +69,7 @@ class UserController extends Controller
 
         activity()
             ->causedBy(request()->user())
-            ->log("Disabled " . $user->username);
+            ->log('Disabled '.$user->username);
 
         return response()->json([
             'message' => 'deleted',
@@ -83,7 +83,7 @@ class UserController extends Controller
 
         activity()
             ->causedBy(request()->user())
-            ->log("Re-enabled " . $user->username);
+            ->log('Re-enabled '.$user->username);
 
         return response()->json([
             'message' => 'restored',

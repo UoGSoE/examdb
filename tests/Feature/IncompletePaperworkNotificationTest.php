@@ -3,13 +3,13 @@
 namespace Tests\Feature;
 
 use App\Mail\IncompleteCourses;
-use App\User;
-use App\Paper;
-use Tests\TestCase;
 use App\Mail\PaperworkIncomplete;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Artisan;
+use App\Paper;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Mail;
+use Tests\TestCase;
 
 class IncompletePaperworkNotificationTest extends TestCase
 {

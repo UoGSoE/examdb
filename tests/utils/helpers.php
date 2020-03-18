@@ -10,9 +10,10 @@ function make($class, $attributes = [], $times = null)
 }
 function login($user = null)
 {
-    if (!$user) {
+    if (! $user) {
         $user = factory(\App\User::class)->create();
     }
     auth()->login($user);
+
     return $user;
 }

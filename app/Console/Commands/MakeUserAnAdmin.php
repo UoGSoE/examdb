@@ -40,6 +40,6 @@ class MakeUserAnAdmin extends Command
     {
         $user = User::where('username', '=', $this->argument('username'))->firstOrFail();
         $user->makeAdmin();
-        activity()->log("Made " . $this->argument('username') . " an admin via the CLI");
+        activity()->log('Made '.$this->argument('username').' an admin via the CLI');
     }
 }

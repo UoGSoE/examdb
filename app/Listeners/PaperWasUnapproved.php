@@ -3,11 +3,11 @@
 namespace App\Listeners;
 
 use App\Events\PaperUnapproved;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Queue\InteractsWithQueue;
+use App\Mail\NotifyModeratorAboutUnapproval;
 use App\Mail\NotifySetterAboutUnapproval;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Mail\NotifyModeratorAboutUnapproval;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Mail;
 
 class PaperWasUnapproved
 {

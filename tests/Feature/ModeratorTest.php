@@ -2,20 +2,20 @@
 
 namespace Tests\Feature;
 
-use App\User;
-use App\Paper;
 use App\Course;
-use Tests\TestCase;
+use App\Mail\NotifyModeratorAboutUpload;
+use App\Mail\NotifySetterAboutApproval;
+use App\Mail\NotifySetterAboutUnapproval;
+use App\Mail\NotifySetterAboutUpload;
+use App\Paper;
+use App\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\NotifySetterAboutUpload;
-use App\Mail\NotifySetterAboutApproval;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
-use App\Mail\NotifyModeratorAboutUpload;
-use App\Mail\NotifySetterAboutUnapproval;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class ModeratorTest extends TestCase
 {

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class GdprAnonymiseController extends Controller
 {
@@ -16,7 +16,7 @@ class GdprAnonymiseController extends Controller
 
         $user->anonymise();
 
-        activity()->causedBy(request()->user())->log('Anonymised user ' . $user->email);
+        activity()->causedBy(request()->user())->log('Anonymised user '.$user->email);
 
         return redirect()->route('user.show', $user->id);
     }

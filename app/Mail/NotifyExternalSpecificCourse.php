@@ -13,6 +13,7 @@ class NotifyExternalSpecificCourse extends Mailable implements ShouldQueue
     use Queueable, SerializesModels;
 
     public $course;
+
     /**
      * Create a new message instance.
      *

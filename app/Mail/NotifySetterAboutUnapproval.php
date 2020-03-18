@@ -2,12 +2,12 @@
 
 namespace App\Mail;
 
-use App\Paper;
 use App\Course;
+use App\Paper;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class NotifySetterAboutUnapproval extends Mailable
 {

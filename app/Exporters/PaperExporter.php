@@ -2,11 +2,11 @@
 
 namespace App\Exporters;
 
-use App\User;
-use App\Paper;
 use App\Jobs\RemoveRegistryZip;
-use Illuminate\Support\Facades\URL;
+use App\Paper;
+use App\User;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 
 class PaperExporter
 {
@@ -24,17 +24,17 @@ class PaperExporter
     {
         $papers = Paper::where('subcategory', '=', $this->subcategory)->get();
 
-        $localZipname = tempnam(sys_get_temp_dir(), '/' . config('exampapers.registry_temp_file_prefix'));
+        $localZipname = tempnam(sys_get_temp_dir(), '/'.config('exampapers.registry_temp_file_prefix'));
         $zip = new \ZipArchive();
         $zip->open($localZipname, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
         $papers->each(function ($paper) use ($zip) {
             $decryptedContent = decrypt(Storage::disk('exampapers')->get($paper->filename));
-            $paperFilename = $paper->course->code . '_' . ucfirst($paper->category) . '_' . $paper->original_filename;
-            $zip->addFromString('/papers/' . $paperFilename, $decryptedContent);
+            $paperFilename = $paper->course->code.'_'.ucfirst($paper->category).'_'.$paper->original_filename;
+            $zip->addFromString('/papers/'.$paperFilename, $decryptedContent);
         });
         $zip->addFromString('/papers/tmp.txt', 'Hello');
         $zip->close();
-        $remoteFilename = 'registry/papers_' . $this->user->id . '.zip';
+        $remoteFilename = 'registry/papers_'.$this->user->id.'.zip';
         Storage::disk('exampapers')->put($remoteFilename, encrypt(file_get_contents($localZipname)));
         unlink($localZipname);
 

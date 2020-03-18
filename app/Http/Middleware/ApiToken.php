@@ -18,6 +18,7 @@ class ApiToken
         if ($request->header('x-api-key') != config('exampapers.api_key', 'SETME')) {
             return response()->json('Unauthorized', 401);
         }
+
         return $next($request);
     }
 }

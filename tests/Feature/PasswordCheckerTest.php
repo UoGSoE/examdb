@@ -2,18 +2,18 @@
 
 namespace Tests\Feature;
 
-use App\User;
-use Tests\TestCase;
-use Illuminate\Support\Str;
+use App\Exceptions\PasswordQualityException;
 use App\Jobs\CheckPasswordQuality;
 use App\Mail\PasswordQualityFailure;
+use App\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Str;
 use Spatie\Activitylog\Models\Activity;
-use App\Exceptions\PasswordQualityException;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class PasswordCheckerTest extends TestCase
 {
@@ -24,6 +24,7 @@ class PasswordCheckerTest extends TestCase
     {
         if (env('CI')) {
             $this->markTestSkipped('Skipping in CI');
+
             return;
         }
         Queue::fake();
@@ -43,6 +44,7 @@ class PasswordCheckerTest extends TestCase
     {
         if (env('CI')) {
             $this->markTestSkipped('Skipping in CI');
+
             return;
         }
         Queue::fake();
@@ -60,6 +62,7 @@ class PasswordCheckerTest extends TestCase
     {
         if (env('CI')) {
             $this->markTestSkipped('Skipping in CI');
+
             return;
         }
         Queue::fake();
@@ -79,6 +82,7 @@ class PasswordCheckerTest extends TestCase
     {
         if (env('CI')) {
             $this->markTestSkipped('Skipping in CI');
+
             return;
         }
         Mail::fake();
@@ -101,6 +105,7 @@ class PasswordCheckerTest extends TestCase
     {
         if (env('CI')) {
             $this->markTestSkipped('Skipping in CI');
+
             return;
         }
 

@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Paper;
 use App\Course;
+use App\Events\ChecklistUpdated;
+use App\Paper;
 use App\PaperChecklist;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use App\Events\ChecklistUpdated;
 
 class ChecklistController extends Controller
 {
     public function show(PaperChecklist $checklist)
     {
-        if (!$checklist->getNextChecklist()) {
+        if (! $checklist->getNextChecklist()) {
             return redirect()->route('course.checklist.create', ['course' => $checklist->course, 'category' => $checklist->category]);
         }
+
         return view('course.checklist.show', [
             'checklist' => $checklist,
         ]);
@@ -31,7 +32,7 @@ class ChecklistController extends Controller
                         ->where('category', '=', $category)
                         ->latest()
                         ->first();
-        if (!$checklist) {
+        if (! $checklist) {
             $checklist = new PaperChecklist([
                 'course_id' => $course->id,
                 'category' => $category,

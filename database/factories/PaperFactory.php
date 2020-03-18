@@ -1,14 +1,14 @@
 <?php
 
-use Faker\Generator as Faker;
-use App\User;
 use App\Course;
 use App\Paper;
+use App\User;
+use Faker\Generator as Faker;
 
 $factory->define(App\Paper::class, function (Faker $faker) {
     return [
-        'filename' => $faker->unique()->word . '.pdf',
-        'original_filename' => $faker->unique()->word . '.pdf',
+        'filename' => $faker->unique()->word.'.pdf',
+        'original_filename' => $faker->unique()->word.'.pdf',
         'mimetype' => 'application/pdf',
         'category' => 'main',
         'subcategory' => 'Pre-Internally Moderated Paper',

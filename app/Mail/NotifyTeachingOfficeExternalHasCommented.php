@@ -2,11 +2,11 @@
 
 namespace App\Mail;
 
+use App\Course;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Course;
 
 class NotifyTeachingOfficeExternalHasCommented extends Mailable implements ShouldQueue
 {

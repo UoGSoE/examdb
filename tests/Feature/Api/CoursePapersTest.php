@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Api;
 
-use App\Paper;
 use App\Course;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Paper;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class CoursePapersTest extends TestCase
 {
@@ -30,7 +30,7 @@ class CoursePapersTest extends TestCase
             'data' => [
                 ['id' => $paper1->id, 'category' => $paper1->category],
                 ['id' => $paper2->id, 'subcategory' => $paper2->subcategory],
-            ]
+            ],
         ]);
     }
 }

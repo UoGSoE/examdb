@@ -2,15 +2,15 @@
 
 namespace App\Jobs;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
 use App\Exceptions\PasswordQualityException;
 use App\Mail\PasswordQualityFailure;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 use LangleyFoxall\LaravelNISTPasswordRules\PasswordRules;
 
 class CheckPasswordQuality implements ShouldQueue
@@ -47,13 +47,13 @@ class CheckPasswordQuality implements ShouldQueue
             'password' => $this->password,
             'password_confirmation' => $this->password,
         ], [
-            'password' => PasswordRules::register($this->username)
+            'password' => PasswordRules::register($this->username),
         ]);
 
         if ($validator->fails()) {
-            $logMessage = 'Password quality check for ' .
-                            $this->username .
-                            ' failed. ' .
+            $logMessage = 'Password quality check for '.
+                            $this->username.
+                            ' failed. '.
                             implode(', ', $validator->errors()->get('password'));
             activity()->log($logMessage);
             Mail::to(config('exampapers.sysadmin_email'))->queue(

@@ -1,10 +1,9 @@
 <?php
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
-
 use App\Course;
-use App\User;
 use App\PaperChecklist;
+use App\User;
 use Faker\Generator as Faker;
 
 $factory->define(PaperChecklist::class, function (Faker $faker) {

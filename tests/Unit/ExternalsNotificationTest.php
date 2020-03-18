@@ -2,15 +2,15 @@
 
 namespace Tests\Unit;
 
-use App\User;
-use App\Paper;
-use Tests\TestCase;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\ExternalHasPapersToLookAt;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Course;
 use App\Jobs\NotifyExternals;
+use App\Mail\ExternalHasPapersToLookAt;
+use App\Paper;
+use App\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Mail;
+use Tests\TestCase;
 
 class ExternalsNotificationTest extends TestCase
 {

@@ -19,10 +19,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(WlmClientInterface::class, WlmClient::class);
         Collection::macro('userLinks', function () {
             return $this->map(function ($user) {
-                return '<a href="' . route('user.show', $user->id) . '">' . $user->full_name . '</a>';
+                return '<a href="'.route('user.show', $user->id).'">'.$user->full_name.'</a>';
             });
         });
-
     }
 
     /**

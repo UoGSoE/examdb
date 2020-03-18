@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\User;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Mail;
 use App\Mail\ExternalLoginUrl;
+use App\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Mail;
 use Spatie\Activitylog\Models\Activity;
+use Tests\TestCase;
 
 class ExternalUsersLoginTest extends TestCase
 {
@@ -121,7 +121,7 @@ class ExternalUsersLoginTest extends TestCase
     {
         $external = factory(User::class)->states('external')->create();
 
-        $response = $this->get($external->generateLoginUrl() . 'invalid');
+        $response = $this->get($external->generateLoginUrl().'invalid');
 
         $response->assertStatus(403);
         $this->assertFalse(\Auth::check());

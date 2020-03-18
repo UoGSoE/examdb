@@ -2,17 +2,17 @@
 
 namespace App\Jobs;
 
-use App\User;
-use App\Paper;
-use Illuminate\Bus\Queueable;
-use App\Jobs\RemoveRegistryZip;
 use App\Exporters\PaperExporter;
+use App\Jobs\RemoveRegistryZip;
 use App\Mail\RegistryPapersExported;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
+use App\Paper;
+use App\User;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Mail;
 
 class ExportPapersForRegistry implements ShouldQueue
 {

@@ -2,14 +2,14 @@
 
 namespace App;
 
-use Illuminate\Support\Str;
-use App\Scopes\CurrentScope;
 use App\Events\PaperApproved;
 use App\Events\PaperUnapproved;
-use Illuminate\Http\UploadedFile;
+use App\Scopes\CurrentScope;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class Course extends Model
 {
@@ -87,7 +87,8 @@ class Course extends Model
     public function scopeForArea($query, $area)
     {
         $codePrefix = $area == 'uestc' ? 'UESTC' : 'ENG';
-        return $query->where('code', 'like', $codePrefix . '%');
+
+        return $query->where('code', 'like', $codePrefix.'%');
     }
 
     public function hasSetterChecklist(string $category)
@@ -121,7 +122,7 @@ class Course extends Model
             return false;
         }
 
-        return !$this->checklists()->where('category', '=', $category)->latest()->first()->is($checklist);
+        return ! $this->checklists()->where('category', '=', $category)->latest()->first()->is($checklist);
     }
 
     public function markExternalNotified()
@@ -141,11 +142,11 @@ class Course extends Model
 
     public function addPaper(string $category, string $subcategory, UploadedFile $file): Paper
     {
-        if (!in_array($category, Paper::VALID_CATEGORIES)) {
-            throw new \InvalidArgumentException('Invalid category : ' . $category);
+        if (! in_array($category, Paper::VALID_CATEGORIES)) {
+            throw new \InvalidArgumentException('Invalid category : '.$category);
         }
 
-        $randomName = Str::random(64) . '_' . now()->format('d-m-Y');
+        $randomName = Str::random(64).'_'.now()->format('d-m-Y');
         $filename = "papers/{$this->id}/{$category}/{$randomName}.dat";
         Storage::disk('exampapers')->put($filename, encrypt($file->get()));
 
@@ -185,12 +186,14 @@ class Course extends Model
     public function isApprovedByModerator(string $category): bool
     {
         $key = "moderator_approved_{$category}";
+
         return $this->$key;
     }
 
     public function isApprovedByExternal(string $category): bool
     {
         $key = "external_approved_{$category}";
+
         return $this->$key;
     }
 
@@ -198,11 +201,13 @@ class Course extends Model
     {
         if ($user->isModeratorFor($this)) {
             $key = "moderator_approved_{$category}";
+
             return $this->$key;
         }
 
         if ($user->isExternalFor($this)) {
             $key = "external_approved_{$category}";
+
             return $this->$key;
         }
 
@@ -238,7 +243,7 @@ class Course extends Model
             'moderator_approved_main',
             'moderator_approved_resit',
             'external_approved_main',
-            'external_approved_resit'
+            'external_approved_resit',
         ])->each(function ($field) {
             $this->update([$field => false]);
         });
@@ -246,23 +251,25 @@ class Course extends Model
 
     public function getUserApprovedMainAttribute(? User $user): bool
     {
-        if (!$user) {
+        if (! $user) {
             $user = auth()->user();
         }
+
         return $this->isApprovedBy($user, 'main');
     }
 
     public function getUserApprovedResitAttribute(? User $user): bool
     {
-        if (!$user) {
+        if (! $user) {
             $user = auth()->user();
         }
+
         return $this->isApprovedBy($user, 'resit');
     }
 
     public function getFullNameAttribute()
     {
-        return $this->code . ' ' . $this->title;
+        return $this->code.' '.$this->title;
     }
 
     public function datePaperAdded(string $category, string $subcategory): string
@@ -272,9 +279,10 @@ class Course extends Model
             ->where('subcategory', $subcategory)
             ->sortBy('created_at')
             ->last();
-        if (!$paper) {
+        if (! $paper) {
             return '';
         }
+
         return $paper->created_at->format('d/m/Y');
     }
 
@@ -284,34 +292,35 @@ class Course extends Model
     }
 
     /**
-     * Create a course based on import data from the WLM
-     *
+     * Create a course based on import data from the WLM.
      */
-    public static function fromWlmData(array $wlmCourse): Course
+    public static function fromWlmData(array $wlmCourse): self
     {
         $code = $wlmCourse['Code'];
         $title = $wlmCourse['Title'];
         $disciplineTitle = trim($wlmCourse['Discipline']);
         $discipline = Discipline::firstOrCreate(['title' => $disciplineTitle]);
         $course = static::findByCode($code);
-        if (!$course) {
+        if (! $course) {
             $course = new static(['code' => $code]);
         }
         $course->is_active = $course->getWlmStatus($wlmCourse);
         $course->title = $title;
         $course->discipline()->associate($discipline);
         $course->save();
+
         return $course;
     }
 
     protected function getWlmStatus($wlmCourse)
     {
-        if (!array_key_exists('CurrentFlag', $wlmCourse)) {
+        if (! array_key_exists('CurrentFlag', $wlmCourse)) {
             return false;
         }
         if ($wlmCourse['CurrentFlag'] === 'Yes') {
             return true;
         }
+
         return false;
     }
 

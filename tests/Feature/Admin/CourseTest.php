@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\Admin;
 
-use App\User;
 use App\Course;
 use App\Discipline;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class CourseTest extends TestCase
 {

@@ -12,7 +12,7 @@ class WlmImportController extends Controller
         ImportFromWlm::dispatch(request()->user())->onQueue('long-running-queue');
 
         activity()->causedBy(request()->user())->log(
-            "Started a WLM import"
+            'Started a WLM import'
         );
 
         return response()->json([

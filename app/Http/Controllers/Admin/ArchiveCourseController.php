@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Course;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class ArchiveCourseController extends Controller
 {
@@ -23,8 +23,7 @@ class ArchiveCourseController extends Controller
 
         activity()
             ->causedBy($request->user())
-            ->log("Archived papers for " . ucfirst($course->code));
-
+            ->log('Archived papers for '.ucfirst($course->code));
 
         return redirect()->route('course.show', $course->id);
     }

@@ -3,14 +3,14 @@
 namespace App\Listeners;
 
 use App\Events\ChecklistUpdated as EventsChecklistUpdated;
-use App\Paper;
 use App\Events\PaperAdded;
 use App\Mail\ChecklistUpdated;
 use App\Mail\ChecklistUploaded;
-use Illuminate\Support\Facades\Mail;
 use App\Mail\NotifyModeratorAboutUpload;
-use Illuminate\Queue\InteractsWithQueue;
+use App\Paper;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Mail;
 
 class NotifyStaffThatChecklistUpdated
 {

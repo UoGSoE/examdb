@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Course;
-use Illuminate\Http\Request;
-use App\Jobs\NotifyExternals;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Mail;
+use App\Jobs\NotifyExternals;
 use App\Mail\ExternalHasPapersToLookAt;
 use App\Mail\NotifyExternalSpecificCourse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class NotifyExternalsController extends Controller
 {
@@ -20,14 +20,14 @@ class NotifyExternalsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'area' => 'required|in:glasgow,uestc'
+            'area' => 'required|in:glasgow,uestc',
         ]);
 
         NotifyExternals::dispatch($request->area);
 
         activity()
             ->causedBy($request->user())
-            ->log("Notified externals for " . ucfirst($request->area));
+            ->log('Notified externals for '.ucfirst($request->area));
 
         if ($request->wantsJson()) {
             return response()->json([], 200);
@@ -46,7 +46,6 @@ class NotifyExternalsController extends Controller
 
         activity()
             ->causedBy(request()->user())
-            ->log("Notified externals for " . $course->code);
-
+            ->log('Notified externals for '.$course->code);
     }
 }

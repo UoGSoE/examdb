@@ -3,8 +3,8 @@
 namespace App\Exceptions;
 
 use Exception;
-use Sentry\State\Scope;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Sentry\State\Scope;
 
 class Handler extends ExceptionHandler
 {
@@ -40,13 +40,13 @@ class Handler extends ExceptionHandler
                 \Sentry\configureScope(function (Scope $scope): void {
                     $scope->setUser([
                         'id' => auth()->user()->id,
-                        'username' => auth()->user()->username
+                        'username' => auth()->user()->username,
                     ]);
                 });
             } else {
                 \Sentry\configureScope(function (Scope $scope): void {
                     $scope->setUser([
-                        'id' => null
+                        'id' => null,
                     ]);
                 });
             }
@@ -57,7 +57,7 @@ class Handler extends ExceptionHandler
 
         if ($exception instanceof \Illuminate\Routing\Exceptions\InvalidSignatureException) {
             activity()->log(
-                "External tried to use a expired or invalid login url from IP " . request()->ip()
+                'External tried to use a expired or invalid login url from IP '.request()->ip()
             );
         }
     }

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Discipline;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Appstract\Options\Option;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class OptionsController extends Controller
 {
@@ -51,40 +51,36 @@ class OptionsController extends Controller
 
         if ($request->filled('internal_deadline_glasgow')) {
             option([
-                'internal_deadline_glasgow' =>
-                Carbon::createFromFormat('d/m/Y', $request->internal_deadline_glasgow)
-                    ->format('Y-m-d')
+                'internal_deadline_glasgow' => Carbon::createFromFormat('d/m/Y', $request->internal_deadline_glasgow)
+                    ->format('Y-m-d'),
             ]);
         }
 
         if ($request->filled('internal_deadline_uestc')) {
             option([
-                'internal_deadline_uestc' =>
-                Carbon::createFromFormat('d/m/Y', $request->internal_deadline_uestc)
-                    ->format('Y-m-d')
+                'internal_deadline_uestc' => Carbon::createFromFormat('d/m/Y', $request->internal_deadline_uestc)
+                    ->format('Y-m-d'),
             ]);
         }
 
         if ($request->filled('teaching_office_contact_glasgow')) {
             option([
-                'teaching_office_contact_glasgow' =>
-                $request->teaching_office_contact_glasgow
+                'teaching_office_contact_glasgow' => $request->teaching_office_contact_glasgow,
             ]);
         }
 
         if ($request->filled('teaching_office_contact_uestc')) {
             option([
-                'teaching_office_contact_uestc' =>
-                $request->teaching_office_contact_uestc
+                'teaching_office_contact_uestc' => $request->teaching_office_contact_uestc,
             ]);
         }
 
         activity()->causedBy($request->user())->log(
-            "Updated the site options"
+            'Updated the site options'
         );
 
         return response()->json([
-            'status' => 'ok'
+            'status' => 'ok',
         ], 200);
     }
 }

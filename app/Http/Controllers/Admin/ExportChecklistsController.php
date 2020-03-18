@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
-use App\Jobs\BulkExportChecklists;
 use App\Http\Controllers\Controller;
+use App\Jobs\BulkExportChecklists;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 class ExportChecklistsController extends Controller
@@ -13,7 +13,7 @@ class ExportChecklistsController extends Controller
     {
         BulkExportChecklists::dispatch($request->user());
 
-        activity()->causedBy($request->user())->log("Created a ZIP of the paper checklists");
+        activity()->causedBy($request->user())->log('Created a ZIP of the paper checklists');
 
         return redirect()->back();
     }

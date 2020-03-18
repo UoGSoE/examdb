@@ -2,12 +2,12 @@
 
 namespace App\Console\Commands;
 
-use App\Paper;
 use App\Course;
-use Carbon\Carbon;
 use App\Mail\IncompleteCourses;
-use Illuminate\Console\Command;
 use App\Mail\PaperworkIncomplete;
+use App\Paper;
+use Carbon\Carbon;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 
 class NotifyPaperworkIncomplete extends Command
@@ -45,7 +45,7 @@ class NotifyPaperworkIncomplete extends Command
     {
         $area = $this->option('area');
         $deadlineField = "internal_deadline_{$area}";
-        if (!option_exists($deadlineField)) {
+        if (! option_exists($deadlineField)) {
             abort(500, "No {$deadlineField} option set");
         }
         // check if it is one week before or one day after the deadline - otherwise we don't send emails

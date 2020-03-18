@@ -2,13 +2,13 @@
 
 namespace Tests\Feature\Admin;
 
-use App\User;
-use App\Paper;
 use App\Course;
+use App\Paper;
 use App\PaperChecklist;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class ArchivePapersTest extends TestCase
 {
@@ -47,9 +47,9 @@ class ArchivePapersTest extends TestCase
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
         $user1 = create(User::class);
-        $course1 = create(Course::class, ['code' => 'ENG1234', "moderator_approved_main" => true]);
-        $course2 = create(Course::class, ['code' => 'ENG4567', "external_approved_resit" => true]);
-        $course3 = create(Course::class, ['code' => 'UESTC4567', "moderator_approved_main" => true]);
+        $course1 = create(Course::class, ['code' => 'ENG1234', 'moderator_approved_main' => true]);
+        $course2 = create(Course::class, ['code' => 'ENG4567', 'external_approved_resit' => true]);
+        $course3 = create(Course::class, ['code' => 'UESTC4567', 'moderator_approved_main' => true]);
         $paper1 = create(Paper::class, ['course_id' => $course1->id]);
         $paper2 = create(Paper::class, ['course_id' => $course2->id]);
         $paper3 = create(Paper::class, ['course_id' => $course3->id]);

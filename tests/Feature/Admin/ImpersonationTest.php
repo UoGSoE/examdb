@@ -27,7 +27,7 @@ class ImpersonationTest extends TestCase
 
         $response = $this->get('/home');
 
-        $response->assertSee("Stop impersonating");
+        $response->assertSee('Stop impersonating');
 
         // and check we recorded this in the activity/audit log
         tap(Activity::first(), function ($log) use ($admin, $user) {

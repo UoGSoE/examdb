@@ -2,11 +2,11 @@
 
 namespace App\Mail;
 
+use App\Course;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Course;
 
 class PaperForRegistry extends Mailable
 {
@@ -31,7 +31,7 @@ class PaperForRegistry extends Mailable
      */
     public function build()
     {
-        return $this->subject('Paper for registry ' . $this->course->code)
+        return $this->subject('Paper for registry '.$this->course->code)
                     ->markdown('emails.notify_teaching_office');
     }
 }

@@ -4,9 +4,9 @@ namespace App\Listeners;
 
 use App\Events\PaperAdded;
 use App\Mail\PaperForRegistry;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Mail;
 
 class NotifyTechingOfficePaperForRegistryUploaded
 {
@@ -33,7 +33,7 @@ class NotifyTechingOfficePaperForRegistryUploaded
         }
 
         $contact = $event->paper->getDisciplineContact();
-        if (!$contact) {
+        if (! $contact) {
             // @TODO something better...
             abort(500);
         }

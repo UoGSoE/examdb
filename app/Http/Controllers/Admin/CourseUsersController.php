@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Course;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
+use Illuminate\Http\Request;
 
 class CourseUsersController extends Controller
 {
@@ -27,7 +27,7 @@ class CourseUsersController extends Controller
         User::findMany($request->externals)->each->markAsExternal($course);
 
         return response()->json([
-            'message' => 'Updated'
+            'message' => 'Updated',
         ], 200);
     }
 
@@ -39,7 +39,7 @@ class CourseUsersController extends Controller
 
         activity()
             ->causedBy(request()->user())
-            ->log("Removed all staff from all courses");
+            ->log('Removed all staff from all courses');
 
         return redirect()->route('course.index');
     }

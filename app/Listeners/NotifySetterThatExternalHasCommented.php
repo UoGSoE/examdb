@@ -3,10 +3,10 @@
 namespace App\Listeners;
 
 use App\Events\PaperAdded;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Mail\NotifySetterAboutExternalComments;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Mail;
 
 class NotifySetterThatExternalHasCommented
 {
@@ -28,7 +28,7 @@ class NotifySetterThatExternalHasCommented
      */
     public function handle(PaperAdded $event)
     {
-        if (!request()->user()->isExternalFor($event->paper->course)) {
+        if (! request()->user()->isExternalFor($event->paper->course)) {
             return;
         }
 

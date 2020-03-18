@@ -3,12 +3,12 @@
 namespace App;
 
 use App\CanBeCreatedFromOutsideSources;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\URL;
 use Lab404\Impersonate\Models\Impersonate;
 use Spatie\Activitylog\Models\Activity;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
@@ -53,7 +53,7 @@ class User extends Authenticatable
             ->get()
             ->map(function ($user) {
                 return [
-                    'label' => $user->full_name . " ({$user->username})",
+                    'label' => $user->full_name." ({$user->username})",
                     'value' => $user->id,
                 ];
             });
@@ -66,7 +66,7 @@ class User extends Authenticatable
             ->get()
             ->map(function ($user) {
                 return [
-                    'label' => $user->full_name . " ({$user->username})",
+                    'label' => $user->full_name." ({$user->username})",
                     'value' => $user->id,
                 ];
             });
@@ -78,6 +78,7 @@ class User extends Authenticatable
         if ($userTypeField) {
             $query = $query->wherePivot($userTypeField, true);
         }
+
         return $query->latest('updated_at')->get();
     }
 
@@ -140,7 +141,7 @@ class User extends Authenticatable
 
     public function toggleAdmin()
     {
-        $this->is_admin = !$this->is_admin;
+        $this->is_admin = ! $this->is_admin;
         $this->save();
         activity()
             ->causedBy(request()->user())
@@ -156,7 +157,7 @@ class User extends Authenticatable
 
     public function isAdmin()
     {
-        return !! $this->is_admin;
+        return (bool) $this->is_admin;
     }
 
     public function isExternal()
@@ -166,7 +167,7 @@ class User extends Authenticatable
 
     public function isInternal()
     {
-        return !$this->isExternal();
+        return ! $this->isExternal();
     }
 
     public function generateLoginUrl()
@@ -180,7 +181,7 @@ class User extends Authenticatable
 
     public function getFullNameAttribute()
     {
-        return $this->forenames . ' ' . $this->surname;
+        return $this->forenames.' '.$this->surname;
     }
 
     public static function findByUsername($username)
@@ -196,8 +197,8 @@ class User extends Authenticatable
     public function anonymise()
     {
         $this->update([
-            'username' => 'gdpr' . $this->id,
-            'email' => 'gdpr' . $this->id . '@glasgow.ac.uk',
+            'username' => 'gdpr'.$this->id,
+            'email' => 'gdpr'.$this->id.'@glasgow.ac.uk',
             'surname' => 'anon',
             'forenames' => 'anon',
         ]);

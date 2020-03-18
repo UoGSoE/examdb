@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\User;
-use App\Paper;
 use App\Course;
 use App\Discipline;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Paper;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class DisciplineContactsTest extends TestCase
 {
@@ -26,7 +26,7 @@ class DisciplineContactsTest extends TestCase
             'disciplines' => [
                 ['id' => $disc1->id, 'contact' => 'someone@example.com'],
                 ['id' => $disc2->id, 'contact' => 'whatever@example.com'],
-            ]
+            ],
         ]);
 
         $response->assertOk();

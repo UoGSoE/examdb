@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Mail\NotifyTeachingOfficeExternalDeadline as Notification;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\NotifyTeachingOfficeExternalDeadline as Notification;
 
 class NotifyTeachingOfficeExternalDeadline extends Command
 {
@@ -44,13 +44,14 @@ class NotifyTeachingOfficeExternalDeadline extends Command
     {
         $area = $this->option('area');
 
-        if (!in_array($area, $this->validAreas)) {
-            $this->error('Invalid area given : ' . $area);
+        if (! in_array($area, $this->validAreas)) {
+            $this->error('Invalid area given : '.$area);
+
             return;
         }
 
         $dateOption = "external_deadline_{$area}";
-        if (!option_exists($dateOption)) {
+        if (! option_exists($dateOption)) {
             abort(500, "No 'external_deadline' option set for area {$area}");
         }
 
@@ -60,7 +61,7 @@ class NotifyTeachingOfficeExternalDeadline extends Command
         }
 
         $emailAddress = option("teaching_office_contact_{$area}");
-        if (!$emailAddress) {
+        if (! $emailAddress) {
             abort(500, "No 'teaching_office_contact' set for area {$area}");
         }
 

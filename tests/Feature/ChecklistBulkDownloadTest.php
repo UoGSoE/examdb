@@ -2,20 +2,20 @@
 
 namespace Tests\Feature;
 
-use App\User;
 use App\Course;
 use App\Exporters\ChecklistExporter;
-use Tests\TestCase;
-use App\PaperChecklist;
-use App\Jobs\RemoveChecklistZip;
 use App\Jobs\BulkExportChecklists;
+use App\Jobs\RemoveChecklistZip;
+use App\Mail\ChecklistsReadyToDownload;
+use App\PaperChecklist;
+use App\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
-use App\Mail\ChecklistsReadyToDownload;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class ChecklistBulkDownloadTest extends TestCase
 {
@@ -64,9 +64,9 @@ class ChecklistBulkDownloadTest extends TestCase
 
         Mail::assertQueued(ChecklistsReadyToDownload::class, 1);
         Mail::assertQueued(ChecklistsReadyToDownload::class, function ($mail) use ($admin) {
-            return $mail->hasTo($admin->email) && !is_null($mail->link);
+            return $mail->hasTo($admin->email) && ! is_null($mail->link);
         });
-        Storage::disk('exampapers')->assertExists('checklists/checklists_' . $admin->id . '.zip');
+        Storage::disk('exampapers')->assertExists('checklists/checklists_'.$admin->id.'.zip');
     }
 
     /** @test */
@@ -122,6 +122,6 @@ class ChecklistBulkDownloadTest extends TestCase
 
         BulkExportChecklists::dispatchNow($admin);
 
-        Storage::disk('exampapers')->assertMissing('checklists/checklists_' . $admin->id . '.zip');
+        Storage::disk('exampapers')->assertMissing('checklists/checklists_'.$admin->id.'.zip');
     }
 }

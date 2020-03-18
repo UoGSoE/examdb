@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Jobs\ExportPapersForRegistry;
+use Illuminate\Http\Request;
 
 class ExportPapersForRegistryController extends Controller
 {
@@ -12,7 +12,7 @@ class ExportPapersForRegistryController extends Controller
     {
         ExportPapersForRegistry::dispatch(request()->user())->onQueue('long-running-queue');
 
-        activity()->causedBy(request()->user())->log("Created a ZIP of the papers for registry");
+        activity()->causedBy(request()->user())->log('Created a ZIP of the papers for registry');
 
         return response()->json([
             'message' => 'exporting',

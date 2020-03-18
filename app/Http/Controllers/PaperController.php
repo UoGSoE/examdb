@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Paper;
 use App\Course;
 use App\Events\PaperAdded;
+use App\Paper;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class PaperController extends Controller
 {

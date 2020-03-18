@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Course;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class CourseStatusController extends Controller
 {
@@ -13,11 +13,11 @@ class CourseStatusController extends Controller
         $course->disable();
 
         activity()->causedBy(request()->user())->log(
-            "Disabled course " . $course->code
+            'Disabled course '.$course->code
         );
 
         return response()->json([
-            'message' => 'disabled'
+            'message' => 'disabled',
         ]);
     }
 
@@ -27,12 +27,12 @@ class CourseStatusController extends Controller
         $course->enable();
 
         activity()->causedBy(request()->user())->log(
-            "Enabled course " . $course->code
+            'Enabled course '.$course->code
         );
 
         if (request()->wantsJson()) {
             return response()->json([
-                'message' => 'enabled'
+                'message' => 'enabled',
             ]);
         }
 

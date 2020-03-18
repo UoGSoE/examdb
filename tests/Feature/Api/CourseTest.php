@@ -3,9 +3,9 @@
 namespace Tests\Feature\Api;
 
 use App\Course;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class CourseTest extends TestCase
 {
@@ -26,7 +26,7 @@ class CourseTest extends TestCase
             'data' => [
                 ['id' => $course1->id, 'code' => $course1->code],
                 ['id' => $course2->id, 'code' => $course2->code],
-            ]
+            ],
         ]);
     }
 
@@ -44,7 +44,7 @@ class CourseTest extends TestCase
             'data' => [
                 'id' => $course1->id,
                 'code' => $course1->code,
-            ]
+            ],
         ]);
     }
 }
