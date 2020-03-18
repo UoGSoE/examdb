@@ -2,10 +2,10 @@
 
 namespace App\Exceptions;
 
-use Throwable;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Sentry\State\Scope;
+use Throwable;
 
 class Handler extends ExceptionHandler
 {
