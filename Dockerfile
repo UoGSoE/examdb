@@ -1,5 +1,5 @@
 ### PHP version we are targetting
-ARG PHP_VERSION=7.2
+ARG PHP_VERSION=7.4
 
 
 ### Placeholder for basic dev stage for use with docker-compose
@@ -11,7 +11,7 @@ CMD ["/usr/local/bin/app-start"]
 
 
 ### Build JS/css assets
-FROM node:10 as frontend
+FROM node:12 as frontend
 
 # workaround for mix.version() webpack bug
 RUN ln -s /home/node/public /public
@@ -93,7 +93,7 @@ COPY . /var/www/html
 RUN rm -fr /var/www/html/bootstrap/cache/*.php
 
 #- If horizon is installed force it to rebuild it's public assets
-RUN if grep -q horizon composer.json; then php /var/www/html/artisan horizon:assets; fi
+RUN if grep -q horizon composer.json; then php /var/www/html/artisan horizon:publish; fi
 
 #- Force-publish laravel's mail templates - see https://github.com/laravel/framework/issues/21493#issuecomment-427986812
 RUN php /var/www/html/artisan vendor:publish --tag=laravel-mail

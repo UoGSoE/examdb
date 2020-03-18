@@ -13,7 +13,6 @@
         "barryvdh/laravel-dompdf": "^0.8.5",
         "box/spout": "^2.7",
         "fideloper/proxy": "^4.2",
-        "joggapp/laravel-mail-viewer": "^5.0",
         "lab404/laravel-impersonate": "^1.2",
         "langleyfoxall/laravel-nist-password-rules": "^4.1",
         "laravel/framework": "^7.2",

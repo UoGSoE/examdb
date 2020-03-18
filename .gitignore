@@ -13,6 +13,7 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+dump.rdb
 .env
 .DS_Store
 .phpunit.result.cache
