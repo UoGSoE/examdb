@@ -25,7 +25,8 @@
         "sentry/sentry-laravel": "^1.4",
         "spatie/laravel-activitylog": "^3.1",
         "tightenco/ziggy": "^0.8",
-        "uogsoe/ldap-laravel": "^1.0"
+        "uogsoe/ldap-laravel": "^1.0",
+        "laravel/ui": "^2.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.2",
