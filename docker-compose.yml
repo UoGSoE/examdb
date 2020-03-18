@@ -4,7 +4,7 @@ version: "3.7"
 
 x-env:
   environment: &default-env
-    MAIL_DRIVER: smtp
+    MAIL_MAILER: smtp
     MAIL_HOST: mailhog
     MAIL_PORT: 1025
     REDIS_HOST: redis
