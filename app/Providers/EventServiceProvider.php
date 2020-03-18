@@ -13,35 +13,35 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\PaperAdded' => [
-            'App\Listeners\NotifySetterThatExternalHasCommented',
-            'App\Listeners\NotifyTeachingOfficeThatExternalHasCommented',
-            'App\Listeners\NotifyTechingOfficePaperForRegistryUploaded',
-            'App\Listeners\LogThatPaperWasAdded',
+        \App\Events\PaperAdded::class => [
+            \App\Listeners\NotifySetterThatExternalHasCommented::class,
+            \App\Listeners\NotifyTeachingOfficeThatExternalHasCommented::class,
+            \App\Listeners\NotifyTechingOfficePaperForRegistryUploaded::class,
+            \App\Listeners\LogThatPaperWasAdded::class,
         ],
-        'App\Events\ChecklistUpdated' => [
-            'App\Listeners\NotifyStaffThatChecklistUpdated',
+        \App\Events\ChecklistUpdated::class => [
+            \App\Listeners\NotifyStaffThatChecklistUpdated::class,
         ],
         'Illuminate\Auth\Events\Login' => [
-            'App\Listeners\UserLoggedIn',
+            \App\Listeners\UserLoggedIn::class,
         ],
         'Illuminate\Auth\Events\Attempting' => [
-            'App\Listeners\DispachPasswordChecker',
+            \App\Listeners\DispachPasswordChecker::class,
         ],
-        'App\Events\PaperApproved' => [
-            'App\Listeners\PaperWasApproved',
+        \App\Events\PaperApproved::class => [
+            \App\Listeners\PaperWasApproved::class,
         ],
-        'App\Events\PaperUnapproved' => [
-            'App\Listeners\PaperWasUnapproved',
+        \App\Events\PaperUnapproved::class => [
+            \App\Listeners\PaperWasUnapproved::class,
         ],
-        'App\Events\WlmImportComplete' => [
-            'App\Listeners\NotifyUserWlmImportFinished',
+        \App\Events\WlmImportComplete::class => [
+            \App\Listeners\NotifyUserWlmImportFinished::class,
         ],
         'Lab404\Impersonate\Events\TakeImpersonation' => [
-            'App\Listeners\ImpersonationStarted',
+            \App\Listeners\ImpersonationStarted::class,
         ],
         'Lab404\Impersonate\Events\LeaveImpersonation' => [
-            'App\Listeners\ImpersonationStopped',
+            \App\Listeners\ImpersonationStopped::class,
         ],
     ];
 

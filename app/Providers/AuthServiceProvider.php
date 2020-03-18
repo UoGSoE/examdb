@@ -14,8 +14,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'App\Course' => 'App\Policies\CoursePolicy',
-        'App\Paper' => 'App\Policies\PaperPolicy',
+        \App\Course::class => \App\Policies\CoursePolicy::class,
+        \App\Paper::class => \App\Policies\PaperPolicy::class,
     ];
 
     /**
