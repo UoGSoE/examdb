@@ -79,6 +79,11 @@ class PapersForRegistryBulkDownloadTest extends TestCase
         Mail::fake();
         Storage::fake('exampapers');
         Queue::fake();
+        // pre-remove any temp files left if this test fails
+        $tempFiles = glob(sys_get_temp_dir() . '/' . config('exampapers.registry_temp_file_prefix') . '*');
+        foreach ($tempFiles as $filename) {
+            unlink($filename);
+        }
         $admin = create(User::class, ['is_admin' => true]);
 
         ExportPapersForRegistry::dispatchNow($admin);
