@@ -348,4 +348,14 @@ class Course extends Model
     {
         $this->restore();
     }
+
+    public function getYearAttribute()
+    {
+        $matches = [];
+        preg_match('/[a-zA-Z]+(\d)(\d)+/', $this->code, $matches);
+        if (empty($matches)) {
+            return '';
+        }
+        return $matches[1];
+    }
 }

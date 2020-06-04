@@ -11,11 +11,11 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    @livewireStyles
 
     <script>
         window.user_id = {{ Auth::id() }};
@@ -56,6 +56,11 @@
 
 
     </div>
+
+    @livewireScripts
+    <script src="{{ asset('js/app.js') }}"></script>
+
+    @stack('scripts')
 </body>
-@stack('scripts')
+
 </html>

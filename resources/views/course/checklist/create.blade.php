@@ -2,6 +2,11 @@
 
 @section('content')
 
+@livewire('paper-checklist', ['checklist' => $checklist])
+
+
+
+
 @if ($errors->count() > 0)
 <article class="message is-danger">
     <div class="message-body">

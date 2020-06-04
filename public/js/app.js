@@ -13341,6 +13341,23 @@ module.exports = function isBuffer (obj) {
 
 /***/ }),
 
+/***/ "./node_modules/livewire-vue/dist/livewire-vue.js":
+/*!********************************************************!*\
+  !*** ./node_modules/livewire-vue/dist/livewire-vue.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;!function(e){ true?!(__WEBPACK_AMD_DEFINE_FACTORY__ = (e),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+				__WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)):undefined}((function(){"use strict";if(void 0===window.livewire)throw"Livewire Vue Plugin: window.livewire is undefined. Make sure @livewireScripts is placed above this script include";window.livewire.hook("beforeDomUpdate",(e,i)=>{if(!window.Vue)return;const n=document.createElement("div");n.innerHTML=i.html,(new window.Vue).$mount(n.firstElementChild),i.html=n.firstElementChild.outerHTML}),window.livewire.hook("elementInitialized",e=>{e.rawNode().__vue__&&(e.rawNode().__livewire_ignore=!0)}),window.livewire.hook("interceptWireModelSetValue",(e,i)=>{if(!e.rawNode().__vue__)return;const n=window.Vue.config.silent;window.Vue.config.silent=!0,e.rawNode().__vue__.$props.value=i,window.Vue.config.silent=n}),window.livewire.hook("interceptWireModelAttachListener",(e,i,n,o)=>{if(!e.rawNode().__vue__)return;const t=i.modifiers.includes("debounce"),r=i.modifiers.includes("lazy");e.rawNode().__vue__.$on("input",o(t||!r,e=>{const o=i.value,t=e;n.set(o,t)},i.durationOr(150)))})}));
+//# sourceMappingURL=livewire-vue.js.map
+
+
+/***/ }),
+
 /***/ "./node_modules/moment/locale sync recursive ^\\.\\/.*$":
 /*!**************************************************!*\
   !*** ./node_modules/moment/locale sync ^\.\/.*$ ***!
@@ -50106,7 +50123,7 @@ module.exports = function(module) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-select/dist/vue-select.css */ "./node_modules/vue-select/dist/vue-select.css");
+/* WEBPACK VAR INJECTION */(function(process) {/* harmony import */ var vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-select/dist/vue-select.css */ "./node_modules/vue-select/dist/vue-select.css");
 /* harmony import */ var vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-select */ "./node_modules/vue-select/dist/vue-select.js");
 /* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_select__WEBPACK_IMPORTED_MODULE_1__);
@@ -50166,7 +50183,7 @@ Vue.use(portal_vue__WEBPACK_IMPORTED_MODULE_2___default.a);
 Vue.component('v-select', vue_select__WEBPACK_IMPORTED_MODULE_1___default.a);
 
 _sentry_browser__WEBPACK_IMPORTED_MODULE_3__["init"]({
-  dsn: "",
+  dsn: process.env.MIX_SENTRY_DSN,
   integrations: [new _sentry_browser__WEBPACK_IMPORTED_MODULE_3__["Integrations"].Vue({
     Vue: Vue
   })]
@@ -50174,6 +50191,9 @@ _sentry_browser__WEBPACK_IMPORTED_MODULE_3__["init"]({
 var app = new Vue({
   el: '#app'
 });
+
+__webpack_require__(/*! livewire-vue */ "./node_modules/livewire-vue/dist/livewire-vue.js");
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../node_modules/process/browser.js */ "./node_modules/process/browser.js")))
 
 /***/ }),
 
@@ -52177,8 +52197,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/billy/Documents/code/exam-papers/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/billy/Documents/code/exam-papers/resources/css/app.scss */"./resources/css/app.scss");
+__webpack_require__(/*! /Users/billy/Documents/code/examdb/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/billy/Documents/code/examdb/resources/css/app.scss */"./resources/css/app.scss");
 
 
 /***/ })
