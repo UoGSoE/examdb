@@ -4,6 +4,7 @@
 
 <div class="columns">
     <div class="column">
+        @livewire('options-editor')
         <options-editor :options='@json($options)'></options-editor>
     </div>
     <div class="column">

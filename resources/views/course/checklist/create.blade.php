@@ -2,7 +2,7 @@
 
 @section('content')
 
-@livewire('paper-checklist', ['checklist' => $checklist])
+@livewire('paper-checklist', ['course' => $course, 'category' => $category])
 
 
 

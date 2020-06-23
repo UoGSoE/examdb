@@ -1,6 +1,6 @@
 <div>
-    <h2 class="title is-2">Internal Moderation Form</h2>
-    <p class="subtitle">For continuous assessments and examinations</p>
+    <h2 class="title is-2">Internal Moderation Form for <span class="has-text-weight-bold">{{ ucfirst($checklist['category']) }}</span> Paper</h2>
+    <p class=" subtitle">For continuous assessments and examinations</p>
 
     <form action="" method="POST">
         @csrf
@@ -14,14 +14,14 @@
                     <div class="field">
                         <label for="" class="label">Course Code</label>
                         <p class="control">
-                            <input class="input" type="text" value="{{ $checklist->course->code }}">
+                            <input class="input" type="text" wire:model="checklist.course.code">
                         </p>
                     </div>
                 </div>
                 <div class="column">
                     <label for="" class="label">Course Title</label>
                     <p class="control is-expanded">
-                        <input class="input" type="text" value="{{ $checklist->course->title }}">
+                        <input class="input" type="text" wire:model="checklist.course.title">
                     </p>
                 </div>
             </div>
@@ -30,7 +30,7 @@
                     <div class="field">
                         <label for="" class="label">Academic Year</label>
                         <p class="control">
-                            <input class="input" type="text" value="{{ $checklist->course->year }}">
+                            <input class="input" type="text" wire:model="checklist.course.year">
                         </p>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
 <div class="field">
     <label for="" class="label">Course Leader</label>
     <p class="control is-expanded">
-        <input class="input" type="text" value="@if (auth()->user()->isSetterFor($checklist->course)) {{ auth()->user()->full_name }} @endif">
+        <input class="input" type="text" value="@if (auth()->user()->isSetterFor($course)) {{ auth()->user()->full_name }} @endif">
     </p>
 </div>
 

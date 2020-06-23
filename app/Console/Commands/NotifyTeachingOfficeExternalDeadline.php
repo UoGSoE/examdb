@@ -49,10 +49,9 @@ class NotifyTeachingOfficeExternalDeadline extends Command
 
             return;
         }
-
-        $dateOption = "external_deadline_{$area}";
+        $dateOption = "date_remind_{$area}_office_externals";
         if (! option_exists($dateOption)) {
-            abort(500, "No 'external_deadline' option set for area {$area}");
+            abort(500, "No 'date_remind_{$area}_office_externals' option set");
         }
 
         $deadline = Carbon::createFromFormat('Y-m-d', option($dateOption));
@@ -65,13 +64,13 @@ class NotifyTeachingOfficeExternalDeadline extends Command
             abort(500, "No 'teaching_office_contact' set for area {$area}");
         }
 
-        $lastNotifiedDate = option("teaching_office_notified_externals_{$area}");
+        $lastNotifiedDate = option("date_remind_{$area}_office_externals_email_sent");
         if ($lastNotifiedDate) {
             return;
         }
 
         Mail::to($emailAddress)->queue(new Notification($area));
 
-        option(["teaching_office_notified_externals_{$area}" => now()->format('Y-m-d H:i')]);
+        option(["date_remind_{$area}_office_externals_email_sent" => now()->format('Y-m-d H:i')]);
     }
 }

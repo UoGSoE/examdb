@@ -5,6 +5,7 @@ namespace Tests\Feature\Admin;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class OptionsTest extends TestCase
@@ -30,6 +31,7 @@ class OptionsTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertViewHas('options');
+        $response->assertSeeLivewire('options-editor');
     }
 
     /** @test */
@@ -39,76 +41,55 @@ class OptionsTest extends TestCase
         $admin = create(User::class, ['is_admin' => true]);
 
         // external deadlines
-        $this->assertNull(option('external_deadline_glasgow'));
-        $response = $this->actingAs($admin)->postJson(route('admin.options.update'), [
-            'external_deadline_glasgow' => '30/01/2019',
-        ]);
-        $response->assertStatus(200);
-        $this->assertEquals('2019-01-30', option('external_deadline_glasgow'));
+        $this->assertNull(option('date_receive_call_for_papers'));
 
-        $this->assertNull(option('external_deadline_uestc'));
-        $response = $this->actingAs($admin)->postJson(route('admin.options.update'), [
-            'external_deadline_uestc' => '28/02/2019',
-        ]);
-        $response->assertStatus(200);
-        $this->assertEquals('2019-02-28', option('external_deadline_uestc'));
+        Livewire::actingAs($admin)
+            ->test('options-editor')
+            ->set('options.date_receive_call_for_papers', now()->format('d/m/Y'))
+            ->set('options.glasgow_staff_submission_deadline', now()->format('d/m/Y'))
+            ->set('options.uestc_staff_submission_deadline', now()->format('d/m/Y'))
+            ->set('options.glasgow_internal_moderation_deadline', now()->format('d/m/Y'))
+            ->set('options.uestc_internal_moderation_deadline', now()->format('d/m/Y'))
+            ->set('options.date_remind_glasgow_office_externals', now()->format('d/m/Y'))
+            ->set('options.date_remind_uestc_office_externals', now()->format('d/m/Y'))
+            ->set('options.glasgow_external_moderation_deadline', now()->format('d/m/Y'))
+            ->set('options.uestc_external_moderation_deadline', now()->format('d/m/Y'))
+            ->set('options.glasgow_print_ready_deadline', now()->format('d/m/Y'))
+            ->set('options.teaching_office_contact_glasgow', 'jane@example.com')
+            ->set('options.teaching_office_contact_uestc', 'jenny@example.com')
+            ->call('save')
+            ->assertHasNoErrors();
 
-        // internal deadlines
-        $this->assertNull(option('internal_deadline_glasgow'));
-        $response = $this->actingAs($admin)->postJson(route('admin.options.update'), [
-            'internal_deadline_glasgow' => '30/01/2019',
-        ]);
-        $response->assertStatus(200);
-        $this->assertEquals('2019-01-30', option('internal_deadline_glasgow'));
-
-        $this->assertNull(option('internal_deadline_uestc'));
-        $response = $this->actingAs($admin)->postJson(route('admin.options.update'), [
-            'internal_deadline_uestc' => '28/02/2019',
-        ]);
-        $response->assertStatus(200);
-        $this->assertEquals('2019-02-28', option('internal_deadline_uestc'));
-
-        // contacts
-        $this->assertNull(option('teaching_office_contact_glasgow'));
-        $response = $this->actingAs($admin)->postJson(route('admin.options.update'), [
-            'teaching_office_contact_glasgow' => 'jenny@example.com',
-        ]);
-        $response->assertStatus(200);
-        $this->assertEquals('jenny@example.com', option('teaching_office_contact_glasgow'));
-
-        $this->assertNull(option('teaching_office_contact_uestc'));
-        $response = $this->actingAs($admin)->postJson(route('admin.options.update'), [
-            'teaching_office_contact_uestc' => 'jenny@example.com',
-        ]);
-        $response->assertStatus(200);
+        $this->assertEquals(now()->format('Y-m-d'), option('date_receive_call_for_papers'));
+        $this->assertEquals('jane@example.com', option('teaching_office_contact_glasgow'));
         $this->assertEquals('jenny@example.com', option('teaching_office_contact_uestc'));
     }
 
     /** @test */
     public function options_have_to_be_in_valid_formats()
     {
+        $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
 
-        $this->assertNull(option('internal_deadline_glasgow'));
-        $response = $this->actingAs($admin)->postJson(route('admin.options.update'), [
-            'internal_deadline_glasgow' => 'MUFFINS FOR EVERYONE!',
-        ]);
-        $response->assertStatus(422);
-        $this->assertNull(option('internal_deadline_glasgow'));
+        // external deadlines
+        $this->assertNull(option('date_receive_call_for_papers'));
 
-        $this->assertNull(option('external_deadline_glasgow'));
-        $response = $this->actingAs($admin)->postJson(route('admin.options.update'), [
-            'external_deadline_glasgow' => 'MUFFINS FOR EVERYONE!',
-        ]);
-        $response->assertStatus(422);
-        $this->assertNull(option('external_deadline_glasgow'));
-
-        $this->assertNull(option('teaching_office_contact_uestc'));
-        $response = $this->actingAs($admin)->postJson(route('admin.options.update'), [
-            'teaching_office_contact_uestc' => 'jenny at example.com',
-        ]);
-        $response->assertStatus(422);
-        $this->assertNull(option('teaching_office_contact_uestc'));
+        Livewire::actingAs($admin)
+            ->test('options-editor')
+            ->set('options.date_receive_call_for_papers', 'not a date')
+            ->set('options.glasgow_staff_submission_deadline', 'not a date')
+            ->set('options.uestc_staff_submission_deadline', 'not a date')
+            ->set('options.glasgow_internal_moderation_deadline', 'not a date')
+            ->set('options.uestc_internal_moderation_deadline', 'not a date')
+            ->set('options.date_remind_glasgow_office_externals', 'not a date')
+            ->set('options.date_remind_uestc_office_externals', 'not a date')
+            ->set('options.glasgow_external_moderation_deadline', 'not a date')
+            ->set('options.uestc_external_moderation_deadline', 'not a date')
+            ->set('options.glasgow_print_ready_deadline', 'not a date')
+            ->set('options.teaching_office_contact_glasgow', 'not an email address')
+            ->set('options.teaching_office_contact_uestc', 'not an email address')
+            ->call('save')
+            ->assertHasErrors();
     }
 
     /** @test */
@@ -117,22 +98,25 @@ class OptionsTest extends TestCase
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
 
-        option(['teaching_office_notified_externals_glasgow' => now()->format('Y-m-d H:i')]);
+        option(['date_receive_call_for_papers_email_sent' => now()->subDays(3)->format('Y-m-d H:i')]);
 
-        $response = $this->actingAs($admin)->postJson(route('admin.options.update'), [
-            'external_deadline_glasgow' => now()->format('d/m/Y'),
-        ]);
+        Livewire::actingAs($admin)
+            ->test('options-editor')
+            ->set('options.date_receive_call_for_papers', now()->format('d/m/Y'))
+            ->set('options.glasgow_staff_submission_deadline', now()->format('d/m/Y'))
+            ->set('options.uestc_staff_submission_deadline', now()->format('d/m/Y'))
+            ->set('options.glasgow_internal_moderation_deadline', now()->format('d/m/Y'))
+            ->set('options.uestc_internal_moderation_deadline', now()->format('d/m/Y'))
+            ->set('options.date_remind_glasgow_office_externals', now()->format('d/m/Y'))
+            ->set('options.date_remind_uestc_office_externals', now()->format('d/m/Y'))
+            ->set('options.glasgow_external_moderation_deadline', now()->format('d/m/Y'))
+            ->set('options.uestc_external_moderation_deadline', now()->format('d/m/Y'))
+            ->set('options.glasgow_print_ready_deadline', now()->format('d/m/Y'))
+            ->set('options.teaching_office_contact_glasgow', 'jane@example.com')
+            ->set('options.teaching_office_contact_uestc', 'jenny@example.com')
+            ->call('save')
+            ->assertHasNoErrors();
 
-        $response->assertStatus(200);
-        $this->assertEquals(0, option('teaching_office_notified_externals_uestc'));
-
-        option(['teaching_office_notified_externals_uestc' => now()->format('Y-m-d H:i')]);
-
-        $response = $this->actingAs($admin)->postJson(route('admin.options.update'), [
-            'external_deadline_uestc' => now()->format('d/m/Y'),
-        ]);
-
-        $response->assertStatus(200);
-        $this->assertEquals(0, option('teaching_office_notified_externals_uestc'));
+        $this->assertEquals(0, option('date_receive_call_for_papers_email_sent'));
     }
 }

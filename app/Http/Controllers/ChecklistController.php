@@ -33,11 +33,7 @@ class ChecklistController extends Controller
                         ->latest()
                         ->first();
         if (! $checklist) {
-            $checklist = new PaperChecklist([
-                'course_id' => $course->id,
-                'category' => $category,
-                'version' => PaperChecklist::CURRENT_VERSION,
-            ]);
+            $checklist = PaperChecklist::makeDefault($course, $category);
         }
 
         return view('course.checklist.create', [
