@@ -23,13 +23,31 @@
           @enderror
 
           @foreach ($defaultDateOptions as $option)
-          <div class="field">
-              <label class="label">{{ $option['label'] }}</label>
+          <label class="label">{{ $option['label'] }}</label>
+          <div class="field has-addons">
+              <div
+                class="control is-expanded"
+                x-data="{}"
+                x-init="new Pikaday({ field: $refs.{{$option['name']}}, format: 'DD/MM/YYYY' })"
+              >
+                  <input class="input" type="text" x-ref="{{ $option['name'] }}" wire:model.lazy="options.{{ $option['name'] }}">
+              </div>
               <div class="control">
-                  <input class="input" type="text" wire:model.lazy="options.{{ $option['name'] }}" v-pikaday="pikadayOptions">
+                  <div class="field"><button class="button" disabled>To</button></div>
+              </div>
+              <div class="control">
+                  <div class="select">
+                      <select wire:model.lazy="options.{{ $option['name'] }}_destination">
+                          <option value="office">Teaching Office</option>
+                          <option value="staff">Direct to Academics</option>
+                      </select>
+                  </div>
               </div>
           </div>
           @error('options.' . $option['name'])
+          <p class="has-text-danger">{{ $message }}</p>
+          @enderror
+          @error('options.' . $option['name'] . '_destination')
           <p class="has-text-danger">{{ $message }}</p>
           @enderror
           @endforeach

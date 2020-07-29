@@ -37,14 +37,14 @@
                 <div class="column">
                     <label for="" class="label">SCQF Level</label>
                     <p class="control">
-                        <input class="input" type="text" value="">
+                        <input class="input" type="text" wire:model="checklist.scqf_level">
                     </p>
 
                 </div>
                 <div class="column">
                     <label for="" class="label">Course Credits</label>
                     <p class="control is-expanded">
-                        <input class="input" type="text" value="">
+                        <input class="input" type="text" wire:model="checklist.course.credits">
                     </p>
 
                 </div>
@@ -62,7 +62,7 @@
     <label for="" class="label">Please confirm that you have reviewed the Exam Assessment and Continuous Assessment Handbooks for this task.</label>
     <p class="control is-expanded">
         <div class="select is-fullwidth">
-            <select>
+            <select wire:model="checklist.setter_reviews">
                 <option>Yes</option>
                 <option>No</option>
             </select>
@@ -73,7 +73,7 @@
 <div class="field">
     <label for="" class="label">Assessment title and number</label>
     <p class="control is-expanded">
-        <input class="input" type="text" value="">
+        <input class="input" type="text" wire:model="checklist.assessment_title">
     </p>
 </div>
 <div class="columns">
@@ -81,7 +81,7 @@
         <div class="field">
             <label for="" class="label">Assignment weighting</label>
             <p class="control">
-                <input class="input" type="text" value="">
+                <input class="input" type="text" wire:model="checklist.assignment_weighting">
             </p>
         </div>
 
@@ -90,7 +90,7 @@
         <div class="field">
             <label for="" class="label">No. of markers</label>
             <p class="control is-expanded">
-                <input class="input" type="text" value="">
+                <input class="input" type="text" wire:model="checklist.number_markers">
             </p>
         </div>
 
@@ -112,7 +112,7 @@
         <div class="field">
             <label for="" class="label">Date assessment passed to moderator</label>
             <p class="control is-expanded">
-                <input class="input" type="text" value="">
+                <input class="input" type="text" wire:model="checklist.passed_to_moderator">
             </p>
         </div>
     </div>
@@ -131,7 +131,7 @@
         <label for="" class="label">Is the overall quality of the assessment task appropriate?</label>
         <p class="control is-expanded">
             <div class="select is-fullwidth">
-                <select>
+                <select wire:model="checklist.overall_quality_appropriate">
                     <option>Yes</option>
                     <option>No</option>
                 </select>
@@ -142,7 +142,7 @@
     <div class="field">
         <label class="label">If you have answered ‘No’, please indicate why. For example, if you disagreed with the setter’s judgement on any aspect of the assessment task. Please provide evidence and any other details:</label>
         <p class="control is-expanded">
-            <textarea class="textarea" name="" id=""></textarea>
+            <textarea class="textarea" wire:model="checklist.why_innapropriate" id=""></textarea>
         </p>
     </div>
 
@@ -150,7 +150,7 @@
         <label for="" class="label">Do you recommend that any of the questions should be revised?</label>
         <p class="control is-expanded">
             <div class="select is-fullwidth">
-                <select>
+                <select wire:model="checklist.should_revise_questions">
                     <option>Yes</option>
                     <option>No</option>
                 </select>
@@ -161,14 +161,14 @@
     <div class="field">
         <label class="label">Please indicate the recommended revisions:</label>
         <p class="control is-expanded">
-            <textarea class="textarea" name="" id=""></textarea>
+            <textarea class="textarea" wire:model="checklist.recommended_revisions" id=""></textarea>
         </p>
     </div>
 
     <div class="field">
         <label class="label">Any other comments:</label>
         <p class="control is-expanded">
-            <textarea class="textarea" name="" id=""></textarea>
+            <textarea class="textarea" wire:model="checklist.moderator_comments" id=""></textarea>
         </p>
     </div>
 
@@ -186,7 +186,7 @@
             <div class="field">
                 <label for="" class="label">Date completed</label>
                 <p class="control is-expanded">
-                    <input class="input" type="text" value="">
+                    <input class="input" type="text" wire:model="checklist.moderator_completed_at">
                 </p>
             </div>
         </div>
@@ -195,7 +195,7 @@
     <div class="field">
         <label class="label">Course Coordinator Comments</label>
         <p class="control is-expanded">
-            <textarea class="textarea" name="" id=""></textarea>
+            <textarea class="textarea" wire:model="checklist.setter_comments_to_moderator" id=""></textarea>
         </p>
     </div>
 
@@ -210,7 +210,7 @@
         <label for="" class="label">Do you agree that the marks awarded are appropriate?</label>
         <p class="control is-expanded">
             <div class="select is-fullwidth">
-                <select>
+                <select wire:model="checklist.solution_marks_appropriate">
                     <option>Yes</option>
                     <option>No</option>
                 </select>
@@ -221,7 +221,7 @@
     <div class="field">
         <label class="label">If you have answered ‘No’, please indicate why. For example, if you disagreed with the setter’s judgement on any aspect of the marks. Please provide evidence and any other details:</label>
         <p class="control is-expanded">
-            <textarea class="textarea" name="" id=""></textarea>
+            <textarea class="textarea" wire:model="checklist.moderator_solution_innapropriate_comments" id=""></textarea>
         </p>
     </div>
 
@@ -229,7 +229,7 @@
         <label for="" class="label">Do you recommend that marks should be adjusted?</label>
         <p class="control is-expanded">
             <div class="select is-fullwidth">
-                <select>
+                <select wire:model="checklist.solutions_marks_adjusted">
                     <option>Yes</option>
                     <option>No</option>
                 </select>
@@ -240,14 +240,14 @@
     <div class="field">
         <label class="label">Please indicate the recommended adjustment:</label>
         <p class="control is-expanded">
-            <textarea class="textarea" name="" id=""></textarea>
+            <textarea class="textarea" wire:model="checklist.solution_adjustment_comments" id=""></textarea>
         </p>
     </div>
 
     <div class="field">
         <label class="label">Any further comments</label>
         <p class="control is-expanded">
-            <textarea class="textarea" name="" id=""></textarea>
+            <textarea class="textarea" wire:model="checklist.solution_moderator_comments" id=""></textarea>
         </p>
     </div>
 
@@ -264,7 +264,7 @@
             <div class="field">
                 <label for="" class="label">Date completed</label>
                 <p class="control is-expanded">
-                    <input class="input" type="text" value="">
+                    <input class="input" type="text" wire:model="checklist.moderator_solutions_at">
                 </p>
             </div>
         </div>
@@ -273,7 +273,7 @@
     <div class="field">
         <label class="label">Course Coordinator Comments</label>
         <p class="control is-expanded">
-            <textarea class="textarea" name="" id=""></textarea>
+            <textarea class="textarea" wire:model="checklist.solution_setter_comments" id=""></textarea>
         </p>
     </div>
 
@@ -287,7 +287,7 @@
     <div class="field">
         <label for="" class="label">Name of External Examiner</label>
         <p class="control is-expanded">
-            <input type="text" class="input">
+            <input type="text" class="input" wire:model="checklist.external_examiner_name">
         </p>
     </div>
 
@@ -295,7 +295,7 @@
         <label for="" class="label">Do you agree to any adjustment suggested by the Moderator?</label>
         <p class="control is-expanded">
             <div class="select is-fullwidth">
-                <select>
+                <select wire:model="checklist.external_agrees_with_moderator">
                     <option>Yes</option>
                     <option>No</option>
                 </select>
@@ -306,14 +306,14 @@
     <div class="field">
         <label class="label">Please indicate the rationale for your decision:</label>
         <p class="control is-expanded">
-            <textarea class="textarea" name="" id=""></textarea>
+            <textarea class="textarea" wire:model="checklist.external_reason" id=""></textarea>
         </p>
     </div>
 
     <div class="field">
         <label class="label">Any further comments</label>
         <p class="control is-expanded">
-            <textarea class="textarea" name="" id=""></textarea>
+            <textarea class="textarea" wire:model="checklist.external_comments" id=""></textarea>
         </p>
     </div>
 
@@ -331,7 +331,7 @@
             <div class="field">
                 <label for="" class="label">Date completed</label>
                 <p class="control is-expanded">
-                    <input class="input" type="text" value="">
+                    <input class="input" type="text" wire:model="checklist.external_signed_at">
                 </p>
             </div>
         </div>

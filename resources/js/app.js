@@ -51,6 +51,10 @@ import PortalVue from 'portal-vue'
 Vue.use(PortalVue)
 
 Vue.component('v-select', vSelect)
+import 'alpinejs';
+import Pikaday from 'pikaday';
+window.Pikaday = Pikaday;
+import 'pikaday/css/pikaday.css';
 
 import * as Sentry from '@sentry/browser'
 
