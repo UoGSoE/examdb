@@ -104,20 +104,29 @@
         <div class="field">
             <label for="" class="label">Name(s) of moderator(s)</label>
             <p class="control">
-                <input class="input" type="text" value="">
+                <input class="input" type="text" value="{{ $course->moderators->pluck('full_name')->implode(', ') }}">
             </p>
         </div>
     </div>
     <div class="column">
         <div class="field">
             <label for="" class="label">Date assessment passed to moderator</label>
-            <p class="control is-expanded">
-                <input class="input" type="text" wire:model="checklist.passed_to_moderator">
+            <p
+                class="control is-expanded"
+                x-data="{}"
+                x-init="new Pikaday({ field: $refs.passed_to_moderator, format: 'DD/MM/YYYY' })"
+            >
+                <input class="input" x-ref="passed_to_moderator" type="text" wire:model.lazy="checklist.passed_to_moderator">
             </p>
         </div>
     </div>
 </div>
-
+<div class="field">
+    <div class="control">
+        <button class="button">Save</button>
+    </div>
+</div>
+<hr>
 </fieldset>
 
 <fieldset class="mb-8">
@@ -185,8 +194,12 @@
         <div class="column">
             <div class="field">
                 <label for="" class="label">Date completed</label>
-                <p class="control is-expanded">
-                    <input class="input" type="text" wire:model="checklist.moderator_completed_at">
+                <p
+                    class="control is-expanded"
+                    x-data="{}"
+                    x-init="new Pikaday({ field: $refs.moderator_completed_at, format: 'DD/MM/YYYY' })"
+                >
+                    <input class="input" x-ref="moderator_completed_at" type="text" wire:model.lazy="checklist.moderator_completed_at">
                 </p>
             </div>
         </div>
@@ -198,6 +211,14 @@
             <textarea class="textarea" wire:model="checklist.setter_comments_to_moderator" id=""></textarea>
         </p>
     </div>
+
+    <div class="field">
+        <div class="control">
+            <button class="button">Save</button>
+        </div>
+    </div>
+
+    <hr>
 
 </fieldset>
 
@@ -263,8 +284,12 @@
         <div class="column">
             <div class="field">
                 <label for="" class="label">Date completed</label>
-                <p class="control is-expanded">
-                    <input class="input" type="text" wire:model="checklist.moderator_solutions_at">
+                <p
+                    class="control is-expanded"
+                    x-data="{}"
+                    x-init="new Pikaday({ field: $refs.moderator_solutions_at, format: 'DD/MM/YYYY' })"
+                >
+                    <input class="input" x-ref="moderator_solutions_at" type="text" wire:model.lazy="checklist.moderator_solutions_at">
                 </p>
             </div>
         </div>
@@ -276,6 +301,14 @@
             <textarea class="textarea" wire:model="checklist.solution_setter_comments" id=""></textarea>
         </p>
     </div>
+
+    <div class="field">
+        <div class="control">
+            <button class="button">Save</button>
+        </div>
+    </div>
+
+    <hr>
 
 </fieldset>
 
@@ -330,13 +363,21 @@
         <div class="column">
             <div class="field">
                 <label for="" class="label">Date completed</label>
-                <p class="control is-expanded">
-                    <input class="input" type="text" wire:model="checklist.external_signed_at">
+                <p
+                    class="control is-expanded"
+                    x-data="{}"
+                    x-init="new Pikaday({ field: $refs.external_signed_at, format: 'DD/MM/YYYY' })"
+                >
+                    <input class="input" x-ref="external_signed_at" type="text" wire:model="checklist.external_signed_at">
                 </p>
             </div>
         </div>
     </div>
-
+    <div class="field">
+        <div class="control">
+            <button class="button">Save</button>
+        </div>
+    </div>
 </fieldset>
 </form>
 </div>

@@ -57,7 +57,7 @@ class TimedNotifications extends Command
             return;
         }
 
-        if ($date->dayOfYear != now()->dayOfYear) {
+        if ($date->dayOfYear > now()->dayOfYear) {
             return;
         }
 

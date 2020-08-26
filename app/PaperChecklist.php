@@ -15,8 +15,7 @@ class PaperChecklist extends Model
 
     protected $casts = [
         'archived_at' => 'datetime',
-        'moderator_approved_at' => 'datetime',
-        'external_completed_at' => 'datetime',
+        'fields' => 'array',
     ];
 
     protected static function boot()

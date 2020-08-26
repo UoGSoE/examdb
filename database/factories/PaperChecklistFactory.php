@@ -16,7 +16,6 @@ $factory->define(PaperChecklist::class, function (Faker $faker) {
             return factory(Course::class)->create()->id;
         },
         'category' => 'main',
-        'q1' => $faker->text,
-        'q2' => $faker->text,
+        'fields' => [],
     ];
 });

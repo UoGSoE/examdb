@@ -16,11 +16,7 @@ class PaperChecklist extends Component
     {
         $this->course = $course;
         $this->category = $category;
-        $checklist = new Checklist([
-            'course_id' => $course->id,
-            'category' => $category,
-            'version' => Checklist::CURRENT_VERSION,
-        ]);
+        $checklist = $course->getNewChecklist($category);
         $checklist->load('course');
         $checklist->course->append('year');
         $this->checklist = $checklist->toArray();
@@ -29,5 +25,12 @@ class PaperChecklist extends Component
     public function render()
     {
         return view('livewire.paper-checklist');
+    }
+
+    public function save()
+    {
+        $this->course->addChecklist($this->checklist['fields'], $this->category);
+
+        return redirect()->to(route('course.show', $this->course->id));
     }
 }

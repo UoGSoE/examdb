@@ -54,6 +54,37 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
+    public function emails_are_sent_for_the_date_receive_call_for_papers_option_when_after_the_correct_day_if_it_has_not_already_been_sent()
+    {
+        Mail::fake();
+        $course1 = create(Course::class);
+        $course2 = create(Course::class);
+        $setter1 = create(User::class);
+        $setter1->markAsSetter($course1);
+        $setter1->markAsSetter($course2);
+        $setter2 = create(User::class);
+        $setter2->markAsSetter($course1);
+        $setter2->markAsSetter($course2);
+        $moderator = create(User::class);
+        $moderator->markAsModerator($course1);
+
+        option(['date_receive_call_for_papers' => now()->subDays(3)]);
+
+        $this->assertNull(option('date_receive_call_for_papers_email_sent'));
+
+        $this->artisan('examdb:timed-notifications');
+
+        Mail::assertQueued(CallForPapersMail::class, 2);
+        Mail::assertQueued(CallForPapersMail::class, function ($mail) use ($setter1) {
+            return $mail->hasTo($setter1->email);
+        });
+        Mail::assertQueued(CallForPapersMail::class, function ($mail) use ($setter2) {
+            return $mail->hasTo($setter2->email);
+        });
+        $this->assertNotNull(option('date_receive_call_for_papers_email_sent'));
+    }
+
+    /** @test */
     public function emails_are_not_sent_for_the_date_receive_call_for_papers_option_when_it_is_not_the_correct_day()
     {
         Mail::fake();
