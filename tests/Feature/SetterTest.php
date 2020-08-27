@@ -95,51 +95,6 @@ class SetterTest extends TestCase
     }
 
     /** @test */
-    public function a_setter_cant_approve_a_paper_for_a_course()
-    {
-        $user = create(User::class);
-        $paper = create(Paper::class, ['category' => 'main']);
-        $user->markAsSetter($paper->course);
-        $moderator = create(User::class);
-        $moderator->markAsModerator($paper->course);
-
-        $response = $this->actingAs($user)->postJson(route('paper.approve', [$paper->course, 'main']));
-
-        $response->assertStatus(403);
-    }
-
-    /** @test */
-    public function a_setter_cant_unapprove_a_paper_for_a_course()
-    {
-        Mail::fake();
-        $user = create(User::class);
-        $paper = create(Paper::class, ['category' => 'main']);
-        $user->markAsSetter($paper->course);
-        $paper->course->paperApprovedBy($user, 'main');
-        $moderator = create(User::class);
-        $moderator->markAsModerator($paper->course);
-
-        $response = $this->actingAs($user)->postJson(route('paper.unapprove', [$paper->course, 'main']));
-
-        $response->assertStatus(403);
-    }
-
-    /** @test */
-    public function a_setter_cant_approve_or_unapprove_of_a_paper_for_a_course_they_are_not_on()
-    {
-        $user = create(User::class);
-        $paper = create(Paper::class);
-
-        $response = $this->actingAs($user)->postJson(route('paper.unapprove', [$paper->course, 'main']));
-
-        $response->assertStatus(403);
-
-        $response = $this->actingAs($user)->postJson(route('paper.approve', [$paper->course, 'main']));
-
-        $response->assertStatus(403);
-    }
-
-    /** @test */
     public function a_setter_can_delete_their_own_paper()
     {
         Storage::fake('exampapers');
