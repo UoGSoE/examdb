@@ -103,7 +103,11 @@ class Course extends Model
             abort(422, 'Invalid category ' . $category);
         }
 
-        $checklist = $this->checklists()->create(['category' => $category, 'fields' => $fields]);
+        $checklist = $this->checklists()->create([
+            'category' => $category,
+            'user_id' => optional(auth()->user())->id,
+            'fields' => $fields
+        ]);
 
         $fieldName = "moderator_approved_{$category}";
         $this->$fieldName = (bool) (

@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Course;
 use Livewire\Component;
 use App\PaperChecklist as Checklist;
+use Tests\Feature\LivewirePaperChecklistTest;
 
 class PaperChecklist extends Component
 {
@@ -12,11 +13,13 @@ class PaperChecklist extends Component
     public $category;
     public $checklist;
 
-    public function mount(Course $course, string $category = 'main')
+    public function mount(Course $course, string $category = 'main', $checklist = null)
     {
         $this->course = $course;
         $this->category = $category;
-        $checklist = $course->getNewChecklist($category);
+        if (! $checklist) {
+            $checklist = $course->getNewChecklist($category);
+        }
         $checklist->load('course');
         $checklist->course->append('year');
         $this->checklist = $checklist->toArray();

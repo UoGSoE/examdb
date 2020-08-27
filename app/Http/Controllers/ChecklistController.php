@@ -3,22 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Course;
-use App\Events\ChecklistUpdated;
-use App\Paper;
 use App\PaperChecklist;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class ChecklistController extends Controller
 {
     public function show(PaperChecklist $checklist)
     {
-        if (! $checklist->getNextChecklist()) {
-            return redirect()->route('course.checklist.create', ['course' => $checklist->course, 'category' => $checklist->category]);
-        }
+        $this->authorize('show', $checklist->course);
 
         return view('course.checklist.show', [
             'checklist' => $checklist,
+            'course' => $checklist->course,
+            'category' => $checklist->category,
         ]);
     }
 
@@ -28,42 +25,12 @@ class ChecklistController extends Controller
 
         $category = request('category');
 
-        $checklist = PaperChecklist::where('course_id', '=', $course->id)
-                        ->where('category', '=', $category)
-                        ->latest()
-                        ->first();
-        if (! $checklist) {
-            $checklist = PaperChecklist::makeDefault($course, $category);
-        }
+        $checklist = $course->getNewChecklist($category);
 
         return view('course.checklist.create', [
             'course' => $course,
             'category' => $category,
             'checklist' => $checklist,
         ]);
-    }
-
-    public function store(Course $course, Request $request)
-    {
-        $this->authorize('update', $course);
-
-        $request->validate([
-            'category' => ['required', Rule::in(Paper::VALID_CATEGORIES)],
-            'q1' => 'nullable',
-            'q2' => 'nullable',
-        ]);
-
-        $checklist = PaperChecklist::create([
-            'user_id' => $request->user()->id,
-            'course_id' => $course->id,
-            'category' => $request->category,
-            'version' => request('version', PaperChecklist::CURRENT_VERSION),
-            'q1' => $request->q1,
-            'q2' => $request->q2,
-        ]);
-
-        event(new ChecklistUpdated($checklist));
-
-        return redirect()->route('course.show', $course->id);
     }
 }
