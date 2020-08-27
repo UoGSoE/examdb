@@ -1,8 +1,22 @@
 <div>
+    @if ($course->hasPreviousChecklists($checklist['category']))
+        <div class="field">
+            <label for="" class="label">Previous Versions</label>
+            <p class="control is-expanded">
+                <div class="select is-fullwidth">
+                    <select name="previous_id">
+                        @foreach ($course->checklists as $checklist)
+                            <option value="{{ $checklist->id }}">{{ $checklist->created_at->format('d/m/Y H:i') }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </p>
+        </div>
+    @endif
     <h2 class="title is-2">Internal Moderation Form for <span class="has-text-weight-bold">{{ ucfirst($checklist['category']) }}</span> Paper</h2>
     <p class=" subtitle">For continuous assessments and examinations</p>
 
-    <form action="" method="POST">
+    <form action="" method="">
         @csrf
 
         <fieldset class="mb-8">
@@ -14,14 +28,14 @@
                     <div class="field">
                         <label for="" class="label">Course Code</label>
                         <p class="control">
-                            <input class="input" type="text" wire:model="checklist.course.code">
+                            <input class="input" type="text" wire:model="checklist.fields.course_code">
                         </p>
                     </div>
                 </div>
                 <div class="column">
                     <label for="" class="label">Course Title</label>
                     <p class="control is-expanded">
-                        <input class="input" type="text" wire:model="checklist.course.title">
+                        <input class="input" type="text" wire:model.lazy="checklist.fields.course_title">
                     </p>
                 </div>
             </div>
@@ -30,41 +44,32 @@
                     <div class="field">
                         <label for="" class="label">Academic Year</label>
                         <p class="control">
-                            <input class="input" type="text" wire:model="checklist.course.year">
+                            <input class="input" type="text" wire:model.lazy="checklist.fields.year">
                         </p>
                     </div>
                 </div>
                 <div class="column">
                     <label for="" class="label">SCQF Level</label>
                     <p class="control">
-                        <input class="input" type="text" wire:model="checklist.scqf_level">
+                        <input class="input" type="text" wire:model.lazy="checklist.fields.scqf_level">
                     </p>
-
                 </div>
                 <div class="column">
                     <label for="" class="label">Course Credits</label>
                     <p class="control is-expanded">
-                        <input class="input" type="text" wire:model="checklist.course.credits">
+                        <input class="input" type="text" wire:model.lazy="checklist.course.credits">
                     </p>
-
                 </div>
             </div>
-</div>
 
-<div class="field">
-    <label for="" class="label">Course Leader</label>
-    <p class="control is-expanded">
-        <input class="input" type="text" value="@if (auth()->user()->isSetterFor($course)) {{ auth()->user()->full_name }} @endif">
-    </p>
-</div>
 
 <div class="field">
     <label for="" class="label">Please confirm that you have reviewed the Exam Assessment and Continuous Assessment Handbooks for this task.</label>
     <p class="control is-expanded">
         <div class="select is-fullwidth">
-            <select wire:model="checklist.setter_reviews">
-                <option>Yes</option>
-                <option>No</option>
+            <select wire:model="checklist.fields.setter_reviews">
+                <option value="1">Yes</option>
+                <option value="0">No</option>
             </select>
         </div>
     </p>
@@ -73,7 +78,7 @@
 <div class="field">
     <label for="" class="label">Assessment title and number</label>
     <p class="control is-expanded">
-        <input class="input" type="text" wire:model="checklist.assessment_title">
+        <input class="input" type="text" wire:model="checklist.fields.assessment_title">
     </p>
 </div>
 <div class="columns">
@@ -81,7 +86,7 @@
         <div class="field">
             <label for="" class="label">Assignment weighting</label>
             <p class="control">
-                <input class="input" type="text" wire:model="checklist.assignment_weighting">
+                <input class="input" type="text" wire:model="checklist.fields.assignment_weighting">
             </p>
         </div>
 
@@ -90,7 +95,7 @@
         <div class="field">
             <label for="" class="label">No. of markers</label>
             <p class="control is-expanded">
-                <input class="input" type="text" wire:model="checklist.number_markers">
+                <input class="input" type="text" wire:model="checklist.fields.number_markers">
             </p>
         </div>
 
@@ -116,14 +121,14 @@
                 x-data="{}"
                 x-init="new Pikaday({ field: $refs.passed_to_moderator, format: 'DD/MM/YYYY' })"
             >
-                <input class="input" x-ref="passed_to_moderator" type="text" wire:model.lazy="checklist.passed_to_moderator">
+                <input class="input" x-ref="passed_to_moderator" type="text" wire:model.lazy="checklist.fields.passed_to_moderator">
             </p>
         </div>
     </div>
 </div>
 <div class="field">
     <div class="control">
-        <button class="button">Save</button>
+        <button wire:click.prevent="save" class="button">Save</button>
     </div>
 </div>
 <hr>

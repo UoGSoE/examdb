@@ -171,13 +171,9 @@ class Course extends Model
             ->count() > 0;
     }
 
-    public function hasPreviousChecklists(PaperChecklist $checklist, string $category): bool
+    public function hasPreviousChecklists(string $category): bool
     {
-        if ($this->checklists()->where('category', '=', $category)->count() == 0) {
-            return false;
-        }
-
-        return ! $this->checklists()->where('category', '=', $category)->first()->is($checklist);
+        return $this->checklists()->where('category', '=', $category)->count() > 0;
     }
 
     public function hasMoreChecklists(PaperChecklist $checklist, string $category): bool
