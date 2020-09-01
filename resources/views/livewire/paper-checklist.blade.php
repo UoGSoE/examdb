@@ -1,16 +1,19 @@
 <div>
     @if ($course->hasPreviousChecklists($checklist['category']))
-        <div class="field">
-            <label for="" class="label">Previous Versions</label>
+        <label for="previous_id" class="label">Previous Versions</label>
+        <div class="field has-addons">
             <p class="control is-expanded">
                 <div class="select is-fullwidth">
-                    <select name="previous_id">
+                    <select name="previous_id" id="previous_id">
                         @foreach ($course->checklists as $checklist)
                             <option value="{{ $checklist->id }}">{{ $checklist->created_at->format('d/m/Y H:i') }}</option>
                         @endforeach
                     </select>
                 </div>
             </p>
+            <div class="control">
+                <button class="button">View</button>
+            </div>
         </div>
     @endif
     <h2 class="title is-2">Internal Moderation Form for <span class="has-text-weight-bold">{{ ucfirst($checklist['category']) }}</span> Paper</h2>

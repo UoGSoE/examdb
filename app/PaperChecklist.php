@@ -35,6 +35,11 @@ class PaperChecklist extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function scopeArchived($query)
+    {
+        return $query->where('archived_at', '!=', null);
+    }
+
     public static function makeDefault(Course $course, string $category): PaperChecklist
     {
         return new static([
