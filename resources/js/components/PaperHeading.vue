@@ -24,25 +24,55 @@
                 <span>Paper Checklist</span>
               </a>
             </div>
+            <div class="level-item" v-if="category == 'main'">
+              <a class="button" :href="checklistRoute + '?category=assessment'">
+                <span class="icon">
+                  <i class="fas fa-tasks"></i>
+                </span>
+                <span>Assessment Checklist</span>
+              </a>
+            </div>
 
     </div>
   </div>
     <div class="level">
         <div class="level-left">
-          <div class="level-item">
-
-          </div>
-
-
             <span class="level-item" v-if="is_local && canUpload">
                 <main-paper-uploader
                     :course="course"
                     :category="category"
+                    buttontext="Main"
                     :subcategories='subcategories["main"]'
                     @added="paperAdded"
                 >
                 </main-paper-uploader>
             </span>
+
+            <span class="level-item" v-if="is_local && canUpload">
+                <main-paper-uploader
+                    :course="course"
+                    :category="category"
+                    buttontext="Solution"
+                    :subcategories='subcategories["solution"]'
+                    @added="paperAdded"
+                >
+                </main-paper-uploader>
+            </span>
+        </div>
+    </div>
+    <div class="level">
+        <div class="level-left">
+            <span class="level-item" v-if="is_local && canUpload">
+                <main-paper-uploader
+                    :course="course"
+                    :category="category"
+                    buttontext="Assessment"
+                    :subcategories='subcategories["assessment"]'
+                    @added="paperAdded"
+                >
+                </main-paper-uploader>
+            </span>
+
             <span class="level-item" v-if="is_local && canUpload">
                 <comment-box
                     :course="course"

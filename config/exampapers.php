@@ -18,19 +18,27 @@ return [
             'Post-Internally Moderated Paper',
             'Response To External Examiner',
             'Paper For Registry',
-            '---', // divider - disabled in the UI
+        ],
+        'solution' => [
             'Pre-Internally Moderated Solutions',
             'Moderator Solution Comments',
             'Post-Internally Moderated Solutions',
             'Response To External Examiner (Solutions)',
             'Solutions For Archive',
-            '---',
-            'In Term Assessment',
+        ],
+        'assessment' => [
+            'Pre-Internally Moderated Assessments',
+            'Moderator Assessment Comments',
+            'Post-Internally Moderated Assessments',
+            'Response To External Examiner (Assessments)',
+            'Assessments For Archive',
         ],
         'external' => [
             'External Examiner Comments',
             '---', // divider - disabled in the UI
             'External Examiner Solution Comments',
+            '---', // divider - disabled in the UI
+            'External Examiner Assessment Comments',
         ],
     ],
     'defaultDateOptions' => [

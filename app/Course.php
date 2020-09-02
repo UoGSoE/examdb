@@ -99,7 +99,7 @@ class Course extends Model
 
     public function addChecklist(array $fields, string $category): PaperChecklist
     {
-        if (! in_array($category, ['main', 'resit'])) {
+        if (! in_array($category, ['main', 'resit', 'assessment'])) {
             abort(422, 'Invalid category ' . $category);
         }
 

@@ -66,7 +66,7 @@
         <span class="icon has-text-info">
           <i class="far fa-question-circle"></i>
         </span>
-        <span>Add Paper</span>
+        <span v-text="getButtonText"></span>
       </slot>
     </button>
   </div>
@@ -76,7 +76,7 @@
 import { mixin as clickaway } from "vue-clickaway";
 
 export default {
-  props: ["course", "category", "subcategories"],
+  props: ["course", "category", "subcategories", 'buttontext'],
   mixins: [clickaway],
   data() {
     return {
@@ -90,6 +90,9 @@ export default {
     };
   },
   computed: {
+      getButtonText() {
+          return 'Add ' + this.buttontext;
+      },
     secondResit() {
       return this.category == "resit2";
     },

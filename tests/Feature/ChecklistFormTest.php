@@ -392,4 +392,25 @@ class ChecklistFormTest extends TestCase
 
         $this->assertFalse($course->isApprovedByExternal('main'));
     }
+
+    /** @test */
+    public function we_can_make_an_assessment_checklist()
+    {
+        $this->withoutExceptionHandling();
+        $user = create(User::class);
+        $course = create(Course::class);
+        $user->markAsSetter($course);
+
+        $this->actingAs($user);
+        Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'assessment'])
+            ->call('save')
+            ->assertHasNoErrors();
+
+        tap(PaperChecklist::first(), function ($checklist) use ($course, $user) {
+            $this->assertEquals($checklist->version, PaperChecklist::CURRENT_VERSION);
+            $this->assertTrue($checklist->course->is($course));
+            $this->assertTrue($checklist->user->is($user));
+            $this->assertEquals('assessment', $checklist->category);
+        });
+    }
 }

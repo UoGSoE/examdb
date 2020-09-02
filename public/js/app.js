@@ -13585,7 +13585,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ["course", "category", "subcategories"],
+  props: ["course", "category", "subcategories", 'buttontext'],
   mixins: [vue_clickaway__WEBPACK_IMPORTED_MODULE_0__["mixin"]],
   data: function data() {
     return {
@@ -13599,6 +13599,9 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    getButtonText: function getButtonText() {
+      return 'Add ' + this.buttontext;
+    },
     secondResit: function secondResit() {
       return this.category == "resit2";
     },
@@ -13974,6 +13977,36 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _CommentBox__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CommentBox */ "./resources/js/components/CommentBox.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -42034,7 +42067,7 @@ var render = function() {
           _vm._t("button-content", [
             _vm._m(0),
             _vm._v(" "),
-            _c("span", [_vm._v("Add Paper")])
+            _c("span", { domProps: { textContent: _vm._s(_vm.getButtonText) } })
           ])
         ],
         2
@@ -42704,13 +42737,47 @@ var render = function() {
             },
             [_vm._m(0), _vm._v(" "), _c("span", [_vm._v("Paper Checklist")])]
           )
-        ])
+        ]),
+        _vm._v(" "),
+        _vm.category == "main"
+          ? _c("div", { staticClass: "level-item" }, [
+              _c(
+                "a",
+                {
+                  staticClass: "button",
+                  attrs: { href: _vm.checklistRoute + "?category=assessment" }
+                },
+                [
+                  _vm._m(1),
+                  _vm._v(" "),
+                  _c("span", [_vm._v("Assessment Checklist")])
+                ]
+              )
+            ])
+          : _vm._e()
       ])
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "level" }, [
       _c("div", { staticClass: "level-left" }, [
-        _c("div", { staticClass: "level-item" }),
+        _vm.is_local && _vm.canUpload
+          ? _c(
+              "span",
+              { staticClass: "level-item" },
+              [
+                _c("main-paper-uploader", {
+                  attrs: {
+                    course: _vm.course,
+                    category: _vm.category,
+                    buttontext: "Main",
+                    subcategories: _vm.subcategories["main"]
+                  },
+                  on: { added: _vm.paperAdded }
+                })
+              ],
+              1
+            )
+          : _vm._e(),
         _vm._v(" "),
         _vm.is_local && _vm.canUpload
           ? _c(
@@ -42721,7 +42788,31 @@ var render = function() {
                   attrs: {
                     course: _vm.course,
                     category: _vm.category,
-                    subcategories: _vm.subcategories["main"]
+                    buttontext: "Solution",
+                    subcategories: _vm.subcategories["solution"]
+                  },
+                  on: { added: _vm.paperAdded }
+                })
+              ],
+              1
+            )
+          : _vm._e()
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "level" }, [
+      _c("div", { staticClass: "level-left" }, [
+        _vm.is_local && _vm.canUpload
+          ? _c(
+              "span",
+              { staticClass: "level-item" },
+              [
+                _c("main-paper-uploader", {
+                  attrs: {
+                    course: _vm.course,
+                    category: _vm.category,
+                    buttontext: "Assessment",
+                    subcategories: _vm.subcategories["assessment"]
                   },
                   on: { added: _vm.paperAdded }
                 })
@@ -42798,6 +42889,14 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon" }, [
+      _c("i", { staticClass: "fas fa-tasks" })
+    ])
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
