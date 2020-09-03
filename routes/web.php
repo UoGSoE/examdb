@@ -29,6 +29,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/checklist/{checklist}', 'ChecklistController@show')->name('course.checklist.show');
     Route::get('/checklist/{checklist}/pdf', 'ChecklistPdfController@show')->name('course.checklist.pdf');
 
+    Route::get('/api/course/{course:code}/dropdown-options', 'Api\DropdownOptionsController@show')->name('api.course.paper_options');
+
     Route::get('/paper/{paper}', 'PaperController@show')->name('paper.show');
     Route::delete('/paper/{paper}', 'PaperController@destroy')->name('paper.delete');
     Route::get('/archivedpaper/{id}', 'ArchivedPaperController@show')->name('archived.paper.show');

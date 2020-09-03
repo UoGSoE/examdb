@@ -13595,7 +13595,8 @@ __webpack_require__.r(__webpack_exports__);
       busy: false,
       error: false,
       failed: false,
-      errorMessage: ''
+      errorMessage: '',
+      dropdownOptions: []
     };
   },
   computed: {
@@ -13604,21 +13605,33 @@ __webpack_require__.r(__webpack_exports__);
     },
     secondResit: function secondResit() {
       return this.category == "resit2";
+    }
+  },
+  methods: {
+    openDropdown: function openDropdown() {
+      this.show = !this.show;
+      this.getApplicableSubcategories();
     },
-    applicableSubcategories: function applicableSubcategories() {
+    getApplicableSubcategories: function getApplicableSubcategories() {
+      var _this = this;
+
       if (this.secondResit) {
         return ["Second Resit File"];
       }
 
-      return this.subcategories;
-    }
-  },
-  methods: {
+      axios.get(route('api.course.paper_options', this.course.code) + "?category=".concat(this.category, "&subcategory=").concat(this.buttontext.toLowerCase()), {
+        'headers': {
+          'x-api-key': window.api_key
+        }
+      }).then(function (res) {
+        _this.dropdownOptions = res.data.data;
+      });
+    },
     closePopup: function closePopup() {
       this.show = false;
     },
     submit: function submit() {
-      var _this = this;
+      var _this2 = this;
 
       if (!this.$refs.paper.files[0]) {
         return false;
@@ -13631,17 +13644,17 @@ __webpack_require__.r(__webpack_exports__);
       this.busy = true;
       var data = this.getFormData();
       axios.post(route("course.paper.store", this.course.id), data).then(function (response) {
-        _this.busy = false;
-        _this.show = false;
-        _this.comment = "";
-        _this.subcategory = "";
-        _this.failed = false;
+        _this2.busy = false;
+        _this2.show = false;
+        _this2.comment = "";
+        _this2.subcategory = "";
+        _this2.failed = false;
 
-        _this.$emit("added", response.data);
+        _this2.$emit("added", response.data);
       })["catch"](function (error) {
-        _this.failed = true;
-        _this.busy = false;
-        _this.errorMessage = 'Could not upload paper...';
+        _this2.failed = true;
+        _this2.busy = false;
+        _this2.errorMessage = 'Could not upload paper...';
       });
     },
     getFormData: function getFormData() {
@@ -41948,7 +41961,7 @@ var render = function() {
                           }
                         }
                       },
-                      _vm._l(_vm.applicableSubcategories, function(sub, index) {
+                      _vm._l(_vm.dropdownOptions, function(sub, index) {
                         return _c(
                           "option",
                           {
@@ -42058,7 +42071,7 @@ var render = function() {
           on: {
             click: function($event) {
               $event.preventDefault()
-              _vm.show = !_vm.show
+              return _vm.openDropdown($event)
             }
           },
           slot: "reference"
