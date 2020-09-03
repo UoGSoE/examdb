@@ -140,7 +140,7 @@ class CourseTest extends TestCase
         $response->assertOk();
         $response->assertJson([
             'data' => [
-                'Moderator Comments',
+                'Moderator Comments (Main)',
             ],
         ]);
 
@@ -160,7 +160,7 @@ class CourseTest extends TestCase
         $response->assertOk();
         $response->assertJson([
             'data' => [
-                'Moderator Comments',
+                'Moderator Comments (Main)',
             ],
         ]);
     }
@@ -187,7 +187,7 @@ class CourseTest extends TestCase
         $response->assertOk();
         $response->assertJson([
             'data' => [
-                'External Examiner Comments',
+                'External Examiner Comments (Main)',
             ],
         ]);
 
@@ -207,7 +207,7 @@ class CourseTest extends TestCase
         $response->assertOk();
         $response->assertJson([
             'data' => [
-                'External Examiner Comments',
+                'External Examiner Comments (Main)',
             ],
         ]);
     }
