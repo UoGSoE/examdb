@@ -4,7 +4,7 @@
 
 <div class="columns">
     <div class="column">
-        <options-editor :options='@json($options)'></options-editor>
+        @livewire('options-editor')
     </div>
     <div class="column">
         <discipline-contacts-editor :disciplines='@json($disciplines)'></discipline-contacts-editor>

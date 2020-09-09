@@ -18,12 +18,11 @@ class CreatePaperChecklistsTable extends Migration
             $table->unsignedInteger('version')->default(1);
             $table->unsignedInteger('course_id');
             $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
-            $table->unsignedInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
             $table->string('category');
-            $table->text('q1')->nullable();
-            $table->text('q2')->nullable();
             $table->dateTime('archived_at')->nullable();
+            $table->json('fields');
             $table->timestamps();
         });
     }

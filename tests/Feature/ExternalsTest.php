@@ -73,37 +73,6 @@ class ExternalsTest extends TestCase
     }
 
     /** @test */
-    public function an_external_can_approve_or_unapprove_any_papers_they_are_associated_with()
-    {
-        $this->withoutExceptionHandling();
-        $setter = create(User::class);
-        $staff = factory(User::class)->states('external')->create();
-        $paper = create(Paper::class);
-        $staff->markAsExternal($paper->course);
-        $setter->markAsSetter($paper->course);
-
-        $this->assertFalse($paper->course->fresh()->isApprovedByExternal('main'));
-
-        Mail::fake();
-        $response = $this->actingAs($staff)->postJson(route('paper.approve', [$paper->course, 'main']));
-
-        $response->assertStatus(200);
-        $this->assertTrue($paper->course->fresh()->isApprovedByExternal('main'));
-        Mail::assertQueued(NotifySetterAboutApproval::class, function ($mail) use ($setter) {
-            return $mail->hasTo($setter->email);
-        });
-
-        Mail::fake();
-        $response = $this->actingAs($staff)->postJson(route('paper.unapprove', [$paper->course, 'main']));
-
-        $response->assertStatus(200);
-        $this->assertFalse($paper->course->fresh()->isApprovedByExternal('main'));
-        Mail::assertQueued(NotifySetterAboutUnapproval::class, function ($mail) use ($setter) {
-            return $mail->hasTo($setter->email);
-        });
-    }
-
-    /** @test */
     public function an_external_cant_delete_any_papers()
     {
         Storage::fake('exampapers');

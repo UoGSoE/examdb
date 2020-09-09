@@ -9,7 +9,7 @@
               <div class="select is-fullwidth">
                 <select v-model="subcategory" required>
                   <option
-                    v-for="(sub, index) in applicableSubcategories"
+                    v-for="(sub, index) in dropdownOptions"
                     :key="`sub-${index}`"
                     :value="sub"
                     :disabled="sub == '---'"
@@ -59,14 +59,14 @@
     <button
       class="button"
       slot="reference"
-      @click.prevent="show = !show"
+      @click.prevent="openDropdown"
       :class="{'is-loading': busy}"
     >
       <slot name="button-content">
         <span class="icon has-text-info">
           <i class="far fa-question-circle"></i>
         </span>
-        <span>Add Paper</span>
+        <span v-text="getButtonText"></span>
       </slot>
     </button>
   </div>
@@ -76,7 +76,7 @@
 import { mixin as clickaway } from "vue-clickaway";
 
 export default {
-  props: ["course", "category", "subcategories"],
+  props: ["course", "category", "subcategories", 'buttontext'],
   mixins: [clickaway],
   data() {
     return {
@@ -87,20 +87,31 @@ export default {
       error: false,
       failed: false,
       errorMessage: '',
+      dropdownOptions: [],
     };
   },
   computed: {
+      getButtonText() {
+          return 'Add ' + this.buttontext;
+      },
     secondResit() {
       return this.category == "resit2";
     },
-    applicableSubcategories() {
+  },
+  methods: {
+      openDropdown() {
+        this.show = !this.show;
+        this.getApplicableSubcategories();
+      },
+    getApplicableSubcategories() {
       if (this.secondResit) {
         return ["Second Resit File"];
       }
-      return this.subcategories;
-    }
-  },
-  methods: {
+      axios.get(route('api.course.paper_options', this.course.code) + `?category=${this.category}&subcategory=${this.buttontext.toLowerCase()}`, {'headers': {'x-api-key': window.api_key}})
+        .then(res => {
+            this.dropdownOptions = res.data.data;
+        })
+    },
     closePopup() {
       this.show = false;
     },

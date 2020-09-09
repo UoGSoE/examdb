@@ -10,6 +10,7 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -50,6 +51,10 @@ import PortalVue from 'portal-vue'
 Vue.use(PortalVue)
 
 Vue.component('v-select', vSelect)
+import 'alpinejs';
+import Pikaday from 'pikaday';
+window.Pikaday = Pikaday;
+import 'pikaday/css/pikaday.css';
 
 import * as Sentry from '@sentry/browser'
 
@@ -61,3 +66,5 @@ Sentry.init({
 const app = new Vue({
     el: '#app',
 });
+
+require('livewire-vue');

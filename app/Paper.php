@@ -14,7 +14,7 @@ class Paper extends Model
     const POST_INTERNALLY_MODERATED = 'Post-Internally Moderated Paper';
     const MODERATOR_COMMENTS = 'Moderator Comments';
     const SECOND_RESIT_CATEGORY = 'resit2';
-    const VALID_CATEGORIES = ['main', 'resit', 'resit2'];
+    const VALID_CATEGORIES = ['main', 'resit', 'resit2', 'assessment'];
     const COMMENT_SUBCATEGORY = 'comment';
 
     protected $guarded = [];

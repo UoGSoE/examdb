@@ -2,14 +2,18 @@
 
 namespace App;
 
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use App\Scopes\CurrentScope;
 use App\Events\PaperApproved;
 use App\Events\PaperUnapproved;
-use App\Scopes\CurrentScope;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use App\Mail\ExternalHasUpdatedTheChecklist;
+use App\Mail\ModeratorHasUpdatedTheChecklist;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Course extends Model
 {
@@ -20,6 +24,8 @@ class Course extends Model
     protected $casts = [
         'moderator_approved_main' => 'boolean',
         'moderator_approved_resit' => 'boolean',
+        'external_approved_main' => 'boolean',
+        'external_approved_resit' => 'boolean',
         'external_notified' => 'boolean',
     ];
 
@@ -91,6 +97,64 @@ class Course extends Model
         return $query->where('code', 'like', $codePrefix.'%');
     }
 
+    public function addChecklist(array $fields, string $category): PaperChecklist
+    {
+        if (! in_array($category, ['main', 'resit', 'assessment'])) {
+            abort(422, 'Invalid category ' . $category);
+        }
+
+        $checklist = $this->checklists()->create([
+            'category' => $category,
+            'user_id' => optional(auth()->user())->id,
+            'fields' => $fields
+        ]);
+
+        $fieldName = "moderator_approved_{$category}";
+        $this->$fieldName = (bool) (
+            Arr::get($fields, 'overall_quality_appropriate', false)
+            &&
+            ! Arr::get($fields, 'should_revise_questions', false)
+            &&
+            Arr::get($fields, 'solution_marks_appropriate', false)
+            &&
+            ! Arr::get($fields, 'solutions_marks_adjusted', false)
+        );
+
+        $fieldName = "external_approved_{$category}";
+        $this->$fieldName = (bool) Arr::get($fields, 'external_agrees_with_moderator', false);
+
+        $this->save();
+
+        if (auth()->check() && auth()->user()->isModeratorFor($this)) {
+            $this->setters->pluck('email')->each(function ($email) {
+                Mail::to($email)->queue(new ModeratorHasUpdatedTheChecklist($this));
+            });
+        }
+
+        if (auth()->check() && auth()->user()->isExternalFor($this)) {
+            $this->setters->pluck('email')->each(function ($email) {
+                Mail::to($email)->queue(new ExternalHasUpdatedTheChecklist($this));
+            });
+        }
+
+        return $checklist;
+    }
+
+    public function getNewChecklist(string $category): PaperChecklist
+    {
+        $checklist = $this->checklists()->where('category', '=', $category)->latest()->first();
+        if (! $checklist) {
+            $checklist = new PaperChecklist([
+                'course_id' => $this->id,
+                'category' => $category,
+                'version' => PaperChecklist::CURRENT_VERSION,
+                'fields' => [],
+            ]);
+        }
+
+        return $checklist->replicate();
+    }
+
     public function hasSetterChecklist(string $category)
     {
         return $this->checklists
@@ -107,13 +171,9 @@ class Course extends Model
             ->count() > 0;
     }
 
-    public function hasPreviousChecklists(PaperChecklist $checklist, string $category): bool
+    public function hasPreviousChecklists(string $category): bool
     {
-        if ($this->checklists()->where('category', '=', $category)->count() == 0) {
-            return false;
-        }
-
-        return ! $this->checklists()->where('category', '=', $category)->first()->is($checklist);
+        return $this->checklists()->where('category', '=', $category)->count() > 0;
     }
 
     public function hasMoreChecklists(PaperChecklist $checklist, string $category): bool
@@ -347,5 +407,15 @@ class Course extends Model
     public function enable()
     {
         $this->restore();
+    }
+
+    public function getYearAttribute()
+    {
+        $matches = [];
+        preg_match('/[a-zA-Z]+(\d)(\d)+/', $this->code, $matches);
+        if (empty($matches)) {
+            return '';
+        }
+        return $matches[1];
     }
 }

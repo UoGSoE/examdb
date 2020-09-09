@@ -96,7 +96,7 @@ class User extends Authenticatable
         $this->courses()->syncWithoutDetaching([$course->id]);
         $this->courses()->updateExistingPivot(
             $course->id,
-            ['is_setter' => true, 'is_moderator' => false, 'is_external' => false]
+            ['is_setter' => true, 'is_external' => false]
         );
     }
 
@@ -105,7 +105,7 @@ class User extends Authenticatable
         $this->courses()->syncWithoutDetaching([$course->id]);
         $this->courses()->updateExistingPivot(
             $course->id,
-            ['is_setter' => false, 'is_moderator' => true, 'is_external' => false]
+            ['is_moderator' => true, 'is_external' => false]
         );
     }
 

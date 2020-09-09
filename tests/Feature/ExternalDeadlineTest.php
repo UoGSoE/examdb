@@ -18,7 +18,7 @@ class ExternalDeadlineTest extends TestCase
     {
         Mail::fake();
         option(['teaching_office_contact_glasgow' => 'jenny@example.com']);
-        option(['external_deadline_glasgow' => now()->format('Y-m-d')]);
+        option(['date_remind_glasgow_office_externals' => now()->format('Y-m-d')]);
 
         Artisan::call('exampapers:notifyteachingofficeexternals --area=glasgow');
 
@@ -32,7 +32,7 @@ class ExternalDeadlineTest extends TestCase
     {
         Mail::fake();
         option(['teaching_office_contact_glasgow' => 'jenny@example.com']);
-        option(['external_deadline_glasgow' => now()->addDays(1)->format('Y-m-d')]);
+        option(['date_remind_glasgow_office_externals' => now()->addDays(1)->format('Y-m-d')]);
 
         Artisan::call('exampapers:notifyteachingofficeexternals --area=glasgow');
 
@@ -43,7 +43,7 @@ class ExternalDeadlineTest extends TestCase
     public function notifications_are_only_sent_once_per_area()
     {
         option(['teaching_office_contact_glasgow' => 'jenny@example.com']);
-        option(['external_deadline_glasgow' => now()->format('Y-m-d')]);
+        option(['date_remind_glasgow_office_externals' => now()->format('Y-m-d')]);
 
         Mail::fake();
 

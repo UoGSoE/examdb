@@ -23,6 +23,27 @@
         </div>
       </div>
 
+      <div class="field" v-for="option in optionList" :key="option.label">
+        <label
+          class="label"
+          :class="{'has-text-danger': hasError(option.name)}"
+          v-text="option.label"
+        ></label>
+        <div class="control">
+          <input
+            class="input"
+            type="text"
+            v-model="localOptions[option.name]"
+            v-pikaday="pikadayOptions"
+          >
+        </div>
+      </div>
+
+
+
+
+      <hr />
+
       <div class="field">
         <label
           class="label"
@@ -100,41 +121,73 @@ export default {
     pikaday: V_Pikaday
   },
   data() {
-    return {
+    const optionList = [
+        {
+          label: 'Receive call for exam papers from admin staff',
+          name: 'date_receive_call_for_papers'
+        },
+        {
+          label: 'Deadline for Glasgow staff to submit exam materials to Management Database (staff are emailed 1 week before and again 1 day after the deadline if paperwork isn\'t complete)',
+          name: 'glasgow_staff_submission_deadline'
+        },
+        {
+          label: 'Deadline for UESTC staff to submit exam materials to Management Database (staff are emailed 1 week before and again 1 day after deadline if paperwork isn\'t complete)',
+          name: 'uestc_staff_submission_deadline'
+        },
+        {
+          label: 'Deadline for Internal moderation to be completed for UoG courses (staff are emailed 3 days before and again 1 day after the deadline if paperwork isn\'t complete)',
+          name: 'glasgow_internal_moderation_deadline'
+        },
+        {
+          label: 'Deadline for Internal moderation to be completed for UESTC courses (staff are emailed 3 days before and again 1 day after the deadline if paperwork isn\'t complete)',
+          name: 'uestc_internal_moderation_deadline'
+        },
+        {
+          label: 'Date UoG Teaching office will be notified to look at papers before alerting externals',
+          name: 'date_remind_glasgow_office_externals'
+        },
+        {
+          label: 'Date UESTC Teaching office will be notified to look at papers before alerting externals',
+          name: 'date_remind_uestc_office_externals'
+        },
+        {
+          label: 'Deadline for External moderation to be completed for UoG courses.',
+          name: 'glasgow_external_moderation_deadline'
+        },
+        {
+          label: 'Deadline for External moderation to be completed for UESTC courses',
+          name: 'uestc_external_moderation_deadline'
+        },
+        {
+          label: 'Deadline for print-ready version of UoG papers (UoG teaching office staff are emailed 1 day before and again 1 day after the deadline if paperwork isn\'t complete)',
+          name: 'glasgow_print_ready_deadline'
+        },
+        {
+          label: 'Deadline for print-ready version of UESTC papers (UESTC teaching office staff are emailed 1 days before and again 1 day after the deadline if the paperwork isn\'t complete)',
+          name: 'uestc_print_ready_deadline'
+        },
+    ];
+    let returnData = {
       localOptions: {
         teaching_office_contact_glasgow: this.options.teaching_office_contact_glasgow,
         teaching_office_contact_uestc: this.options.teaching_office_contact_uestc,
-        external_deadline_glasgow: this.options.external_deadline_glasgow
-          ? moment(
-              this.options.external_deadline_glasgow,
-              "YYYY-MM-DD"
-            ).format("DD/MM/YYYY")
-          : "",
-        external_deadline_uestc: this.options.external_deadline_uestc
-          ? moment(
-              this.options.external_deadline_uestc,
-              "YYYY-MM-DD"
-            ).format("DD/MM/YYYY")
-          : "",
-        internal_deadline_glasgow: this.options.internal_deadline_glasgow
-          ? moment(
-              this.options.internal_deadline_glasgow,
-              "YYYY-MM-DD"
-            ).format("DD/MM/YYYY")
-          : "",
-        internal_deadline_uestc: this.options.internal_deadline_uestc
-          ? moment(
-              this.options.internal_deadline_uestc,
-              "YYYY-MM-DD"
-            ).format("DD/MM/YYYY")
-          : ""
       },
+      optionList: optionList,
       pikadayOptions: {
         format: "DD/MM/YYYY"
       },
       error: false,
       errors: []
     };
+    optionList.each(opt => {
+        returnData[opt.name] = this.options[opt.name]
+          ? moment(
+              this.options[opt.name],
+              "YYYY-MM-DD"
+            ).format("DD/MM/YYYY")
+          : "";
+    });
+    return returnData;
   },
   methods: {
     save() {

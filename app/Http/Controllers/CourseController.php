@@ -17,6 +17,7 @@ class CourseController extends Controller
         $course->load('setters');
         $course->load('moderators');
         $course->load('externals');
+        $course->load('papers');
         $course->append('is_uestc');
 
         return view('course.show', [
