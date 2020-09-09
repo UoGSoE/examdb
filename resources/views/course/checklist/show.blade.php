@@ -10,27 +10,6 @@
             </h3>
         </div>
     </div>
-    <div class="level-right">
-        <div class="level-item">
-            @if ($checklist->course->hasPreviousChecklists($checklist, $checklist->category))
-            <a href="{{ route('course.checklist.show', $checklist->getPreviousChecklist()) }}" class="button" title="See previous version" aria-label="See previous version">
-                <span class="icon">
-                    <i class="fas fa-backward"></i>
-                </span>
-                <span>Previous</span>
-            </a>
-            @endif
-            @if ($checklist->course->hasMoreChecklists($checklist, $checklist->category))
-            <a href="{{ route('course.checklist.show', $checklist->getNextChecklist()) }}" class="button" title="See previous version" aria-label="See previous version">
-                <span>Next</span>
-                <span class="icon">
-                    <i class="fas fa-forward"></i>
-                </span>
-            </a>
-            @endif
-        </div>
-    </div>
-
 </div>
 
 <p class="subtitle">

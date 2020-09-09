@@ -126,7 +126,7 @@ class Course extends Model
 
         $this->save();
 
-        if (auth()->check() && auth()->user()->isSetterFor($this) && $checklist->fields['passed_to_moderator']) {
+        if (auth()->check() && auth()->user()->isSetterFor($this) && $checklist->shouldNotifyModerator()) {
             $this->moderators->pluck('email')->each(function ($email) {
                 Mail::to($email)->queue(new SetterHasUpdatedTheChecklist($this));
             });
@@ -155,7 +155,11 @@ class Course extends Model
                 'course_id' => $this->id,
                 'category' => $category,
                 'version' => PaperChecklist::CURRENT_VERSION,
-                'fields' => [],
+                'fields' => [
+                    'course_code' => $this->code,
+                    'course_title' => $this->title,
+                    'year' => $this->year,
+                ],
             ]);
         }
 

@@ -91,4 +91,13 @@ class PaperChecklist extends Model
             ->where('category', '=', $this->category)
             ->min('id');
     }
+
+    public function shouldNotifyModerator(): bool
+    {
+        if (! array_key_exists('passed_to_moderator', $this->fields)) {
+            return false;
+        }
+
+        return (bool) $this->fields['passed_to_moderator'];
+    }
 }

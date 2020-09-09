@@ -4,15 +4,16 @@
         <div class="field has-addons">
             <p class="control is-expanded">
                 <div class="select is-fullwidth">
-                    <select name="previous_id" id="previous_id">
-                        @foreach ($course->checklists as $checklist)
-                            <option value="{{ $checklist->id }}">{{ $checklist->created_at->format('d/m/Y H:i') }}</option>
+                    <select name="previous_id" id="previous_id" wire:model="previousId">
+                        @foreach ($course->checklists as $previousChecklist)
+                            <option value="{{ $previousChecklist->id }}">{{ $previousChecklist->created_at->format('d/m/Y H:i') }}</option>
                         @endforeach
+                        <option value="new">New Checklist</option>
                     </select>
                 </div>
             </p>
             <div class="control">
-                <button class="button">View</button>
+                <button class="button" wire:click="showExistingChecklist">View</button>
             </div>
         </div>
     @endif
@@ -60,7 +61,7 @@
                 <div class="column">
                     <label for="" class="label">Course Credits</label>
                     <p class="control is-expanded">
-                        <input class="input" type="text" wire:model.lazy="checklist.course.credits">
+                        <input class="input" type="text" wire:model.lazy="checklist.fields.course_credits">
                     </p>
                 </div>
             </div>
@@ -112,7 +113,7 @@
         <div class="field">
             <label for="" class="label">Name(s) of moderator(s)</label>
             <p class="control">
-                <input class="input" type="text" value="{{ $course->moderators->pluck('full_name')->implode(', ') }}">
+                <input class="input" type="text" wire:model="checklist.fields.moderators" value="{{ $course->moderators->pluck('full_name')->implode(', ') }}">
             </p>
         </div>
     </div>
@@ -129,11 +130,13 @@
         </div>
     </div>
 </div>
+@if (auth()->user()->isSetterFor($course) && !isset($checklist['id']))
 <div class="field">
     <div class="control">
         <button wire:click.prevent="save" class="button">Save</button>
     </div>
 </div>
+@endif
 <hr>
 </fieldset>
 
@@ -148,7 +151,7 @@
         <label for="" class="label">Is the overall quality of the assessment task appropriate?</label>
         <p class="control is-expanded">
             <div class="select is-fullwidth">
-                <select wire:model="checklist.overall_quality_appropriate">
+                <select wire:model="checklist.field.overall_quality_appropriate">
                     <option>Yes</option>
                     <option>No</option>
                 </select>
@@ -159,7 +162,7 @@
     <div class="field">
         <label class="label">If you have answered ‘No’, please indicate why. For example, if you disagreed with the setter’s judgement on any aspect of the assessment task. Please provide evidence and any other details:</label>
         <p class="control is-expanded">
-            <textarea class="textarea" wire:model="checklist.why_innapropriate" id=""></textarea>
+            <textarea class="textarea" wire:model="checklist.fields.why_innapropriate" id=""></textarea>
         </p>
     </div>
 
@@ -167,7 +170,7 @@
         <label for="" class="label">Do you recommend that any of the questions should be revised?</label>
         <p class="control is-expanded">
             <div class="select is-fullwidth">
-                <select wire:model="checklist.should_revise_questions">
+                <select wire:model="checklist.fields.should_revise_questions">
                     <option>Yes</option>
                     <option>No</option>
                 </select>
@@ -178,14 +181,14 @@
     <div class="field">
         <label class="label">Please indicate the recommended revisions:</label>
         <p class="control is-expanded">
-            <textarea class="textarea" wire:model="checklist.recommended_revisions" id=""></textarea>
+            <textarea class="textarea" wire:model="checklist.fields.recommended_revisions" id=""></textarea>
         </p>
     </div>
 
     <div class="field">
         <label class="label">Any other comments:</label>
         <p class="control is-expanded">
-            <textarea class="textarea" wire:model="checklist.moderator_comments" id=""></textarea>
+            <textarea class="textarea" wire:model="checklist.fields.moderator_comments" id=""></textarea>
         </p>
     </div>
 
@@ -207,7 +210,7 @@
                     x-data="{}"
                     x-init="new Pikaday({ field: $refs.moderator_completed_at, format: 'DD/MM/YYYY' })"
                 >
-                    <input class="input" x-ref="moderator_completed_at" type="text" wire:model.lazy="checklist.moderator_completed_at">
+                    <input class="input" x-ref="moderator_completed_at" type="text" wire:model.lazy="checklist.fields.moderator_completed_at">
                 </p>
             </div>
         </div>
@@ -216,15 +219,17 @@
     <div class="field">
         <label class="label">Course Coordinator Comments</label>
         <p class="control is-expanded">
-            <textarea class="textarea" wire:model="checklist.setter_comments_to_moderator" id=""></textarea>
+            <textarea class="textarea" wire:model="checklist.fields.setter_comments_to_moderator" id=""></textarea>
         </p>
     </div>
 
+    @if (auth()->user()->isModeratorFor($course) && !isset($checklist['id']))
     <div class="field">
         <div class="control">
             <button class="button">Save</button>
         </div>
     </div>
+    @endif
 
     <hr>
 
@@ -239,7 +244,7 @@
         <label for="" class="label">Do you agree that the marks awarded are appropriate?</label>
         <p class="control is-expanded">
             <div class="select is-fullwidth">
-                <select wire:model="checklist.solution_marks_appropriate">
+                <select wire:model="checklist.fields.solution_marks_appropriate">
                     <option>Yes</option>
                     <option>No</option>
                 </select>
@@ -250,7 +255,7 @@
     <div class="field">
         <label class="label">If you have answered ‘No’, please indicate why. For example, if you disagreed with the setter’s judgement on any aspect of the marks. Please provide evidence and any other details:</label>
         <p class="control is-expanded">
-            <textarea class="textarea" wire:model="checklist.moderator_solution_innapropriate_comments" id=""></textarea>
+            <textarea class="textarea" wire:model="checklist.fields.moderator_solution_innapropriate_comments" id=""></textarea>
         </p>
     </div>
 
@@ -258,7 +263,7 @@
         <label for="" class="label">Do you recommend that marks should be adjusted?</label>
         <p class="control is-expanded">
             <div class="select is-fullwidth">
-                <select wire:model="checklist.solutions_marks_adjusted">
+                <select wire:model="checklist.fields.solutions_marks_adjusted">
                     <option>Yes</option>
                     <option>No</option>
                 </select>
@@ -269,14 +274,14 @@
     <div class="field">
         <label class="label">Please indicate the recommended adjustment:</label>
         <p class="control is-expanded">
-            <textarea class="textarea" wire:model="checklist.solution_adjustment_comments" id=""></textarea>
+            <textarea class="textarea" wire:model="checklist.fields.solution_adjustment_comments" id=""></textarea>
         </p>
     </div>
 
     <div class="field">
         <label class="label">Any further comments</label>
         <p class="control is-expanded">
-            <textarea class="textarea" wire:model="checklist.solution_moderator_comments" id=""></textarea>
+            <textarea class="textarea" wire:model="checklist.fields.solution_moderator_comments" id=""></textarea>
         </p>
     </div>
 
@@ -297,7 +302,7 @@
                     x-data="{}"
                     x-init="new Pikaday({ field: $refs.moderator_solutions_at, format: 'DD/MM/YYYY' })"
                 >
-                    <input class="input" x-ref="moderator_solutions_at" type="text" wire:model.lazy="checklist.moderator_solutions_at">
+                    <input class="input" x-ref="moderator_solutions_at" type="text" wire:model.lazy="checklist.fields.moderator_solutions_at">
                 </p>
             </div>
         </div>
@@ -306,15 +311,17 @@
     <div class="field">
         <label class="label">Course Coordinator Comments</label>
         <p class="control is-expanded">
-            <textarea class="textarea" wire:model="checklist.solution_setter_comments" id=""></textarea>
+            <textarea class="textarea" wire:model="checklist.fields.solution_setter_comments" id=""></textarea>
         </p>
     </div>
 
+    @if (auth()->user()->isModeratorFor($course) && !isset($checklist['id']))
     <div class="field">
         <div class="control">
             <button class="button">Save</button>
         </div>
     </div>
+    @endif
 
     <hr>
 
@@ -328,7 +335,7 @@
     <div class="field">
         <label for="" class="label">Name of External Examiner</label>
         <p class="control is-expanded">
-            <input type="text" class="input" wire:model="checklist.external_examiner_name">
+            <input type="text" class="input" wire:model="checklist.fields.external_examiner_name">
         </p>
     </div>
 
@@ -336,7 +343,7 @@
         <label for="" class="label">Do you agree to any adjustment suggested by the Moderator?</label>
         <p class="control is-expanded">
             <div class="select is-fullwidth">
-                <select wire:model="checklist.external_agrees_with_moderator">
+                <select wire:model="checklist.fields.external_agrees_with_moderator">
                     <option>Yes</option>
                     <option>No</option>
                 </select>
@@ -347,14 +354,14 @@
     <div class="field">
         <label class="label">Please indicate the rationale for your decision:</label>
         <p class="control is-expanded">
-            <textarea class="textarea" wire:model="checklist.external_reason" id=""></textarea>
+            <textarea class="textarea" wire:model="checklist.fields.external_reason" id=""></textarea>
         </p>
     </div>
 
     <div class="field">
         <label class="label">Any further comments</label>
         <p class="control is-expanded">
-            <textarea class="textarea" wire:model="checklist.external_comments" id=""></textarea>
+            <textarea class="textarea" wire:model="checklist.fields.external_comments" id=""></textarea>
         </p>
     </div>
 
@@ -376,16 +383,19 @@
                     x-data="{}"
                     x-init="new Pikaday({ field: $refs.external_signed_at, format: 'DD/MM/YYYY' })"
                 >
-                    <input class="input" x-ref="external_signed_at" type="text" wire:model="checklist.external_signed_at">
+                    <input class="input" x-ref="external_signed_at" type="text" wire:model="checklist.fields.external_signed_at">
                 </p>
             </div>
         </div>
     </div>
+
+    @if (auth()->user()->isExternalFor($course) && !isset($checklist['id']))
     <div class="field">
         <div class="control">
             <button class="button">Save</button>
         </div>
     </div>
+    @endif
 </fieldset>
 </form>
 </div>
