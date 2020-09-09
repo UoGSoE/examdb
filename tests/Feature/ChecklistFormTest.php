@@ -411,4 +411,10 @@ class ChecklistFormTest extends TestCase
             $this->assertEquals('assessment', $checklist->category);
         });
     }
+
+    /** @test */
+    public function when_a_checklist_is_submitted_only_the_fields_appropriate_to_the_users_role_are_changed()
+    {
+        $this->markTestSkipped('TODO ');
+    }
 }
