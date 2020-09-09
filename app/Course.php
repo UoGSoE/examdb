@@ -104,10 +104,21 @@ class Course extends Model
             abort(422, 'Invalid category ' . $category);
         }
 
+        $fieldsToUpdate = [];
+        if (auth()->check() && auth()->user()->isSetterFor($this)) {
+            $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::SETTER_FIELDS);
+        }
+        if (auth()->check() && auth()->user()->isModeratorFor($this)) {
+            $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::MODERATOR_FIELDS);
+        }
+        if (auth()->check() && auth()->user()->isExternalFor($this)) {
+            $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::EXTERNAL_FIELDS);
+        }
+
         $checklist = $this->checklists()->create([
             'category' => $category,
             'user_id' => optional(auth()->user())->id,
-            'fields' => $fields
+            'fields' => Arr::only($fields, $fieldsToUpdate),
         ]);
 
         $fieldName = "moderator_approved_{$category}";
