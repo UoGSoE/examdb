@@ -236,6 +236,29 @@ class CourseTest extends TestCase
         $response->assertJson([
             'data' => [
                 'Pre-Internally Moderated Paper (Main)',
+                'Moderator Comments (Main)',
+            ],
+        ]);
+
+        $course->papers()->save(make(Paper::class, ['category' => 'main', 'subcategory' => 'Pre-Internally Moderated Paper']));
+        $course->papers()->save(make(Paper::class, ['category' => 'main', 'subcategory' => 'Moderator Comments']));
+
+        $response = $this->actingAs($setter)->json(
+            'GET',
+            route('api.course.paper_options', $course->code),
+            [
+                'category' => 'main',
+                'subcategory' => 'main',
+            ],
+            ['x-api-key' => 'secret']
+        );
+
+        $response->assertOk();
+        $response->assertJson([
+            'data' => [
+                'Pre-Internally Moderated Paper (Main)',
+                'Post-Internally Moderated Paper (Main)',
+                'Moderator Comments (Main)',
             ],
         ]);
     }
