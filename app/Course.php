@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use App\Mail\ExternalHasUpdatedTheChecklist;
 use App\Mail\ModeratorHasUpdatedTheChecklist;
+use App\Mail\SetterHasUpdatedTheChecklist;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Course extends Model
@@ -124,6 +125,12 @@ class Course extends Model
         $this->$fieldName = (bool) Arr::get($fields, 'external_agrees_with_moderator', false);
 
         $this->save();
+
+        if (auth()->check() && auth()->user()->isSetterFor($this) && $checklist->fields['passed_to_moderator']) {
+            $this->moderators->pluck('email')->each(function ($email) {
+                Mail::to($email)->queue(new SetterHasUpdatedTheChecklist($this));
+            });
+        }
 
         if (auth()->check() && auth()->user()->isModeratorFor($this)) {
             $this->setters->pluck('email')->each(function ($email) {

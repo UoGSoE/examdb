@@ -14,6 +14,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Mail\ModeratorHasUpdatedTheChecklist;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Http\Livewire\PaperChecklist as LivewirePaperChecklist;
+use App\Mail\SetterHasUpdatedTheChecklist;
 
 class ChecklistFormTest extends TestCase
 {
@@ -184,9 +185,8 @@ class ChecklistFormTest extends TestCase
     }
 
     /** @test */
-    public function when_a_setter_updates_the_checklist_an_email_is_sent_to_the_moderators()
+    public function when_a_setter_updates_the_checklist_passed_to_moderator_date_an_email_is_sent_to_the_moderators()
     {
-        $this->markTestSkipped('Should only send when the date passed to moderator is set?');
         $this->withoutExceptionHandling();
         Mail::fake();
         $setter = create(User::class);
@@ -198,18 +198,16 @@ class ChecklistFormTest extends TestCase
         $moderator1->markAsModerator($course);
         $moderator2->markAsModerator($course);
 
-        $response = $this->actingAs($setter)->post(route('course.checklist.store', $course->id), [
-            'course_id' => $course->id,
-            'category' => 'main',
-            'q1' => 'hello',
-            'q2' => 'there',
-        ]);
+        $this->actingAs($setter);
+        Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
+            ->set('checklist.fields.passed_to_moderator', now()->format('d/m/Y'))
+            ->call('save');
 
-        Mail::assertQueued(ChecklistUpdated::class, 2);
-        Mail::assertQueued(ChecklistUpdated::class, function ($mail) use ($moderator1) {
+        Mail::assertQueued(SetterHasUpdatedTheChecklist::class, 2);
+        Mail::assertQueued(SetterHasUpdatedTheChecklist::class, function ($mail) use ($moderator1) {
             return $mail->hasTo($moderator1);
         });
-        Mail::assertQueued(ChecklistUpdated::class, function ($mail) use ($moderator2) {
+        Mail::assertQueued(SetterHasUpdatedTheChecklist::class, function ($mail) use ($moderator2) {
             return $mail->hasTo($moderator2);
         });
     }
