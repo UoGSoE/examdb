@@ -34,7 +34,7 @@ class DropdownOptionsController extends Controller
             $options = $this->getSetterOptions($options);
         }
         if (Auth::user()->isModeratorFor($course)) {
-            $options = ['Moderator Comments'];
+            $options = array_merge($options, ['Moderator Comments']);
         }
         if (Auth::user()->isExternalFor($course)) {
             $options = ['External Examiner Comments'];

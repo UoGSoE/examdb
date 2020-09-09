@@ -215,6 +215,28 @@ class CourseTest extends TestCase
     /** @test */
     public function if_someone_is_a_setter_and_moderator_for_the_same_course_they_see_the_right_add_paper_options()
     {
-        $this->markTestSkipped('TODO ');
+        $this->withoutExceptionHandling();
+        config(['exampapers.api_key' => 'secret']);
+        $course = create(Course::class);
+        $setter = factory(User::class)->create();
+        $setter->markAsSetter($course);
+        $setter->markAsModerator($course);
+
+        $response = $this->actingAs($setter)->json(
+            'GET',
+            route('api.course.paper_options', $course->code),
+            [
+                'category' => 'main',
+                'subcategory' => 'main',
+            ],
+            ['x-api-key' => 'secret']
+        );
+
+        $response->assertOk();
+        $response->assertJson([
+            'data' => [
+                'Pre-Internally Moderated Paper (Main)',
+            ],
+        ]);
     }
 }
