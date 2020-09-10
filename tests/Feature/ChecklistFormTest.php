@@ -415,6 +415,101 @@ class ChecklistFormTest extends TestCase
     /** @test */
     public function when_a_checklist_is_submitted_only_the_fields_appropriate_to_the_users_role_are_changed()
     {
-        $this->markTestSkipped('TODO ');
+        $this->withoutExceptionHandling();
+        $setter = create(User::class);
+        $moderator = create(User::class);
+        $external = create(User::class);
+        $course = create(Course::class);
+        $setter->markAsSetter($course);
+        $moderator->markAsModerator($course);
+        $external->markAsExternal($course);
+        $checklist = create(PaperChecklist::class, [
+            'course_id' => $course->id,
+            'category' => 'main',
+            'fields' => [
+                'course_code' => 'ENG2001', // a setter-only field
+                'course_title' => 'Original Title', // a setter-only field
+                'moderator_comments' => 'Blah de blah', // moderator-only field
+                'external_comments' => 'Tum te tum', // external-only field
+            ]
+        ]);
+
+        $this->actingAs($setter);
+        Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
+            ->set('checklist.fields.course_title', 'New course title')
+            ->set('checklist.fields.moderator_comments', 'Mwah-ha-haaaa')
+            ->set('checklist.fields.external_comments', 'The setter is pure amazing btw')
+            ->call('save')
+            ->assertHasNoErrors();
+
+        tap(PaperChecklist::all()->last(), function ($checklist) {
+            // this should be unchanged as we didn't ->set it in livewire
+            $this->assertEquals('ENG2001', $checklist->fields['course_code']);
+            // this should be changed as we did ->set it in livewire
+            $this->assertEquals('New course title', $checklist->fields['course_title']);
+            // this should be unchanged as although we set it, we are not the moderator
+            $this->assertEquals('Blah de blah', $checklist->fields['moderator_comments']);
+            // this should be unchanged as although we set it, we are not the external
+            $this->assertEquals('Tum te tum', $checklist->fields['external_comments']);
+        });
+
+        $this->actingAs($moderator);
+        Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
+            ->set('checklist.fields.course_title', 'Some other title')
+            ->set('checklist.fields.moderator_comments', 'Cool story, bro')
+            ->set('checklist.fields.external_comments', 'The external totes agrees with me')
+            ->call('save')
+            ->assertHasNoErrors();
+
+        tap(PaperChecklist::all()->last(), function ($checklist) {
+            // this should be unchanged as we didn't ->set it in livewire
+            $this->assertEquals('ENG2001', $checklist->fields['course_code']);
+            // this shouldn't be changed as although we set it in livewire, we are not the setter
+            $this->assertEquals('New course title', $checklist->fields['course_title']);
+            // this should be changed as we set it and are the moderator
+            $this->assertEquals('Cool story, bro', $checklist->fields['moderator_comments']);
+            // this should be unchanged as although we set it, we are not the external
+            $this->assertEquals('Tum te tum', $checklist->fields['external_comments']);
+        });
+
+        $this->actingAs($external);
+        Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
+            ->set('checklist.fields.course_title', 'Some other title')
+            ->set('checklist.fields.moderator_comments', 'Cool story, bro')
+            ->set('checklist.fields.external_comments', 'Dont like the font')
+            ->call('save')
+            ->assertHasNoErrors();
+
+        tap(PaperChecklist::all()->last(), function ($checklist) {
+            // this should be unchanged as we didn't ->set it in livewire
+            $this->assertEquals('ENG2001', $checklist->fields['course_code']);
+            // this shouldn't be changed as although we set it in livewire, we are not the setter
+            $this->assertEquals('New course title', $checklist->fields['course_title']);
+            // this shouldn't be changed as although we set it in livewire, we are not the moderator
+            $this->assertEquals('Cool story, bro', $checklist->fields['moderator_comments']);
+            // this should be changed as we set it and we are the external
+            $this->assertEquals('Dont like the font', $checklist->fields['external_comments']);
+        });
+
+        // now we test for someone who is a setter and moderator on the same course
+        $moderator->markAsSetter($course);
+        $this->actingAs($moderator);
+        Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
+            ->set('checklist.fields.course_title', 'Whatevs')
+            ->set('checklist.fields.moderator_comments', 'Spanners!')
+            ->set('checklist.fields.external_comments', 'Brrr')
+            ->call('save')
+            ->assertHasNoErrors();
+
+        tap(PaperChecklist::all()->last(), function ($checklist) {
+            // this should be unchanged as we didn't ->set it in livewire
+            $this->assertEquals('ENG2001', $checklist->fields['course_code']);
+            // this should be changed as we set it in livewire and we are a setter
+            $this->assertEquals('Whatevs', $checklist->fields['course_title']);
+            // this should be changed as we set it in livewire and we are also a moderator
+            $this->assertEquals('Spanners!', $checklist->fields['moderator_comments']);
+            // this should be unchanged as although we set it, we are not the external
+            $this->assertEquals('Dont like the font', $checklist->fields['external_comments']);
+        });
     }
 }

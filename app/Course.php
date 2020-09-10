@@ -15,6 +15,7 @@ use App\Mail\ExternalHasUpdatedTheChecklist;
 use App\Mail\ModeratorHasUpdatedTheChecklist;
 use App\Mail\SetterHasUpdatedTheChecklist;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class Course extends Model
 {
@@ -98,12 +99,23 @@ class Course extends Model
         return $query->where('code', 'like', $codePrefix.'%');
     }
 
+    /**
+     * This is horrific
+     * TODO : make it not horrific
+     */
     public function addChecklist(array $fields, string $category): PaperChecklist
     {
         if (! in_array($category, ['main', 'resit', 'assessment'])) {
             abort(422, 'Invalid category ' . $category);
         }
 
+        // if there was an existing checklist we get it's fields so we can merge them in with the new values
+        $previousFields = [];
+        if ($this->hasPreviousChecklists($category)) {
+            $previousFields = $this->checklists()->where('category', '=', $category)->latest('id')->first()['fields'];
+        }
+
+        // figure out which fields on the form the user is allowed to update
         $fieldsToUpdate = [];
         if (auth()->check() && auth()->user()->isSetterFor($this)) {
             $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::SETTER_FIELDS);
@@ -118,9 +130,11 @@ class Course extends Model
         $checklist = $this->checklists()->create([
             'category' => $category,
             'user_id' => optional(auth()->user())->id,
-            'fields' => Arr::only($fields, $fieldsToUpdate),
+            // we merge only the fields the user is allowed to update with any existing fields from a previous checklost
+            'fields' => array_merge($previousFields, Arr::only($fields, $fieldsToUpdate)),
         ]);
 
+        // figure out if the moderator has fully approved the paper
         $fieldName = "moderator_approved_{$category}";
         $this->$fieldName = (bool) (
             Arr::get($fields, 'overall_quality_appropriate', false)
@@ -132,6 +146,7 @@ class Course extends Model
             ! Arr::get($fields, 'solutions_marks_adjusted', false)
         );
 
+        // figure out if the external has approved the paper
         $fieldName = "external_approved_{$category}";
         $this->$fieldName = (bool) Arr::get($fields, 'external_agrees_with_moderator', false);
 
