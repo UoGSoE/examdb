@@ -15,6 +15,7 @@ use App\Mail\ModerationDeadlinePassedMail;
 use App\Mail\PrintReadyDeadlinePassedMail;
 use App\Mail\SubmissionDeadlinePassedMail;
 use App\Mail\ExternalModerationDeadlineMail;
+use App\PaperChecklist;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -252,33 +253,24 @@ class TimedNotificationsTest extends TestCase
     /** @test */
     public function emails_are_not_sent_for_any_staff_submission_deadline_option_when_it_is_day_after_but_paperwork_is_complete()
     {
-        $this->markTestSkipped('TODO');
         Mail::fake();
-        $course1 = create(Course::class, ['code' => 'ENG1234']);
-        $course2 = create(Course::class, ['code' => 'ENG4567']);
-        $course3 = create(Course::class, ['code' => 'UESTC1234']);
+        $course1 = create(Course::class, [
+            'code' => 'ENG1234',
+        ]);
+        $course1->checklists()->save(make(PaperChecklist::class, ['course_id' => $course1->id]));
         $setter1 = create(User::class);
         $setter1->markAsSetter($course1);
-        $setter1->markAsSetter($course2);
-        $setter2 = create(User::class);
-        $setter2->markAsSetter($course1);
-        $setter2->markAsSetter($course2);
-        $setter3 = create(User::class);
-        $setter3->markAsSetter($course3);
         $moderator = create(User::class);
         $moderator->markAsModerator($course1);
 
-        option(['glasgow_staff_submission_deadline' => now()->addDays(10)->format('Y-m-d')]);
-        option(['uestc_staff_submission_deadline' => now()->addDays(20)->format('Y-m-d')]);
+        option(['glasgow_staff_submission_deadline' => now()->subDays(1)->format('Y-m-d')]);
 
         $this->assertNull(option('glasgow_staff_submission_deadline_email_sent'));
-        $this->assertNull(option('uestc_staff_submission_deadline_email_sent'));
 
         $this->artisan('examdb:timed-notifications');
 
         Mail::assertNothingQueued();
-        $this->assertNull(option('glasgow_staff_submission_deadline_email_sent'));
-        $this->assertNull(option('uestc_staff_submission_deadline_email_sent'));
+        $this->assertNotNull(option('glasgow_staff_submission_deadline_email_sent'));
     }
 
     /** @test */
@@ -358,33 +350,28 @@ class TimedNotificationsTest extends TestCase
     /** @test */
     public function emails_are_not_sent_for_any_staff_moderation_deadline_option_when_it_is_day_after_but_paperwork_is_complete()
     {
-        $this->markTestSkipped('TODO');
         Mail::fake();
-        $course1 = create(Course::class, ['code' => 'ENG1234']);
-        $course2 = create(Course::class, ['code' => 'ENG4567']);
-        $course3 = create(Course::class, ['code' => 'UESTC1234']);
+        $course1 = create(Course::class, [
+            'code' => 'ENG1234',
+            'moderator_approved_main' => true,
+            'moderator_approved_resit' => true,
+        ]);
         $setter1 = create(User::class);
         $setter1->markAsSetter($course1);
-        $setter1->markAsSetter($course2);
-        $setter2 = create(User::class);
-        $setter2->markAsSetter($course1);
-        $setter2->markAsSetter($course2);
-        $setter3 = create(User::class);
-        $setter3->markAsSetter($course3);
         $moderator = create(User::class);
         $moderator->markAsModerator($course1);
 
-        option(['glasgow_staff_submission_deadline' => now()->addDays(10)->format('Y-m-d')]);
-        option(['uestc_staff_submission_deadline' => now()->addDays(20)->format('Y-m-d')]);
+        option(['glasgow_internal_moderation_deadline' => now()->subDays(1)->format('Y-m-d')]);
+        option(['uestc_internal_moderation_deadline' => now()->subDays(1)->format('Y-m-d')]);
 
-        $this->assertNull(option('glasgow_staff_submission_deadline_email_sent'));
-        $this->assertNull(option('uestc_staff_submission_deadline_email_sent'));
+        $this->assertNull(option('glasgow_internal_moderation_deadline_email_sent'));
+        $this->assertNull(option('uestc_internal_moderation_deadline_email_sent'));
 
         $this->artisan('examdb:timed-notifications');
 
         Mail::assertNothingQueued();
-        $this->assertNull(option('glasgow_staff_submission_deadline_email_sent'));
-        $this->assertNull(option('uestc_staff_submission_deadline_email_sent'));
+        $this->assertNotNull(option('glasgow_internal_moderation_deadline_email_sent'));
+        $this->assertNotNull(option('uestc_internal_moderation_deadline_email_sent'));
     }
 
     /** @test */

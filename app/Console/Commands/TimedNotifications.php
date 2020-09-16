@@ -98,14 +98,13 @@ class TimedNotifications extends Command
             return;
         }
 
-        $emailAddresses = Course::forArea($area)->with('setters')->get()->flatMap(function ($course) {
-            return $course->setters->pluck('email');
-        })->filter()->unique();
-
+        $emailAddresses = collect([]);
         if ($date->clone()->subWeek()->dayOfYear == now()->dayOfYear) {
             $mailableName = SubmissionDeadlineMail::class;
+            $emailAddresses = $this->getAllSetterEmails($area);
         } else {
             $mailableName = SubmissionDeadlinePassedMail::class;
+            $emailAddresses = $this->getIncompletePaperworkSetterEmails($area);
         }
 
         $emailAddresses->each(function ($email) use ($mailableName) {
@@ -138,14 +137,12 @@ class TimedNotifications extends Command
             return;
         }
 
-        $emailAddresses = Course::forArea($area)->with('moderators')->get()->flatMap(function ($course) {
-            return $course->moderators->pluck('email');
-        })->filter()->unique();
-
         if ($date->clone()->subDays(3)->dayOfYear == now()->dayOfYear) {
             $mailableName = ModerationDeadlineMail::class;
+            $emailAddresses = $this->getAllModeratorEmails($area);
         } else {
             $mailableName = ModerationDeadlinePassedMail::class;
+            $emailAddresses = $this->getIncompletePaperworkModeratorEmails($area);
         }
 
         $emailAddresses->each(function ($email) use ($mailableName) {
@@ -246,5 +243,37 @@ class TimedNotifications extends Command
             ->later(now()->addSeconds(rand(1, 200)), new ExternalModerationDeadlineMail);
 
         option(["{$optionName}_email_sent" => now()->format('Y-m-d')]);
+    }
+
+    protected function getAllSetterEmails(string $area)
+    {
+        return Course::forArea($area)->with('setters')->get()->flatMap(function ($course) {
+            return $course->setters->pluck('email');
+        })->filter()->unique();
+    }
+
+    protected function getIncompletePaperworkSetterEmails(string $area)
+    {
+        return Course::forArea($area)->doesntHave('checklists')->with('setters')->get()->flatMap(function ($course) {
+            return $course->setters->pluck('email');
+        })->filter()->unique();
+    }
+
+    protected function getAllModeratorEmails(string $area)
+    {
+        return Course::forArea($area)->with('moderators')->get()->flatMap(function ($course) {
+            return $course->moderators->pluck('email');
+        })->filter()->unique();
+    }
+
+    protected function getIncompletePaperworkModeratorEmails(string $area)
+    {
+        return Course::forArea($area)->with('moderators')
+            ->where('moderator_approved_main', '!=', true)
+            ->orWhere('moderator_approved_resit', '!=', true)
+            ->get()
+            ->flatMap(function ($course) {
+                return $course->moderators->pluck('email');
+            })->filter()->unique();
     }
 }
