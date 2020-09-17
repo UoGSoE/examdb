@@ -23,6 +23,9 @@ class ChecklistExporter
 
     public function export()
     {
+        // we log in a user so some of the auth()->user() checks in the blade template don't explode
+        auth()->login(User::first());
+
         $localZipname = tempnam(sys_get_temp_dir(), '/'.config('exampapers.checklist_temp_file_prefix'));
         $zip = new \ZipArchive();
         $zip->open($localZipname, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
@@ -36,12 +39,12 @@ class ChecklistExporter
                 ->latest()
                 ->first();
             if ($mainChecklist) {
-                $pdf = \PDF::loadView('course.checklist.pdf', ['checklist' => $mainChecklist])->output();
+                $pdf = \PDF::loadView('course.checklist.show', ['checklist' => $mainChecklist, 'course' => $course, 'category' => 'main'])->output();
                 $pdfName = $course->code.'_'.$mainChecklist->category.'_checklist.pdf';
                 $zip->addFromString('/checklists/'.$pdfName, $pdf);
             }
             if ($resitChecklist) {
-                $pdf = \PDF::loadView('course.checklist.pdf', ['checklist' => $resitChecklist])->output();
+                $pdf = \PDF::loadView('course.checklist.show', ['checklist' => $resitChecklist, 'course' => $course, 'category' => 'resit'])->output();
                 $pdfName = $course->code.'_'.$resitChecklist->category.'_checklist.pdf';
                 $zip->addFromString('/checklists/'.$pdfName, $pdf);
             }
