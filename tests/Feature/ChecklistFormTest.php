@@ -162,8 +162,6 @@ class ChecklistFormTest extends TestCase
     /** @test */
     public function we_can_download_a_pdf_of_the_paper_checklist()
     {
-        $this->markTestSkipped('TODO figure out if/how this should be done as dompdf cant render the css without crashing');
-
         $this->withoutExceptionHandling();
         $user = create(User::class);
         $course = create(Course::class);

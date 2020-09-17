@@ -5,23 +5,41 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use Appstract\Options\Option;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 class OptionsEditor extends Component
 {
     public $options;
     public $defaultDateOptions;
+    public $wasSaved = true;
 
     public function mount()
     {
-        $this->options = Option::all()->flatMap(function ($option) {
+        $this->defaultDateOptions = config('exampapers.defaultDateOptions');
+        $this->options = $this->getExistingOptionsWithFormattedDates($this->defaultDateOptions);
+    }
+
+    protected function getExistingOptionsWithFormattedDates(array $dateOptions): array
+    {
+        $defaultDateOptionKeys = collect($this->defaultDateOptions)->map(function ($option) {
+            return $option['name'];
+        });
+        return Option::all()->flatMap(function ($option) use ($defaultDateOptionKeys) {
+            if ($defaultDateOptionKeys->contains($option['key'])) {
+                return [$option->key => Carbon::createFromFormat('Y-m-d', $option->value)->format('d/m/Y')];
+            }
             return [$option->key => $option->value];
         })->toArray();
-        $this->defaultDateOptions = config('exampapers.defaultDateOptions');
     }
 
     public function render()
     {
         return view('livewire.options-editor');
+    }
+
+    public function updated($attribute)
+    {
+        $this->wasSaved = false;
     }
 
     public function save()
@@ -73,5 +91,7 @@ class OptionsEditor extends Component
             }
             option([$dbName => $value]);
         });
+
+        $this->wasSaved = true;
     }
 }

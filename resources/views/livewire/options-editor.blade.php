@@ -32,29 +32,15 @@
               >
                   <input class="input" type="text" x-ref="{{ $option['name'] }}" wire:model.lazy="options.{{ $option['name'] }}">
               </div>
-              <div class="control">
-                  <div class="field"><button class="button" disabled>To</button></div>
-              </div>
-              <div class="control">
-                  <div class="select">
-                      <select wire:model.lazy="options.{{ $option['name'] }}_destination">
-                          <option value="office">Teaching Office</option>
-                          <option value="staff">Direct to Academics</option>
-                      </select>
-                  </div>
-              </div>
           </div>
           @error('options.' . $option['name'])
-          <p class="has-text-danger">{{ $message }}</p>
-          @enderror
-          @error('options.' . $option['name'] . '_destination')
           <p class="has-text-danger">{{ $message }}</p>
           @enderror
           @endforeach
 
           <div class="field">
               <div class="control">
-                  <button class="button" wire:click.prevent="save">Save</button>
+                  <button class="button" wire:click.prevent="save" @if ($wasSaved) disabled @endif>@if ($wasSaved) Saved @else Save @endif</button>
               </div>
           </div>
       </form>
