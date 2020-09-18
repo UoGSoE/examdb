@@ -40,6 +40,8 @@ return [
         'options' => [
             'enable-local-file-access' => true,
             'enable-internal-links' => true,
+            'javascript-delay' => 500,
+            'enable-javascript' => true,
         ],
         'env'     => [],
     ],

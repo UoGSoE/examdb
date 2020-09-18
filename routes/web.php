@@ -14,6 +14,7 @@
 Auth::routes();
 Route::post('/external-login', 'Auth\ExternalLoginController@sendLoginEmail')->name('external-generate-login');
 Route::get('/external-login/{user}', 'Auth\ExternalLoginController@login')->name('external-login')->middleware('signed');
+Route::get('/api/checklist/{checklist}', 'ChecklistController@show')->name('api.course.checklist.show');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::redirect('/', '/home', 301);

@@ -2,8 +2,9 @@
 
 namespace App\Policies;
 
-use App\Course;
 use App\User;
+use App\Course;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CoursePolicy
@@ -13,6 +14,9 @@ class CoursePolicy
     public function before($user, $ability)
     {
         if ($user->isAdmin()) {
+            return true;
+        }
+        if (Route::currentRouteName() == 'api.course.checklist.show') {
             return true;
         }
     }
