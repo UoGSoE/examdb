@@ -1,6 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\CourseController;
+use App\Http\Controllers\Api\CoursePaperController;
+use App\Http\Controllers\Api\CourseStaffController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,8 +16,8 @@ use Illuminate\Http\Request;
 */
 
 Route::group(['middleware' => 'api.token'], function () {
-    Route::get('/courses', 'Api\CourseController@index')->name('api.course.index');
-    Route::get('/course/{code}', 'Api\CourseController@show')->name('api.course.show');
-    Route::get('/course/{code}/staff', 'Api\CourseStaffController@show')->name('api.course.staff');
-    Route::get('/course/{code}/papers', 'Api\CoursePaperController@show')->name('api.course.papers');
+    Route::get('/courses', [CourseController::class, 'index'])->name('api.course.index');
+    Route::get('/course/{code}', [CourseController::class, 'show'])->name('api.course.show');
+    Route::get('/course/{code}/staff', [CourseStaffController::class, 'show'])->name('api.course.staff');
+    Route::get('/course/{code}/papers', [CoursePaperController::class, 'show'])->name('api.course.papers');
 });
