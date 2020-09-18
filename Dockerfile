@@ -1,9 +1,10 @@
 ### PHP version we are targetting
 ARG PHP_VERSION=7.4
-ARG WKHTML_VERSION="0.12.6-1"
 
 ### Placeholder for basic dev stage for use with docker-compose
 FROM uogsoe/soe-php-apache:${PHP_VERSION} as dev
+
+ARG WKHTML_VERSION="0.12.6-1"
 
 RUN apt-get update && \
     curl -o /tmp/wk.deb https://github.com/wkhtmltopdf/packaging/releases/download/${WKHTML_VERSION}/wkhtmltox_${WKHTML_VERSION}.buster_amd64.deb && \
