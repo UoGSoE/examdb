@@ -6,10 +6,10 @@ FROM uogsoe/soe-php-apache:${PHP_VERSION} as dev
 
 ARG WKHTML_VERSION="0.12.6-1"
 
-RUN apt-get update && \
-    curl -o /tmp/wk.deb https://github.com/wkhtmltopdf/packaging/releases/download/${WKHTML_VERSION}/wkhtmltox_${WKHTML_VERSION}.buster_amd64.deb && \
-    apt install -y /tmp/wk.deb && \
-    rm -f /tmp/wk.deb
+# RUN apt-get update && \
+#     curl -o /tmp/wk.deb https://github.com/wkhtmltopdf/packaging/releases/download/${WKHTML_VERSION}/wkhtmltox_${WKHTML_VERSION}.buster_amd64.deb && \
+#     apt install -y /tmp/wk.deb && \
+#     rm -f /tmp/wk.deb
 COPY docker/app-start docker/app-healthcheck /usr/local/bin/
 RUN chmod u+x /usr/local/bin/app-start /usr/local/bin/app-healthcheck
 CMD ["/usr/local/bin/app-start"]
