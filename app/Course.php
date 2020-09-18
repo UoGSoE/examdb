@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Events\PaperApproved;
 use App\Events\PaperUnapproved;
 use App\Mail\ExternalHasUpdatedTheChecklist;
@@ -19,6 +20,8 @@ use Illuminate\Support\Str;
 
 class Course extends Model
 {
+    use HasFactory;
+
     use SoftDeletes;
 
     protected $guarded = [];

@@ -19,7 +19,7 @@ class ExternalUsersLoginTest extends TestCase
     {
         $this->withoutExceptionHandling();
         Mail::fake();
-        $external = factory(User::class)->states('external')->create();
+        $external = User::factory()->external()->create();
 
         $response = $this->post(route('external-generate-login'), [
             'email' => $external->email,
@@ -42,7 +42,7 @@ class ExternalUsersLoginTest extends TestCase
     {
         $this->withoutExceptionHandling();
         Mail::fake();
-        $external = factory(User::class)->states('external')->create(['username' => 'external@example.com']);
+        $external = User::factory()->external()->create(['username' => 'external@example.com']);
 
         $response = $this->post(route('external-generate-login'), [
             'email' => 'EXTERNAL@EXAMPLE.COM',
@@ -84,7 +84,7 @@ class ExternalUsersLoginTest extends TestCase
     public function when_an_external_visits_a_valid_signed_login_url_they_are_logged_in()
     {
         $this->withoutExceptionHandling();
-        $external = factory(User::class)->states('external')->create();
+        $external = User::factory()->external()->create();
 
         $response = $this->get($external->generateLoginUrl());
 
@@ -101,7 +101,7 @@ class ExternalUsersLoginTest extends TestCase
     /** @test */
     public function when_an_external_visits_a_valid_signed_login_url_that_has_expired_they_are_not_logged_in()
     {
-        $external = factory(User::class)->states('external')->create();
+        $external = User::factory()->external()->create();
         // set the url signature timeout in the past...
         config(['exampapers.login_link_minutes' => -5]);
 
@@ -119,7 +119,7 @@ class ExternalUsersLoginTest extends TestCase
     /** @test */
     public function when_an_external_visits_an_invalid_login_url_they_are_not_logged_in()
     {
-        $external = factory(User::class)->states('external')->create();
+        $external = User::factory()->external()->create();
 
         $response = $this->get($external->generateLoginUrl().'invalid');
 

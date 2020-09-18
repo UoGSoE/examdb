@@ -2,11 +2,14 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Scopes\CurrentScope;
 use Illuminate\Database\Eloquent\Model;
 
 class Paper extends Model
 {
+    use HasFactory;
+
     const PAPER_FOR_REGISTRY = 'Paper For Registry';
     const EXTERNAL_COMMENTS = 'External Examiner Comments';
     const EXTERNAL_SOLUTION_COMMENTS = 'External Examiner Solution Comments';

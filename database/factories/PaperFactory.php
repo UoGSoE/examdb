@@ -1,29 +1,50 @@
 <?php
 
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Course;
 use App\Paper;
 use App\User;
-use Faker\Generator as Faker;
 
-$factory->define(App\Paper::class, function (Faker $faker) {
-    return [
-        'filename' => $faker->unique()->word.'.pdf',
-        'original_filename' => $faker->unique()->word.'.pdf',
-        'mimetype' => 'application/pdf',
-        'category' => 'main',
-        'subcategory' => 'Pre-Internally Moderated Paper',
-        'size' => $faker->randomNumber(5),
-        'user_id' => function () {
-            return create(User::class)->id;
-        },
-        'course_id' => function () {
-            return create(Course::class)->id;
-        },
-    ];
-});
+class PaperFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = \App\Paper::class;
 
-$factory->state(App\Paper::class, 'registry', function (Faker $faker) {
-    return [
-        'subcategory' => Paper::PAPER_FOR_REGISTRY,
-    ];
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'filename' => $this->faker->unique()->word.'.pdf',
+            'original_filename' => $this->faker->unique()->word.'.pdf',
+            'mimetype' => 'application/pdf',
+            'category' => 'main',
+            'subcategory' => 'Pre-Internally Moderated Paper',
+            'size' => $this->faker->randomNumber(5),
+            'user_id' => function () {
+                return create(User::class)->id;
+            },
+            'course_id' => function () {
+                return create(Course::class)->id;
+            },
+        ];
+    }
+
+    public function registry()
+    {
+        return $this->state(function () {
+            return [
+                'subcategory' => Paper::PAPER_FOR_REGISTRY,
+            ];
+        });
+    }
+}

@@ -20,8 +20,8 @@ class UserTest extends TestCase
         $admin = create(User::class, ['is_admin' => true]);
         $internal1 = create(User::class);
         $internal2 = create(User::class);
-        $external1 = factory(User::class)->states('external')->create();
-        $external2 = factory(User::class)->states('external')->create();
+        $external1 = User::factory()->external()->create();
+        $external2 = User::factory()->external()->create();
 
         $response = $this->actingAs($admin)->get(route('user.index'));
 
@@ -49,8 +49,8 @@ class UserTest extends TestCase
         $admin = create(User::class, ['is_admin' => true]);
         $internal1 = create(User::class);
         $internal2 = create(User::class);
-        $external1 = factory(User::class)->states('external')->create();
-        $external2 = factory(User::class)->states('external')->create();
+        $external1 = User::factory()->external()->create();
+        $external2 = User::factory()->external()->create();
         $deletedUser = create(User::class);
         $deletedUser->delete();
 
@@ -70,7 +70,7 @@ class UserTest extends TestCase
     {
         $admin = create(User::class, ['is_admin' => true]);
         $internalUser = create(User::class);
-        $externalUser = factory(User::class)->states('external')->create();
+        $externalUser = User::factory()->external()->create();
         $course1 = create(Course::class);
         $course2 = create(Course::class);
         $course3 = create(Course::class);

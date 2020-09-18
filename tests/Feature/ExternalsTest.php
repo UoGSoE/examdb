@@ -24,7 +24,7 @@ class ExternalsTest extends TestCase
     /** @test */
     public function a_user_can_see_all_the_courses_they_are_an_external_for()
     {
-        $staff = factory(User::class)->states('external')->create();
+        $staff = User::factory()->external()->create();
         $course1 = create(Course::class);
         $course2 = create(Course::class);
         $course3 = create(Course::class);
@@ -49,7 +49,7 @@ class ExternalsTest extends TestCase
     public function a_user_can_see_the_page_for_an_individual_course_they_are_external_for()
     {
         $this->withoutExceptionHandling();
-        $staff = factory(User::class)->states('external')->create();
+        $staff = User::factory()->external()->create();
         $course1 = create(Course::class);
         $staff->markAsExternal($course1);
         $mainPaper = create(Paper::class, ['course_id' => $course1->id, 'category' => 'main']);
@@ -64,7 +64,7 @@ class ExternalsTest extends TestCase
     /** @test */
     public function a_user_cant_see_the_page_for_a_course_they_arent_involved_with()
     {
-        $staff = factory(User::class)->states('external')->create();
+        $staff = User::factory()->external()->create();
         $course1 = create(Course::class);
 
         $response = $this->actingAs($staff)->get(route('course.show', $course1->id));
@@ -76,7 +76,7 @@ class ExternalsTest extends TestCase
     public function an_external_cant_delete_any_papers()
     {
         Storage::fake('exampapers');
-        $staff = factory(User::class)->states('external')->create();
+        $staff = User::factory()->external()->create();
         $paper = create(Paper::class);
         $staff->markAsExternal($paper->course);
         Storage::disk('exampapers')->put($paper->filename, 'hello');

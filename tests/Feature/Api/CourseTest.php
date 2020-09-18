@@ -56,7 +56,7 @@ class CourseTest extends TestCase
         $this->withoutExceptionHandling();
         config(['exampapers.api_key' => 'secret']);
         $course = create(Course::class);
-        $setter = factory(User::class)->create();
+        $setter = User::factory()->create();
         $setter->markAsSetter($course);
 
         $response = $this->actingAs($setter)->json(
@@ -124,7 +124,7 @@ class CourseTest extends TestCase
         $this->withoutExceptionHandling();
         config(['exampapers.api_key' => 'secret']);
         $course = create(Course::class);
-        $setter = factory(User::class)->create();
+        $setter = User::factory()->create();
         $setter->markAsModerator($course);
 
         $response = $this->actingAs($setter)->json(
@@ -171,7 +171,7 @@ class CourseTest extends TestCase
         $this->withoutExceptionHandling();
         config(['exampapers.api_key' => 'secret']);
         $course = create(Course::class);
-        $setter = factory(User::class)->create();
+        $setter = User::factory()->create();
         $setter->markAsExternal($course);
 
         $response = $this->actingAs($setter)->json(
@@ -218,7 +218,7 @@ class CourseTest extends TestCase
         $this->withoutExceptionHandling();
         config(['exampapers.api_key' => 'secret']);
         $course = create(Course::class);
-        $setter = factory(User::class)->create();
+        $setter = User::factory()->create();
         $setter->markAsSetter($course);
         $setter->markAsModerator($course);
 

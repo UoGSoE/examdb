@@ -1,11 +1,29 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
-use App\Discipline;
-use Faker\Generator as Faker;
 
-$factory->define(Discipline::class, function (Faker $faker) {
-    return [
-        'title' => $faker->word,
-    ];
-});
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Discipline;
+
+class DisciplineFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Discipline::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'title' => $this->faker->word,
+        ];
+    }
+}

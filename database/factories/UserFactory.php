@@ -1,6 +1,8 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /*
@@ -14,25 +16,44 @@ use Illuminate\Support\Str;
 |
  */
 
-$factory->define(App\User::class, function (Faker $faker) {
-    return [
-        'surname' => str_replace("'", '', $faker->lastName),
-        'forenames' => str_replace("'", '', $faker->firstName),
-        'email' => $faker->unique()->safeEmail,
-        'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', // secret
-        'is_staff' => true,
-        'is_external' => false,
-        'username' => Str::random(3).$faker->randomNumber(3).$faker->randomLetter,
-        'remember_token' => Str::random(10),
-    ];
-});
+class UserFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = \App\User::class;
 
-$factory->state(App\User::class, 'external', function (Faker $faker) {
-    $email = $faker->unique()->safeEmail;
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'surname' => str_replace("'", '', $this->faker->lastName),
+            'forenames' => str_replace("'", '', $this->faker->firstName),
+            'email' => $this->faker->unique()->safeEmail,
+            'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', // secret
+            'is_staff' => true,
+            'is_external' => false,
+            'username' => Str::random(3).$this->faker->randomNumber(3).$this->faker->randomLetter,
+            'remember_token' => Str::random(10),
+        ];
+    }
 
-    return [
-        'username' => $email,
-        'email' => $email,
-        'is_external' => true,
-    ];
-});
+    public function external()
+    {
+        return $this->state(function () {
+            $email = $this->faker->unique()->safeEmail;
+
+            return [
+                'username' => $email,
+                'email' => $email,
+                'is_external' => true,
+            ];
+        });
+    }
+}

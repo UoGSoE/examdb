@@ -1,21 +1,39 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Course;
 use App\PaperChecklist;
 use App\User;
-use Faker\Generator as Faker;
 
-$factory->define(PaperChecklist::class, function (Faker $faker) {
-    return [
-        'version' => PaperChecklist::CURRENT_VERSION,
-        'user_id' => function () {
-            return factory(User::class)->create()->id;
-        },
-        'course_id' => function () {
-            return factory(Course::class)->create()->id;
-        },
-        'category' => 'main',
-        'fields' => [],
-    ];
-});
+class PaperChecklistFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = PaperChecklist::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'version' => PaperChecklist::CURRENT_VERSION,
+            'user_id' => function () {
+                return User::factory()->create()->id;
+            },
+            'course_id' => function () {
+                return Course::factory()->create()->id;
+            },
+            'category' => 'main',
+            'fields' => [],
+        ];
+    }
+}

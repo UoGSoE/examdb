@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Scopes\CurrentScope;
 use Illuminate\Database\Eloquent\Model;
 
@@ -40,6 +41,8 @@ use Illuminate\Database\Eloquent\Model;
                     */
 class PaperChecklist extends Model
 {
+    use HasFactory;
+
     const CURRENT_VERSION = 1;
 
     protected $guarded = [];
