@@ -1,10 +1,9 @@
 <?php
 
-
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Discipline;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class DisciplineFactory extends Factory
 {

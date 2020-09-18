@@ -2,8 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\CanBeCreatedFromOutsideSources;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -14,7 +14,6 @@ use Spatie\Activitylog\Models\Activity;
 class User extends Authenticatable
 {
     use HasFactory;
-
     use Notifiable;
     use CanBeCreatedFromOutsideSources;
     use Impersonate;

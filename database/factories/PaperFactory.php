@@ -2,10 +2,10 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Course;
 use App\Paper;
 use App\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PaperFactory extends Factory
 {

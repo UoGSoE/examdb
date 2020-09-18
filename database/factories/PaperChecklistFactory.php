@@ -1,12 +1,11 @@
 <?php
 
-
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Course;
 use App\PaperChecklist;
 use App\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PaperChecklistFactory extends Factory
 {
