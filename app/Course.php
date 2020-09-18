@@ -2,20 +2,20 @@
 
 namespace App;
 
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-use App\Scopes\CurrentScope;
 use App\Events\PaperApproved;
 use App\Events\PaperUnapproved;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 use App\Mail\ExternalHasUpdatedTheChecklist;
 use App\Mail\ModeratorHasUpdatedTheChecklist;
 use App\Mail\SetterHasUpdatedTheChecklist;
+use App\Scopes\CurrentScope;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class Course extends Model
 {
@@ -101,12 +101,12 @@ class Course extends Model
 
     /**
      * This is horrific
-     * TODO : make it not horrific
+     * TODO : make it not horrific.
      */
     public function addChecklist(array $fields, string $category): PaperChecklist
     {
         if (! in_array($category, ['main', 'resit', 'assessment'])) {
-            abort(422, 'Invalid category ' . $category);
+            abort(422, 'Invalid category '.$category);
         }
 
         // if there was an existing checklist we get it's fields so we can merge them in with the new values
@@ -453,6 +453,7 @@ class Course extends Model
         if (empty($matches)) {
             return '';
         }
+
         return $matches[1];
     }
 }

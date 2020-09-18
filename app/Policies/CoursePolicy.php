@@ -2,10 +2,10 @@
 
 namespace App\Policies;
 
-use App\User;
 use App\Course;
-use Illuminate\Support\Facades\Route;
+use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Route;
 
 class CoursePolicy
 {

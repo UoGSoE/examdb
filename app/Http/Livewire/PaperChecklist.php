@@ -3,8 +3,8 @@
 namespace App\Http\Livewire;
 
 use App\Course;
-use Livewire\Component;
 use App\PaperChecklist as Checklist;
+use Livewire\Component;
 use Tests\Feature\LivewirePaperChecklistTest;
 
 class PaperChecklist extends Component
@@ -48,7 +48,7 @@ class PaperChecklist extends Component
         if ($this->previousId === 'new') {
             return redirect()->route('course.checklist.create', [
                 'course' => $this->course->id,
-                'category' => $this->category
+                'category' => $this->category,
             ]);
         }
 

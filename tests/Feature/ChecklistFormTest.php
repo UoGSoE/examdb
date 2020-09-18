@@ -2,19 +2,19 @@
 
 namespace Tests\Feature;
 
-use App\User;
 use App\Course;
-use Tests\TestCase;
-use Livewire\Livewire;
-use App\PaperChecklist;
-use App\Mail\ChecklistUpdated;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\ExternalHasUpdatedTheChecklist;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Mail\ModeratorHasUpdatedTheChecklist;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Http\Livewire\PaperChecklist as LivewirePaperChecklist;
+use App\Mail\ChecklistUpdated;
+use App\Mail\ExternalHasUpdatedTheChecklist;
+use App\Mail\ModeratorHasUpdatedTheChecklist;
 use App\Mail\SetterHasUpdatedTheChecklist;
+use App\PaperChecklist;
+use App\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Mail;
+use Livewire\Livewire;
+use Tests\TestCase;
 
 class ChecklistFormTest extends TestCase
 {
@@ -429,7 +429,7 @@ class ChecklistFormTest extends TestCase
                 'course_title' => 'Original Title', // a setter-only field
                 'moderator_comments' => 'Blah de blah', // moderator-only field
                 'external_comments' => 'Tum te tum', // external-only field
-            ]
+            ],
         ]);
 
         $this->actingAs($setter);

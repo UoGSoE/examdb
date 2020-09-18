@@ -2,22 +2,22 @@
 
 namespace Tests\Feature;
 
-use App\User;
 use App\Course;
-use Tests\TestCase;
 use App\Mail\CallForPapersMail;
-use App\Mail\ModerationDeadlineMail;
-use App\Mail\PrintReadyDeadlineMail;
-use App\Mail\SubmissionDeadlineMail;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\NotifyExternalsReminderMail;
-use App\Mail\ModerationDeadlinePassedMail;
-use App\Mail\PrintReadyDeadlinePassedMail;
-use App\Mail\SubmissionDeadlinePassedMail;
 use App\Mail\ExternalModerationDeadlineMail;
+use App\Mail\ModerationDeadlineMail;
+use App\Mail\ModerationDeadlinePassedMail;
+use App\Mail\NotifyExternalsReminderMail;
+use App\Mail\PrintReadyDeadlineMail;
+use App\Mail\PrintReadyDeadlinePassedMail;
+use App\Mail\SubmissionDeadlineMail;
+use App\Mail\SubmissionDeadlinePassedMail;
 use App\PaperChecklist;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Mail;
+use Tests\TestCase;
 
 class TimedNotificationsTest extends TestCase
 {

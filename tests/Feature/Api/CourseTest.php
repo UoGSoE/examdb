@@ -92,7 +92,7 @@ class CourseTest extends TestCase
         $response->assertJson([
             'data' => [
                 'Pre-Internally Moderated Paper (Main)',
-                'Post-Internally Moderated Paper (Main)'
+                'Post-Internally Moderated Paper (Main)',
             ],
         ]);
 

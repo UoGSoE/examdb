@@ -2,21 +2,21 @@
 
 namespace App\Console\Commands;
 
-use Exception;
 use App\Course;
-use Carbon\Carbon;
 use App\Mail\CallForPapersMail;
 use App\Mail\ExternalModerationDeadlineMail;
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 use App\Mail\ModerationDeadlineMail;
-use App\Mail\SubmissionDeadlineMail;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\NotifyExternalsReminderMail;
 use App\Mail\ModerationDeadlinePassedMail;
+use App\Mail\NotifyExternalsReminderMail;
 use App\Mail\PrintReadyDeadlineMail;
 use App\Mail\PrintReadyDeadlinePassedMail;
+use App\Mail\SubmissionDeadlineMail;
 use App\Mail\SubmissionDeadlinePassedMail;
+use Carbon\Carbon;
+use Exception;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class TimedNotifications extends Command
 {
@@ -46,14 +46,16 @@ class TimedNotifications extends Command
 
     protected function handleCallForPapers()
     {
-        if (!option('date_receive_call_for_papers')) {
+        if (! option('date_receive_call_for_papers')) {
             $this->info('Skipping call for papers email as no date set');
+
             return;
         }
         try {
             $date = Carbon::parse(option('date_receive_call_for_papers'));
         } catch (Exception $e) {
             $this->info('Could not parse date_receive_call_for_papers');
+
             return;
         }
 
@@ -79,14 +81,16 @@ class TimedNotifications extends Command
     protected function handleSubmissionDeadline(string $area)
     {
         $optionName = "{$area}_staff_submission_deadline";
-        if (!option($optionName)) {
+        if (! option($optionName)) {
             $this->info('Skipping submission deadline email as no date set');
+
             return;
         }
         try {
             $date = Carbon::parse(option($optionName));
         } catch (Exception $e) {
             $this->info("Could not parse $optionName");
+
             return;
         }
 
@@ -119,14 +123,16 @@ class TimedNotifications extends Command
     protected function handleModerationDeadline(string $area)
     {
         $optionName = "{$area}_internal_moderation_deadline";
-        if (!option($optionName)) {
+        if (! option($optionName)) {
             $this->info('Skipping moderation deadline email as no date set');
+
             return;
         }
         try {
             $date = Carbon::parse(option($optionName));
         } catch (Exception $e) {
             $this->info("Could not parse $optionName");
+
             return;
         }
 
@@ -157,14 +163,16 @@ class TimedNotifications extends Command
     protected function handleNotifyExternalsReminder(string $area)
     {
         $optionName = "date_remind_{$area}_office_externals";
-        if (!option($optionName)) {
+        if (! option($optionName)) {
             $this->info('Skipping reminder about externals email as no date set');
+
             return;
         }
         try {
             $date = Carbon::parse(option($optionName));
         } catch (Exception $e) {
             $this->info("Could not parse $optionName");
+
             return;
         }
 
@@ -185,14 +193,16 @@ class TimedNotifications extends Command
     protected function handlePrintReadyDeadline(string $area)
     {
         $optionName = "{$area}_print_ready_deadline";
-        if (!option($optionName)) {
+        if (! option($optionName)) {
             $this->info('Skipping print ready deadline email as no date set');
+
             return;
         }
         try {
             $date = Carbon::parse(option($optionName));
         } catch (Exception $e) {
             $this->info("Could not parse $optionName");
+
             return;
         }
 
@@ -220,14 +230,16 @@ class TimedNotifications extends Command
     protected function handleExternalModerationDeadline(string $area)
     {
         $optionName = "{$area}_external_moderation_deadline";
-        if (!option($optionName)) {
+        if (! option($optionName)) {
             $this->info('Skipping reminder about external moderation email as no date set');
+
             return;
         }
         try {
             $date = Carbon::parse(option($optionName));
         } catch (Exception $e) {
             $this->info("Could not parse $optionName");
+
             return;
         }
 

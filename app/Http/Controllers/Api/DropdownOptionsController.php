@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Course;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class DropdownOptionsController extends Controller
 {
@@ -28,7 +28,6 @@ class DropdownOptionsController extends Controller
             $this->papers = $course->resitPapers()->get();
         }
 
-
         $options = [];
         if (Auth::user()->isSetterFor($course)) {
             $options = $this->getSetterOptions($options);
@@ -41,7 +40,8 @@ class DropdownOptionsController extends Controller
         }
 
         $subcategory = ucfirst(request('subcategory'));
-        $options = collect($options)->map(fn ($option) => $option . " ({$subcategory})")->unique()->toArray();
+        $options = collect($options)->map(fn ($option) => $option." ({$subcategory})")->unique()->toArray();
+
         return [
             'data' => $options,
         ];
@@ -68,9 +68,9 @@ class DropdownOptionsController extends Controller
         ) {
             return array_merge($existingOptions, [
                 'Pre-Internally Moderated Paper',
-                'Post-Internally Moderated Paper'
+                'Post-Internally Moderated Paper',
             ]);
-        };
+        }
 
         return array_merge($existingOptions, ['Pre-Internally Moderated Paper']);
     }

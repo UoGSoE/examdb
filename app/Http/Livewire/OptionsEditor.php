@@ -2,10 +2,10 @@
 
 namespace App\Http\Livewire;
 
-use Livewire\Component;
 use Appstract\Options\Option;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Livewire\Component;
 
 class OptionsEditor extends Component
 {
@@ -24,10 +24,12 @@ class OptionsEditor extends Component
         $defaultDateOptionKeys = collect($this->defaultDateOptions)->map(function ($option) {
             return $option['name'];
         });
+
         return Option::all()->flatMap(function ($option) use ($defaultDateOptionKeys) {
             if ($defaultDateOptionKeys->contains($option['key'])) {
                 return [$option->key => Carbon::createFromFormat('Y-m-d', $option->value)->format('d/m/Y')];
             }
+
             return [$option->key => $option->value];
         })->toArray();
     }
@@ -85,8 +87,8 @@ class OptionsEditor extends Component
                 $value = Carbon::createFromFormat('d/m/Y', $this->options[$dbName])->format('Y-m-d');
                 // if we are changing a notification date, we clear the flag
                 // that indicates it's been sent so we can re-send it on the new date
-                if ($value != option($dbName . '_email_sent')) {
-                    option([$dbName . '_email_sent' => 0]);
+                if ($value != option($dbName.'_email_sent')) {
+                    option([$dbName.'_email_sent' => 0]);
                 }
             }
             option([$dbName => $value]);

@@ -109,7 +109,7 @@ class PaperChecklist extends Model
         return $query->where('archived_at', '!=', null);
     }
 
-    public static function makeDefault(Course $course, string $category): PaperChecklist
+    public static function makeDefault(Course $course, string $category): self
     {
         return new static([
             'id' => null,
