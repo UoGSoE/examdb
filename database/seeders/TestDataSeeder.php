@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Course;
 use App\Discipline;
 use App\User;
