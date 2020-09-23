@@ -154,6 +154,13 @@ class Course extends Model
 
         $this->save();
 
+        activity()
+            ->causedBy(request()->user())
+            ->log(
+                "Added a {$category} checklist for {$this->code}"
+            );
+
+
         if (auth()->check() && auth()->user()->isSetterFor($this) && $checklist->shouldNotifyModerator()) {
             $this->moderators->pluck('email')->each(function ($email) {
                 Mail::to($email)->queue(new SetterHasUpdatedTheChecklist($this));
