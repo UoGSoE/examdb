@@ -113,13 +113,13 @@
         <div class="field">
             <label for="" class="label">Name(s) of moderator(s)</label>
             <p class="control">
-                <input class="input" type="text" wire:model="checklist.fields.moderators" value="{{ $course->moderators->pluck('full_name')->implode(', ') }}">
+                <input class="input" type="text" wire:model="checklist.fields.moderators">
             </p>
         </div>
     </div>
     <div class="column">
         <div class="field">
-            <label for="" class="label">Date assessment passed to moderator</label>
+            <label for="" class="label">Date assessment passed to moderator </label>
             <p
                 class="control is-expanded"
                 x-data="{}"
@@ -127,6 +127,7 @@
             >
                 <input class="input" x-ref="passed_to_moderator" type="text" wire:model.lazy="checklist.fields.passed_to_moderator">
             </p>
+        <span class="help">(Note: setting/changing this will email the @choice('moderator|moderators', $course->moderators))</span>
         </div>
     </div>
 </div>

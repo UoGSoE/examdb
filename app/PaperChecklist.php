@@ -123,6 +123,7 @@ class PaperChecklist extends Model
             'scqf_level' => null,
             'course_credits' => null,
             'course_coordinator_setting_comments' => null,
+            'moderators' => $course->moderators->pluck('full_name')->implode(', '),
             'moderator_agree_marks_appropriate' => true,
             'moderator_inappropriate_comments' => null,
             'moderator_marks_adjusted' => false,

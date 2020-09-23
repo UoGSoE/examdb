@@ -187,6 +187,7 @@ class Course extends Model
                     'course_code' => $this->code,
                     'course_title' => $this->title,
                     'year' => $this->year,
+                    'moderators' => $this->moderators->pluck('full_name')->implode(', '),
                 ],
             ]);
         }
