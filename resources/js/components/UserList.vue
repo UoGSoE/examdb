@@ -27,7 +27,7 @@
                         </a>
                     </td>
                     <td>
-                        {{ user.username }}
+                        <span v-if="user.username.indexOf('@') == -1">{{ user.username }}</span>
                     </td>
                     <td>
                         <a :href="`mailto:${user.email}`">
