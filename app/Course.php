@@ -383,7 +383,7 @@ class Course extends Model
     {
         $paper = $this->papers
             ->where('category', $category)
-            ->where('subcategory', $subcategory)
+            ->filter(fn ($paper) => Str::startsWith($paper->subcategory, $subcategory))
             ->sortBy('created_at')
             ->last();
         if (! $paper) {
@@ -403,6 +403,7 @@ class Course extends Model
      */
     public static function fromWlmData(array $wlmCourse): self
     {
+        // TODO mark courses which aren't current as deleted/disabled in this system
         $code = $wlmCourse['Code'];
         $title = $wlmCourse['Title'];
         $disciplineTitle = trim($wlmCourse['Discipline']);

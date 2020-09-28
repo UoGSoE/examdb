@@ -66,7 +66,7 @@
                 <main-paper-uploader
                     :course="course"
                     :category="category"
-                    buttontext="Assessment"
+                    buttontext="Assessment (> 25%)"
                     :subcategories='subcategories["assessment"]'
                     @added="paperAdded"
                 >

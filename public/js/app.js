@@ -42845,7 +42845,7 @@ var render = function() {
                   attrs: {
                     course: _vm.course,
                     category: _vm.category,
-                    buttontext: "Assessment",
+                    buttontext: "Assessment (> 25%)",
                     subcategories: _vm.subcategories["assessment"]
                   },
                   on: { added: _vm.paperAdded }

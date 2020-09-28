@@ -38,7 +38,7 @@ class TestDataSeeder extends Seeder
             'email' => 'jenny@example.com',
         ]);
 
-        collect(['Elec', 'MBE', 'Civil', 'UESTC'])->map(function ($title) {
+        collect(['Elec', 'BME', 'Civil', 'UESTC'])->map(function ($title) {
             return Discipline::create(['title' => $title]);
         });
         $courses = Course::factory()->count(10)->create();
