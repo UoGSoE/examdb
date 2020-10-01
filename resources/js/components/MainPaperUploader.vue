@@ -107,10 +107,18 @@ export default {
       if (this.secondResit) {
         return ["Second Resit File"];
       }
-      axios.get(route('api.course.paper_options', this.course.code) + `?category=${this.category}&subcategory=${this.buttontext.toLowerCase()}`, {'headers': {'x-api-key': window.api_key}})
+      console.log('here');
+      axios.get(
+          route('api.course.paper_options', this.course.code) + `?category=${this.category}&subcategory=${this.buttontext.toLowerCase()}`,
+          {'headers': {'x-api-key': window.api_key}}
+        )
         .then(res => {
+            console.log('fred');
             this.dropdownOptions = res.data.data;
-        })
+        }).catch(err => {
+            console.log(err);
+        });
+      console.log('there');
     },
     closePopup() {
       this.show = false;

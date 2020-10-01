@@ -148,7 +148,7 @@ export default {
       let inExternals = this.course.externals.find(
         external => external.id == this.user.id
       );
-      return inSetters || inModerators || inExternals;
+      return !! (inSetters || inModerators || inExternals);
     }
   },
   methods: {

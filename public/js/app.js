@@ -13122,7 +13122,7 @@ __webpack_require__.r(__webpack_exports__);
       var inExternals = this.course.externals.find(function (external) {
         return external.id == _this.user.id;
       });
-      return inSetters || inModerators || inExternals;
+      return !!(inSetters || inModerators || inExternals);
     }
   },
   methods: {
@@ -13640,13 +13640,18 @@ __webpack_require__.r(__webpack_exports__);
         return ["Second Resit File"];
       }
 
+      console.log('here');
       axios.get(route('api.course.paper_options', this.course.code) + "?category=".concat(this.category, "&subcategory=").concat(this.buttontext.toLowerCase()), {
         'headers': {
           'x-api-key': window.api_key
         }
       }).then(function (res) {
+        console.log('fred');
         _this.dropdownOptions = res.data.data;
+      })["catch"](function (err) {
+        console.log(err);
       });
+      console.log('there');
     },
     closePopup: function closePopup() {
       this.show = false;
@@ -14120,6 +14125,41 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["course", "subcategories", "category", "canUpload"],
@@ -14128,8 +14168,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   filters: {
     pretty: function pretty(value) {
-      if (value == 'resit2') {
-        return '2nd Resit';
+      if (value == "resit2") {
+        return "2nd Resit";
       }
 
       return value;
@@ -14145,7 +14185,7 @@ __webpack_require__.r(__webpack_exports__);
       return this.course["user_approved_".concat(this.category)];
     },
     secondResit: function secondResit() {
-      return this.category == 'resit2';
+      return this.category == "resit2";
     }
   },
   data: function data() {
@@ -14153,7 +14193,7 @@ __webpack_require__.r(__webpack_exports__);
       is_local: !window.is_external,
       is_external: window.is_external,
       is_moderator: window.is_moderator,
-      checklistRoute: route('course.checklist.create', this.course.id)
+      checklistRoute: route("course.checklist.create", this.course.id)
     };
   },
   methods: {
@@ -42880,7 +42920,8 @@ var render = function() {
                     attrs: {
                       course: _vm.course,
                       category: _vm.category,
-                      subcategories: _vm.subcategories["external"]
+                      subcategories: _vm.subcategories["external"],
+                      buttontext: "Main"
                     },
                     on: { added: _vm.paperAdded }
                   },
@@ -42890,7 +42931,7 @@ var render = function() {
                         _c("i", { staticClass: "far fa-check-circle" })
                       ]),
                       _vm._v(" "),
-                      _c("span", [_vm._v("Add Comments")])
+                      _c("span", [_vm._v("Add Main Comments")])
                     ])
                   ],
                   2
@@ -42900,23 +42941,72 @@ var render = function() {
             )
           : _vm._e(),
         _vm._v(" "),
-        !_vm.secondResit &&
-        _vm.canUpload &&
-        (_vm.is_moderator || _vm.is_external)
-          ? _c("span", { staticClass: "level-item" }, [
-              _c("button", {
-                staticClass: "button",
-                domProps: {
-                  innerHTML: _vm._s(_vm.approvalButtonText(_vm.category))
-                },
-                on: {
-                  click: function($event) {
-                    $event.preventDefault()
-                    return _vm.toggleApproval(_vm.category)
-                  }
-                }
-              })
-            ])
+        _vm.is_external && _vm.canUpload
+          ? _c(
+              "span",
+              { staticClass: "level-item" },
+              [
+                _c(
+                  "main-paper-uploader",
+                  {
+                    attrs: {
+                      course: _vm.course,
+                      category: _vm.category,
+                      subcategories: _vm.subcategories["external"],
+                      buttontext: "Solution"
+                    },
+                    on: { added: _vm.paperAdded }
+                  },
+                  [
+                    _c("template", { slot: "button-content" }, [
+                      _c("span", { staticClass: "icon has-text-success" }, [
+                        _c("i", { staticClass: "far fa-check-circle" })
+                      ]),
+                      _vm._v(" "),
+                      _c("span", [_vm._v("Add Solution Comments")])
+                    ])
+                  ],
+                  2
+                )
+              ],
+              1
+            )
+          : _vm._e()
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "level" }, [
+      _c("div", { staticClass: "level-left" }, [
+        _vm.is_external && _vm.canUpload
+          ? _c(
+              "span",
+              { staticClass: "level-item" },
+              [
+                _c(
+                  "main-paper-uploader",
+                  {
+                    attrs: {
+                      course: _vm.course,
+                      category: _vm.category,
+                      subcategories: _vm.subcategories["external"],
+                      buttontext: "Assessment"
+                    },
+                    on: { added: _vm.paperAdded }
+                  },
+                  [
+                    _c("template", { slot: "button-content" }, [
+                      _c("span", { staticClass: "icon has-text-success" }, [
+                        _c("i", { staticClass: "far fa-check-circle" })
+                      ]),
+                      _vm._v(" "),
+                      _c("span", [_vm._v("Add Assessment Comments")])
+                    ])
+                  ],
+                  2
+                )
+              ],
+              1
+            )
           : _vm._e()
       ])
     ])

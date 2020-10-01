@@ -65,16 +65,42 @@ class FakeWlmClient implements WlmClientInterface
             'Title' => 'Fake Course 1234',
             'ActiveFlag' => 'Yes',
             'Discipline' => 'Discipline the first',
-            'Staff' => [
-                'fake1x' => [
-                    'GUID' => 'fake1x',
-                    'Surname' => 'Faker',
-                    'Forenames' => 'Prof',
+            'Exam' => [
+                'Setters' => [
+                    'fake1x' => [
+                        'GUID' => 'fake1x',
+                        'Surname' => 'Faker',
+                        'Forenames' => 'Prof',
+                    ],
+                    'blah2y' => [
+                        'GUID' => 'blah2y',
+                        'Surname' => 'McManus',
+                        'Forenames' => 'Mark',
+                    ],
                 ],
-                'blah2y' => [
-                    'GUID' => 'blah2y',
-                    'Surname' => 'McManus',
-                    'Forenames' => 'Mark',
+                'Moderators' => [
+                    'fake2x' => [
+                        'GUID' => 'fake2x',
+                        'Surname' => 'Faker',
+                        'Forenames' => 'Prof',
+                    ],
+                    'blah3y' => [
+                        'GUID' => 'blah3y',
+                        'Surname' => 'McManus',
+                        'Forenames' => 'Mark',
+                    ],
+                ],
+                'Externals' => [
+                    'fake3x' => [
+                        'GUID' => 'fake3x',
+                        'Surname' => 'Faker',
+                        'Forenames' => 'Prof',
+                    ],
+                    'blah4y' => [
+                        'GUID' => 'blah4y',
+                        'Surname' => 'McManus',
+                        'Forenames' => 'Mark',
+                    ],
                 ],
             ],
         ];
@@ -87,17 +113,33 @@ class FakeWlmClient implements WlmClientInterface
             'Title' => 'Fake Course 4321',
             'ActiveFlag' => 'Yes',
             'Discipline' => 'Discipline the second',
-            'Staff' => [
-                'doc2w' => [
-                    'GUID' => 'doc2w',
-                    'Surname' => 'Baker',
-                    'Forenames' => 'Tom',
+            'Exam' => [
+                'Setters' => [
+                    'doc2w' => [
+                        'GUID' => 'doc2w',
+                        'Surname' => 'Baker',
+                        'Forenames' => 'Tom',
+                    ],
+                    'blah2y' => [
+                        'GUID' => 'blah2y',
+                        'Surname' => 'McManus',
+                        'Forenames' => 'Mark',
+                    ],
                 ],
-                'blah2y' => [
-                    'GUID' => 'blah2y',
-                    'Surname' => 'McManus',
-                    'Forenames' => 'Mark',
+                'Moderators' => [
+                    'blah2y' => [
+                        'GUID' => 'blah2y',
+                        'Surname' => 'McManus',
+                        'Forenames' => 'Mark',
+                    ]
                 ],
+                'Externals' => [
+                    'fake2x' => [
+                        'GUID' => 'fake2x',
+                        'Surname' => 'Faker',
+                        'Forenames' => 'Prof',
+                    ],
+                ]
             ],
         ];
     }

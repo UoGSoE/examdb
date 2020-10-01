@@ -15,6 +15,7 @@ class WlmImporter
     protected $studentList;
     protected $courseList;
     protected $apiDelay = 1000000 / 10; // delay between api requests in millionths of a second
+    protected $course;
 
     public function __construct(WlmClientInterface $client)
     {
@@ -37,9 +38,11 @@ class WlmImporter
 
                 return true;
             })->take($maximumCourses)->each(function ($wlmCourse) {
-                $course = $this->courseFromWlm($wlmCourse);
-                $this->courseList[$course->code] = $course;
-                $this->staffFromWlm($wlmCourse, false);
+                $this->course = $this->courseFromWlm($wlmCourse);
+                $this->courseList[$this->course->code] = $this->course;
+                $this->settersFromWlm($wlmCourse);
+                $this->moderatorsFromWlm($wlmCourse);
+                $this->externalsFromWlm($wlmCourse);
             });
         } catch (\Exception $e) {
             Mail::to(config('exampapers.sysadmin_email'))->send(new WlmImportProblem($e->getMessage()));
@@ -56,25 +59,41 @@ class WlmImporter
         return Course::fromWlmData($wlmCourse);
     }
 
-    protected function staffFromWlm($wlmCourse, $setterFlag = false)
+    protected function getStaffFromWlmCourse($wlmCourse, $key)
     {
-        if (! array_key_exists('Staff', $wlmCourse)) {
+        if (! array_key_exists('Exam', $wlmCourse)) {
+            return collect([]);
+        }
+        if (! array_key_exists($key, $wlmCourse['Exam'])) {
             return collect([]);
         }
         $staff = [];
-        $staffIds = collect($wlmCourse['Staff'])->map(function ($wlmStaff) {
+        return collect($wlmCourse['Exam'][$key])->map(function ($wlmStaff) {
             if (! $this->staffList->has($wlmStaff['GUID'])) {
                 $wlmStaff['Email'] = $this->getStaffEmail($wlmStaff);
                 $this->staffList[$wlmStaff['GUID']] = User::staffFromWlmData($wlmStaff);
             }
 
             return $this->staffList[$wlmStaff['GUID']];
-        })->pluck('id');
-        foreach ($staffIds as $id) {
-            $staff[$id] = ['is_setter' => $setterFlag];
-        }
+        });
+    }
 
-        return $staff;
+    protected function settersFromWlm($wlmCourse, $setterFlag = false)
+    {
+        $setters = $this->getStaffFromWlmCourse($wlmCourse, 'Setters');
+        $setters->each->markAsSetter($this->course);
+    }
+
+    protected function moderatorsFromWlm($wlmCourse, $setterFlag = false)
+    {
+        $moderators = $this->getStaffFromWlmCourse($wlmCourse, 'Moderators');
+        $moderators->each->markAsModerator($this->course);
+    }
+
+    protected function externalsFromWlm($wlmCourse, $setterFlag = false)
+    {
+        $externals = $this->getStaffFromWlmCourse($wlmCourse, 'Externals');
+        $externals->each->markAsExternal($this->course);
     }
 
     protected function getStaffEmail($wlmStaff)
