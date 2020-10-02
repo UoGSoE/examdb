@@ -94,13 +94,20 @@ class WlmImporter
     {
         $externals = $this->getStaffFromWlmCourse($wlmCourse, 'Externals');
         $externals->each->markAsExternal($this->course);
+        $externals->each(function ($external) {
+            $external->update([
+                'email' => 'CHANGEME@glasgow.ac.uk',
+                'username' => 'CHANGEME@glasgow.ac.uk',
+                'is_external' => true,
+            ]);
+        });
     }
 
     protected function getStaffEmail($wlmStaff)
     {
         usleep($this->apiDelay);
         $staff = $this->client->getStaff($wlmStaff['GUID']);
-        if (! preg_match('/\@/', $staff['Email'])) {
+        if ((! isset($staff['Email'])) or (! preg_match('/\@/', $staff['Email']))) {
             $staff['Email'] = $wlmStaff['GUID'].'@glasgow.ac.uk';
         }
 
