@@ -152,9 +152,9 @@
         <label for="" class="label">Is the overall quality of the assessment task appropriate?</label>
         <p class="control is-expanded">
             <div class="select is-fullwidth">
-                <select wire:model="checklist.field.overall_quality_appropriate" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
-                    <option>Yes</option>
-                    <option>No</option>
+                <select wire:model="checklist.fields.overall_quality_appropriate" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
                 </select>
             </div>
         </p>
@@ -172,8 +172,8 @@
         <p class="control is-expanded">
             <div class="select is-fullwidth">
                 <select wire:model="checklist.fields.should_revise_questions" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
-                    <option>Yes</option>
-                    <option>No</option>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
                 </select>
             </div>
         </p>
@@ -246,8 +246,8 @@
         <p class="control is-expanded">
             <div class="select is-fullwidth">
                 <select wire:model="checklist.fields.solution_marks_appropriate" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
-                    <option>Yes</option>
-                    <option>No</option>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
                 </select>
             </div>
         </p>
@@ -265,8 +265,8 @@
         <p class="control is-expanded">
             <div class="select is-fullwidth">
                 <select @if (! auth()->user()->isModeratorFor($course)) disabled @endif wire:model="checklist.fields.solutions_marks_adjusted">
-                    <option>Yes</option>
-                    <option>No</option>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
                 </select>
             </div>
         </p>
@@ -345,8 +345,8 @@
         <p class="control is-expanded">
             <div class="select is-fullwidth">
                 <select @if (! auth()->user()->isExternalFor($course)) disabled @endif wire:model="checklist.fields.external_agrees_with_moderator">
-                    <option>Yes</option>
-                    <option>No</option>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
                 </select>
             </div>
         </p>

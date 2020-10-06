@@ -37,18 +37,18 @@ class WlmImportTest extends TestCase
         $importer->run();
 
         $this->assertCount(2, Course::all());
-        $this->assertCount(7, User::all());
+        $this->assertCount(5, User::all());
         $this->assertCount(2, Discipline::all());
 
         $course1 = Course::findByCode('TEST1234');
         $this->assertEquals('Fake Course 1234', $course1->title);
         $this->assertEquals('Discipline the first', $course1->discipline->title);
-        $this->assertCount(6, $course1->staff()->get());
+        $this->assertCount(4, $course1->staff()->get());
 
         $course2 = Course::findByCode('TEST4321');
         $this->assertEquals('Fake Course 4321', $course2->title);
         $this->assertEquals('Discipline the second', $course2->discipline->title);
-        $this->assertCount(3, $course2->staff()->get());
+        $this->assertCount(2, $course2->staff()->get());
 
         // check the right staff have been allocated for $course1
         $setter1 = User::findByUsername('fake1x');
@@ -69,14 +69,15 @@ class WlmImportTest extends TestCase
         $this->assertTrue($moderator2->isModeratorFor($course1));
         $this->assertFalse($moderator2->isExternalFor($course1));
 
-        $external1 = User::findByUsername('fake3x');
-        $this->assertFalse($external1->isSetterFor($course1));
-        $this->assertFalse($external1->isModeratorFor($course1));
-        $this->assertTrue($external1->isExternalFor($course1));
-        $external2 = User::findByUsername('blah4y');
-        $this->assertFalse($external2->isSetterFor($course1));
-        $this->assertFalse($external2->isModeratorFor($course1));
-        $this->assertTrue($external2->isExternalFor($course1));
+        // Commented out while skipping importing externals due to no data exposed in the wlm api
+        // $external1 = User::findByUsername('fake3x');
+        // $this->assertFalse($external1->isSetterFor($course1));
+        // $this->assertFalse($external1->isModeratorFor($course1));
+        // $this->assertTrue($external1->isExternalFor($course1));
+        // $external2 = User::findByUsername('blah4y');
+        // $this->assertFalse($external2->isSetterFor($course1));
+        // $this->assertFalse($external2->isModeratorFor($course1));
+        // $this->assertTrue($external2->isExternalFor($course1));
 
         // check the right staff have been allocated for $course2
         $setter1 = User::findByUsername('doc2w');
@@ -89,10 +90,11 @@ class WlmImportTest extends TestCase
         $this->assertTrue($setterModerator1->isModeratorFor($course2));
         $this->assertFalse($setterModerator1->isExternalFor($course2));
 
-        $external1 = User::findByUsername('fake2x');
-        $this->assertFalse($external1->isSetterFor($course2));
-        $this->assertFalse($external1->isModeratorFor($course2));
-        $this->assertTrue($external1->isExternalFor($course2));
+        // Commented out as not currently importing externals
+        // $external1 = User::findByUsername('fake2x');
+        // $this->assertFalse($external1->isSetterFor($course2));
+        // $this->assertFalse($external1->isModeratorFor($course2));
+        // $this->assertTrue($external1->isExternalFor($course2));
 
         User::all()->each(function ($staff) {
             $this->assertEquals("{$staff->username}@glasgow.ac.uk", $staff->email);
@@ -111,7 +113,7 @@ class WlmImportTest extends TestCase
         $importer->run();
 
         $this->assertCount(2, Course::withTrashed()->get());
-        $this->assertCount(7, User::withTrashed()->get());
+        $this->assertCount(5, User::withTrashed()->get());
         $this->assertNotNull($deletedUser->deleted_at);
         $this->assertNotNull($deletedCourse->deleted_at);
     }
@@ -124,7 +126,7 @@ class WlmImportTest extends TestCase
         $importer->run(1);
 
         $this->assertCount(1, Course::all());
-        $this->assertCount(6, User::all());
+        $this->assertCount(4, User::all());
     }
 
     /** @test */
@@ -163,7 +165,7 @@ class WlmImportTest extends TestCase
         ImportFromWlm::dispatch($user);
 
         $this->assertEquals(2, Course::count());
-        $this->assertCount(8, User::all());
+        $this->assertCount(6, User::all());
         Event::assertDispatched(WlmImportComplete::class);
     }
 

@@ -35,14 +35,13 @@ class WlmImporter
                 if (! preg_match('/^(ENG|UESTC|SIT|TEST)/', $wlmCourse['Code'])) {
                     return false;
                 }
-
                 return true;
             })->take($maximumCourses)->each(function ($wlmCourse) {
                 $this->course = $this->courseFromWlm($wlmCourse);
                 $this->courseList[$this->course->code] = $this->course;
                 $this->settersFromWlm($wlmCourse);
                 $this->moderatorsFromWlm($wlmCourse);
-                $this->externalsFromWlm($wlmCourse);
+                // $this->externalsFromWlm($wlmCourse);
             });
         } catch (\Exception $e) {
             Mail::to(config('exampapers.sysadmin_email'))->send(new WlmImportProblem($e->getMessage()));
@@ -96,8 +95,8 @@ class WlmImporter
         $externals->each->markAsExternal($this->course);
         $externals->each(function ($external) {
             $external->update([
-                'email' => 'CHANGEME@glasgow.ac.uk',
-                'username' => 'CHANGEME@glasgow.ac.uk',
+                'email' => 'CHANGEME' . $external->id . '@glasgow.ac.uk',
+                'username' => 'CHANGEME' . $external->id . '@glasgow.ac.uk',
                 'is_external' => true,
             ]);
         });

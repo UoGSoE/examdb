@@ -23,6 +23,7 @@ class PaperChecklistFactory extends Factory
      */
     public function definition()
     {
+        $fields = make(Course::class)->getDefaultChecklistFields();
         return [
             'version' => PaperChecklist::CURRENT_VERSION,
             'user_id' => function () {
@@ -32,7 +33,7 @@ class PaperChecklistFactory extends Factory
                 return Course::factory()->create()->id;
             },
             'category' => 'main',
-            'fields' => [],
+            'fields' => $fields,
         ];
     }
 }

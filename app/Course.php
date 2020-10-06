@@ -112,9 +112,10 @@ class Course extends Model
         }
 
         // if there was an existing checklist we get it's fields so we can merge them in with the new values
-        $previousFields = [];
         if ($this->hasPreviousChecklists($category)) {
             $previousFields = $this->checklists()->where('category', '=', $category)->latest('id')->first()['fields'];
+        } else {
+            $previousFields = $this->getDefaultChecklistFields();
         }
 
         // figure out which fields on the form the user is allowed to update
@@ -137,20 +138,24 @@ class Course extends Model
         ]);
 
         // figure out if the moderator has fully approved the paper
-        $fieldName = "moderator_approved_{$category}";
-        $this->$fieldName = (bool) (
-            Arr::get($fields, 'overall_quality_appropriate', false)
-            &&
-            ! Arr::get($fields, 'should_revise_questions', false)
-            &&
-            Arr::get($fields, 'solution_marks_appropriate', false)
-            &&
-            ! Arr::get($fields, 'solutions_marks_adjusted', false)
-        );
+        if (auth()->check() && auth()->user()->isModeratorFor($this)) {
+            $fieldName = "moderator_approved_{$category}";
+            $this->$fieldName = (bool) (
+                Arr::get($fields, 'overall_quality_appropriate', false)
+                &&
+                ! Arr::get($fields, 'should_revise_questions', false)
+                &&
+                Arr::get($fields, 'solution_marks_appropriate', false)
+                &&
+                ! Arr::get($fields, 'solutions_marks_adjusted', false)
+            );
+        }
 
-        // figure out if the external has approved the paper
-        $fieldName = "external_approved_{$category}";
-        $this->$fieldName = (bool) Arr::get($fields, 'external_agrees_with_moderator', false);
+        if (auth()->check() && auth()->user()->isExternalFor($this)) {
+            // figure out if the external has approved the paper
+            $fieldName = "external_approved_{$category}";
+            $this->$fieldName = (bool) Arr::get($fields, 'external_agrees_with_moderator', false);
+        }
 
         $this->save();
 
@@ -159,7 +164,6 @@ class Course extends Model
             ->log(
                 "Added a {$category} checklist for {$this->code}"
             );
-
 
         if (auth()->check() && auth()->user()->isSetterFor($this) && $checklist->shouldNotifyModerator()) {
             $this->moderators->pluck('email')->each(function ($email) {
@@ -190,18 +194,48 @@ class Course extends Model
                 'course_id' => $this->id,
                 'category' => $category,
                 'version' => PaperChecklist::CURRENT_VERSION,
-                'fields' => [
-                    'course_code' => $this->code,
-                    'course_title' => $this->title,
-                    'year' => $this->year,
-                    'moderators' => $this->moderators->pluck('full_name')->implode(', '),
-                ],
+                'fields' => $this->getDefaultChecklistFields(),
             ]);
         }
 
         return $checklist->replicate();
     }
 
+    public function getDefaultChecklistFields()
+    {
+        return [
+            'course_code' => $this->code,
+            'course_title' => $this->title,
+            'year' => $this->year,
+            'moderators' => $this->moderators->pluck('full_name')->implode(', '),
+            'scqf_level' => '',
+            'course_credits' => '',
+            'setter_reviews' => '',
+            'assessment_title' => '',
+            'assignment_weighting' => '',
+            'number_markers' => '',
+            'passed_to_moderator' => '',
+            'setter_comments_to_moderator' => '',
+            'solution_setter_comments' => '',
+            'overall_quality_appropriate' => "1",
+            'why_innapropriate' => '',
+            'should_revise_questions' => "1",
+            'recommended_revisions' => '',
+            'moderator_comments' => '',
+            'moderator_completed_at' => '',
+            'solution_marks_appropriate' => "1",
+            'moderator_solution_innapropriate_comments' => '',
+            'solutions_marks_adjusted' => "1",
+            'solution_adjustment_comments' => '',
+            'solution_moderator_comments' => '',
+            'moderator_solutions_at' => '',
+            'external_examiner_name' => auth()->check() ? auth()->user()->full_name : '',
+            'external_agrees_with_moderator' => "0",
+            'external_reason' => '',
+            'external_comments' => '',
+            'external_signed_at' => '',
+        ];
+    }
     public function hasSetterChecklist(string $category)
     {
         return $this->checklists

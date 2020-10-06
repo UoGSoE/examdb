@@ -282,6 +282,7 @@ class ChecklistFormTest extends TestCase
         $course = create(Course::class);
         $setter->markAsSetter($course);
         $moderator->markAsModerator($course);
+        login($moderator);
         $checklist = make(PaperChecklist::class);
         $course->addChecklist($checklist->fields, 'main');
 
@@ -296,10 +297,9 @@ class ChecklistFormTest extends TestCase
                 'solutions_marks_adjusted' => false,
             ]
         );
-
         $course->addChecklist($checklist->fields, 'main');
 
-        $this->assertTrue($course->isApprovedByModerator('main'));
+        $this->assertTrue($course->fresh()->isApprovedByModerator('main'));
     }
 
     /** @test */
@@ -312,6 +312,7 @@ class ChecklistFormTest extends TestCase
         $course = create(Course::class);
         $setter->markAsSetter($course);
         $moderator->markAsModerator($course);
+        login($moderator);
         $checklist = make(PaperChecklist::class);
         $course->addChecklist($checklist->fields, 'main');
 
@@ -344,6 +345,7 @@ class ChecklistFormTest extends TestCase
         $setter->markAsSetter($course);
         $moderator->markAsModerator($course);
         $external->markAsExternal($course);
+        login($external);
         $checklist = make(PaperChecklist::class);
         $course->addChecklist($checklist->fields, 'main');
 
