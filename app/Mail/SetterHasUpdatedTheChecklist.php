@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Course;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -11,14 +12,16 @@ class SetterHasUpdatedTheChecklist extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $course;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Course $course)
     {
-        //
+        $this->course = $course;
     }
 
     /**

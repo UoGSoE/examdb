@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Course;
+use App\Exceptions\TimedNotificationException;
 use App\Mail\CallForPapersMail;
 use App\Mail\ExternalModerationDeadlineMail;
 use App\Mail\ModerationDeadlineMail;
@@ -12,6 +13,7 @@ use App\Mail\PrintReadyDeadlineMail;
 use App\Mail\PrintReadyDeadlinePassedMail;
 use App\Mail\SubmissionDeadlineMail;
 use App\Mail\SubmissionDeadlinePassedMail;
+use App\Paper;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
@@ -24,6 +26,8 @@ class TimedNotifications extends Command
 
     protected $description = 'Send any automatic notifications that are due';
 
+    protected $exceptions = [];
+
     public function __construct()
     {
         parent::__construct();
@@ -31,17 +35,77 @@ class TimedNotifications extends Command
 
     public function handle()
     {
-        $this->handleCallForPapers();
-        $this->handleSubmissionDeadline('glasgow');
-        $this->handleSubmissionDeadline('uestc');
-        $this->handleModerationDeadline('glasgow');
-        $this->handleModerationDeadline('uestc');
-        $this->handleNotifyExternalsReminder('glasgow');
-        $this->handleNotifyExternalsReminder('uestc');
-        $this->handleExternalModerationDeadline('glasgow');
-        $this->handleExternalModerationDeadline('uestc');
-        $this->handlePrintReadyDeadline('glasgow');
-        $this->handlePrintReadyDeadline('uestc');
+        // :: sad face ::
+        try {
+            $this->handleCallForPapers();
+        } catch (\Exception $e) {
+            $this->exceptions[] = $e;
+        }
+
+        try {
+            $this->handleSubmissionDeadline('glasgow');
+        } catch (\Exception $e) {
+            $this->exceptions[] = $e;
+        }
+
+        try {
+            $this->handleSubmissionDeadline('uestc');
+        } catch (\Exception $e) {
+            $this->exceptions[] = $e;
+        }
+
+        try {
+            $this->handleModerationDeadline('glasgow');
+        } catch (\Exception $e) {
+            $this->exceptions[] = $e;
+        }
+
+        try {
+            $this->handleModerationDeadline('uestc');
+        } catch (\Exception $e) {
+            $this->exceptions[] = $e;
+        }
+
+        try {
+            $this->handleNotifyExternalsReminder('glasgow');
+        } catch (\Exception $e) {
+            $this->exceptions[] = $e;
+        }
+
+        try {
+            $this->handleNotifyExternalsReminder('uestc');
+        } catch (\Exception $e) {
+            $this->exceptions[] = $e;
+        }
+
+        try {
+            $this->handleExternalModerationDeadline('glasgow');
+        } catch (\Exception $e) {
+            $this->exceptions[] = $e;
+        }
+
+        try {
+            $this->handleExternalModerationDeadline('uestc');
+        } catch (\Exception $e) {
+            $this->exceptions[] = $e;
+        }
+
+        try {
+            $this->handlePrintReadyDeadline('glasgow');
+        } catch (\Exception $e) {
+            $this->exceptions[] = $e;
+        }
+
+        try {
+            $this->handlePrintReadyDeadline('uestc');
+        } catch (\Exception $e) {
+            $this->exceptions[] = $e;
+        }
+
+        if (count($this->exceptions) > 0) {
+            $messages = collect($this->exceptions)->each(fn ($e) => $e->getMessage() . $e->getTraceAsString());
+            throw new TimedNotificationException($messages);
+        }
     }
 
     protected function handleCallForPapers()
@@ -72,7 +136,7 @@ class TimedNotifications extends Command
         })->filter()->unique();
 
         $emailAddresses->each(function ($email) {
-            Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new CallForPapersMail);
+            Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new CallForPapersMail(Carbon::createFromFormat('Y-m-d', option('date_receive_call_for_papers'))));
         });
 
         option(['date_receive_call_for_papers_email_sent' => now()->format('Y-m-d')]);
@@ -111,8 +175,8 @@ class TimedNotifications extends Command
             $emailAddresses = $this->getIncompletePaperworkSetterEmails($area);
         }
 
-        $emailAddresses->each(function ($email) use ($mailableName) {
-            Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new $mailableName);
+        $emailAddresses->each(function ($email) use ($mailableName, $date) {
+            Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new $mailableName($date));
         });
 
         if ($date->addDay()->dayOfYear == now()->dayOfYear) {
@@ -151,8 +215,8 @@ class TimedNotifications extends Command
             $emailAddresses = $this->getIncompletePaperworkModeratorEmails($area);
         }
 
-        $emailAddresses->each(function ($email) use ($mailableName) {
-            Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new $mailableName);
+        $emailAddresses->each(function ($email) use ($mailableName, $date) {
+            Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new $mailableName($date));
         });
 
         if ($date->addDay()->dayOfYear == now()->dayOfYear) {
@@ -213,6 +277,12 @@ class TimedNotifications extends Command
             return;
         }
 
+        $courses = Course::forArea($area)->with('papers')->get()->filter(function ($course) {
+            return $course->papers->contains(function ($paper) {
+                return $paper->subcategory == Paper::PAPER_FOR_REGISTRY;
+            });
+        });
+
         if ($date->clone()->subDay()->dayOfYear == now()->dayOfYear) {
             $mailableName = PrintReadyDeadlineMail::class;
         } else {
@@ -220,7 +290,7 @@ class TimedNotifications extends Command
         }
 
         Mail::to(option("teaching_office_contact_{$area}"))
-            ->later(now()->addSeconds(rand(1, 200)), new $mailableName);
+            ->later(now()->addSeconds(rand(1, 200)), new $mailableName($date, $courses));
 
         if ($date->addDay()->dayOfYear == now()->dayOfYear) {
             option(["{$optionName}_email_sent" => now()->format('Y-m-d')]);

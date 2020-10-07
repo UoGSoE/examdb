@@ -1,10 +1,16 @@
 @component('mail::message')
-# Introduction
+# Print-Ready deadline
 
-The body of your message.
+Dear Teaching Office,
 
-@component('mail::button', ['url' => ''])
-Button Text
+The final version of the following exam papers have not been finalised for printing.
+
+@foreach ($courses as $course)
+* {{ $course->code }} {{ $course->title }}
+@endforeach
+
+@component('mail::button', ['url' => '/'])
+Log In
 @endcomponent
 
 Thanks,<br>

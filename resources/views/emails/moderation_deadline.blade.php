@@ -1,10 +1,14 @@
 @component('mail::message')
-# Introduction
+# Moderation deadline
 
-The body of your message.
+Dear exam paper moderator,
 
-@component('mail::button', ['url' => ''])
-Button Text
+This is a reminder to moderate the exam papers for the upcoming exam diet and the resit paper by {{ $deadline->format('d/m/Y') }}.
+Please remember to complete and upload the checklist as without the checklist, the moderation process will not be triggered.
+
+
+@component('mail::button', ['url' => '/'])
+Log In
 @endcomponent
 
 Thanks,<br>

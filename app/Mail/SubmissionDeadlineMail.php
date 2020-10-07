@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -11,14 +12,16 @@ class SubmissionDeadlineMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $deadline;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Carbon $deadline)
     {
-        //
+        $this->deadline = $deadline;
     }
 
     /**

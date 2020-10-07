@@ -101,6 +101,11 @@ class Course extends Model
         return $query->where('code', 'like', $codePrefix.'%');
     }
 
+    public function scopeMissingPaperForRegistry($query)
+    {
+        return $query->papers()->where('subcategory', '=', Paper::PAPER_FOR_REGISTRY);
+    }
+
     /**
      * This is horrific
      * TODO : make it not horrific.

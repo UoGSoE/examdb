@@ -1,10 +1,12 @@
 @component('mail::message')
-# Introduction
+# Exam paper moderation
 
-The body of your message.
+Dear exam paper moderator,
 
-@component('mail::button', ['url' => ''])
-Button Text
+There is an exam paper ready for you to moderate for {{ $course->code }}.  Please remember to complete and upload the checklist as without the checklist, the moderation process will not be triggered.
+
+@component('mail::button', ['url' => route('course.show', $course->id)])
+Log in
 @endcomponent
 
 Thanks,<br>

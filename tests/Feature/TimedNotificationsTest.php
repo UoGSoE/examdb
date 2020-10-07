@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Course;
+use App\Exceptions\TimedNotificationException;
 use App\Mail\CallForPapersMail;
 use App\Mail\ExternalModerationDeadlineMail;
 use App\Mail\ModerationDeadlineMail;
@@ -24,6 +25,12 @@ class TimedNotificationsTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
+    public function the_scheduled_command_to_run_the_timed_notifications_is_registered()
+    {
+        $this->assertCommandIsScheduled('examdb:timed-notifications');
+    }
+
+    /** @test */
     public function emails_are_sent_for_the_date_receive_call_for_papers_option_when_it_is_the_correct_day()
     {
         Mail::fake();
@@ -38,7 +45,7 @@ class TimedNotificationsTest extends TestCase
         $moderator = create(User::class);
         $moderator->markAsModerator($course1);
 
-        option(['date_receive_call_for_papers' => now()->subHour()]);
+        option(['date_receive_call_for_papers' => now()->subHour()->format('Y-m-d')]);
 
         $this->assertNull(option('date_receive_call_for_papers_email_sent'));
 
@@ -69,7 +76,7 @@ class TimedNotificationsTest extends TestCase
         $moderator = create(User::class);
         $moderator->markAsModerator($course1);
 
-        option(['date_receive_call_for_papers' => now()->subDays(3)]);
+        option(['date_receive_call_for_papers' => now()->subDays(3)->format('Y-m-d')]);
 
         $this->assertNull(option('date_receive_call_for_papers_email_sent'));
 
@@ -110,7 +117,7 @@ class TimedNotificationsTest extends TestCase
         $setter1 = create(User::class);
         $setter1->markAsSetter($course1);
 
-        option(['date_receive_call_for_papers' => now()->subHour()]);
+        option(['date_receive_call_for_papers' => now()->subHour()->format('Y-m-d')]);
 
         $this->assertNull(option('date_receive_call_for_papers_email_sent'));
 
@@ -578,5 +585,18 @@ class TimedNotificationsTest extends TestCase
 
         Mail::assertNothingQueued(ExternalModerationDeadlineMail::class, 1);
         $this->assertNull(option('uestc_external_moderation_deadline_email_sent'));
+    }
+
+    /** @test */
+    public function if_something_goes_wrong_sending_a_notification_we_get_a_timed_notification_exception()
+    {
+        $this->expectException(TimedNotificationException::class);
+
+        option(['uestc_external_moderation_deadline' => now()->format('Y-m-d')]);
+        option(['teaching_office_contact_uestc' => 44]);
+
+        $this->artisan('examdb:timed-notifications');
+
+        $this->assertNothingQueued();
     }
 }

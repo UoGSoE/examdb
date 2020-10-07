@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
+/**
+ * I think this is entirely redundant now and all moved to the 'TimedNotificationsTest'
+ */
 class IncompletePaperworkNotificationTest extends TestCase
 {
     use RefreshDatabase;
