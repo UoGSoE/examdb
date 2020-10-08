@@ -1,9 +1,5 @@
 <?php
 
-Route::get('/throw', function () {
-    throw new Exception('Test Sentry error');
-});
-
 Auth::routes();
 Route::post('/external-login', [\App\Http\Controllers\Auth\ExternalLoginController::class, 'sendLoginEmail'])->name('external-generate-login');
 Route::get('/external-login/{user}', [\App\Http\Controllers\Auth\ExternalLoginController::class, 'login'])->name('external-login')->middleware('signed');
