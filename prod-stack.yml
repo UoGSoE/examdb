@@ -12,8 +12,8 @@ x-deploy-php:
   labels:
     - "traefik.enable=false"
   placement:
-    constraints:
-      - node.role == worker
+    preferences:
+      - spread: node.labels.site
   resources:
     limits:
       memory: 2048M
@@ -30,8 +30,8 @@ x-deploy:
   labels:
     - "traefik.enable=false"
   placement:
-    constraints:
-      - node.role == worker
+    preferences:
+      - spread: node.labels.site
   resources:
     limits:
       memory: 2048M
@@ -56,8 +56,6 @@ services:
     deploy:
       replicas: 2
       placement:
-        constraints:
-          - node.role == worker
         preferences:
           - spread: node.labels.site
       update_config:
