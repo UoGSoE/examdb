@@ -22,7 +22,7 @@
     </div>
     <div class="columns">
       <div class="column">
-        <p v-if="! is_external" class="subtitle">
+        <p v-if="! is_external" class="subtitle has-text-danger">
           <b>Note:</b> the system will only notify other people of any changes when you update the Paper Checklist
         </p>
 

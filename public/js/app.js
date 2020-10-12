@@ -41301,7 +41301,7 @@ var render = function() {
     _c("div", { staticClass: "columns" }, [
       _c("div", { staticClass: "column" }, [
         !_vm.is_external
-          ? _c("p", { staticClass: "subtitle" }, [
+          ? _c("p", { staticClass: "subtitle has-text-danger" }, [
               _c("b", [_vm._v("Note:")]),
               _vm._v(
                 " the system will only notify other people of any changes when you update the Paper Checklist\n      "
