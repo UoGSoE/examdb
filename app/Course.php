@@ -341,14 +341,14 @@ class Course extends Model
     {
         $key = "moderator_approved_{$category}";
 
-        return $this->$key;
+        return (bool) $this->$key;
     }
 
     public function isApprovedByExternal(string $category): bool
     {
         $key = "external_approved_{$category}";
 
-        return $this->$key;
+        return (bool) $this->$key;
     }
 
     public function isApprovedBy(User $user, string $category): bool
@@ -356,13 +356,13 @@ class Course extends Model
         if ($user->isModeratorFor($this)) {
             $key = "moderator_approved_{$category}";
 
-            return $this->$key;
+            return (bool) $this->$key;
         }
 
         if ($user->isExternalFor($this)) {
             $key = "external_approved_{$category}";
 
-            return $this->$key;
+            return (bool) $this->$key;
         }
 
         return false;
