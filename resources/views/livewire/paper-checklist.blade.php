@@ -220,7 +220,7 @@
     <div class="field">
         <label class="label">Course Coordinator Comments</label>
         <p class="control is-expanded">
-            <textarea class="textarea" @if (! auth()->user()->isSetterFor($course)) disabled @endif wire:model="checklist.fields.setter_comments_to_moderator" id=""></textarea>
+            <textarea class="textarea" @if (! auth()->user()->isSetterFor($course) or ($course->isApprovedByModerator($checklist['category']))) disabled @endif wire:model="checklist.fields.setter_comments_to_moderator" id=""></textarea>
         </p>
     </div>
 
@@ -312,7 +312,7 @@
     <div class="field">
         <label class="label">Course Coordinator Comments</label>
         <p class="control is-expanded">
-            <textarea class="textarea" @if (! auth()->user()->isSetterFor($course)) disabled @endif wire:model="checklist.fields.solution_setter_comments" id=""></textarea>
+            <textarea class="textarea" @if (! auth()->user()->isSetterFor($course) or ($course->isApprovedByModerator($checklist['category']))) disabled @endif wire:model="checklist.fields.solution_setter_comments" id=""></textarea>
         </p>
     </div>
 
