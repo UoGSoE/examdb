@@ -35,7 +35,7 @@ class NotifyTechingOfficePaperForRegistryUploaded
         $contact = $event->paper->getDisciplineContact();
         if (! $contact) {
             // @TODO something better...
-            abort(500);
+            abort(500, 'No contact email address found');
         }
         Mail::to($contact)->queue(new PaperForRegistry($event->paper->course));
     }

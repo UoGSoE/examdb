@@ -36,7 +36,7 @@ class NotifyTeachingOfficeThatExternalHasCommented
 
         if (! $contact) {
             // @TODO something better...
-            abort(500);
+            abort(500, 'No contact email address found');
         }
 
         Mail::to($contact)->queue(new NotifyTeachingOfficeExternalHasCommented($event->paper->course));
