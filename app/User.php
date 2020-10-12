@@ -50,8 +50,7 @@ class User extends Authenticatable
 
     public static function getStaffForVueSelect()
     {
-        return static::where('is_external', '=', false)
-            ->orderBy('surname')
+        return static::orderBy('surname')
             ->get()
             ->map(function ($user) {
                 return [

@@ -125,6 +125,25 @@ class CourseUserTest extends TestCase
         $this->assertEquals(0, $course2->fresh()->staff()->count());
     }
 
+    /** @test */
+    public function all_users_show_up_in_the_staff_list_admins_can_use_to_choose_who_are_setters_and_moderatorss()
+    {
+        $admin = create(User::class, ['is_admin' => true]);
+        $course = create(Course::class);
+        $internal1 = create(User::class);
+        $internal2 = create(User::class);
+        $external = create(User::class, ['email' => 'jenny@example.com', 'is_external' => true]);
+
+        $response = $this->actingAs($admin)->get(route('course.show', $course->id));
+
+        $response->assertOk();
+        $response->assertViewHas('staff');
+        $response->data('staff')->pluck('value')->assertContains($internal1->id);
+        $response->data('staff')->pluck('value')->assertContains($internal2->id);
+        $response->data('staff')->pluck('value')->assertContains($external->id);
+        $response->data('staff')->pluck('value')->assertContains($admin->id);
+    }
+
     protected function pretendPasswordConfirmed()
     {
         session(['auth' => ['password_confirmed_at' => now()->timestamp]]);  // pretend we have confirmed our password
