@@ -196,6 +196,7 @@ class ChecklistFormTest extends TestCase
         $setter->markAsSetter($course);
         $moderator1->markAsModerator($course);
         $moderator2->markAsModerator($course);
+        option(['glasgow_internal_moderation_deadline' => now()->format('Y-m-d')]);
 
         $this->actingAs($setter);
         Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
@@ -204,7 +205,7 @@ class ChecklistFormTest extends TestCase
 
         Mail::assertQueued(SetterHasUpdatedTheChecklist::class, 2);
         Mail::assertQueued(SetterHasUpdatedTheChecklist::class, function ($mail) use ($moderator1) {
-            return $mail->hasTo($moderator1);
+            return $mail->hasTo($moderator1) && $mail->deadline == now()->format('d/m/Y');
         });
         Mail::assertQueued(SetterHasUpdatedTheChecklist::class, function ($mail) use ($moderator2) {
             return $mail->hasTo($moderator2);

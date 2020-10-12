@@ -3,10 +3,11 @@
 namespace App\Mail;
 
 use App\Course;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class SetterHasUpdatedTheChecklist extends Mailable
 {
@@ -14,14 +15,17 @@ class SetterHasUpdatedTheChecklist extends Mailable
 
     public $course;
 
+    public $deadline;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Course $course)
+    public function __construct(Course $course, string $deadline)
     {
         $this->course = $course;
+        $this->deadline = $deadline;
     }
 
     /**

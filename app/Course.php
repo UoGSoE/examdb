@@ -2,21 +2,22 @@
 
 namespace App;
 
+use Carbon\Carbon;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use App\Scopes\CurrentScope;
 use App\Events\PaperApproved;
 use App\Events\PaperUnapproved;
-use App\Mail\ExternalHasUpdatedTheChecklist;
-use App\Mail\ModeratorHasUpdatedTheChecklist;
-use App\Mail\SetterHasUpdatedTheChecklist;
-use App\Scopes\CurrentScope;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use App\Mail\SetterHasUpdatedTheChecklist;
+use App\Mail\ExternalHasUpdatedTheChecklist;
+use App\Mail\ModeratorHasUpdatedTheChecklist;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Course extends Model
 {
@@ -171,8 +172,15 @@ class Course extends Model
             );
 
         if (auth()->check() && auth()->user()->isSetterFor($this) && $checklist->shouldNotifyModerator()) {
-            $this->moderators->pluck('email')->each(function ($email) {
-                Mail::to($email)->queue(new SetterHasUpdatedTheChecklist($this));
+            $area = str_contains($this, 'ENG') ? 'glasgow' : 'uestc';
+            $optionName = "{$area}_internal_moderation_deadline";
+            $deadline = '';
+            if (option($optionName)) {
+                $deadline = Carbon::createFromFormat('Y-m-d', option($optionName))->format('d/m/Y');
+            }
+
+            $this->moderators->pluck('email')->each(function ($email) use ($deadline) {
+                Mail::to($email)->queue(new SetterHasUpdatedTheChecklist($this, $deadline));
             });
         }
 
