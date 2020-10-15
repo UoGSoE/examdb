@@ -24,6 +24,7 @@ class PaperChecklistFactory extends Factory
     public function definition()
     {
         $fields = make(Course::class)->getDefaultChecklistFields();
+
         return [
             'version' => PaperChecklist::CURRENT_VERSION,
             'user_id' => function () {

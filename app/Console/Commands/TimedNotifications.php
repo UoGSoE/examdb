@@ -103,7 +103,7 @@ class TimedNotifications extends Command
         }
 
         if (count($this->exceptions) > 0) {
-            $messages = collect($this->exceptions)->each(fn ($e) => $e->getMessage() . $e->getTraceAsString());
+            $messages = collect($this->exceptions)->each(fn ($e) => $e->getMessage().$e->getTraceAsString());
             throw new TimedNotificationException($messages);
         }
     }

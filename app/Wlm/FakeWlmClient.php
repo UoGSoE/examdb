@@ -131,7 +131,7 @@ class FakeWlmClient implements WlmClientInterface
                         'GUID' => 'blah2y',
                         'Surname' => 'McManus',
                         'Forenames' => 'Mark',
-                    ]
+                    ],
                 ],
                 'Externals' => [
                     'fake2x' => [
@@ -139,7 +139,7 @@ class FakeWlmClient implements WlmClientInterface
                         'Surname' => 'Faker',
                         'Forenames' => 'Prof',
                     ],
-                ]
+                ],
             ],
         ];
     }

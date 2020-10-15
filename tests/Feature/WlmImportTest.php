@@ -29,9 +29,8 @@ class WlmImportTest extends TestCase
     public function can_import_the_data_from_the_fake_wlm()
     {
         /**
-         * See the FakeWlmClient getCourse1() and getCourse2() for where all of these numbers & data comes from
+         * See the FakeWlmClient getCourse1() and getCourse2() for where all of these numbers & data comes from.
          */
-
         $importer = new WlmImporter(new FakeWlmClient);
 
         $importer->run();
