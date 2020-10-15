@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\PaperChecklist;
+use App\Models\PaperChecklist;
 use Illuminate\Http\Request;
 
 class ChecklistPdfController extends Controller

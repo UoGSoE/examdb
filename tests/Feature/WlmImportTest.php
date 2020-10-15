@@ -4,12 +4,12 @@
 
 namespace Tests\Feature;
 
-use App\Course;
-use App\Discipline;
+use App\Models\Course;
+use App\Models\Discipline;
 use App\Events\WlmImportComplete;
 use App\Jobs\ImportFromWlm;
 use App\Mail\WlmImportComplete as MailableWlmImportComplete;
-use App\User;
+use App\Models\User;
 use App\Wlm\FakeWlmClient;
 use App\Wlm\WlmClient;
 use App\Wlm\WlmClientInterface;

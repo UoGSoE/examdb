@@ -2,9 +2,9 @@
 
 namespace App\Wlm;
 
-use App\Course;
+use App\Models\Course;
 use App\Mail\WlmImportProblem;
-use App\User;
+use App\Models\User;
 use App\Wlm\WlmClientInterface;
 use Illuminate\Support\Facades\Mail;
 

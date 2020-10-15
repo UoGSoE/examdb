@@ -73,7 +73,7 @@ return [
 
         'ldapusers' => [
             'driver' => 'ldapeloquent',
-            'model' => App\User::class,
+            'model' => App\Models\User::class,
         ],
 
         // 'users' => [

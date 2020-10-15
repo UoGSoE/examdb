@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Course;
+use App\Models\Course;
 use App\Mail\NotifyLocalsAboutExternalComments;
 use App\Mail\NotifySetterAboutApproval;
 use App\Mail\NotifySetterAboutExternalComments;
 use App\Mail\NotifySetterAboutUnapproval;
-use App\Paper;
-use App\User;
+use App\Models\Paper;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;

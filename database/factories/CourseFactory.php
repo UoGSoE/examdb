@@ -11,7 +11,7 @@ class CourseFactory extends Factory
      *
      * @var string
      */
-    protected $model = \App\Course::class;
+    protected $model = \App\Models\Course::class;
 
     /**
      * Define the model's default state.

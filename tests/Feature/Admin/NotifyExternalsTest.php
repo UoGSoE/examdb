@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Admin;
 
-use App\Course;
+use App\Models\Course;
 use App\Jobs\NotifyExternals;
 use App\Mail\ExternalHasPapersToLookAt;
 use App\Mail\NotifyExternalSpecificCourse;
-use App\User;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Bus;

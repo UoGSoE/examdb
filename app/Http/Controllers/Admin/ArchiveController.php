@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Paper;
-use App\PaperChecklist;
+use App\Models\Paper;
+use App\Models\PaperChecklist;
 use App\Scopes\CurrentScope;
 use Illuminate\Http\Request;
 

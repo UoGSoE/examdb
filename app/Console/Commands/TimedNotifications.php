@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Course;
+use App\Models\Course;
 use App\Exceptions\TimedNotificationException;
 use App\Mail\CallForPapersMail;
 use App\Mail\ExternalModerationDeadlineMail;
@@ -13,7 +13,7 @@ use App\Mail\PrintReadyDeadlineMail;
 use App\Mail\PrintReadyDeadlinePassedMail;
 use App\Mail\SubmissionDeadlineMail;
 use App\Mail\SubmissionDeadlinePassedMail;
-use App\Paper;
+use App\Models\Paper;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
