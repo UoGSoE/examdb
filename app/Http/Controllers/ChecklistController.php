@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Course;
-use App\PaperChecklist;
-use App\User;
+use App\Models\Course;
+use App\Models\PaperChecklist;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

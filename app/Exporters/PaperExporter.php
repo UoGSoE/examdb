@@ -3,8 +3,8 @@
 namespace App\Exporters;
 
 use App\Jobs\RemoveRegistryZip;
-use App\Paper;
-use App\User;
+use App\Models\Paper;
+use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 

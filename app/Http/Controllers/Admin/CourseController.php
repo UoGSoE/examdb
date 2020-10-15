@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Course;
-use App\Discipline;
+use App\Models\Course;
+use App\Models\Discipline;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 

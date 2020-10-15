@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Paper;
+use App\Models\Paper;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 

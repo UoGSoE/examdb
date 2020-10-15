@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use App\Course;
-use App\User;
+use App\Models\Course;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;

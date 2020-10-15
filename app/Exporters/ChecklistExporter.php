@@ -2,12 +2,12 @@
 
 namespace App\Exporters;
 
-use App\Course;
+use App\Models\Course;
 use App\Jobs\RemoveChecklistZip;
 use App\Jobs\RemoveRegistryZip;
-use App\Paper;
-use App\PaperChecklist;
-use App\User;
+use App\Models\Paper;
+use App\Models\PaperChecklist;
+use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use ZipArchive;

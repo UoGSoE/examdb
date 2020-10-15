@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Paper;
+use App\Models\Paper;
 use App\Scopes\CurrentScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;

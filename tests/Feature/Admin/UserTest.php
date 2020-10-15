@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Admin;
 
-use App\Course;
-use App\User;
+use App\Models\Course;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Ohffs\Ldap\FakeLdapConnection;

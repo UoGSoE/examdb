@@ -2,9 +2,9 @@
 
 namespace Tests\Unit;
 
-use App\Comment;
-use App\Paper;
-use App\User;
+use App\Models\Comment;
+use App\Models\Paper;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;

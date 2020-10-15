@@ -1,23 +1,23 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
-use Carbon\Carbon;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-use App\Scopes\CurrentScope;
 use App\Events\PaperApproved;
 use App\Events\PaperUnapproved;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
-use App\Mail\SetterHasUpdatedTheChecklist;
 use App\Mail\ExternalHasUpdatedTheChecklist;
 use App\Mail\ModeratorHasUpdatedTheChecklist;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Mail\SetterHasUpdatedTheChecklist;
+use App\Scopes\CurrentScope;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class Course extends Model
 {
@@ -230,25 +230,26 @@ class Course extends Model
             'passed_to_moderator' => '',
             'setter_comments_to_moderator' => '',
             'solution_setter_comments' => '',
-            'overall_quality_appropriate' => "1",
+            'overall_quality_appropriate' => '1',
             'why_innapropriate' => '',
-            'should_revise_questions' => "1",
+            'should_revise_questions' => '1',
             'recommended_revisions' => '',
             'moderator_comments' => '',
             'moderator_completed_at' => '',
-            'solution_marks_appropriate' => "1",
+            'solution_marks_appropriate' => '1',
             'moderator_solution_innapropriate_comments' => '',
-            'solutions_marks_adjusted' => "1",
+            'solutions_marks_adjusted' => '1',
             'solution_adjustment_comments' => '',
             'solution_moderator_comments' => '',
             'moderator_solutions_at' => '',
             'external_examiner_name' => auth()->check() ? auth()->user()->full_name : '',
-            'external_agrees_with_moderator' => "0",
+            'external_agrees_with_moderator' => '0',
             'external_reason' => '',
             'external_comments' => '',
             'external_signed_at' => '',
         ];
     }
+
     public function hasSetterChecklist(string $category)
     {
         return $this->checklists
