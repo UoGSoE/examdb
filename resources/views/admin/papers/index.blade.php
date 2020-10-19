@@ -35,7 +35,8 @@
 <table class="table is-fullwidth is-striped is-hoverable is-bordered">
     <thead>
         <tr>
-            <th width="15%">Course</th>
+            <th width="15%">Code</th>
+            <th>Title</th>
             <th>Discipline</th>
             <th>Check Lists</th>
             <th>Pre Internally moderated</th>
@@ -52,6 +53,7 @@
             <td>
                 {{ $course->code }} <span class="tag">{{ $category }}</span>
             </td>
+            <td>{{ $course->title }}</td>
             <td>
                 {{ optional($course->discipline)->title }}
             </td>

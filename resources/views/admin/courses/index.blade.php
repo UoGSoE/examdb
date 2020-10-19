@@ -41,7 +41,8 @@
 <table class="table is-striped is-fullwidth">
     <thead>
         <tr>
-            <th width="5%">Course</th>
+            <th width="5%">Code</th>
+            <th>Title</th>
             <th width="7%">Discipline</th>
             <th>Main</th>
             <th>Resit</th>
@@ -62,6 +63,7 @@
                     @endif
                 </a>
             </td>
+            <td>{{ $course->title }}</td>
             <td>{{ optional($course->discipline)->title }}</td>
             <td>
                 <span class="icon {{ $course->isApprovedByModerator('main') ? 'has-text-info' : 'has-text-grey-light' }}" title="Moderator approved?">
