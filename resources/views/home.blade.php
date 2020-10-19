@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="columns">
-    @if (auth()->user()->isInternal())
+    @if (count($setterCourses) > 0 || count($moderatedCourses) > 0)
     <div class="column">
         <h3 class="title is-3 has-text-grey">
             <span class="icon has-text-grey-lighter"><i class="fas fa-book-open"></i></span>
@@ -36,7 +36,8 @@
             @endforeach
         </ul>
     </div>
-    @else
+    @endif
+    @if (count($externalCourses) > 0)
     <div class="column">
         <h3 class="title is-3 has-text-grey">
             <span class="icon has-text-grey-lighter"><i class="fas fa-book-open"></i></span>

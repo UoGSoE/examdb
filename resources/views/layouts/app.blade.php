@@ -19,7 +19,11 @@
 
     <script>
         window.user_id = {{ Auth::id() }};
-        window.is_external = {{ Auth::check() && Auth::user()->isExternal() ? 1 : 0 }};
+        @if (isset($course))
+            window.is_external = {{ Auth::check() && Auth::user()->isExternalFor($course) ? 1 : 0 }};
+        @else
+            window.is_external = {{ Auth::check() && Auth::user()->isExternal() ? 1 : 0 }};
+        @endif
     </script>
     <!-- Routes -->
     @routes
