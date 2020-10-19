@@ -90,6 +90,11 @@ class Course extends Model
         return $this->papers()->resit2();
     }
 
+    public function scopeForSemester($query, int $semester)
+    {
+        return $query->where('semester', '=', $semester);
+    }
+
     public function scopeExternalsNotNotified($query)
     {
         return $query->where('external_notified', '=', false);

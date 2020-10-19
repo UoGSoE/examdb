@@ -27,6 +27,7 @@ class CourseFactory extends Factory
             'moderator_approved_resit' => false,
             'external_approved_main' => false,
             'external_approved_resit' => false,
+            'semester' => 1,
         ];
     }
 }

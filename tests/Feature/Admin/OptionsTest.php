@@ -58,6 +58,9 @@ class OptionsTest extends TestCase
             ->set('options.uestc_print_ready_deadline', now()->format('d/m/Y'))
             ->set('options.teaching_office_contact_glasgow', 'jane@example.com')
             ->set('options.teaching_office_contact_uestc', 'jenny@example.com')
+            ->set('options.start_semester_1', now()->format('d/m/Y'))
+            ->set('options.start_semester_2', now()->format('d/m/Y'))
+            ->set('options.start_semester_3', now()->format('d/m/Y'))
             ->call('save')
             ->assertHasNoErrors();
 
@@ -101,6 +104,7 @@ class OptionsTest extends TestCase
         $admin = create(User::class, ['is_admin' => true]);
 
         option(['date_receive_call_for_papers_email_sent' => now()->subDays(3)->format('Y-m-d H:i')]);
+        option(['glasgow_staff_submission_deadline_email_sent_upcoming_semester_1' => now()->subDays(3)->format('Y-m-d H:i')]);
 
         Livewire::actingAs($admin)
             ->test('options-editor')
@@ -117,9 +121,13 @@ class OptionsTest extends TestCase
             ->set('options.uestc_print_ready_deadline', now()->format('d/m/Y'))
             ->set('options.teaching_office_contact_glasgow', 'jane@example.com')
             ->set('options.teaching_office_contact_uestc', 'jenny@example.com')
+            ->set('options.start_semester_1', now()->format('d/m/Y'))
+            ->set('options.start_semester_2', now()->format('d/m/Y'))
+            ->set('options.start_semester_3', now()->format('d/m/Y'))
             ->call('save')
             ->assertHasNoErrors();
 
         $this->assertEquals(0, option('date_receive_call_for_papers_email_sent'));
+        $this->assertEquals(0, option('glasgow_staff_submission_deadline_email_sent_upcoming_semester_1'));
     }
 }

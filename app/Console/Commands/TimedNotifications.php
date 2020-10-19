@@ -19,6 +19,7 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use RuntimeException;
 
 class TimedNotifications extends Command
 {
@@ -28,6 +29,8 @@ class TimedNotifications extends Command
 
     protected $exceptions = [];
 
+    protected $semester;
+
     public function __construct()
     {
         parent::__construct();
@@ -35,6 +38,8 @@ class TimedNotifications extends Command
 
     public function handle()
     {
+        $this->semester = $this->getCurrentSemester();
+
         // :: sad face ::
         try {
             $this->handleCallForPapers();
@@ -127,19 +132,45 @@ class TimedNotifications extends Command
             return;
         }
 
-        if (option('date_receive_call_for_papers_email_sent')) {
+        $currentSemester = $this->getCurrentSemester();
+
+        if (option('date_receive_call_for_papers_email_sent_semester_' . $currentSemester)) {
             return;
         }
 
-        $emailAddresses = Course::with('setters')->get()->flatMap(function ($course) {
-            return $course->setters->pluck('email');
-        })->filter()->unique();
+        $emailAddresses = Course::with('setters')
+            ->forSemester($currentSemester)
+            ->get()
+            ->flatMap(function ($course) {
+                return $course->setters->pluck('email');
+            })->filter()->unique();
 
         $emailAddresses->each(function ($email) {
             Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new CallForPapersMail(Carbon::createFromFormat('Y-m-d', option('date_receive_call_for_papers'))));
         });
 
-        option(['date_receive_call_for_papers_email_sent' => now()->format('Y-m-d')]);
+        option(['date_receive_call_for_papers_email_sent_semester_' . $currentSemester => now()->format('Y-m-d')]);
+    }
+
+    protected function getCurrentSemester(): int
+    {
+        $startSemesterOne = Carbon::createFromFormat('Y-m-d', option('start_semester_1'));
+        $startSemesterTwo = Carbon::createFromFormat('Y-m-d', option('start_semester_2'));
+        $startSemesterThree = Carbon::createFromFormat('Y-m-d', option('start_semester_3'));
+
+        if (now()->between($startSemesterOne, $startSemesterTwo)) {
+            return 1;
+        }
+
+        if (now()->between($startSemesterTwo, $startSemesterThree)) {
+            return 2;
+        }
+
+        if (now()->gte($startSemesterThree)) {
+            return 3;
+        }
+
+        throw new RuntimeException('Could not figure out semester');
     }
 
     protected function handleSubmissionDeadline(string $area)
@@ -162,12 +193,20 @@ class TimedNotifications extends Command
             return;
         }
 
-        if (option("{$optionName}_email_sent")) {
+        if ($date->clone()->subWeek()->dayOfYear == now()->dayOfYear) {
+            $subType = 'upcoming';
+        } else {
+            $subType = 'reminder';
+        }
+
+        $currentSemester = $this->getCurrentSemester();
+
+        if (option("{$optionName}_email_sent_{$subType}_semester_{$currentSemester}")) {
             return;
         }
 
         $emailAddresses = collect([]);
-        if ($date->clone()->subWeek()->dayOfYear == now()->dayOfYear) {
+        if ($subType == 'upcoming') {
             $mailableName = SubmissionDeadlineMail::class;
             $emailAddresses = $this->getAllSetterEmails($area);
         } else {
@@ -179,9 +218,7 @@ class TimedNotifications extends Command
             Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new $mailableName($date));
         });
 
-        if ($date->addDay()->dayOfYear == now()->dayOfYear) {
-            option(["{$optionName}_email_sent" => now()->format('Y-m-d')]);
-        }
+        option(["{$optionName}_email_sent_{$subType}_semester_{$currentSemester}" => now()->format('Y-m-d')]);
     }
 
     protected function handleModerationDeadline(string $area)
@@ -203,11 +240,19 @@ class TimedNotifications extends Command
         if ($date->dayOfYear != now()->subDay()->dayOfYear && $date->dayOfYear != now()->addDays(3)->dayOfYear) {
             return;
         }
-        if (option("{$optionName}_email_sent")) {
+
+        if ($date->clone()->subDays(3)->dayOfYear == now()->dayOfYear) {
+            $subType = 'upcoming';
+        } else {
+            $subType = 'reminder';
+        }
+
+        $currentSemester = $this->getCurrentSemester();
+        if (option("{$optionName}_email_sent_{$subType}_semester_{$currentSemester}")) {
             return;
         }
 
-        if ($date->clone()->subDays(3)->dayOfYear == now()->dayOfYear) {
+        if ($subType == 'upcoming') {
             $mailableName = ModerationDeadlineMail::class;
             $emailAddresses = $this->getAllModeratorEmails($area);
         } else {
@@ -215,13 +260,14 @@ class TimedNotifications extends Command
             $emailAddresses = $this->getIncompletePaperworkModeratorEmails($area);
         }
 
+        if ($subType == 'reminder') {
+            dd($emailAddresses);
+        }
         $emailAddresses->each(function ($email) use ($mailableName, $date) {
             Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new $mailableName($date));
         });
 
-        if ($date->addDay()->dayOfYear == now()->dayOfYear) {
-            option(["{$optionName}_email_sent" => now()->format('Y-m-d')]);
-        }
+        option(["{$optionName}_email_sent_{$subType}_semester_{$currentSemester}" => now()->format('Y-m-d')]);
     }
 
     protected function handleNotifyExternalsReminder(string $area)
@@ -329,28 +375,28 @@ class TimedNotifications extends Command
 
     protected function getAllSetterEmails(string $area)
     {
-        return Course::forArea($area)->with('setters')->get()->flatMap(function ($course) {
+        return Course::forArea($area)->forSemester($this->semester)->with('setters')->get()->flatMap(function ($course) {
             return $course->setters->pluck('email');
         })->filter()->unique();
     }
 
     protected function getIncompletePaperworkSetterEmails(string $area)
     {
-        return Course::forArea($area)->doesntHave('checklists')->with('setters')->get()->flatMap(function ($course) {
+        return Course::forArea($area)->forSemester($this->semester)->doesntHave('checklists')->with('setters')->get()->flatMap(function ($course) {
             return $course->setters->pluck('email');
         })->filter()->unique();
     }
 
     protected function getAllModeratorEmails(string $area)
     {
-        return Course::forArea($area)->with('moderators')->get()->flatMap(function ($course) {
+        return Course::forArea($area)->forSemester($this->semester)->with('moderators')->get()->flatMap(function ($course) {
             return $course->moderators->pluck('email');
         })->filter()->unique();
     }
 
     protected function getIncompletePaperworkModeratorEmails(string $area)
     {
-        return Course::forArea($area)->with('moderators')
+        return Course::forArea($area)->forSemester($this->semester)->with('moderators')
             ->where('moderator_approved_main', '!=', true)
             ->orWhere('moderator_approved_resit', '!=', true)
             ->get()

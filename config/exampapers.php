@@ -86,5 +86,17 @@ return [
           'label' => 'Deadline for print-ready version of UESTC papers (UESTC teaching office staff are emailed 1 days before and again 1 day after the deadline if the paperwork isn\'t complete)',
           'name' => 'uestc_print_ready_deadline',
         ],
+        [
+          'label' => 'Start of Semester One',
+          'name' => 'start_semester_1',
+        ],
+        [
+          'label' => 'Start of Semester Two',
+          'name' => 'start_semester_2',
+        ],
+        [
+          'label' => 'Start of Semester Three',
+          'name' => 'start_semester_3',
+        ],
     ],
 ];
