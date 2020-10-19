@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Models\Course;
-use App\Models\Paper;
-use App\Models\User;
+use App\Course;
+use App\Paper;
+use App\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PaperFactory extends Factory
@@ -14,7 +14,7 @@ class PaperFactory extends Factory
      *
      * @var string
      */
-    protected $model = \App\Models\Paper::class;
+    protected $model = \App\Paper::class;
 
     /**
      * Define the model's default state.

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Paper;
+use App\Paper;
 use Auth;
 use Illuminate\Http\Request;
 

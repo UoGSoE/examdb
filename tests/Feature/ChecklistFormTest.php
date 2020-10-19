@@ -2,14 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\Models\Course;
+use App\Course;
 use App\Http\Livewire\PaperChecklist as LivewirePaperChecklist;
 use App\Mail\ChecklistUpdated;
 use App\Mail\ExternalHasUpdatedTheChecklist;
 use App\Mail\ModeratorHasUpdatedTheChecklist;
 use App\Mail\SetterHasUpdatedTheChecklist;
-use App\Models\PaperChecklist;
-use App\Models\User;
+use App\PaperChecklist;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Mail;

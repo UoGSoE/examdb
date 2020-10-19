@@ -2,9 +2,9 @@
 
 namespace App\Events;
 
-use App\Models\Course;
-use App\Models\Paper;
-use App\Models\User;
+use App\Course;
+use App\Paper;
+use App\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;

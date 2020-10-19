@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\Course;
-use App\Models\User;
+use App\Course;
+use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Route;
 

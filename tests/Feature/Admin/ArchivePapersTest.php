@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Admin;
 
-use App\Models\Course;
-use App\Models\Paper;
-use App\Models\PaperChecklist;
-use App\Models\User;
+use App\Course;
+use App\Paper;
+use App\PaperChecklist;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;

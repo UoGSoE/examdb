@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Models\Course;
+use App\Course;
 use App\Mail\ExternalHasPapersToLookAt;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

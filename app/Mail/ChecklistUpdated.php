@@ -2,8 +2,8 @@
 
 namespace App\Mail;
 
-use App\Models\Paper;
-use App\Models\PaperChecklist;
+use App\Paper;
+use App\PaperChecklist;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;

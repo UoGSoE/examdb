@@ -64,19 +64,19 @@
                 </span>
             </td>
             <td>
-                {{ $course->datePaperAdded($category, \App\Models\Paper::PRE_INTERNALLY_MODERATED) }}
+                {{ $course->datePaperAdded($category, \App\Paper::PRE_INTERNALLY_MODERATED) }}
             </td>
             <td>
-                {{ $course->datePaperAdded($category, \App\Models\Paper::MODERATOR_COMMENTS) }}
+                {{ $course->datePaperAdded($category, \App\Paper::MODERATOR_COMMENTS) }}
             </td>
             <td>
-                {{ $course->datePaperAdded($category, \App\Models\Paper::POST_INTERNALLY_MODERATED) }}
+                {{ $course->datePaperAdded($category, \App\Paper::POST_INTERNALLY_MODERATED) }}
             </td>
             <td>
-                {{ $course->datePaperAdded($category, \App\Models\Paper::EXTERNAL_COMMENTS) }}
+                {{ $course->datePaperAdded($category, \App\Paper::EXTERNAL_COMMENTS) }}
             </td>
             <td>
-                {{ $course->datePaperAdded($category, \App\Models\Paper::PAPER_FOR_REGISTRY) }}
+                {{ $course->datePaperAdded($category, \App\Paper::PAPER_FOR_REGISTRY) }}
             </td>
         </tr>
         @endforeach

@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Api;
 
-use App\Models\Course;
-use App\Models\Paper;
+use App\Course;
+use App\Paper;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;

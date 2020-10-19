@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Course;
+use App\Course;
 use App\Http\Controllers\Controller;
-use App\Models\Paper;
+use App\Paper;
 use Illuminate\Http\Request;
 
 class ArchiveAreaController extends Controller

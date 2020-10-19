@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Course;
+use App\Course;
 use App\Mail\ChecklistUploaded;
 use App\Mail\ExternalHasPapersToLookAt;
 use App\Mail\ExternalLoginUrl;
@@ -17,8 +17,8 @@ use App\Mail\PaperworkIncomplete;
 use App\Mail\RegistryPapersExported;
 use App\Mail\WlmImportComplete;
 use App\Mail\WlmImportProblem;
-use App\Models\Paper;
-use App\Models\User;
+use App\Paper;
+use App\User;
 
 return [
     /*

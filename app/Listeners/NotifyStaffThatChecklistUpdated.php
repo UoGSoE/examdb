@@ -7,7 +7,7 @@ use App\Events\PaperAdded;
 use App\Mail\ChecklistUpdated;
 use App\Mail\ChecklistUploaded;
 use App\Mail\NotifyModeratorAboutUpload;
-use App\Models\Paper;
+use App\Paper;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;

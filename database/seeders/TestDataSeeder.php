@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Course;
-use App\Models\Discipline;
-use App\Models\User;
+use App\Course;
+use App\Discipline;
+use App\User;
 use Illuminate\Database\Seeder;
 
 class TestDataSeeder extends Seeder

@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Discipline;
+use App\Discipline;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class DisciplineFactory extends Factory

@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Events\WlmImportComplete;
-use App\Models\User;
+use App\User;
 use App\Wlm\WlmClientInterface;
 use App\Wlm\WlmImporter;
 use Illuminate\Bus\Queueable;

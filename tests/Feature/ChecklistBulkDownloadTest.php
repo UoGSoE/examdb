@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Models\Course;
+use App\Course;
 use App\Exporters\ChecklistExporter;
 use App\Jobs\BulkExportChecklists;
 use App\Jobs\RemoveChecklistZip;
 use App\Mail\ChecklistsReadyToDownload;
-use App\Models\PaperChecklist;
-use App\Models\User;
+use App\PaperChecklist;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Bus;

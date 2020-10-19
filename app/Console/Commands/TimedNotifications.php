@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Course;
+use App\Course;
 use App\Exceptions\TimedNotificationException;
 use App\Mail\CallForPapersMail;
 use App\Mail\ExternalModerationDeadlineMail;
@@ -13,7 +13,7 @@ use App\Mail\PrintReadyDeadlineMail;
 use App\Mail\PrintReadyDeadlinePassedMail;
 use App\Mail\SubmissionDeadlineMail;
 use App\Mail\SubmissionDeadlinePassedMail;
-use App\Models\Paper;
+use App\Paper;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
@@ -103,7 +103,7 @@ class TimedNotifications extends Command
         }
 
         if (count($this->exceptions) > 0) {
-            $messages = collect($this->exceptions)->each(fn ($e) => $e->getMessage().$e->getTraceAsString());
+            $messages = collect($this->exceptions)->each(fn ($e) => $e->getMessage() . $e->getTraceAsString());
             throw new TimedNotificationException($messages);
         }
     }

@@ -2,8 +2,8 @@
 
 namespace App\Events;
 
-use App\Models\Paper;
-use App\Models\User;
+use App\Paper;
+use App\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;

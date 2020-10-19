@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Course;
+use App\Course;
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\User;
 use Illuminate\Http\Request;
 
 class CourseUsersController extends Controller

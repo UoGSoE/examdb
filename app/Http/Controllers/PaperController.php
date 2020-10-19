@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Course;
+use App\Course;
 use App\Events\PaperAdded;
-use App\Models\Paper;
+use App\Paper;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Gate;

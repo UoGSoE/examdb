@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Course;
-use App\Models\Paper;
+use App\Course;
+use App\Paper;
 use Illuminate\Http\Request;
 
 class PaperApprovalController extends Controller

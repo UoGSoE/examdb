@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Models\Course;
+use App\Course;
 use App\Mail\NotifyModeratorAboutUpload;
 use App\Mail\NotifySetterAboutApproval;
 use App\Mail\NotifySetterAboutUnapproval;
 use App\Mail\NotifySetterAboutUpload;
-use App\Models\Paper;
-use App\Models\User;
+use App\Paper;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;

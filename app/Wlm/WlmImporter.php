@@ -2,9 +2,9 @@
 
 namespace App\Wlm;
 
-use App\Models\Course;
+use App\Course;
 use App\Mail\WlmImportProblem;
-use App\Models\User;
+use App\User;
 use App\Wlm\WlmClientInterface;
 use Illuminate\Support\Facades\Mail;
 
@@ -35,7 +35,6 @@ class WlmImporter
                 if (! preg_match('/^(ENG|UESTC|SIT|TEST)/', $wlmCourse['Code'])) {
                     return false;
                 }
-
                 return true;
             })->take($maximumCourses)->each(function ($wlmCourse) {
                 $this->course = $this->courseFromWlm($wlmCourse);
@@ -68,7 +67,6 @@ class WlmImporter
             return collect([]);
         }
         $staff = [];
-
         return collect($wlmCourse['Exam'][$key])->map(function ($wlmStaff) {
             if (! $this->staffList->has($wlmStaff['GUID'])) {
                 $wlmStaff['Email'] = $this->getStaffEmail($wlmStaff);
@@ -97,8 +95,8 @@ class WlmImporter
         $externals->each->markAsExternal($this->course);
         $externals->each(function ($external) {
             $external->update([
-                'email' => 'CHANGEME'.$external->id.'@glasgow.ac.uk',
-                'username' => 'CHANGEME'.$external->id.'@glasgow.ac.uk',
+                'email' => 'CHANGEME' . $external->id . '@glasgow.ac.uk',
+                'username' => 'CHANGEME' . $external->id . '@glasgow.ac.uk',
                 'is_external' => true,
             ]);
         });

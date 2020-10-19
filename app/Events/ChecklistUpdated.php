@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Models\PaperChecklist;
+use App\PaperChecklist;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;

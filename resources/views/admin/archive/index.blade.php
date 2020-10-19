@@ -19,7 +19,7 @@
         <tr>
             <td>{{ $paper->course->code }}</td>
             <td>
-                @if ($paper->subcategory == \App\Models\Paper::PAPER_FOR_REGISTRY)
+                @if ($paper->subcategory == \App\Paper::PAPER_FOR_REGISTRY)
                 <a href="{{ route('archived.paper.show', $paper->id) }}">
                     {{ ucfirst($paper->category) }} {{ $paper->subcategory }}
                 </a>

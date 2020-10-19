@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Course;
+use App\Course;
 use App\Http\Controllers\Controller;
 use App\Jobs\NotifyExternals;
 use App\Mail\ExternalHasPapersToLookAt;
