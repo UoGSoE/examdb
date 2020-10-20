@@ -108,7 +108,7 @@ services:
   migrations:
     image: ${IMAGE_NAME}
     deploy: *default-php-deploy
-    stop_grace_period: 5m
+    stop_grace_period: 1m
     networks:
       - default
     environment:
