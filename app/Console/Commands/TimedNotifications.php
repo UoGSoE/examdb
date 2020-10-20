@@ -260,10 +260,7 @@ class TimedNotifications extends Command
             $emailAddresses = $this->getIncompletePaperworkModeratorEmails($area);
         }
 
-        if ($subType == 'reminder') {
-            dd($emailAddresses);
-        }
-        $emailAddresses->each(function ($email) use ($mailableName, $date) {
+        $emailAddresses->each(function ($email) use ($mailableName, $date, $subType) {
             Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new $mailableName($date));
         });
 
@@ -389,16 +386,24 @@ class TimedNotifications extends Command
 
     protected function getAllModeratorEmails(string $area)
     {
-        return Course::forArea($area)->forSemester($this->semester)->with('moderators')->get()->flatMap(function ($course) {
-            return $course->moderators->pluck('email');
-        })->filter()->unique();
+        return Course::forArea($area)
+            ->forSemester($this->semester)
+            ->with('moderators')
+            ->get()
+            ->flatMap(function ($course) {
+                return $course->moderators->pluck('email');
+            })
+            ->filter()
+            ->unique();
     }
 
     protected function getIncompletePaperworkModeratorEmails(string $area)
     {
         return Course::forArea($area)->forSemester($this->semester)->with('moderators')
-            ->where('moderator_approved_main', '!=', true)
-            ->orWhere('moderator_approved_resit', '!=', true)
+            ->where(function ($query) {
+                $query->where('moderator_approved_main', '!=', true)
+                    ->orWhere('moderator_approved_resit', '!=', true);
+            })
             ->get()
             ->flatMap(function ($course) {
                 return $course->moderators->pluck('email');

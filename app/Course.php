@@ -102,8 +102,7 @@ class Course extends Model
 
     public function scopeForArea($query, $area)
     {
-        $codePrefix = $area == 'uestc' ? 'UESTC' : 'ENG';
-
+        $codePrefix = ($area == 'uestc' ? 'UESTC' : 'ENG');
         return $query->where('code', 'like', $codePrefix.'%');
     }
 
