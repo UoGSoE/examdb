@@ -21,12 +21,13 @@ class CourseFactory extends Factory
     public function definition()
     {
         return [
-            'code' => 'ENG'.$this->faker->numberBetween(1000, 5999),
+            'code' => 'ENG'.$this->faker->numberBetween(1000, 8999),
             'title' => $this->faker->text(50),
             'moderator_approved_main' => false,
             'moderator_approved_resit' => false,
             'external_approved_main' => false,
             'external_approved_resit' => false,
+            'semester' => 1,
         ];
     }
 }

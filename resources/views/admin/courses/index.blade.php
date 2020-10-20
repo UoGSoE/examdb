@@ -42,6 +42,7 @@
     <thead>
         <tr>
             <th width="5%">Code</th>
+            <th width="5%">Semester</th>
             <th>Title</th>
             <th width="7%">Discipline</th>
             <th>Main</th>
@@ -62,6 +63,9 @@
                     <span class="tag is-warning">Disabled</span>
                     @endif
                 </a>
+            </td>
+            <td>
+                @livewire('semester-edit-box', ['course' => $course])
             </td>
             <td>{{ $course->title }}</td>
             <td>{{ optional($course->discipline)->title }}</td>

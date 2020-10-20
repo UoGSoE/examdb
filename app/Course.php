@@ -90,6 +90,11 @@ class Course extends Model
         return $this->papers()->resit2();
     }
 
+    public function scopeForSemester($query, int $semester)
+    {
+        return $query->where('semester', '=', $semester);
+    }
+
     public function scopeExternalsNotNotified($query)
     {
         return $query->where('external_notified', '=', false);
@@ -97,8 +102,7 @@ class Course extends Model
 
     public function scopeForArea($query, $area)
     {
-        $codePrefix = $area == 'uestc' ? 'UESTC' : 'ENG';
-
+        $codePrefix = ($area == 'uestc' ? 'UESTC' : 'ENG');
         return $query->where('code', 'like', $codePrefix.'%');
     }
 

@@ -60,6 +60,9 @@ class OptionsEditor extends Component
             'options.uestc_print_ready_deadline' => 'required|date_format:d/m/Y',
             'options.teaching_office_contact_glasgow' => 'required|email',
             'options.teaching_office_contact_uestc' => 'required|email',
+            'options.start_semester_1' => 'required|date_format:d/m/Y',
+            'options.start_semester_2' => 'required|date_format:d/m/Y',
+            'options.start_semester_3' => 'required|date_format:d/m/Y',
         ]);
 
         $dateFields = collect($this->defaultDateOptions)->map(function ($option) {
@@ -80,6 +83,9 @@ class OptionsEditor extends Component
             'options.uestc_print_ready_deadline',
             'options.teaching_office_contact_glasgow',
             'options.teaching_office_contact_uestc',
+            'start_semester_1',
+            'start_semester_2',
+            'start_semester_3',
         ])->each(function ($optionName) use ($dateFields) {
             $dbName = str_replace('options.', '', $optionName);
             $value = $this->options[$dbName];
@@ -89,6 +95,15 @@ class OptionsEditor extends Component
                 // that indicates it's been sent so we can re-send it on the new date
                 if ($value != option($dbName.'_email_sent')) {
                     option([$dbName.'_email_sent' => 0]);
+                    option([$dbName.'_email_sent_semester_1' => 0]);
+                    option([$dbName.'_email_sent_semester_2' => 0]);
+                    option([$dbName.'_email_sent_semester_3' => 0]);
+                    option([$dbName.'_email_sent_upcoming_semester_1' => 0]);
+                    option([$dbName.'_email_sent_reminder_semester_1' => 0]);
+                    option([$dbName.'_email_sent_upcoming_semester_2' => 0]);
+                    option([$dbName.'_email_sent_reminder_semester_2' => 0]);
+                    option([$dbName.'_email_sent_upcoming_semester_3' => 0]);
+                    option([$dbName.'_email_sent_reminder_semester_3' => 0]);
                 }
             }
             option([$dbName => $value]);
