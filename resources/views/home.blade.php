@@ -16,6 +16,7 @@
                 <a href="{{ route('course.show', $course->id) }}">
                     {{ $course->code }} {{ $course->title }}
                 </a>
+                <span class="tag" title="Semester {{ $course->semester }}">S{{ $course->semester }}</span>
             </li>
             @endforeach
         </ul>
@@ -32,6 +33,7 @@
                 <a href="{{ route('course.show', $course->id) }}">
                     {{ $course->code }} {{ $course->title }}
                 </a>
+                <span class="tag" title="Semester {{ $course->semester }}">S{{ $course->semester }}</span>
             </li>
             @endforeach
         </ul>
@@ -50,6 +52,7 @@
                 <a href="{{ route('course.show', $course->id) }}">
                     {{ $course->code }} {{ $course->title }}
                 </a>
+                <span class="tag" title="Semester {{ $course->semester }}">S{{ $course->semester }}</span>
                 <span class="has-text-grey">
                     Last update {{ $course->updated_at->diffForHumans() }}
                 </span>

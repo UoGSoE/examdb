@@ -226,7 +226,7 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function emails_are_sent_for_the_uestc_staff_submission_deadline_option_when_it_is_the_day_before_and_day_after()
+    public function emails_are_sent_for_the_uestc_staff_submission_deadline_option_when_it_is_a_week_before_and_day_after()
     {
         Mail::fake();
         $course1 = create(Course::class, ['code' => 'ENG1234']);
@@ -248,7 +248,7 @@ class TimedNotificationsTest extends TestCase
 
         option(['uestc_staff_submission_deadline' => now()->addWeek()->format('Y-m-d')]);
 
-        $this->assertNull(option('uestc_staff_submission_deadline_email_sent'));
+        $this->assertNull(option('uestc_staff_submission_deadline_email_sent_upcoming_semester_1'));
 
         $this->artisan('examdb:timed-notifications');
 
@@ -256,11 +256,13 @@ class TimedNotificationsTest extends TestCase
         Mail::assertQueued(SubmissionDeadlineMail::class, function ($mail) use ($setter3) {
             return $mail->hasTo($setter3->email);
         });
-        $this->assertNull(option('uestc_staff_submission_deadline_email_sent'));
+        $this->assertNotNull(option('uestc_staff_submission_deadline_email_sent_upcoming_semester_1'));
 
         option(['uestc_staff_submission_deadline' => now()->subDay()->format('Y-m-d')]);
 
         Mail::fake();
+
+        $this->assertNull(option('uestc_staff_submission_deadline_email_sent_reminder_semester_1'));
 
         $this->artisan('examdb:timed-notifications');
 

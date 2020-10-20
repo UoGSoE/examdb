@@ -65,11 +65,7 @@
                 </a>
             </td>
             <td>
-                <div class="field">
-                    <div class="control">
-                        <input class="input is-small" type="number" value="2" min="1" max="3">
-                    </div>
-                </div>
+                @livewire('semester-edit-box', ['course' => $course])
             </td>
             <td>{{ $course->title }}</td>
             <td>{{ optional($course->discipline)->title }}</td>
