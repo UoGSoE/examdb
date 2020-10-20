@@ -42,6 +42,7 @@
     <thead>
         <tr>
             <th width="5%">Code</th>
+            <th width="5%">Semester</th>
             <th>Title</th>
             <th width="7%">Discipline</th>
             <th>Main</th>
@@ -62,6 +63,13 @@
                     <span class="tag is-warning">Disabled</span>
                     @endif
                 </a>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <input class="input is-small" type="number" value="2" min="1" max="3">
+                    </div>
+                </div>
             </td>
             <td>{{ $course->title }}</td>
             <td>{{ optional($course->discipline)->title }}</td>
