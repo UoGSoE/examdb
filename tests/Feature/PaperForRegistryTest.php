@@ -22,6 +22,8 @@ class PaperForRegistryTest extends TestCase
     {
         $this->withoutExceptionHandling();
         Mail::fake();
+        Storage::fake('exampapers');
+
         $admin = User::factory()->admin()->create();
         $setter1 = User::factory()->create();
         $setter2 = User::factory()->create();
@@ -53,8 +55,8 @@ class PaperForRegistryTest extends TestCase
     public function a_setter_can_mark_the_paper_for_registry_as_approved()
     {
         $this->withoutExceptionHandling();
-        Mail::fake('exampapers');
-        Storage::fake();
+        Mail::fake();
+        Storage::fake('exampapers');
         $setter = create(User::class);
         $course = create(Course::class);
         $setter->markAsSetter($course);
