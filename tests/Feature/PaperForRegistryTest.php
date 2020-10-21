@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\User;
 use App\Paper;
 use App\Course;
+use App\Discipline;
 use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
@@ -24,11 +25,12 @@ class PaperForRegistryTest extends TestCase
         Mail::fake();
         Storage::fake('exampapers');
 
+        $discipline = create(Discipline::class, ['contact' => 'someone@example.com']);
         $admin = User::factory()->admin()->create();
         $setter1 = User::factory()->create();
         $setter2 = User::factory()->create();
         $moderator = User::factory()->create();
-        $course = Course::factory()->create();
+        $course = Course::factory()->create(['discipline_id' => $discipline->id]);
         $setter1->markAsSetter($course);
         $setter2->markAsSetter($course);
         $moderator->markAsModerator($course);
