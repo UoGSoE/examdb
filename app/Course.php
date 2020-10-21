@@ -32,6 +32,8 @@ class Course extends Model
         'external_approved_main' => 'boolean',
         'external_approved_resit' => 'boolean',
         'external_notified' => 'boolean',
+        'registry_approved_main' => 'boolean',
+        'registry_approved_resit' => 'boolean',
     ];
 
     public function staff()
@@ -517,5 +519,31 @@ class Course extends Model
         }
 
         return $matches[1];
+    }
+
+    public function getHasMainPaperForRegistryAttribute()
+    {
+        return $this->mainPapers->contains(fn ($paper) => Str::startsWith($paper->subcategory, Paper::PAPER_FOR_REGISTRY));
+    }
+
+    public function getHasResitPaperForRegistryAttribute()
+    {
+        return $this->resitPapers->contains(fn ($paper) => Str::startsWith($paper->subcategory, Paper::PAPER_FOR_REGISTRY));
+    }
+
+    public function approvePaperForRegistry(string $category = 'main')
+    {
+        $field = 'registry_approved_' . $category;
+
+        $this->update([
+            $field => true,
+        ]);
+    }
+
+    public function paperForRegistryIsApproved(string $category = 'main')
+    {
+        $field = 'registry_approved_' . $category;
+
+        return $this->$field;
     }
 }

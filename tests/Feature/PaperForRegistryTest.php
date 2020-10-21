@@ -9,6 +9,7 @@ use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\PaperForRegistryUploaded;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -46,5 +47,26 @@ class PaperForRegistryTest extends TestCase
         Mail::assertQueued(PaperForRegistryUploaded::class, function ($mail) use ($setter2) {
             return $mail->hasTo($setter2->email);
         });
+    }
+
+    /** @test */
+    public function a_setter_can_mark_the_paper_for_registry_as_approved()
+    {
+        $this->withoutExceptionHandling();
+        Mail::fake();
+        Storage::fake();
+        $setter = create(User::class);
+        $course = create(Course::class);
+        $setter->markAsSetter($course);
+        login($setter);
+        $course->addPaper('main', Paper::PAPER_FOR_REGISTRY, UploadedFile::fake()->create('document1.pdf', 1));
+
+        $this->assertFalse($course->paperForRegistryIsApproved('main'));
+        $response = $this->actingAs($setter)->postJson(route('registry.approve', $course->id), [
+            'category' => 'main',
+        ]);
+
+        $response->assertOk();
+        $this->assertTrue($course->fresh()->paperForRegistryIsApproved('main'));
     }
 }

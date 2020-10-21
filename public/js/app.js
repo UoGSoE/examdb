@@ -14160,6 +14160,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["course", "subcategories", "category", "canUpload"],
@@ -14227,6 +14233,15 @@ __webpack_require__.r(__webpack_exports__);
     },
     paperAdded: function paperAdded(paper) {
       this.$emit("paper-added", paper);
+    },
+    approvePaperForRegistry: function approvePaperForRegistry(category) {
+      var _this2 = this;
+
+      axios.post(route('registry.approve', this.course.id), {
+        'category': category
+      }).then(function (res) {
+        _this2.course["registry_approved_".concat(category)] = true;
+      });
     }
   }
 });
@@ -42870,6 +42885,32 @@ var render = function() {
               ],
               1
             )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.course.has_main_paper_for_registry
+          ? _c("span", { staticClass: "level-item" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "button",
+                  class: {
+                    "has-background-success":
+                      _vm.course["registry_approved_" + _vm.category]
+                  },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.approvePaperForRegistry(_vm.category)
+                    }
+                  }
+                },
+                [
+                  _vm._v(
+                    "\n              Approve Paper for Registry\n          "
+                  )
+                ]
+              )
+            ])
           : _vm._e()
       ])
     ]),

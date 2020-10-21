@@ -59,6 +59,12 @@
           >
           </main-paper-uploader>
         </span>
+
+        <span v-if="course.has_main_paper_for_registry" class="level-item">
+            <button class="button" :class="{'has-background-success': course[`registry_approved_${category}`]}" @click.prevent="approvePaperForRegistry(category)">
+                Approve Paper for Registry
+            </button>
+        </span>
       </div>
     </div>
     <div class="level">
@@ -218,6 +224,13 @@ export default {
     },
     paperAdded(paper) {
       this.$emit("paper-added", paper);
+    },
+    approvePaperForRegistry(category) {
+        axios.post(route('registry.approve', this.course.id), {
+            'category': category,
+        }).then(res => {
+            this.course[`registry_approved_${category}`] = true;
+        });
     },
   },
 };
