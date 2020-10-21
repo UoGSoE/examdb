@@ -285,6 +285,50 @@ class Course extends Model
         return ! $this->checklists()->where('category', '=', $category)->latest()->first()->is($checklist);
     }
 
+    public function getMainPapers()
+    {
+        $papers = $this->mainPapers()->with(['user', 'comments'])->latest()->get();
+        $checklists = $this->checklists()->where('category', '=', 'main')->latest()->get();
+        return $this->combinePapersAndChecklists($papers, $checklists);
+    }
+
+    public function getResitPapers()
+    {
+        $papers = $this->resitPapers()->with(['user', 'comments'])->latest()->get();
+        $checklists = $this->checklists()->where('category', '=', 'resit')->latest()->get();
+        return $this->combinePapersAndChecklists($papers, $checklists);
+    }
+
+    public function getResit2Papers()
+    {
+        $papers = $this->resit2Papers()->with(['user', 'comments'])->latest()->get();
+        $checklists = $this->checklists()->where('category', '=', 'resit2')->latest()->get();
+        return $this->combinePapersAndChecklists($papers, $checklists);
+    }
+
+    protected function combinePapersAndChecklists($papers, $checklists)
+    {
+        $checklistsAsPapers = $checklists->map(function ($checklist) {
+            $fake = new Paper([
+                'id' => Str::random(64),
+                'category' => 'main',
+                'subcategory' => 'Updated Checklist',
+                'user_id' => $checklist->user_id,
+                'course_id' => $this->id,
+                'created_at' => $checklist->created_at,
+                'formatted_date' => $checklist->created_at->format('d/m/Y H:i'),
+                'diff_for_humans' => $checklist->created_at->diffForHumans(),
+            ]);
+            $fake->load('user');
+            return $fake;
+        });
+        foreach ($checklistsAsPapers as $fakePaper) {
+            $papers->push($fakePaper);
+        }
+
+        return $papers->sortByDesc('created_at')->values();
+    }
+
     public function markExternalNotified()
     {
         $this->update(['external_notified' => true]);

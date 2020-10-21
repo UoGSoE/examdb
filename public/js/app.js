@@ -14335,6 +14335,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -14359,7 +14360,7 @@ __webpack_require__.r(__webpack_exports__);
       this.paperToDelete = null;
     },
     getDownloadRoute: function getDownloadRoute(paper) {
-      if (paper.subcategory == 'comment') {
+      if (paper.subcategory == 'comment' || paper.subcategory == 'Updated Checklist') {
         return '';
       }
 
@@ -43101,7 +43102,8 @@ var render = function() {
         _vm._l(_vm.papers, function(paper) {
           return _c("article", { key: paper.id, staticClass: "media" }, [
             _c("figure", { staticClass: "media-left has-text-centered" }, [
-              paper.subcategory != "comment"
+              paper.subcategory != "comment" &&
+              paper.subcategory != "Updated Checklist"
                 ? _c(
                     "a",
                     {
@@ -43157,7 +43159,16 @@ var render = function() {
                   _vm._v(" "),
                   paper.subcategory != "comment"
                     ? _c("small", [
-                        _c("strong", [_vm._v(_vm._s(paper.subcategory))])
+                        paper.subcategory == "Updated Checklist"
+                          ? _c("span", [
+                              _c("strong", [
+                                _vm._v(
+                                  _vm._s(_vm.getUserName(paper)) +
+                                    " updated the checklist"
+                                )
+                              ])
+                            ])
+                          : _c("strong", [_vm._v(_vm._s(paper.subcategory))])
                       ])
                     : _vm._e(),
                   _vm._v(" "),
@@ -43188,7 +43199,9 @@ var render = function() {
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "media-right" }, [
-              paper.user_id == _vm.user_id && _vm.recentlyUploaded(paper)
+              paper.user_id == _vm.user_id &&
+              _vm.recentlyUploaded(paper) &&
+              paper.subcategory != "Updated Checklist"
                 ? _c("button", {
                     staticClass: "delete",
                     attrs: { title: "Delete Paper" },

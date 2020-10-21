@@ -25,9 +25,9 @@ class CourseController extends Controller
         return view('course.show', [
             'course' => $course,
             'papers' => collect([
-                'main' => $course->mainPapers()->with(['user', 'comments'])->latest()->get(),
-                'resit' => $course->resitPapers()->with(['user', 'comments'])->latest()->get(),
-                'resit2' => $course->resit2Papers()->with(['user', 'comments'])->latest()->get(),
+                'main' => $course->getMainPapers(),
+                'resit' => $course->getResitPapers(),
+                'resit2' => $course->getResit2Papers(),
             ]),
             'archivedPapers' => $course->archivedPapers()->withoutComments()->latest()->get(),
             'staff' => User::getStaffForVueSelect(),

@@ -3,7 +3,7 @@
     <transition-group name="paper-flash" mode="in-out" tag="span">
       <article class="media" v-for="paper in papers" :key="paper.id">
         <figure class="media-left has-text-centered">
-          <a v-if="paper.subcategory != 'comment'" :href="getDownloadRoute(paper)" class="image is-64x64">
+          <a v-if="paper.subcategory != 'comment' && paper.subcategory != 'Updated Checklist'" :href="getDownloadRoute(paper)" class="image is-64x64">
             <span class="icon is-large">
               <i :class="paper.icon + ' fa-3x'"></i>
             </span>
@@ -25,7 +25,8 @@
               <small>{{ paper.formatted_date }} ({{ paper.diff_for_humans }})</small>
               <br>
               <small v-if="paper.subcategory != 'comment'">
-                <strong>{{ paper.subcategory }}</strong>
+                  <span v-if="paper.subcategory == 'Updated Checklist'"><strong>{{ getUserName(paper) }} updated the checklist</strong></span>
+                <strong v-else>{{ paper.subcategory }}</strong>
               </small>
               <br>
               <span v-if="paper.comments && paper.comments.length > 0">
@@ -45,7 +46,7 @@
             class="delete"
             title="Delete Paper"
             @click.prevent="openModal(paper)"
-            v-if="paper.user_id == user_id && recentlyUploaded(paper)"
+            v-if="paper.user_id == user_id && recentlyUploaded(paper) && paper.subcategory != 'Updated Checklist'"
           ></button>
         </div>
       </article>
@@ -100,7 +101,7 @@ export default {
       this.paperToDelete = null;
     },
     getDownloadRoute(paper) {
-      if (paper.subcategory == 'comment') {
+      if (paper.subcategory == 'comment' || paper.subcategory == 'Updated Checklist') {
         return '';
       }
       return route("paper.show", paper.id);
