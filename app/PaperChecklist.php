@@ -81,6 +81,7 @@ class PaperChecklist extends Model
         'solution_adjustment_comments',
         'solution_moderator_comments',
         'moderator_solutions_at',
+        'moderator_esignature',
     ];
     const EXTERNAL_FIELDS = [
         'external_examiner_name',
@@ -88,6 +89,7 @@ class PaperChecklist extends Model
         'external_reason',
         'external_comments',
         'external_signed_at',
+        'external_esignature',
     ];
 
     protected static function boot()
@@ -130,11 +132,13 @@ class PaperChecklist extends Model
             'moderator_reason_marks_adjusted' => null,
             'moderator_further_comments' => null,
             'moderator_approved_at' => null,
+            'moderator_esignature' => '',
             'course_coordinator_moderating_comments' => null,
             'external_agree_with_moderator' => true,
             'external_rational' => null,
             'external_futher_comments' => null,
             'external_completed_at' => null,
+            'external_esignature' => '',
             'archived_at' => null,
         ]);
     }

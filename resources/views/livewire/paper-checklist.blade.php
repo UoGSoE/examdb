@@ -199,7 +199,7 @@
             <div class="field">
                 <label for="" class="label">Moderators e-signature</label>
                 <p class="control">
-                    <input class="input" type="text" value="" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
+                    <input class="input" type="text" wire:model="checklist.fields.moderator_esignature" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
                 </p>
             </div>
         </div>
@@ -292,7 +292,7 @@
             <div class="field">
                 <label for="" class="label">Moderators e-signature</label>
                 <p class="control">
-                    <input class="input" type="text" value="" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
+                    <input class="input" type="text" wire:model="checklist.fields.moderator_esignature" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
                 </p>
             </div>
         </div>
