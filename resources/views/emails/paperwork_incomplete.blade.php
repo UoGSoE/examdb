@@ -6,6 +6,8 @@ The paperwork for some courses you set/moderate is still incomplete.  Please log
 Exam Database
 @endcomponent
 
+@include('emails.partials.browser_warning')
+
 Thanks,<br>
 {{ config('app.name') }}
 @endcomponent

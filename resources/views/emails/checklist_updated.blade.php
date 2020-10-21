@@ -8,6 +8,8 @@ for you to look at.
 Log in to the Exam Database
 @endcomponent
 
+@include('emails.partials.browser_warning')
+
 Thanks,<br>
 {{ config('app.name') }}
 @endcomponent

@@ -8,6 +8,8 @@ and check things look ok.  Then you can trigger the notifications to external ex
 Exam Database
 @endcomponent
 
+@include('emails.partials.browser_warning')
+
 Thanks,<br>
 {{ config('app.name') }}
 @endcomponent

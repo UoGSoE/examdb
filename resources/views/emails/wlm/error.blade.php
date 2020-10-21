@@ -5,5 +5,7 @@ There was a problem while importing the WLM data into the ExamDB.  Exception mes
 
 {{ $exceptionMessage }}
 
+@include('emails.partials.browser_warning')
+
 Have a simply lovely day!
 @endcomponent

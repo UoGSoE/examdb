@@ -8,6 +8,8 @@ and approve it using the link below.
 Log In
 @endcomponent
 
+@include('emails.partials.browser_warning')
+
 Thanks,<br>
 {{ config('app.name') }}
 @endcomponent

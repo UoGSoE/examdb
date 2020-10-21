@@ -8,6 +8,8 @@ by the {{ $userType }}. You can view the papers by clicking the link below.
 Papers for {{ $course->code }}
 @endcomponent
 
+@include('emails.partials.browser_warning')
+
 Thanks,<br>
 {{ config('app.name') }}
 @endcomponent

@@ -8,6 +8,8 @@ log into the website to view them.
 Exam Paper Database
 @endcomponent
 
+@include('emails.partials.browser_warning')
+
 Thanks,<br>
 School of Engineering Teaching Office
 @endcomponent

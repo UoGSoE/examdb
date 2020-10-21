@@ -7,6 +7,8 @@ The paper for registry has been uploaded for {{ $course->code }}.
 View {{ $course->code }}
 @endcomponent
 
+@include('emails.partials.browser_warning')
+
 Thanks,<br>
 {{ config('app.name') }}
 @endcomponent

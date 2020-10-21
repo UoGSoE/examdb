@@ -9,6 +9,8 @@ below.
 Exam Paper Database
 @endcomponent
 
+@include('emails.partials.browser_warning')
+
 Thanks,<br>
 {{ config('app.name') }}
 @endcomponent

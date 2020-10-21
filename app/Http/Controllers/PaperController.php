@@ -18,7 +18,7 @@ class PaperController extends Controller
         Gate::authorize('upload_paper', $course);
 
         $request->validate([
-            'paper' => 'required|file',
+            'paper' => 'required|file|max:20000',
             'category' => 'required',
             'subcategory' => 'required',
         ]);

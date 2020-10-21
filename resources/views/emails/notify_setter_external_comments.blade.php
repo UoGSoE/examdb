@@ -7,6 +7,8 @@ The external for {{ $course->code }} has uploaded their comments.  Please log in
 {{ $course->code }}
 @endcomponent
 
+@include('emails.partials.browser_warning')
+
 Thanks,<br>
 {{ config('app.name') }}
 @endcomponent

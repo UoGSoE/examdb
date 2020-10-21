@@ -88,7 +88,7 @@
 <div class="columns">
     <div class="column">
         <div class="field">
-            <label for="" class="label">Assignment weighting</label>
+            <label for="" class="label">Assessment weighting</label>
             <p class="control">
                 <input class="input" type="text" wire:model="checklist.fields.assignment_weighting">
             </p>
@@ -342,7 +342,7 @@
     </div>
 
     <div class="field">
-        <label for="" class="label">Do you agree to any adjustment suggested by the Moderator?</label>
+        <label for="" class="label">Are you satisfied with this paper?</label>
         <p class="control is-expanded">
             <div class="select is-fullwidth">
                 <select @if (! auth()->user()->isExternalFor($course)) disabled @endif wire:model="checklist.fields.external_agrees_with_moderator">

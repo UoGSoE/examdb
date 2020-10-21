@@ -8,6 +8,8 @@ Please remember to complete and upload the checklist as without the checklist, t
 Log in here
 @endcomponent
 
+@include('emails.partials.browser_warning')
+
 Thanks,<br>
 {{ config('app.name') }}
 @endcomponent

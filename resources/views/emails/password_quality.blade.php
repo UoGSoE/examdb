@@ -7,4 +7,6 @@ Failed check for {{ $username }}.  Errors are :
 * {{ $error }}
 @endforeach
 
+@include('emails.partials.browser_warning')
+
 @endcomponent

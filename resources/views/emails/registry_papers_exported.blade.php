@@ -10,6 +10,8 @@ The exam papers for registry are ready to be downloaded.  Please click the link 
 Download the Papers
 @endcomponent
 
+@include('emails.partials.browser_warning')
+
 Thanks,<br>
 {{ config('app.name') }}
 @endcomponent

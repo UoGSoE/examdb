@@ -8,6 +8,8 @@ link below. <em>Note:</em> the link will expire in {{ config('exampapers.zip_exp
 Paper Checklists
 @endcomponent
 
+@include('emails.partials.browser_warning')
+
 Thanks,<br>
 {{ config('app.name') }}
 @endcomponent

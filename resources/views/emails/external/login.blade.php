@@ -8,6 +8,8 @@ link is valid for {{ config('exampapers.login_link_minutes', 60) }} minutes from
 Login to the Exam Papers System
 @endcomponent
 
+@include('emails.partials.browser_warning')
+
 Thanks,<br>
 {{ config('app.name') }}
 @endcomponent

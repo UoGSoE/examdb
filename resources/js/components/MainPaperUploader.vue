@@ -31,6 +31,7 @@
               </div>
             </div>
           </div>
+          <p class="help">Max file size: 20MB</p><br>
 
           <div class="field">
             <div class="control">
