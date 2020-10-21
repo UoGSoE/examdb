@@ -224,6 +224,7 @@
         </p>
     </div>
 
+    {{--
     @if ((auth()->user()->isModeratorFor($course) or auth()->user()->isSetterFor($course)) && !isset($checklist['id']))
     <div class="field">
         <div class="control">
@@ -231,7 +232,7 @@
         </div>
     </div>
     @endif
-
+    --}}
     <hr>
 
 </fieldset>
