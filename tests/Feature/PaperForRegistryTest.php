@@ -53,7 +53,7 @@ class PaperForRegistryTest extends TestCase
     public function a_setter_can_mark_the_paper_for_registry_as_approved()
     {
         $this->withoutExceptionHandling();
-        Mail::fake();
+        Mail::fake('exampapers');
         Storage::fake();
         $setter = create(User::class);
         $course = create(Course::class);
