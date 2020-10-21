@@ -14,6 +14,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/course/{course}', [\App\Http\Controllers\CourseController::class, 'show'])->name('course.show');
     Route::post('/course/{course}/paper', [\App\Http\Controllers\PaperController::class, 'store'])->name('course.paper.store');
     Route::post('/course/{course}/comment', [\App\Http\Controllers\CommentController::class, 'store'])->name('course.comment.store');
+    Route::post('/course/{course}/approve-registry', [\App\Http\Controllers\PaperForRegistryApprovalController::class, 'approve'])->name('registry.approve');
 
     Route::get('/course/{course}/checklist', [\App\Http\Controllers\ChecklistController::class, 'create'])->name('course.checklist.create');
     Route::get('/checklist/{checklist}', [\App\Http\Controllers\ChecklistController::class, 'show'])->name('course.checklist.show');

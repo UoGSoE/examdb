@@ -19,6 +19,8 @@ class CourseController extends Controller
         $course->load('externals');
         $course->load('papers');
         $course->append('is_uestc');
+        $course->append('has_main_paper_for_registry');
+        $course->append('has_resit_paper_for_registry');
 
         return view('course.show', [
             'course' => $course,
