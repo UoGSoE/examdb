@@ -234,13 +234,13 @@ class PaperUploadTest extends TestCase
         Mail::fake();
         Storage::fake('exampapers');
 
-        $admin = create(User::class, ['is_admin' => true]);
-        $setter = create(User::class);
         $discipline = create(Discipline::class, ['contact' => 'someone@example.com']);
         $course = create(Course::class, ['code' => 'ENG1234', 'discipline_id' => $discipline->id]);
+        $setter = create(User::class);
         $setter->markAsSetter($course);
+        $otherSetter = create(User::class);
 
-        $response = $this->actingAs($admin)->postJson(route('course.paper.store', $course->id), [
+        $response = $this->actingAs($otherSetter)->postJson(route('course.paper.store', $course->id), [
             'paper' => UploadedFile::fake()->create('main_paper_1.pdf', 1),
             'category' => 'main',
             'subcategory' => Paper::PAPER_FOR_REGISTRY,
@@ -249,5 +249,26 @@ class PaperUploadTest extends TestCase
 
         $response->assertStatus(403);
         $this->assertCount(0, $course->fresh()->papers);
+    }
+
+    /** @test */
+    public function admins_can_upload_papers_to_any_course()
+    {
+        Mail::fake();
+        Storage::fake('exampapers');
+
+        $discipline = create(Discipline::class, ['contact' => 'someone@example.com']);
+        $course = create(Course::class, ['code' => 'ENG1234', 'discipline_id' => $discipline->id]);
+        $admin = User::factory()->admin()->create();
+
+        $response = $this->actingAs($admin)->postJson(route('course.paper.store', $course->id), [
+            'paper' => UploadedFile::fake()->create('main_paper_1.pdf', 1),
+            'category' => 'main',
+            'subcategory' => Paper::PAPER_FOR_REGISTRY,
+            'comment' => 'Whatever',
+        ]);
+
+        $response->assertSuccessful();
+        $this->assertCount(1, $course->fresh()->papers);
     }
 }

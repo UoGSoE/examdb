@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Events\PaperAdded;
 use App\Mail\PaperForRegistry;
+use App\Paper;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
@@ -28,7 +29,7 @@ class NotifyTechingOfficePaperForRegistryUploaded
      */
     public function handle(PaperAdded $event)
     {
-        if ($event->paper->subcategory != 'Paper For Registry') {
+        if ($event->paper->subcategory != Paper::PAPER_FOR_REGISTRY) {
             return;
         }
 

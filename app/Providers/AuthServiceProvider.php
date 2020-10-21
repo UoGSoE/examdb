@@ -36,7 +36,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('upload_paper', function ($user, $course) {
-            return $user->isSetterFor($course) || $user->isModeratorFor($course) || $user->isExternalFor($course);
+            return $user->isAdmin() || $user->isSetterFor($course) || $user->isModeratorFor($course) || $user->isExternalFor($course);
         });
     }
 }

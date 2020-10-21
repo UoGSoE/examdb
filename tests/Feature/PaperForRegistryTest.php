@@ -1,0 +1,50 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\User;
+use App\Paper;
+use App\Course;
+use Tests\TestCase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\PaperForRegistryUploaded;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+class PaperForRegistryTest extends TestCase
+{
+    use RefreshDatabase;
+
+    /** @test */
+    public function when_an_admin_uploads_the_paper_for_registy_an_email_is_sent_to_the_setters()
+    {
+        $this->withoutExceptionHandling();
+        Mail::fake();
+        $admin = User::factory()->admin()->create();
+        $setter1 = User::factory()->create();
+        $setter2 = User::factory()->create();
+        $moderator = User::factory()->create();
+        $course = Course::factory()->create();
+        $setter1->markAsSetter($course);
+        $setter2->markAsSetter($course);
+        $moderator->markAsModerator($course);
+        $file = UploadedFile::fake()->create('paper_for_registry.pdf', 1);
+
+        $response = $this->actingAs($admin)->postJson(route('course.paper.store', $course->id), [
+            'paper' => $file,
+            'category' => 'main',
+            'subcategory' => Paper::PAPER_FOR_REGISTRY,
+            'comment' => 'Whatever',
+        ]);
+
+        $response->assertSuccessful();
+        Mail::assertQueued(PaperForRegistryUploaded::class, 2);
+        Mail::assertQueued(PaperForRegistryUploaded::class, function ($mail) use ($setter1) {
+            return $mail->hasTo($setter1->email);
+        });
+        Mail::assertQueued(PaperForRegistryUploaded::class, function ($mail) use ($setter2) {
+            return $mail->hasTo($setter2->email);
+        });
+    }
+}
