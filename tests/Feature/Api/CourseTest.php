@@ -258,6 +258,7 @@ class CourseTest extends TestCase
             'data' => [
                 'Pre-Internally Moderated Paper (Main)',
                 'Post-Internally Moderated Paper (Main)',
+                'Paper For Registry (Main)',
                 'Moderator Comments (Main)',
             ],
         ]);
