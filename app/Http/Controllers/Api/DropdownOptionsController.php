@@ -65,6 +65,8 @@ class DropdownOptionsController extends Controller
             $this->papers->contains(function ($paper) {
                 return Str::startsWith($paper->subcategory, 'Moderator Comments');
             })
+            or $this->course->hasModeratorChecklist('main')
+            or $this->course->hasModeratorChecklist('resit')
         ) {
             return array_merge($existingOptions, [
                 'Pre-Internally Moderated Paper',
