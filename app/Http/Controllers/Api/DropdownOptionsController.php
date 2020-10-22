@@ -71,6 +71,7 @@ class DropdownOptionsController extends Controller
             return array_merge($existingOptions, [
                 'Pre-Internally Moderated Paper',
                 'Post-Internally Moderated Paper',
+                'Paper For Registry',
             ]);
         }
 

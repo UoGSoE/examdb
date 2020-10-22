@@ -56,7 +56,7 @@
     <tbody>
         @foreach ($courses as $course)
         <tr>
-            <td>
+            <td width="5%">
                 <a @if (!$course->trashed()) href="{{ route('course.show', $course) }}" @endif>
                     {{ $course->code }}
                     @if ($course->trashed())
@@ -64,7 +64,7 @@
                     @endif
                 </a>
             </td>
-            <td>
+            <td width="5%">
                 @livewire('semester-edit-box', ['course' => $course])
             </td>
             <td>{{ $course->title }}</td>
