@@ -168,7 +168,10 @@
     </div>
 
     <div class="field">
-        <label for="" class="label">Do you recommend that any of the questions should be revised?</label>
+        <label for="" class="label">
+            Do you recommend that any of the questions should be revised?  By ANSWERING YES the paper will
+            be returned to the setter to make adjustments.  By ANSWERING NO you are happy with the paper to move to the next stage.
+        </label>
         <p class="control is-expanded">
             <div class="select is-fullwidth">
                 <select wire:model="checklist.fields.should_revise_questions" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
