@@ -89,6 +89,7 @@ class NotifyExternalsTest extends TestCase
     public function external_notifications_only_go_to_externals_about_courses_that_have_papers()
     {
         Mail::fake();
+        Storage::fake('exampapers');
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
         login($admin);
