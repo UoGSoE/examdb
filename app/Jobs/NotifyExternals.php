@@ -3,19 +3,19 @@
 namespace App\Jobs;
 
 use App\Course;
-use App\Mail\ExternalHasPapersToLookAt;
+use Carbon\Carbon;
+use App\Discipline;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Queue\SerializesModels;
+use App\Mail\ExternalHasPapersToLookAt;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Mail;
 
 class NotifyExternals implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    protected $validAreas = ['glasgow', 'uestc'];
 
     public $area;
 
@@ -36,11 +36,13 @@ class NotifyExternals implements ShouldQueue
      */
     public function handle()
     {
-        if (! in_array($this->area, $this->validAreas)) {
+        if (! Discipline::all()->pluck('title')->contains($this->area)) {
             abort(500, 'Invalid area given : '.$this->area);
         }
 
-        $emails = Course::forArea($this->area)
+        $discipline = Discipline::where('title', '=', $this->area)->first();
+        $emails = Course::forDiscipline($discipline)
+                    ->forSemester($this->getCurrentSemester())
                     ->externalsNotNotified()
                     ->whereHas('papers')
                     ->get()
@@ -55,5 +57,26 @@ class NotifyExternals implements ShouldQueue
         $emails->each(function ($email) {
             Mail::to($email)->later(now()->addSeconds(rand(1, 180)), new ExternalHasPapersToLookAt);
         });
+    }
+
+    protected function getCurrentSemester(): int
+    {
+        $startSemesterOne = Carbon::createFromFormat('Y-m-d', option('start_semester_1'));
+        $startSemesterTwo = Carbon::createFromFormat('Y-m-d', option('start_semester_2'));
+        $startSemesterThree = Carbon::createFromFormat('Y-m-d', option('start_semester_3'));
+
+        if (now()->between($startSemesterOne, $startSemesterTwo)) {
+            return 1;
+        }
+
+        if (now()->between($startSemesterTwo, $startSemesterThree)) {
+            return 2;
+        }
+
+        if (now()->gte($startSemesterThree)) {
+            return 3;
+        }
+
+        throw new RuntimeException('Could not figure out semester');
     }
 }

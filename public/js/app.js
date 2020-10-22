@@ -13782,7 +13782,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ["disciplines"],
   data: function data() {
     return {
       area: null
@@ -42314,63 +42323,46 @@ var render = function() {
     "div",
     [
       _c("div", { staticClass: "field" }, [
-        _c("div", { staticClass: "control" }, [
-          _c("label", { staticClass: "label", attrs: { for: "area" } }, [
-            _vm._v("Choose which area to notify externals for")
-          ]),
-          _vm._v(" "),
-          _c("label", { staticClass: "radio" }, [
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.area,
-                  expression: "area"
-                }
-              ],
-              attrs: {
-                type: "radio",
-                name: "area",
-                value: "glasgow",
-                required: ""
-              },
-              domProps: { checked: _vm._q(_vm.area, "glasgow") },
-              on: {
-                change: function($event) {
-                  _vm.area = "glasgow"
-                }
-              }
-            }),
-            _vm._v("\n        Glasgow\n      ")
-          ]),
-          _vm._v(" "),
-          _c("label", { staticClass: "radio" }, [
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.area,
-                  expression: "area"
-                }
-              ],
-              attrs: {
-                type: "radio",
-                name: "area",
-                value: "uestc",
-                required: ""
-              },
-              domProps: { checked: _vm._q(_vm.area, "uestc") },
-              on: {
-                change: function($event) {
-                  _vm.area = "uestc"
-                }
-              }
-            }),
-            _vm._v("\n        UESTC\n      ")
-          ])
-        ])
+        _c(
+          "div",
+          { staticClass: "control" },
+          [
+            _c("label", { staticClass: "label", attrs: { for: "area" } }, [
+              _vm._v("Choose which area to notify externals for")
+            ]),
+            _vm._v(" "),
+            _vm._l(_vm.disciplines, function(discipline) {
+              return _c(
+                "label",
+                { key: discipline.title, staticClass: "radio" },
+                [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.area,
+                        expression: "area"
+                      }
+                    ],
+                    attrs: { type: "radio", name: "area", required: "" },
+                    domProps: {
+                      value: discipline.title,
+                      checked: _vm._q(_vm.area, discipline.title)
+                    },
+                    on: {
+                      change: function($event) {
+                        _vm.area = discipline.title
+                      }
+                    }
+                  }),
+                  _vm._v("\n        " + _vm._s(discipline.title) + "\n      ")
+                ]
+              )
+            })
+          ],
+          2
+        )
       ]),
       _vm._v(" "),
       _c("hr"),

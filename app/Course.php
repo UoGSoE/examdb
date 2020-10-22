@@ -108,6 +108,11 @@ class Course extends Model
         return $query->where('code', 'like', $codePrefix.'%');
     }
 
+    public function scopeForDiscipline($query, $discipline)
+    {
+        return $query->where('discipline_id', '=', $discipline->id);
+    }
+
     public function scopeMissingPaperForRegistry($query)
     {
         return $query->papers()->where('subcategory', '=', Paper::PAPER_FOR_REGISTRY);

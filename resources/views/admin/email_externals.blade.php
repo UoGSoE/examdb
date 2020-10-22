@@ -2,6 +2,6 @@
 
 @section('content')
 
-<notify-externals-form></notify-externals-form>
+<notify-externals-form :disciplines="{{ $disciplines->toJson() }}"></notify-externals-form>
 
 @endsection
