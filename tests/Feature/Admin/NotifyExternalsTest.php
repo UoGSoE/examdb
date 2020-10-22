@@ -2,16 +2,19 @@
 
 namespace Tests\Feature\Admin;
 
-use App\Course;
-use App\Jobs\NotifyExternals;
-use App\Mail\ExternalHasPapersToLookAt;
-use App\Mail\NotifyExternalSpecificCourse;
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Course;
+use App\Discipline;
+use Tests\TestCase;
+use App\Jobs\NotifyExternals;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Mail;
-use Tests\TestCase;
+use App\Mail\ExternalHasPapersToLookAt;
+use Illuminate\Support\Facades\Storage;
+use App\Mail\NotifyExternalSpecificCourse;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class NotifyExternalsTest extends TestCase
 {
@@ -22,18 +25,18 @@ class NotifyExternalsTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
-
+        $discipline = create(Discipline::class);
         Bus::fake();
 
         $response = $this->actingAs($admin)->post(route('admin.notify.externals', [
-            'area' => 'glasgow',
+            'area' => $discipline->title,
         ]));
 
         $response->assertStatus(302);
         $response->assertSessionDoesntHaveErrors();
 
-        Bus::assertDispatched(NotifyExternals::class, function ($job) {
-            return $job->area === 'glasgow';
+        Bus::assertDispatched(NotifyExternals::class, function ($job) use ($discipline) {
+            return $job->area === $discipline->title;
         });
     }
 
@@ -41,16 +44,76 @@ class NotifyExternalsTest extends TestCase
     public function non_admins_cant_trigger_a_job_to_notify_externals()
     {
         $user = create(User::class);
+        $discipline = create(Discipline::class);
 
         Bus::fake();
 
         $response = $this->actingAs($user)->post(route('admin.notify.externals', [
-            'area' => 'glasgow',
+            'area' => $discipline->title,
         ]));
 
         $response->assertStatus(403);
 
         Bus::assertNotDispatched(NotifyExternals::class);
+    }
+
+    /** @test */
+    public function external_notifications_only_go_to_externals_about_courses_in_the_current_semester()
+    {
+        Mail::fake();
+        Storage::fake('exampapers');
+        $this->withoutExceptionHandling();
+        $admin = create(User::class, ['is_admin' => true]);
+        login($admin);
+        $external1 = create(User::class);
+        $external2 = create(User::class);
+        $discipline = create(Discipline::class);
+        $course1 = create(Course::class, ['semester' => 1, 'discipline_id' => $discipline->id]);
+        $course2 = create(Course::class, ['semester' => 2, 'discipline_id' => $discipline->id]);
+        $course1->addPaper('main', 'blah de blah', UploadedFile::fake()->create('main_paper_1.pdf'));
+        $course2->addPaper('main', 'blah de blah', UploadedFile::fake()->create('main_paper_1.pdf'));
+        $external1->markAsExternal($course1);
+        $external1->markAsExternal($course2);
+        $external2->markAsExternal($course2);
+        option(['start_semester_1' => now()->format('Y-m-d')]);
+        option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
+        option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
+
+        NotifyExternals::dispatch($discipline->title);
+
+        Mail::assertQueued(ExternalHasPapersToLookAt::class, 1);
+        Mail::assertQueued(ExternalHasPapersToLookAt::class, function ($mail) use ($external1) {
+            return $mail->hasTo($external1->email);
+        });
+    }
+
+    /** @test */
+    public function external_notifications_only_go_to_externals_about_courses_that_have_papers()
+    {
+        Mail::fake();
+        Storage::fake('exampapers');
+        $this->withoutExceptionHandling();
+        $admin = create(User::class, ['is_admin' => true]);
+        login($admin);
+        $external1 = create(User::class);
+        $external2 = create(User::class);
+        $discipline = create(Discipline::class);
+        $course1 = create(Course::class, ['semester' => 1, 'discipline_id' => $discipline->id]);
+        $course2 = create(Course::class, ['semester' => 1, 'discipline_id' => $discipline->id]);
+        $course1->addPaper('main', 'blah de blah', UploadedFile::fake()->create('main_paper_1.pdf'));
+        $external1->markAsExternal($course1);
+        $external1->markAsExternal($course2);
+        $external2->markAsExternal($course2);
+        option(['start_semester_1' => now()->format('Y-m-d')]);
+        option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
+        option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
+
+        NotifyExternals::dispatch($discipline->title);
+
+        Mail::assertQueued(ExternalHasPapersToLookAt::class, 1);
+        Mail::assertQueued(ExternalHasPapersToLookAt::class, function ($mail) use ($external1) {
+            return $mail->hasTo($external1->email);
+        });
     }
 
     /** @test */

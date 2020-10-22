@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Course;
+use App\Discipline;
 use App\Http\Controllers\Controller;
 use App\Jobs\NotifyExternals;
 use App\Mail\ExternalHasPapersToLookAt;
@@ -14,13 +15,16 @@ class NotifyExternalsController extends Controller
 {
     public function show()
     {
-        return view('admin.email_externals');
+        return view('admin.email_externals', [
+            'disciplines' => Discipline::orderBy('title')->get(),
+        ]);
     }
 
     public function store(Request $request)
     {
+        $disciplines = Discipline::orderBy('title')->get()->pluck('title')->implode(',');
         $request->validate([
-            'area' => 'required|in:glasgow,uestc',
+            'area' => 'required|in:' . $disciplines,
         ]);
 
         NotifyExternals::dispatch($request->area);

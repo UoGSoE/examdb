@@ -13782,7 +13782,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ["disciplines"],
   data: function data() {
     return {
       area: null
@@ -42314,63 +42323,46 @@ var render = function() {
     "div",
     [
       _c("div", { staticClass: "field" }, [
-        _c("div", { staticClass: "control" }, [
-          _c("label", { staticClass: "label", attrs: { for: "area" } }, [
-            _vm._v("Choose which area to notify externals for")
-          ]),
-          _vm._v(" "),
-          _c("label", { staticClass: "radio" }, [
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.area,
-                  expression: "area"
-                }
-              ],
-              attrs: {
-                type: "radio",
-                name: "area",
-                value: "glasgow",
-                required: ""
-              },
-              domProps: { checked: _vm._q(_vm.area, "glasgow") },
-              on: {
-                change: function($event) {
-                  _vm.area = "glasgow"
-                }
-              }
-            }),
-            _vm._v("\n        Glasgow\n      ")
-          ]),
-          _vm._v(" "),
-          _c("label", { staticClass: "radio" }, [
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.area,
-                  expression: "area"
-                }
-              ],
-              attrs: {
-                type: "radio",
-                name: "area",
-                value: "uestc",
-                required: ""
-              },
-              domProps: { checked: _vm._q(_vm.area, "uestc") },
-              on: {
-                change: function($event) {
-                  _vm.area = "uestc"
-                }
-              }
-            }),
-            _vm._v("\n        UESTC\n      ")
-          ])
-        ])
+        _c(
+          "div",
+          { staticClass: "control" },
+          [
+            _c("label", { staticClass: "label", attrs: { for: "area" } }, [
+              _vm._v("Choose which area to notify externals for")
+            ]),
+            _vm._v(" "),
+            _vm._l(_vm.disciplines, function(discipline) {
+              return _c(
+                "label",
+                { key: discipline.title, staticClass: "radio" },
+                [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.area,
+                        expression: "area"
+                      }
+                    ],
+                    attrs: { type: "radio", name: "area", required: "" },
+                    domProps: {
+                      value: discipline.title,
+                      checked: _vm._q(_vm.area, discipline.title)
+                    },
+                    on: {
+                      change: function($event) {
+                        _vm.area = discipline.title
+                      }
+                    }
+                  }),
+                  _vm._v("\n        " + _vm._s(discipline.title) + "\n      ")
+                ]
+              )
+            })
+          ],
+          2
+        )
       ]),
       _vm._v(" "),
       _c("hr"),
@@ -56016,7 +56008,7 @@ module.exports = function(module) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-select/dist/vue-select.css */ "./node_modules/vue-select/dist/vue-select.css");
+/* WEBPACK VAR INJECTION */(function(process) {/* harmony import */ var vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-select/dist/vue-select.css */ "./node_modules/vue-select/dist/vue-select.css");
 /* harmony import */ var vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-select */ "./node_modules/vue-select/dist/vue-select.js");
 /* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_select__WEBPACK_IMPORTED_MODULE_1__);
@@ -56086,7 +56078,7 @@ window.Pikaday = pikaday__WEBPACK_IMPORTED_MODULE_4___default.a;
 
 
 _sentry_browser__WEBPACK_IMPORTED_MODULE_6__["init"]({
-  dsn: "",
+  dsn: process.env.MIX_SENTRY_DSN,
   integrations: [new _sentry_browser__WEBPACK_IMPORTED_MODULE_6__["Integrations"].Vue({
     Vue: Vue
   })]
@@ -56096,6 +56088,7 @@ var app = new Vue({
 });
 
 __webpack_require__(/*! livewire-vue */ "./node_modules/livewire-vue/dist/livewire-vue.js");
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../node_modules/process/browser.js */ "./node_modules/process/browser.js")))
 
 /***/ }),
 
@@ -58099,8 +58092,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/finlay/Code/exam-papers/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/finlay/Code/exam-papers/resources/css/app.scss */"./resources/css/app.scss");
+__webpack_require__(/*! /Users/billy/Documents/code/examdb/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/billy/Documents/code/examdb/resources/css/app.scss */"./resources/css/app.scss");
 
 
 /***/ })
