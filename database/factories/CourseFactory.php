@@ -32,4 +32,9 @@ class CourseFactory extends Factory
             'semester' => 1,
         ];
     }
+
+    public function uestc()
+    {
+        return $this->state(fn ($attribs) => ['code' => 'UESTC'.$this->faker->numberBetween(1000, 8999)]);
+    }
 }

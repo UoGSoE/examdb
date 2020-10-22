@@ -57,5 +57,13 @@ class TestDataSeeder extends Seeder
             $course->discipline()->associate(Discipline::inRandomOrder()->first());
             $course->save();
         }
+        $courses = Course::factory()->count(5)->uestc()->create();
+        foreach ($courses as $course) {
+            $setter->courses()->attach($course->id, ['is_moderator' => true]);
+            $moderator->courses()->attach($course->id, ['is_setter' => true]);
+            $external->courses()->attach($course->id, ['is_external' => true]);
+            $course->discipline()->associate(Discipline::inRandomOrder()->first());
+            $course->save();
+        }
     }
 }

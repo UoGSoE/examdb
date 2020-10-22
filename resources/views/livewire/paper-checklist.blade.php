@@ -66,7 +66,7 @@
                 </div>
             </div>
 
-
+@if ($course->isUestc())
 <div class="field">
     <label for="" class="label">Please confirm that you have reviewed the Exam Assessment and Continuous Assessment Handbooks for this task.</label>
     <p class="control is-expanded">
@@ -78,6 +78,7 @@
         </div>
     </p>
 </div>
+@endif
 
 <div class="field">
     <label for="" class="label">Assessment title and number</label>
