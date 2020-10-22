@@ -70,6 +70,7 @@ class PaperChecklist extends Model
         'solution_setter_comments',
     ];
     const MODERATOR_FIELDS = [
+        'overall_quality_appropriate',
         'why_innapropriate',
         'should_revise_questions',
         'recommended_revisions',
@@ -126,6 +127,7 @@ class PaperChecklist extends Model
             'course_credits' => null,
             'course_coordinator_setting_comments' => null,
             'moderators' => $course->moderators->pluck('full_name')->implode(', '),
+            'overall_quality_appropriate' => true,
             'moderator_agree_marks_appropriate' => true,
             'moderator_inappropriate_comments' => null,
             'moderator_marks_adjusted' => false,
