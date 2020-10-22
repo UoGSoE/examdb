@@ -56016,7 +56016,7 @@ module.exports = function(module) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-select/dist/vue-select.css */ "./node_modules/vue-select/dist/vue-select.css");
+/* WEBPACK VAR INJECTION */(function(process) {/* harmony import */ var vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-select/dist/vue-select.css */ "./node_modules/vue-select/dist/vue-select.css");
 /* harmony import */ var vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-select */ "./node_modules/vue-select/dist/vue-select.js");
 /* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_select__WEBPACK_IMPORTED_MODULE_1__);
@@ -56086,7 +56086,7 @@ window.Pikaday = pikaday__WEBPACK_IMPORTED_MODULE_4___default.a;
 
 
 _sentry_browser__WEBPACK_IMPORTED_MODULE_6__["init"]({
-  dsn: "",
+  dsn: process.env.MIX_SENTRY_DSN,
   integrations: [new _sentry_browser__WEBPACK_IMPORTED_MODULE_6__["Integrations"].Vue({
     Vue: Vue
   })]
@@ -56096,6 +56096,7 @@ var app = new Vue({
 });
 
 __webpack_require__(/*! livewire-vue */ "./node_modules/livewire-vue/dist/livewire-vue.js");
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../node_modules/process/browser.js */ "./node_modules/process/browser.js")))
 
 /***/ }),
 
@@ -58099,8 +58100,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/finlay/Code/exam-papers/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/finlay/Code/exam-papers/resources/css/app.scss */"./resources/css/app.scss");
+__webpack_require__(/*! /Users/billy/Documents/code/examdb/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/billy/Documents/code/examdb/resources/css/app.scss */"./resources/css/app.scss");
 
 
 /***/ })
