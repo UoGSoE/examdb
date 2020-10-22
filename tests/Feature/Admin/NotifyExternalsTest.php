@@ -11,6 +11,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ExternalHasPapersToLookAt;
+use Illuminate\Support\Facades\Storage;
 use App\Mail\NotifyExternalSpecificCourse;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -60,6 +61,7 @@ class NotifyExternalsTest extends TestCase
     public function external_notifications_only_go_to_externals_about_courses_in_the_current_semester()
     {
         Mail::fake();
+        Storage::fake('exampapers');
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
         login($admin);
