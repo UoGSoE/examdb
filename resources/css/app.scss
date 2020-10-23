@@ -9,6 +9,7 @@ $fa-font-path: '~@fortawesome/fontawesome-free/webfonts';
 [v-cloak] {
   display: none;
 }
+[x-cloak] { display: none; }
 
 .leading-loose {
   line-height: 2;
