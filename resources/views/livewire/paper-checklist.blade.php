@@ -377,7 +377,7 @@
             <div class="field">
                 <label for="" class="label">e-Signature</label>
                 <p class="control">
-                    <input class="input" type="text" value="" @if (! auth()->user()->isExternalFor($course)) disabled @endif>
+                    <input class="input" type="text" wire:model="checklist.fields.external_esignature" @if (! auth()->user()->isExternalFor($course)) disabled @endif>
                 </p>
             </div>
         </div>
