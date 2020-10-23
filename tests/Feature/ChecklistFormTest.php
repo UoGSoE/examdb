@@ -2,19 +2,20 @@
 
 namespace Tests\Feature;
 
-use App\Course;
-use App\Http\Livewire\PaperChecklist as LivewirePaperChecklist;
-use App\Mail\ChecklistUpdated;
-use App\Mail\ExternalHasUpdatedTheChecklist;
-use App\Mail\ModeratorHasUpdatedTheChecklist;
-use App\Mail\SetterHasUpdatedTheChecklist;
-use App\PaperChecklist;
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Mail;
-use Livewire\Livewire;
+use App\Course;
 use Tests\TestCase;
+use Livewire\Livewire;
+use App\PaperChecklist;
+use App\Mail\ChecklistUpdated;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
+use App\Mail\SetterHasUpdatedTheChecklist;
+use App\Mail\ExternalHasUpdatedTheChecklist;
+use Illuminate\Foundation\Testing\WithFaker;
+use App\Mail\ModeratorHasUpdatedTheChecklist;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Http\Livewire\PaperChecklist as LivewirePaperChecklist;
 
 class ChecklistFormTest extends TestCase
 {
@@ -492,6 +493,10 @@ class ChecklistFormTest extends TestCase
             // this should be changed as we set it and we are the external
             $this->assertEquals('Dont like the font', $checklist->fields['external_comments']);
         });
+
+        // as we cache some of the db queries for five seconds as part of this process, flush the cache
+        // so the tests don't break
+        Cache::flush();
 
         // now we test for someone who is a setter and moderator on the same course
         $moderator->markAsSetter($course);
