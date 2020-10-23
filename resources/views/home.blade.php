@@ -75,7 +75,7 @@
         <span class="icon has-text-grey-lighter"><i class="fas fa-book-open"></i></span>
         <span>&nbsp;Show all of your uploads</span>
     </button>
-    <ul x-show="showList">
+    <ul x-show="showList" x-cloak>
         @foreach ($paperList as $paper)
         <li>
             <strong>
