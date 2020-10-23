@@ -2,14 +2,15 @@
 
 namespace App;
 
-use App\CanBeCreatedFromOutsideSources;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\URL;
-use Lab404\Impersonate\Models\Impersonate;
+use Illuminate\Support\Facades\Cache;
+use App\CanBeCreatedFromOutsideSources;
 use Spatie\Activitylog\Models\Activity;
+use Illuminate\Notifications\Notifiable;
+use Lab404\Impersonate\Models\Impersonate;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
@@ -121,23 +122,39 @@ class User extends Authenticatable
 
     public function isSetterFor(Course $course): bool
     {
-        return $this->courses()->where('course_user.course_id', '=', $course->id)
+        $cacheKey = $this->id . '_is_setter_for_' . $course->code;
+        return Cache::remember(
+            $cacheKey,
+            5,
+            fn () =>  $this->courses()->where('course_user.course_id', '=', $course->id)
             ->wherePivot('is_setter', true)
-            ->count() > 0;
+            ->count() > 0
+        );
+        return $this->$cacheKey;
     }
 
     public function isModeratorFor(Course $course): bool
     {
-        return $this->courses()->where('course_user.course_id', '=', $course->id)
-            ->wherePivot('is_moderator', true)
-            ->count() > 0;
+        $cacheKey = $this->id . '_is_moderator_for_' . $course->code;
+        return Cache::remember(
+            $cacheKey,
+            5,
+            fn () => $this->courses()->where('course_user.course_id', '=', $course->id)
+                        ->wherePivot('is_moderator', true)
+                        ->count() > 0
+        );
     }
 
     public function isExternalFor(Course $course): bool
     {
-        return $this->courses()->where('course_user.course_id', '=', $course->id)
+        $cacheKey = $this->id . '_is_external_for_' . $course->code;
+        return Cache::remember(
+            $cacheKey,
+            5,
+            fn () =>  $this->courses()->where('course_user.course_id', '=', $course->id)
             ->wherePivot('is_external', true)
-            ->count() > 0;
+            ->count() > 0
+        );
     }
 
     public function toggleAdmin()

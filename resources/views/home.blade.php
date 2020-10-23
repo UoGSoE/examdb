@@ -45,6 +45,11 @@
             <span class="icon has-text-grey-lighter"><i class="fas fa-book-open"></i></span>
             <span>&nbsp;External</span>
         </h3>
+        <p class="subtitle">
+            You are required to fill in the checklist on each course to leave your approval and comments. You will be able to
+            view details of the paper in Section A; Moderators comments on the paper in Section B and Moderator comments
+            on the solutions in Section C.  You should leave your comments in Section D and SAVE.
+        </p>
         <ul class="leading-loose">
             @foreach ($externalCourses as $course)
             <li>

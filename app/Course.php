@@ -253,7 +253,7 @@ class Course extends Model
             'solution_adjustment_comments' => '',
             'solution_moderator_comments' => '',
             'moderator_solutions_at' => '',
-            'external_examiner_name' => auth()->check() ? auth()->user()->full_name : '',
+            'external_examiner_name' => '',
             'external_agrees_with_moderator' => "0",
             'external_reason' => '',
             'external_comments' => '',
