@@ -18230,10 +18230,6 @@ readers do not read off random characters that represent icons */
 
 @-webkit-keyframes fade-in-out-success {
   0% {
-    opacity: 0;
-  }
-
-  10% {
     opacity: 1;
   }
 
@@ -18248,10 +18244,6 @@ readers do not read off random characters that represent icons */
 
 @keyframes fade-in-out-success {
   0% {
-    opacity: 0;
-  }
-
-  10% {
     opacity: 1;
   }
 
