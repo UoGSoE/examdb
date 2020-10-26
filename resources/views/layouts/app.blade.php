@@ -34,6 +34,11 @@
         @include('layouts.navbar')
 
         <section class="section" id="app">
+            @if (session()->has('success'))
+                <div class="success-box shadow-lg notification is-success">
+                    {{ session('success') }}
+                </div>
+            @endif
             <div class="container">
                 @yield('content')
 
