@@ -29,8 +29,10 @@ class Course extends Model
     protected $casts = [
         'moderator_approved_main' => 'boolean',
         'moderator_approved_resit' => 'boolean',
+        'moderator_approved_assessment' => 'boolean',
         'external_approved_main' => 'boolean',
         'external_approved_resit' => 'boolean',
+        'external_approved_assessment' => 'boolean',
         'external_notified' => 'boolean',
         'registry_approved_main' => 'boolean',
         'registry_approved_resit' => 'boolean',
