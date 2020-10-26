@@ -40,6 +40,23 @@ $fa-font-path: '~@fortawesome/fontawesome-free/webfonts';
   border: 2px solid;
 }
 
+.success-box {
+  position:fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 10;
+  opacity: 0;
+  background-color: hsl(0, 0%, 100%);
+  animation: fade-in-out-success 4s;
+}
+
+@keyframes fade-in-out-success {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  75% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 @keyframes impersonation-pulse {
   0% {
     border-color: hsl(348, 100%, 100%);

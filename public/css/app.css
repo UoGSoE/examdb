@@ -18217,6 +18217,53 @@ readers do not read off random characters that represent icons */
   border: 2px solid;
 }
 
+.success-box {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 10;
+  opacity: 0;
+  background-color: white;
+  -webkit-animation: fade-in-out-success 4s;
+          animation: fade-in-out-success 4s;
+}
+
+@-webkit-keyframes fade-in-out-success {
+  0% {
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  75% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in-out-success {
+  0% {
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  75% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
 @-webkit-keyframes impersonation-pulse {
   0% {
     border-color: white;
