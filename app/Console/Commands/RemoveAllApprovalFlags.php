@@ -43,6 +43,9 @@ class RemoveAllApprovalFlags extends Command
             'moderator_approved_resit' => false,
             'external_approved_main' => false,
             'external_approved_resit' => false,
+            'moderator_approved_assessment' => false,
+            'external_approved_assessment' => false,
+            'external_notified' => false,
         ]));
     }
 }
