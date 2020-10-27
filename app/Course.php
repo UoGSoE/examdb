@@ -316,7 +316,7 @@ class Course extends Model
     protected function combinePapersAndChecklists($papers, $checklists)
     {
         $checklistsAsPapers = $checklists->map(function ($checklist) {
-            $fake = new Paper([
+            $fake = new FakePaper([
                 'id' => Str::random(64),
                 'category' => 'main',
                 'subcategory' => 'Updated Checklist',
