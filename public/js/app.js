@@ -13092,6 +13092,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["course", "papers", "subcategories", "user", "staff", "externals"],
   data: function data() {
@@ -13105,6 +13106,9 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     disableRoute: function disableRoute() {
       return route("course.disable", this.course.id);
+    },
+    editRoute: function editRoute() {
+      return route("course.edit", this.course.id);
     },
     notifyButtonText: function notifyButtonText() {
       var suffix = this.course.external_notified ? ' Again' : '';
@@ -41304,6 +41308,15 @@ var render = function() {
                   }
                 },
                 [_vm._v("Disable Course")]
+              ),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  staticClass: "button level-item",
+                  attrs: { href: _vm.editRoute }
+                },
+                [_vm._v("Edit")]
               ),
               _vm._v(" "),
               _c("a", {

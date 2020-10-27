@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Course;
 use App\Discipline;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use App\Http\Controllers\Controller;
 
 class CourseController extends Controller
 {
@@ -24,5 +25,27 @@ class CourseController extends Controller
             'disciplines' => Discipline::orderBy('title')->get(),
             'disciplineFilter' => request()->discipline,
         ]);
+    }
+
+    public function edit(Course $course)
+    {
+        return view('admin.courses.edit', [
+            'course' => $course,
+        ]);
+    }
+
+    public function update(Course $course, Request $request)
+    {
+        $request->validate([
+            'code' => [
+                'required',
+                Rule::unique('courses')->ignore($course->id),
+            ],
+            'title' => 'required',
+        ]);
+
+        $course->update($request->only(['code', 'title']));
+
+        return redirect(route('course.show', $course->id));
     }
 }
