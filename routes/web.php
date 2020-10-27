@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\CourseController;
+
 Auth::routes();
 Route::post('/external-login', [\App\Http\Controllers\Auth\ExternalLoginController::class, 'sendLoginEmail'])->name('external-generate-login');
 Route::get('/external-login/{user}', [\App\Http\Controllers\Auth\ExternalLoginController::class, 'login'])->name('external-login')->middleware('signed');
@@ -46,6 +48,9 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::post('course/{course}/disable', [\App\Http\Controllers\Admin\CourseStatusController::class, 'disable'])->name('course.disable');
         Route::post('course/{id}/enable', [\App\Http\Controllers\Admin\CourseStatusController::class, 'enable'])->name('course.enable');
+
+        Route::get('course/{course}/edit', [\App\Http\Controllers\Admin\CourseController::class, 'edit'])->name('course.edit');
+        Route::post('course/{course}', [\App\Http\Controllers\Admin\CourseController::class, 'update'])->name('course.update');
 
         Route::post('discipline/contacts', [\App\Http\Controllers\Admin\DisciplineContactController::class, 'update'])->name('discipline.contacts.update');
 
