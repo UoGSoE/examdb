@@ -101,7 +101,7 @@ export default {
               wording = 'Solution';
           }
           if (this.buttontext === 'Assessment (> 25%)') {
-              wording = 'Assessment Paper';
+              wording = 'Assessment Paper (> 25%)';
           }
           return 'Add ' + wording;
       },
