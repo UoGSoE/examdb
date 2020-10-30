@@ -31,6 +31,6 @@ class CallForPapersMail extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.call_for_papers');
+        return $this->subject('Call for Exam Papers')->markdown('emails.call_for_papers');
     }
 }
