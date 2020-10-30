@@ -37,3 +37,10 @@ users.
 * Run `php artisan key:generate` to make an application key (this is used to encrypt the exam papers and 'sign' the secure URLs for external users)
 * Run `php artisan migrate` to create all of the database tables
 * Run `php artisan serve` to run the app for testing or point an apache/nginx config at `/path/to/code/public`.  For a real webserver you need to make sure the 'storage' and 'bootstrap/cache' are writable by the webserver user.
+
+### File uploads
+The system assumes there is a 'minio' server running.  There is a `minio_dev.sh` script in the root of the repo
+which will start a docker container running minio.  You can also steal the api/secret keys from that to put
+in your .env for dev.  Once minio is running you'll have to log in via the web (localhost:9000) with the
+secret keys from the script and click the button at the bottom right of the screen to add a new 'bucket' called
+'exampapers'.  Then you should be good to go.
