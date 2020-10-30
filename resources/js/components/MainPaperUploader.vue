@@ -100,8 +100,8 @@ export default {
           if (this.buttontext === 'Solution') {
               wording = 'Solution';
           }
-          if (this.buttontext === 'Assessment (> 25%)') {
-              wording = 'Assessment Paper (> 25%)';
+          if (this.buttontext === 'Assessment (> 30%)') {
+              wording = 'Assessment Paper (> 30%)';
           }
           return 'Add ' + wording;
       },
