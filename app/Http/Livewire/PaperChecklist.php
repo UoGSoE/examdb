@@ -36,8 +36,6 @@ class PaperChecklist extends Component
     {
         $this->course->addChecklist($this->checklist['fields'], $this->category);
 
-        session()->flash('success', 'Checklist Saved');
-
         return redirect()->to(route('course.show', $this->course->id));
     }
 
