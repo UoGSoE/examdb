@@ -93,7 +93,17 @@ export default {
   },
   computed: {
       getButtonText() {
-          return 'Add ' + this.buttontext;
+          let wording = '';
+          if (this.buttontext === 'Main') {
+              wording = 'Exam Paper';
+          }
+          if (this.buttontext === 'Solution') {
+              wording = 'Solution';
+          }
+          if (this.buttontext === 'Assessment (> 25%)') {
+              wording = 'Assessment Paper';
+          }
+          return 'Add ' + wording;
       },
     secondResit() {
       return this.category == "resit2";

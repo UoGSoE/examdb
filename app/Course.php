@@ -184,6 +184,8 @@ class Course extends Model
                 "Added a {$category} checklist for {$this->code}"
             );
 
+        $flashMessage = 'Checklist Saved';
+
         if (auth()->check() && auth()->user()->isSetterFor($this) && $checklist->shouldNotifyModerator()) {
             $area = str_contains($this, 'ENG') ? 'glasgow' : 'uestc';
             $optionName = "{$area}_internal_moderation_deadline";
@@ -195,12 +197,15 @@ class Course extends Model
             $this->moderators->pluck('email')->each(function ($email) use ($deadline) {
                 Mail::to($email)->queue(new SetterHasUpdatedTheChecklist($this, $deadline));
             });
+
+            $flashMessage = 'Checklist Saved - moderators notified';
         }
 
         if (auth()->check() && auth()->user()->isModeratorFor($this)) {
             $this->setters->pluck('email')->each(function ($email) {
                 Mail::to($email)->queue(new ModeratorHasUpdatedTheChecklist($this));
             });
+            $flashMessage = 'Checklist Saved - setters notified';
         }
 
         if (auth()->check() && auth()->user()->isExternalFor($this)) {
@@ -208,6 +213,8 @@ class Course extends Model
                 Mail::to($email)->queue(new ExternalHasUpdatedTheChecklist($this));
             });
         }
+
+        session()->flash('success', $flashMessage);
 
         return $checklist;
     }

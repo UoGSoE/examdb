@@ -13627,7 +13627,21 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     getButtonText: function getButtonText() {
-      return 'Add ' + this.buttontext;
+      var wording = '';
+
+      if (this.buttontext === 'Main') {
+        wording = 'Exam Paper';
+      }
+
+      if (this.buttontext === 'Solution') {
+        wording = 'Solution';
+      }
+
+      if (this.buttontext === 'Assessment (> 25%)') {
+        wording = 'Assessment Paper';
+      }
+
+      return 'Add ' + wording;
     },
     secondResit: function secondResit() {
       return this.category == "resit2";

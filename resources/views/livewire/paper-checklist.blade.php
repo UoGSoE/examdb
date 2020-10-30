@@ -53,13 +53,13 @@
                     </div>
                 </div>
                 <div class="column">
-                    <label for="" class="label">SCQF Level</label>
+                    <label for="" class="label">SCQF Level (UESTC only)</label>
                     <p class="control">
                         <input class="input" type="text" wire:model.lazy="checklist.fields.scqf_level">
                     </p>
                 </div>
                 <div class="column">
-                    <label for="" class="label">Course Credits</label>
+                    <label for="" class="label">Course Credits (UESTC only)</label>
                     <p class="control is-expanded">
                         <input class="input" type="text" wire:model.lazy="checklist.fields.course_credits">
                     </p>
@@ -81,7 +81,7 @@
 @endif
 
 <div class="field">
-    <label for="" class="label">Assessment title and number</label>
+    <label for="" class="label">Assessment title and number (UESTC only)</label>
     <p class="control is-expanded">
         <input class="input" type="text" wire:model="checklist.fields.assessment_title">
     </p>
@@ -201,7 +201,7 @@
         <div class="column">
 
             <div class="field">
-                <label for="" class="label">Moderators e-signature</label>
+                <label for="" class="label">Moderators Name</label>
                 <p class="control">
                     <input class="input" type="text" wire:model="checklist.fields.moderator_esignature" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
                 </p>
@@ -294,7 +294,7 @@
     <div class="columns">
         <div class="column">
             <div class="field">
-                <label for="" class="label">Moderators e-signature</label>
+                <label for="" class="label">Moderators Name</label>
                 <p class="control">
                     <input class="input" type="text" wire:model="checklist.fields.moderator_esignature" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
                 </p>
@@ -375,7 +375,7 @@
         <div class="column">
 
             <div class="field">
-                <label for="" class="label">e-Signature</label>
+                <label for="" class="label">Name</label>
                 <p class="control">
                     <input class="input" type="text" wire:model="checklist.fields.external_esignature" @if (! auth()->user()->isExternalFor($course)) disabled @endif>
                 </p>
