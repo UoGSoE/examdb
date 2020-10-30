@@ -145,8 +145,8 @@ class TimedNotifications extends Command
                 return $course->setters->pluck('email');
             })->filter()->unique();
 
-        $emailAddresses->each(function ($email) {
-            Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new CallForPapersMail(Carbon::createFromFormat('Y-m-d', option('date_receive_call_for_papers'))));
+        $emailAddresses->each(function ($email) use ($date) {
+            Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new CallForPapersMail($date));
         });
 
         option(['date_receive_call_for_papers_email_sent_semester_' . $currentSemester => now()->format('Y-m-d')]);
