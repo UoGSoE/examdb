@@ -45,7 +45,8 @@ class TimedNotificationsTest extends TestCase
         $moderator = create(User::class);
         $moderator->markAsModerator($course1);
 
-        option(['date_receive_call_for_papers' => now()->subHour()->format('Y-m-d')]);
+        $callForPapersDate = now()->subHour()->format('Y-m-d');
+        option(['date_receive_call_for_papers' => $callForPapersDate]);
         option(['start_semester_1' => now()->format('Y-m-d')]);
         option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
@@ -55,8 +56,8 @@ class TimedNotificationsTest extends TestCase
         $this->artisan('examdb:timed-notifications');
 
         Mail::assertQueued(CallForPapersMail::class, 2);
-        Mail::assertQueued(CallForPapersMail::class, function ($mail) use ($setter1) {
-            return $mail->hasTo($setter1->email);
+        Mail::assertQueued(CallForPapersMail::class, function ($mail) use ($setter1, $callForPapersDate) {
+            return $mail->hasTo($setter1->email) && $mail->deadline->format('Y-m-d') == $callForPapersDate;
         });
         Mail::assertQueued(CallForPapersMail::class, function ($mail) use ($setter2) {
             return $mail->hasTo($setter2->email);
