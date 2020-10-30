@@ -73,7 +73,7 @@
           <main-paper-uploader
             :course="course"
             :category="category"
-            buttontext="Assessment (> 30%)"
+            buttontext="Assessment > 30% (> 25% UESTC)"
             :subcategories="subcategories['assessment']"
             @added="paperAdded"
           >

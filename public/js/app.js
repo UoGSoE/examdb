@@ -13637,8 +13637,8 @@ __webpack_require__.r(__webpack_exports__);
         wording = 'Solution';
       }
 
-      if (this.buttontext === 'Assessment (> 30%)') {
-        wording = 'Assessment Paper (> 30%)';
+      if (this.buttontext === 'Assessment > 30% (> 25% UESTC)') {
+        wording = 'Assessment > 30% (> 25% UESTC)';
       }
 
       return 'Add ' + wording;
@@ -42950,7 +42950,7 @@ var render = function() {
                   attrs: {
                     course: _vm.course,
                     category: _vm.category,
-                    buttontext: "Assessment (> 30%)",
+                    buttontext: "Assessment > 30% (> 25% UESTC)",
                     subcategories: _vm.subcategories["assessment"]
                   },
                   on: { added: _vm.paperAdded }

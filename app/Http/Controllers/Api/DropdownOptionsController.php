@@ -17,7 +17,7 @@ class DropdownOptionsController extends Controller
     {
         request()->validate([
             'category' => 'required|in:main,resit',
-            'subcategory' => 'required|in:main,solution,assessment',
+            'subcategory' => 'required|in:main,solution,assessment > 30% (> 25% uestc)',
         ]);
 
         $this->course = $course;
