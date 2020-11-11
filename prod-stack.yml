@@ -34,6 +34,8 @@ x-deploy:
   placement:
     preferences:
       - spread: node.labels.site
+    constraints:
+      - "node.labels.weaksauce==false"
   resources:
     limits:
       memory: 2048M
@@ -60,6 +62,8 @@ services:
       placement:
         preferences:
           - spread: node.labels.site
+        constraints:
+          - "node.labels.weaksauce==false"
       update_config:
         parallelism: 1
         failure_action: rollback
