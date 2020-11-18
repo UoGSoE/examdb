@@ -285,6 +285,14 @@ class Course extends Model
             ->count() > 0;
     }
 
+    public function hasExternalChecklist(string $category)
+    {
+        return $this->checklists
+            ->where('category', $category)
+            ->whereIn('user_id', $this->externals->pluck('id'))
+            ->count() > 0;
+    }
+
     public function hasPreviousChecklists(string $category): bool
     {
         return $this->checklists()->where('category', '=', $category)->count() > 0;

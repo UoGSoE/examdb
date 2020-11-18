@@ -73,7 +73,7 @@
                 <span class="icon {{ $course->isApprovedByModerator('main') ? 'has-text-info' : 'has-text-grey-light' }}" title="Moderator approved?">
                     <i class="fas fa-user-graduate"></i>
                 </span>
-                <span class="icon {{ $course->isApprovedByExternal('main') ? 'has-text-info' : 'has-text-grey-light' }}" title="External approved?">
+                <span class="icon {{ $course->hasExternalChecklist('main') ? 'has-text-info' : 'has-text-grey-light' }}" title="External has filled checklist?">
                     <i class="fas fa-user-secret"></i>
                 </span>
             </td>
@@ -81,7 +81,7 @@
                 <span class="icon {{ $course->isApprovedByModerator('resit') ? 'has-text-info' : 'has-text-grey-light' }}" title="Moderator approved?">
                     <i class="fas fa-user-graduate"></i>
                 </span>
-                <span class="icon {{ $course->isApprovedByExternal('resit') ? 'has-text-info' : 'has-text-grey-light' }}" title="External approved?">
+                <span class="icon {{ $course->hasExternalChecklist('resit') ? 'has-text-info' : 'has-text-grey-light' }}" title="External has filled checklist?">
                     <i class="fas fa-user-secret"></i>
                 </span>
             </td>
