@@ -12,7 +12,7 @@ class CourseController extends Controller
 {
     public function index()
     {
-        $query = Course::with(['setters', 'moderators', 'externals', 'discipline'])->orderBy('code');
+        $query = Course::with(['setters', 'moderators', 'externals', 'discipline', 'checklists'])->orderBy('code');
         if (request()->withtrashed) {
             $query = $query->withTrashed();
         }
