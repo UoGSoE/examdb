@@ -26,9 +26,16 @@ users.
 
 ### Docker to try it out
 
-* `docker-compose -f docker-compose.dev.yml up`
-* Go to `http://localhost:7172`
-* Log in as 'admin' / 'secret'
+```sh
+export IMAGE_NAME=examdb:1.0
+docker build --target=ci -t ${IMAGE_NAME} .
+docker-compose up
+```
+Wait until things all seem to be running, then in another terminal in the same directory, run
+```sh
+docker-compose exec app php artisan db:seed --class=TestDataSeeder
+```
+Now go to http://localhost:3000 and log in as 'admin' / 'secret'.
 
 ### The full app
 
