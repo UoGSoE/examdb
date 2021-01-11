@@ -5,6 +5,16 @@ set -e
 role=${CONTAINER_ROLE:-app}
 env=${APP_ENV:-production}
 
+if [ "${env}" != "production" ];
+then
+    # in QA/testing we wait for the local mysql container to come up
+    until nc -z -v -w30 mysql 3306
+    do
+        echo "Waiting for database connection..."
+        sleep 5
+    done
+fi
+
 until echo 'PING' | nc -w 1 redis 6379 | grep -q PONG
 do
     echo "Waiting for Redis connection..."
@@ -19,15 +29,11 @@ if [ "$role" = "app" ]; then
 
 elif [ "$role" = "queue" ]; then
 
-    nice php /var/www/html/artisan horizon
+    exec gosu www-data nice php /var/www/html/artisan horizon
 
 elif [ "$role" = "scheduler" ]; then
 
-    while [ true ]
-    do
-      nice php /var/www/html/artisan schedule:run --verbose --no-interaction &
-      sleep 60
-    done
+    exec gosu www-data nice php /var/www/html/artisan schedule:work --verbose --no-interaction
 
 elif [ "$role" = "migrations" ]; then
 

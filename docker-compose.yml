@@ -1,12 +1,11 @@
 version: "3.7"
 
-# See https://github.com/UoGSoE/docker-stuff for the origins of this file
-
 x-env:
   environment: &default-env
     MAIL_MAILER: smtp
     MAIL_HOST: mailhog
     MAIL_PORT: 1025
+    MAIL_ENCRYPTION: 0
     REDIS_HOST: redis
     QUEUE_CONNECTION: redis
     SESSION_DRIVER: redis
@@ -16,6 +15,31 @@ x-env:
     DB_DATABASE: homestead
     DB_USERNAME: homestead
     DB_PASSWORD: secret
+    APP_NAME: "Exam Papers"
+    APP_ENV: local
+    APP_KEY: base64:keR1/6nEaaCrtVwYR7e/dh053Sv0AfGUFoNWEgx7XP8=
+    APP_DEBUG: 1
+    APP_URL: http://examdb.test
+    LOG_CHANNEL: stack
+    BROADCAST_DRIVER: log
+    CACHE_DRIVER: file
+    SESSION_LIFETIME: 120
+    MAIL_FROM_ADDRESS: someone@example.com
+    MAIL_FROM_NAME: "Exam Database"
+    PASSWORD_CHECK: 0
+    SYSADMIN_EMAIL: someone@glasgow.ac.uk
+    FALLBACK_EMAIL: someone@glasgow.ac.uk
+    WLM_URI: ""
+    LDAP_SERVER: cytosine.campus.gla.ac.uk
+    LDAP_OU: Gla
+    LDAP_USERNAME: 'your-gla-ldap-admin-username'
+    LDAP_PASSWORD: 'your-gla-ldap-admin-password'
+    API_KEY: Meewae5emonien8ShueKid8uusocho1iphavao9gae1lahjilohdowehohh5Tho6
+    MINIO_KEY: ALIAIOSFODNN7EXAMPLE
+    MINIO_SECRET: wPalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    MINIO_REGION: us-east-1
+    MINIO_BUCKET: exampapers
+    MINIO_ENDPOINT: http://minio:9000
 
 services:
   app:
@@ -25,14 +49,6 @@ services:
       <<: *default-env
     ports:
       - "${APP_PORT:-3000}:80"
-    build:
-      context: .
-      target: dev
-    volumes:
-      - .:/var/www/html
-    secrets:
-      - source: dotenv
-        target: .env
     depends_on:
       - redis
       - mysql
@@ -45,11 +61,6 @@ services:
       <<: *default-env
     depends_on:
       - app
-    volumes:
-      - .:/var/www/html
-    secrets:
-      - source: dotenv
-        target: .env
 
   queue:
     image: ${IMAGE_NAME}
@@ -58,11 +69,6 @@ services:
       <<: *default-env
     depends_on:
       - app
-    volumes:
-      - .:/var/www/html
-    secrets:
-      - source: dotenv
-        target: .env
 
   migrations:
     image: ${IMAGE_NAME}
@@ -71,11 +77,6 @@ services:
       <<: *default-env
     depends_on:
       - app
-    volumes:
-      - .:/var/www/html
-    secrets:
-      - source: dotenv
-        target: .env
 
   redis:
     image: redis:5.0.4
@@ -97,12 +98,23 @@ services:
     ports:
       - "3025:8025"
 
+  minio:
+    image: minio/minio:RELEASE.2019-10-12T01-39-57Z
+    entrypoint: sh
+    command: -c 'mkdir -p /data/exampapers && /usr/bin/minio server /data'
+    environment:
+      MINIO_ACCESS_KEY: ALIAIOSFODNN7EXAMPLE
+      MINIO_SECRET_KEY: wPalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      MINIO_REGION: "us-east-1"
+      MINIO_BUCKET: "exampapers"
+      MINIO_ENDPOINT: "http://localhost:9000"
+    volumes:
+      - minio:/data
+
 volumes:
   redis:
     driver: "local"
   mysql:
     driver: "local"
-
-secrets:
-  dotenv:
-    file: ./.env
+  minio:
+    driver: "local"

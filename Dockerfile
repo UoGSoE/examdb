@@ -12,7 +12,7 @@ ARG WKHTML_VERSION="0.12.6-1"
 #     rm -f /tmp/wk.deb
 COPY docker/app-start docker/app-healthcheck /usr/local/bin/
 RUN chmod u+x /usr/local/bin/app-start /usr/local/bin/app-healthcheck
-CMD ["/usr/local/bin/app-start"]
+CMD ["tini", "--", "/usr/local/bin/app-start"]
 
 
 ### Build JS/css assets
