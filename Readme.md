@@ -46,7 +46,7 @@ Now go to http://localhost:3000 and log in as 'admin' / 'secret'.
 * Run `php artisan serve` to run the app for testing or point an apache/nginx config at `/path/to/code/public`.  For a real webserver you need to make sure the 'storage' and 'bootstrap/cache' are writable by the webserver user.
 
 ### File uploads
-The system assumes there is a 'minio' server running.  There is a `minio_dev.sh` script in the root of the repo
+The system assumes there is a 'minio' server running (note: the `docker-compose` setup creates one by itself).  There is a `minio_dev.sh` script in the root of the repo
 which will start a docker container running minio.  You can also steal the api/secret keys from that to put
 in your .env for dev.  Once minio is running you'll have to log in via the web (localhost:9000) with the
 secret keys from the script and click the button at the bottom right of the screen to add a new 'bucket' called
