@@ -35,7 +35,9 @@ Wait until things all seem to be running, then in another terminal in the same d
 ```sh
 docker-compose exec app php artisan db:seed --class=TestDataSeeder
 ```
-Now go to http://localhost:3000 and log in as 'admin' / 'secret'.
+Now go to http://localhost:3000 and log in as 'admin' / 'secret'.  Any emails that the system would send out
+are trapped by a copy of [Mailhog](https://github.com/mailhog/MailHog) running at http://localhost:3025 .
+
 
 ### The full app
 
