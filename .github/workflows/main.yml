@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  multi:
+  build-and-test:
     runs-on: ubuntu-latest
     services:
       mysql:
@@ -56,6 +56,7 @@ jobs:
           image: uogsoe/${{ github.event.repository.name }}:qa-${{ github.sha }}
           run: rm -fv .env && cp -v .env.github .env && php artisan config:clear && CI=1 APP_ENV=testing ./vendor/bin/phpunit
       - name: Build and push prod
+        if: github.ref == 'refs/heads/master'
         uses: docker/build-push-action@v2
         with:
           context: .
