@@ -54,7 +54,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           image: uogsoe/${{ github.event.repository.name }}:qa-${{ github.sha }}
-          run: rm -fv .env && cp -v .env.github .env && php artisan config:clear && cat .env && ./vendor/bin/phpunit
+          run: rm -fv .env && cp -v .env.github .env && php artisan config:clear && cat .env && php artisan tinker --execute "echo env('APP_ENV'); echo env('APP_KEY');" && ./vendor/bin/phpunit
       - name: Build and push prod
         uses: docker/build-push-action@v2
         with:
