@@ -218,6 +218,94 @@ class UserTest extends TestCase
     }
 
     /** @test */
+    public function admins_can_edit_a_users_name_and_email()
+    {
+        $this->withoutExceptionHandling();
+        $admin = create(User::class, ['is_admin' => true]);
+        $user = create(User::class, ['username' => 'jenny']);
+
+        $response = $this->actingAs($admin)->get(route('admin.user.edit', $user->id));
+
+        $response->assertOk();
+        $response->assertSee("Edit User");
+
+        $response = $this->actingAs($admin)->post(route('admin.user.edit', $user->id), [
+            'surname' => 'New',
+            'forenames' => 'Miss',
+            'email' => 'missnew@example.com',
+        ]);
+
+        $response->assertRedirect(route('user.show', $user->id));
+        tap($user->fresh(), function ($user) {
+            $this->assertEquals('jenny', $user->username);
+            $this->assertEquals('New', $user->surname);
+            $this->assertEquals('Miss', $user->forenames);
+            $this->assertEquals('missnew@example.com', $user->email);
+        });
+    }
+
+    /** @test */
+    public function when_editing_a_user_their_email_has_to_be_unique()
+    {
+        $admin = create(User::class, ['is_admin' => true]);
+        $user = create(User::class, ['email' => 'jenny@example.com']);
+        $user2 = create(User::class, ['email' => 'emma@example.com']);
+
+        $response = $this->actingAs($admin)->from(route('admin.user.edit', $user->id))->post(route('admin.user.edit', $user->id), [
+            'surname' => 'New',
+            'forenames' => 'Miss',
+            'email' => 'jenny@example.com',
+        ]);
+
+        $response->assertRedirect(route('user.show', $user->id));
+        tap($user->fresh(), function ($user) {
+            $this->assertEquals('New', $user->surname);
+            $this->assertEquals('Miss', $user->forenames);
+            $this->assertEquals('jenny@example.com', $user->email);
+        });
+
+        $response = $this->actingAs($admin)->from(route('admin.user.edit', $user->id))->post(route('admin.user.edit', $user->id), [
+            'surname' => 'Old',
+            'forenames' => 'Missus',
+            'email' => 'emma@example.com',
+        ]);
+
+        $response->assertRedirect(route('admin.user.edit', $user->id));
+        $response->assertSessionHasErrors(['email']);
+        tap($user->fresh(), function ($user) {
+            $this->assertEquals('New', $user->surname);
+            $this->assertEquals('Miss', $user->forenames);
+            $this->assertEquals('jenny@example.com', $user->email);
+        });
+    }
+
+    /** @test */
+    public function when_editing_a_user_if_the_are_external_updating_their_email_also_updates_their_username()
+    {
+        // externals username is the same as their email, but they are seperate fields in the db
+        $admin = create(User::class, ['is_admin' => true]);
+        $user = create(User::class, [
+            'username' => 'jenny@example.com',
+            'email' => 'jenny@example.com',
+            'is_external' => true
+        ]);
+
+        $response = $this->actingAs($admin)->post(route('admin.user.edit', $user->id), [
+            'surname' => 'New',
+            'forenames' => 'Miss',
+            'email' => 'alison@example.com',
+        ]);
+
+        $response->assertRedirect(route('user.show', $user->id));
+        tap($user->fresh(), function ($user) {
+            $this->assertEquals('New', $user->surname);
+            $this->assertEquals('Miss', $user->forenames);
+            $this->assertEquals('alison@example.com', $user->email);
+            $this->assertEquals('alison@example.com', $user->username);
+        });
+    }
+
+    /** @test */
     public function regular_users_cant_create_users()
     {
         $user = create(User::class);

@@ -9,6 +9,11 @@
                 Details for user {{ $user->full_name }}
             </h3>
         </span>
+        <a href="{{ route('admin.user.edit', $user->id) }}" class="button level-item" title="Edit User">
+            <span class="icon">
+            <i class="fas fa-user-edit"></i>
+            </span>
+        </a>
         <span class="level-item">
             <form method="GET" action="{{ route('impersonate', $user->id) }}">
                 @csrf

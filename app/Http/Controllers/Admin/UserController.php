@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
@@ -61,6 +62,41 @@ class UserController extends Controller
         return response()->json([
             'user' => $user,
         ], 201);
+    }
+
+    public function edit(User $user)
+    {
+        return view('admin.users.edit', [
+            'user' => $user,
+        ]);
+    }
+
+    public function update(User $user, Request $request)
+    {
+        $data = $request->validate([
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users')->ignore($user->id),
+            ],
+            'surname' => 'required',
+            'forenames' => 'required',
+        ]);
+
+        $data['email'] = strtolower($data['email']);
+        if ($user->isExternal()) {
+            $data['username'] = $data['email'];
+        }
+
+        $user->update($data);
+
+        activity()
+            ->causedBy($request->user())
+            ->log(
+                'Updated details for '.($user->isExternal() ? 'external' : 'local user')." '{$user->username}'"
+            );
+
+        return redirect()->route('user.show', $user->id);
     }
 
     public function destroy(User $user)
