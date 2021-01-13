@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\CourseController;
+use App\Http\Controllers\Admin\UserController;
 
 Auth::routes();
 Route::post('/external-login', [\App\Http\Controllers\Auth\ExternalLoginController::class, 'sendLoginEmail'])->name('external-generate-login');
@@ -41,6 +42,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('user', [\App\Http\Controllers\Admin\UserController::class, 'store'])->name('user.store');
         Route::delete('user/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('admin.user.delete');
         Route::post('user/{id}/undelete', [\App\Http\Controllers\Admin\UserController::class, 'reenable'])->name('admin.user.undelete');
+
+        Route::get('user/{user}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('admin.user.edit');
+        Route::post('user/{user}/edit', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin.user.update');
 
         Route::get('search/user', [\App\Http\Controllers\Admin\UserSearchController::class, 'show'])->name('user.search');
         Route::post('course/{course}/users', [\App\Http\Controllers\Admin\CourseUsersController::class, 'update'])->name('course.users.update');
