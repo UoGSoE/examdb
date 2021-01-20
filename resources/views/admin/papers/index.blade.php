@@ -9,6 +9,10 @@
         </h3>
     </div>
     <div class="level-right">
+        <a class="button level-item" href="{{ route('admin.paper.export') }}">
+            <span class="icon"><i class="fas fa-file-download"></i></span>
+            <span>Export Excel</span>
+        </a>
         <export-checklists-button></export-checklists-button>
         <export-papers-registry-button></export-papers-registry-button>
         <a class="button level-item" href="{{ route('area.papers.archive_form') }}">Archive Papers</a>

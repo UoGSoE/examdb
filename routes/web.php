@@ -34,6 +34,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('course', [\App\Http\Controllers\Admin\CourseController::class, 'index'])->name('course.index');
         Route::get('paper', [\App\Http\Controllers\Admin\PaperController::class, 'index'])->name('paper.index');
 
+        Route::get('export/courses', [\App\Http\Controllers\Admin\CourseExportController::class, 'show'])->name('admin.course.export');
+        Route::get('export/papers', [\App\Http\Controllers\Admin\PaperExportController::class, 'show'])->name('admin.paper.export');
+
         Route::get('user/{user}/export', [\App\Http\Controllers\Admin\GdprExportController::class, 'show'])->name('gdpr.export.user');
         Route::post('user/{user}/anonmyise', [\App\Http\Controllers\Admin\GdprAnonymiseController::class, 'store'])->name('gdpr.anonymise.user');
 

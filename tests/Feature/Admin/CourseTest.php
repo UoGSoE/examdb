@@ -49,6 +49,20 @@ class CourseTest extends TestCase
     }
 
     /** @test */
+    public function an_admin_can_export_the_list_of_courses_as_an_excel_sheet()
+    {
+        $this->withoutExceptionHandling();
+        $admin = create(User::class, ['is_admin' => true]);
+        $course1 = create(Course::class);
+        $course2 = create(Course::class);
+
+        $response = $this->actingAs($admin)->get(route('admin.course.export'));
+
+        $header = $response->headers->get('content-disposition');
+        $this->assertEquals($header, "attachment; filename=examdb_courses_" . now()->format('d_m_Y_H_i') . ".xlsx");
+    }
+
+    /** @test */
     public function an_admin_can_disable_a_course()
     {
         $this->withoutExceptionHandling();
