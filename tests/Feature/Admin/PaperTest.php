@@ -49,4 +49,18 @@ class PaperTest extends TestCase
         $response->assertDontSee($course1->code);
         $response->assertSee($course2->code);
     }
+
+    /** @test */
+    public function admins_can_export_the_list_of_papers()
+    {
+        $this->withoutExceptionHandling();
+        $admin = create(User::class, ['is_admin' => true]);
+        $course1 = create(Course::class);
+        $course2 = create(Course::class);
+
+        $response = $this->actingAs($admin)->get(route('admin.paper.export'));
+
+        $header = $response->headers->get('content-disposition');
+        $this->assertEquals($header, "attachment; filename=examdb_papers_" . now()->format('d_m_Y_H_i') . ".xlsx");
+    }
 }
