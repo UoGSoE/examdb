@@ -138,6 +138,21 @@ class TimedNotifications extends Command
             return;
         }
 
+        // TODO we need to break apart the date_receive_call_for_papers option above for Glasgow and UESTC
+        $optionName = "glasgow_staff_submission_deadline";
+        if (! option($optionName)) {
+            $this->info('Skipping submission deadline email as no date set');
+
+            return;
+        }
+        try {
+            $date = Carbon::parse(option($optionName));
+        } catch (Exception $e) {
+            $this->info("Could not parse $optionName");
+
+            return;
+        }
+
         $emailAddresses = Course::with('setters')
             ->forSemester($currentSemester)
             ->get()
