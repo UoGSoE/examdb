@@ -31,6 +31,7 @@ class CourseController extends Controller
     {
         return view('admin.courses.edit', [
             'course' => $course,
+            'disciplines' => Discipline::orderBy('title')->get(),
         ]);
     }
 
@@ -42,9 +43,10 @@ class CourseController extends Controller
                 Rule::unique('courses')->ignore($course->id),
             ],
             'title' => 'required',
+            'discipline_id' => 'required|integer',
         ]);
 
-        $course->update($request->only(['code', 'title']));
+        $course->update($request->only(['code', 'title', 'discipline_id']));
 
         return redirect(route('course.show', $course->id));
     }

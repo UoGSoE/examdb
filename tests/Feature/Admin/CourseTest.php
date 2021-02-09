@@ -99,7 +99,9 @@ class CourseTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $admin = User::factory()->admin()->create();
-        $course = Course::factory()->create();
+        $discipline1 = Discipline::factory()->create();
+        $discipline2 = Discipline::factory()->create();
+        $course = Course::factory()->create(['discipline_id' => $discipline1->id]);
 
         $response = $this->actingAs($admin)->get(route('course.edit', $course->id));
 
@@ -109,12 +111,14 @@ class CourseTest extends TestCase
         $response = $this->actingAs($admin)->post(route('course.update', $course->id), [
             'code' => 'ENG9999',
             'title' => 'BLAH',
+            'discipline_id' => $discipline2->id,
         ]);
 
         $response->assertRedirect(route('course.show', $course->id));
-        tap($course->fresh(), function ($course) {
+        tap($course->fresh(), function ($course) use ($discipline2) {
             $this->assertEquals('ENG9999', $course->code);
             $this->assertEquals('BLAH', $course->title);
+            $this->assertTrue($course->discipline->is($discipline2));
         });
     }
 }

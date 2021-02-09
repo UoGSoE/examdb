@@ -22,6 +22,23 @@
     @error('title')
         <p class="has-text-danger">{{ $message }}</p>
     @enderror
+
+    <div class="field">
+        <label class="label" for="discipline_id">Discipline</label>
+        <div class="control">
+            <div class="select">
+            <select id="discipline_id" name="discipline_id">
+                @foreach ($disciplines as $discipline)
+                    <option value="{{ $discipline->id }}" @if (old("discipline_id", $discipline->id) == $course->discipline_id) selected @endif>{{ $discipline->title }}</option>
+                @endforeach
+            </select>
+            </div>
+        </div>
+    </div>
+    @error('title')
+        <p class="has-text-danger">{{ $message }}</p>
+    @enderror
+
     <div class="field">
         <div class="control">
             <button class="button">Save</button>
