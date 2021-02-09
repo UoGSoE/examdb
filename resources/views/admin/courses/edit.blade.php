@@ -35,7 +35,7 @@
             </div>
         </div>
     </div>
-    @error('title')
+    @error('discipline_id')
         <p class="has-text-danger">{{ $message }}</p>
     @enderror
 
