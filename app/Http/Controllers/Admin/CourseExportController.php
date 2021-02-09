@@ -4,10 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Course;
 use Illuminate\Http\Request;
-use Box\Spout\Common\Entity\Row;
 use Ohffs\SimpleSpout\ExcelSheet;
 use App\Http\Controllers\Controller;
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
 
 class CourseExportController extends Controller
 {
