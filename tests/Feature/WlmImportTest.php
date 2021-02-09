@@ -204,6 +204,7 @@ class WlmImportTest extends TestCase
      */
     public function can_import_the_data_from_the_real_wlm()
     {
+        $this->markTestSkipped('TODO Hrm...');
         // $importer = new WlmImporter(new WlmClient);
 
         // $importer->run(50);

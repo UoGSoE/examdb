@@ -12,6 +12,7 @@ ARG WKHTML_VERSION="0.12.6-1"
 #     rm -f /tmp/wk.deb
 COPY docker/app-start docker/app-healthcheck /usr/local/bin/
 RUN chmod u+x /usr/local/bin/app-start /usr/local/bin/app-healthcheck
+HEALTHCHECK --start-period=30s CMD /usr/local/bin/app-healthcheck
 CMD ["tini", "--", "/usr/local/bin/app-start"]
 
 
@@ -112,12 +113,6 @@ RUN php /var/www/html/artisan storage:link && \
     php /var/www/html/artisan route:cache && \
     chown -R www-data:www-data storage bootstrap/cache
 
-#- Set up the default healthcheck
-HEALTHCHECK --start-period=30s CMD /usr/local/bin/app-healthcheck
-
-#- And off we go...
-CMD ["/usr/local/bin/app-start"]
-
 
 ### Build the ci version of the app (prod+dev packages)
 FROM prod as ci
@@ -129,7 +124,7 @@ ENV APP_DEBUG=1
 COPY --from=qa-composer /var/www/html/vendor /var/www/html/vendor
 
 #- Install sensiolabs security scanner and clear the caches
-RUN curl -o /usr/local/bin/security-checker https://get.sensiolabs.org/security-checker.phar && \
+RUN composer global require enlightn/security-checker && \
     curl -OL -o /usr/local/bin/phpcs https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar && \
     php /var/www/html/artisan view:clear && \
     php /var/www/html/artisan cache:clear
