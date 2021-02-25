@@ -1,0 +1,7 @@
+tasks:
+  - init: yarn install
+    command: yarn run dev
+
+vscode:
+  extensions:
+    - calebporzio.better-phpunit@1.4.0:0iut8S6JO52vUxE0HIFwSA==
