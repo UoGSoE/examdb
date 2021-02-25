@@ -40,6 +40,7 @@
     <thead>
         <tr>
             <th width="15%">Code</th>
+            <th>Semester</th>
             <th>Title</th>
             <th>Discipline</th>
             <th>Check Lists</th>
@@ -57,6 +58,7 @@
             <td>
                 {{ $course->code }} <span class="tag">{{ $category }}</span>
             </td>
+            <td>{{ $course->semester }}</td>
             <td>{{ $course->title }}</td>
             <td>
                 {{ optional($course->discipline)->title }}
