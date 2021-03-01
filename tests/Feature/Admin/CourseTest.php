@@ -121,4 +121,32 @@ class CourseTest extends TestCase
             $this->assertTrue($course->discipline->is($discipline2));
         });
     }
+
+    /** @test */
+    public function we_can_call_an_artisan_command_to_make_a_deep_clone_of_an_existing_course_with_a_new_course_code()
+    {
+        $discipline1 = Discipline::factory()->create();
+        $discipline2 = Discipline::factory()->create();
+        $course = Course::factory()->create(['code' => 'ENG1234', 'semester' => 2, 'discipline_id' => $discipline1->id]);
+        $setter1 = User::factory()->create();
+        $setter2 = User::factory()->create();
+        $moderator = User::factory()->create();
+        $external = User::factory()->create();
+        $setter1->markAsSetter($course);
+        $setter2->markAsSetter($course);
+        $moderator->markAsModerator($course);
+        $external->markAsExternal($course);
+
+        $this->artisan('examdb:duplicate-course', ['code' => 'ENG1234', 'newcode' => 'ENG5678_2']);
+
+        tap(Course::findByCode('ENG5678_2'), function ($course) use ($discipline1, $setter1, $setter2, $moderator, $external) {
+            $this->assertTrue($course->semester == 2);
+            $this->assertTrue($course->discipline->is($discipline1));
+            $this->assertCount(2, $course->setters);
+            $this->assertTrue($course->setters->contains($setter1));
+            $this->assertTrue($course->setters->contains($setter2));
+            $this->assertTrue($course->moderators->contains($moderator));
+            $this->assertTrue($course->externals->contains($external));
+        });
+    }
 }

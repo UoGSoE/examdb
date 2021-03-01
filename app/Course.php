@@ -18,6 +18,7 @@ use App\Mail\ExternalHasUpdatedTheChecklist;
 use App\Mail\ModeratorHasUpdatedTheChecklist;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use InvalidArgumentException;
 
 class Course extends Model
 {
@@ -611,5 +612,24 @@ class Course extends Model
         $field = 'registry_approved_' . $category;
 
         return $this->$field;
+    }
+
+    /**
+     * @throws InvalidAgurmentException
+     */
+    public function createDuplicate(string $newCode): Course
+    {
+        if (preg_match('/^[A-Z]+[0-9]+/', $newCode) !== 1) {
+            throw new InvalidArgumentException("New course code of {$newCode} looks invalid...");
+        }
+
+        $newCourse = $this->replicate();
+        $newCourse->code = $newCode;
+        $newCourse->save();
+        $this->setters->each(fn ($setter) => $setter->markAsSetter($newCourse));
+        $this->moderators->each(fn ($setter) => $setter->markAsModerator($newCourse));
+        $this->externals->each(fn ($setter) => $setter->markAsExternal($newCourse));
+
+        return $newCourse;
     }
 }
