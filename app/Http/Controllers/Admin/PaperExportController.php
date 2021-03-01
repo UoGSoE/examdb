@@ -21,6 +21,7 @@ class PaperExportController extends Controller
 
         $rows[] = [
             'Code',
+            'Semester',
             'Title',
             'Discipline',
             'Setter Checklist',
@@ -36,6 +37,7 @@ class PaperExportController extends Controller
             foreach (['main', 'resit'] as $category) {
                 $rows[] = [
                     $course->code,
+                    $course->semester,
                     $course->title,
                     optional($course->discipline)->title,
                     $course->hasSetterChecklist($category) ? 'Y' : 'N',
