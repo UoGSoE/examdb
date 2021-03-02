@@ -623,8 +623,23 @@ class Course extends Model
             throw new InvalidArgumentException("New course code of {$newCode} looks invalid...");
         }
 
+        $flagsToClear = [
+            'moderator_approved_main',
+            'moderator_approved_resit',
+            'external_approved_main',
+            'external_approved_resit',
+            'moderator_approved_assessment',
+            'external_approved_assessment',
+            'external_notified',
+            'registry_approved_main',
+            'registry_approved_resit',
+        ];
+
         $newCourse = $this->replicate();
         $newCourse->code = $newCode;
+        foreach ($flagsToClear as $flag) {
+            $newCourse->$flag = false;
+        }
         $newCourse->save();
         $this->setters->each(fn ($setter) => $setter->markAsSetter($newCourse));
         $this->moderators->each(fn ($setter) => $setter->markAsModerator($newCourse));
