@@ -27,7 +27,7 @@
         "date-fns": "^2.16.1",
         "eslint": "^5.16.0",
         "eslint-plugin-vue": "^5.2.3",
-        "laravel-mix": "^5.0.4",
+        "laravel-mix": "^5.0.9",
         "livewire-vue": "^0.3.1",
         "moment": "^2.28.0",
         "pikaday": "^1.8.0",
