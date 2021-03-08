@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Paper;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Auth;
 
 class PaperPolicy
 {
@@ -58,6 +59,10 @@ class PaperPolicy
      */
     public function delete(User $user, Paper $paper)
     {
+        if (Auth::user()->isAdmin()) {
+            return true;
+        }
+
         if ($paper->created_at->diffInMinutes(now()) > config('exampapers.delete_paper_limit_minutes')) {
             return false;
         }

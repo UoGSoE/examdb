@@ -3,9 +3,11 @@
 namespace Tests\Feature\Admin;
 
 use App\Course;
+use App\Paper;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Storage;
 use Ohffs\Ldap\FakeLdapConnection;
 use Spatie\Activitylog\Models\Activity;
 use Tests\TestCase;
@@ -462,5 +464,33 @@ class UserTest extends TestCase
         Artisan::call('exampapers:makeadmin jenny');
 
         $this->assertTrue($user->fresh()->isAdmin());
+    }
+
+    /** @test */
+    public function admin_can_delete_a_paper_but_its_only_hidden()
+    {
+        $this->withoutExceptionHandling();
+        Storage::fake('exampapers');
+        $admin = create(User::class, ['is_admin' => true]);
+        $course = create(Course::class);
+        $paper = create(Paper::class, ['course_id' => $course->id]);
+        $paper = create(Paper::class, ['course_id' => $course->id]);
+        Storage::disk('exampapers')->put($paper->filename, 'hello');
+        $this->assertTrue(Storage::disk('exampapers')->exists($paper->filename));
+
+        $response = $this->actingAs($admin)->deleteJson(route('paper.delete', $paper));
+
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('papers', ['id' => $paper->id, 'is_hidden' => true]);
+        $this->assertTrue(Storage::disk('exampapers')->exists($paper->filename));
+
+        // and check we recorded this in the activity/audit log
+        tap(Activity::all()->last(), function ($log) use ($admin, $paper) {
+            $this->assertTrue($log->causer->is($admin));
+            $this->assertEquals(
+                "Admin deleted {$paper->category} paper '{$paper->original_filename}' for {$paper->course->code}",
+                $log->description
+            );
+        });
     }
 }

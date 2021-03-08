@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Scopes\CurrentScope;
+use App\Scopes\NotHiddenScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,6 +28,7 @@ class Paper extends Model
     protected $casts = [
         'approved_setter' => 'boolean',
         'archived_at' => 'datetime',
+        'is_hidden' => 'boolean'
     ];
 
     protected $appends = ['icon', 'formatted_date', 'diff_for_humans', 'formatted_size'];
@@ -36,6 +38,7 @@ class Paper extends Model
         parent::boot();
 
         static::addGlobalScope(new CurrentScope);
+        static::addGlobalScope(new NotHiddenScope);
     }
 
     public function user()

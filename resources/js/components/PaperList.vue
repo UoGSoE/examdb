@@ -46,7 +46,7 @@
             class="delete"
             title="Delete Paper"
             @click.prevent="openModal(paper)"
-            v-if="paper.user_id == user_id && recentlyUploaded(paper) && paper.subcategory != 'Updated Checklist'"
+            v-if="user_admin || (paper.user_id == user_id && recentlyUploaded(paper) && paper.subcategory != 'Updated Checklist')"
           ></button>
         </div>
       </article>
@@ -85,7 +85,8 @@ export default {
     return {
       showModal: false,
       paperToDelete: null,
-      user_id: window.user_id
+      user_id: window.user_id,
+      user_admin: window.user_admin
     };
   },
   methods: {

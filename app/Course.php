@@ -2,22 +2,22 @@
 
 namespace App;
 
-use Carbon\Carbon;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-use App\Scopes\CurrentScope;
 use App\Events\PaperApproved;
 use App\Events\PaperUnapproved;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
-use App\Mail\SetterHasUpdatedTheChecklist;
 use App\Mail\ExternalHasUpdatedTheChecklist;
 use App\Mail\ModeratorHasUpdatedTheChecklist;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Mail\SetterHasUpdatedTheChecklist;
+use App\Scopes\CurrentScope;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use InvalidArgumentException;
 
 class Course extends Model

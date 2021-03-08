@@ -84,6 +84,27 @@ class SetterTest extends TestCase
     }
 
     /** @test */
+    public function hidden_papers_dont_show_up_in_the_course_view()
+    {
+        $this->withoutExceptionHandling();
+        $staff = create(User::class);
+        $course1 = create(Course::class);
+        $staff->markAsSetter($course1);
+        $mainPaper = create(Paper::class, ['course_id' => $course1->id, 'category' => 'main']);
+        $resitPaper = create(Paper::class, ['course_id' => $course1->id, 'category' => 'resit']);
+        $hiddenPaper = create(Paper::class, ['course_id' => $course1->id, 'is_hidden' => true]);
+
+
+        $response = $this->actingAs($staff)->get(route('course.show', $course1->id));
+
+        $response->assertSuccessful();
+        $this->assertTrue($response->data('course')->is($course1));
+        $this->assertTrue($response->data('course')->papers->contains($mainPaper));
+        $this->assertTrue($response->data('course')->papers->contains($resitPaper));
+        $this->assertFalse($response->data('course')->papers->contains($hiddenPaper));
+    }
+
+    /** @test */
     public function a_user_cant_see_the_page_for_a_course_they_arent_involved_with()
     {
         $staff = create(User::class);

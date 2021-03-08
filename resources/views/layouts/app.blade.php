@@ -19,6 +19,7 @@
 
     <script>
         window.user_id = {{ Auth::id() }};
+        window.user_admin = {{ Auth::user()->isAdmin() }};
         @if (isset($course))
             window.is_external = {{ Auth::check() && Auth::user()->isExternalFor($course) ? 1 : 0 }};
         @else

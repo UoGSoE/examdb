@@ -7,6 +7,7 @@ use App\Events\PaperAdded;
 use App\Paper;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -65,6 +66,26 @@ class PaperController extends Controller
         $this->authorize('delete', $paper);
 
         $course = $paper->course;
+
+        // Just hide the paper if the user is an admin, in case of a mistake
+        if (Auth::user()->isAdmin()) {
+            $paper->is_hidden = true;
+            $paper->save();
+
+            activity()
+                ->causedBy(request()->user())
+                ->log(
+                    "Admin deleted {$paper->category} paper '{$paper->original_filename}' for {$paper->course->code}"
+                );
+
+            return response()->json([
+                'papers' => collect([
+                    'main' => $course->mainPapers()->with(['user', 'comments'])->latest()->get(),
+                    'resit' => $course->resitPapers()->with(['user', 'comments'])->latest()->get(),
+                    'resit2' => $course->resit2Papers()->with(['user', 'comments'])->latest()->get(),
+                ]),
+            ]);
+        }
 
         Storage::disk('exampapers')->delete($paper->filename);
         $paper->delete();
