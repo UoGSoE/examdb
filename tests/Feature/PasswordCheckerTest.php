@@ -6,6 +6,7 @@ use App\Exceptions\PasswordQualityException;
 use App\Jobs\CheckPasswordQuality;
 use App\Mail\PasswordQualityFailure;
 use App\User;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
@@ -13,9 +14,10 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\Models\Activity;
+use Tests\TenantTestCase;
 use Tests\TestCase;
 
-class PasswordCheckerTest extends TestCase
+class PasswordCheckerTest extends TenantTestCase
 {
     use RefreshDatabase;
 

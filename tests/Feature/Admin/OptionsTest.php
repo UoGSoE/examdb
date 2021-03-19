@@ -3,12 +3,14 @@
 namespace Tests\Feature\Admin;
 
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Livewire\Livewire;
 use Tests\TestCase;
+use Livewire\Livewire;
+use Tests\TenantTestCase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 
-class OptionsTest extends TestCase
+class OptionsTest extends TenantTestCase
 {
     use RefreshDatabase;
 

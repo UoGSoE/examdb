@@ -6,6 +6,7 @@ use App\User;
 use App\Course;
 use App\Discipline;
 use Tests\TestCase;
+use Tests\TenantTestCase;
 use App\Jobs\NotifyExternals;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Bus;
@@ -15,8 +16,9 @@ use Illuminate\Support\Facades\Storage;
 use App\Mail\NotifyExternalSpecificCourse;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 
-class NotifyExternalsTest extends TestCase
+class NotifyExternalsTest extends TenantTestCase
 {
     use RefreshDatabase;
 

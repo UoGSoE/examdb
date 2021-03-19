@@ -58121,8 +58121,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/finlay/Code/exam-papers/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/finlay/Code/exam-papers/resources/css/app.scss */"./resources/css/app.scss");
+__webpack_require__(/*! /Users/billy/Documents/code/examdb/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/billy/Documents/code/examdb/resources/css/app.scss */"./resources/css/app.scss");
 
 
 /***/ })

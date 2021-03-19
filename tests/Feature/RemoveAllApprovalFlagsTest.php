@@ -3,11 +3,13 @@
 namespace Tests\Feature;
 
 use App\Course;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TenantTestCase;
 use Tests\TestCase;
 
-class RemoveAllApprovalFlagsTest extends TestCase
+class RemoveAllApprovalFlagsTest extends TenantTestCase
 {
     use RefreshDatabase;
 

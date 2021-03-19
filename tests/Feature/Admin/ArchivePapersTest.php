@@ -2,15 +2,17 @@
 
 namespace Tests\Feature\Admin;
 
-use App\Course;
-use App\Paper;
-use App\PaperChecklist;
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Paper;
+use App\Course;
 use Tests\TestCase;
+use App\PaperChecklist;
+use Tests\TenantTestCase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 
-class ArchivePapersTest extends TestCase
+class ArchivePapersTest extends TenantTestCase
 {
     use RefreshDatabase;
 

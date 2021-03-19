@@ -15,13 +15,15 @@ use App\Wlm\WlmClient;
 use App\Wlm\WlmClientInterface;
 use App\Wlm\WlmImporter;
 use Carbon\Carbon;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
+use Tests\TenantTestCase;
 use Tests\TestCase;
 
-class WlmImportTest extends TestCase
+class WlmImportTest extends TenantTestCase
 {
     use RefreshDatabase;
 

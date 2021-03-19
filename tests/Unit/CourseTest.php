@@ -4,13 +4,15 @@ namespace Tests\Unit;
 
 use App\Course;
 use App\User;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Tests\TenantTestCase;
 use Tests\TestCase;
 
-class CourseTest extends TestCase
+class CourseTest extends TenantTestCase
 {
     use RefreshDatabase;
 

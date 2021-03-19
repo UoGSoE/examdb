@@ -10,6 +10,7 @@ use App\Jobs\RemoveRegistryZip;
 use App\Mail\RegistryPapersExported;
 use App\Paper;
 use App\User;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
@@ -17,10 +18,11 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
+use Tests\TenantTestCase;
 use Tests\TestCase;
 use ZipArchive;
 
-class PapersForRegistryBulkDownloadTest extends TestCase
+class PapersForRegistryBulkDownloadTest extends TenantTestCase
 {
     use RefreshDatabase;
 

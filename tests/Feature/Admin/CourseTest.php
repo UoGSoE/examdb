@@ -2,14 +2,16 @@
 
 namespace Tests\Feature\Admin;
 
+use App\User;
 use App\Course;
 use App\Discipline;
-use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Tests\TenantTestCase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 
-class CourseTest extends TestCase
+class CourseTest extends TenantTestCase
 {
     use RefreshDatabase;
 

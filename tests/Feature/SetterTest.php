@@ -7,14 +7,16 @@ use App\Mail\NotifyModeratorAboutApproval;
 use App\Mail\NotifyModeratorAboutUnapproval;
 use App\Paper;
 use App\User;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
+use Tests\TenantTestCase;
 use Tests\TestCase;
 
-class SetterTest extends TestCase
+class SetterTest extends TenantTestCase
 {
     use RefreshDatabase;
 

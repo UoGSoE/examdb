@@ -16,8 +16,10 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Mail\ModeratorHasUpdatedTheChecklist;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Http\Livewire\PaperChecklist as LivewirePaperChecklist;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Tests\TenantTestCase;
 
-class ChecklistFormTest extends TestCase
+class ChecklistFormTest extends TenantTestCase
 {
     use RefreshDatabase;
 

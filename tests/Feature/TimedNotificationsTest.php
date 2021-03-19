@@ -15,12 +15,14 @@ use App\Mail\SubmissionDeadlineMail;
 use App\Mail\SubmissionDeadlinePassedMail;
 use App\PaperChecklist;
 use App\User;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Mail;
+use Tests\TenantTestCase;
 use Tests\TestCase;
 
-class TimedNotificationsTest extends TestCase
+class TimedNotificationsTest extends TenantTestCase
 {
     use RefreshDatabase;
 

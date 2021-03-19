@@ -3,11 +3,13 @@
 namespace Tests\Feature\Admin;
 
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Spatie\Activitylog\Models\Activity;
 use Tests\TestCase;
+use Tests\TenantTestCase;
+use Spatie\Activitylog\Models\Activity;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 
-class ImpersonationTest extends TestCase
+class ImpersonationTest extends TenantTestCase
 {
     use RefreshDatabase;
 

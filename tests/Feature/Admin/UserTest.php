@@ -4,21 +4,27 @@ namespace Tests\Feature\Admin;
 
 use App\Course;
 use App\Paper;
+use App\Tenant;
 use App\User;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use Ohffs\Ldap\FakeLdapConnection;
 use Spatie\Activitylog\Models\Activity;
+use Tests\TenantTestCase;
 use Tests\TestCase;
 
-class UserTest extends TestCase
+class UserTest extends TenantTestCase
 {
     use RefreshDatabase;
+
+    protected $tenancy = true;
 
     /** @test */
     public function admins_can_see_a_list_of_all_users()
     {
+        $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
         $internal1 = create(User::class);
         $internal2 = create(User::class);

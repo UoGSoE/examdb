@@ -4,11 +4,13 @@ namespace Tests\Feature\Api;
 
 use App\Course;
 use App\Paper;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TenantTestCase;
 use Tests\TestCase;
 
-class CoursePapersTest extends TestCase
+class CoursePapersTest extends TenantTestCase
 {
     use RefreshDatabase;
 

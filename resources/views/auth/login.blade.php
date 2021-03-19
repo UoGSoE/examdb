@@ -11,7 +11,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ global_asset('css/app.css') }}" rel="stylesheet">
 
     <!-- Routes -->
     @routes
@@ -28,6 +28,6 @@
         </div>
     </footer>
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ global_asset('js/app.js') }}" defer></script>
 </body>
 </html>

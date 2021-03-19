@@ -9,15 +9,17 @@ use App\Mail\NotifySetterAboutExternalComments;
 use App\Mail\NotifySetterAboutUnapproval;
 use App\Paper;
 use App\User;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
+use Tests\TenantTestCase;
 use Tests\TestCase;
 
-class ExternalsTest extends TestCase
+class ExternalsTest extends TenantTestCase
 {
     use RefreshDatabase;
 

@@ -4,11 +4,13 @@ namespace Tests\Feature;
 
 use App\Paper;
 use App\User;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TenantTestCase;
 use Tests\TestCase;
 
-class GdprTest extends TestCase
+class GdprTest extends TenantTestCase
 {
     use RefreshDatabase;
 

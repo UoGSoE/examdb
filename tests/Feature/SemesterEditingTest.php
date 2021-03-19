@@ -4,12 +4,14 @@ namespace Tests\Feature;
 
 use App\Course;
 use App\User;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Livewire\Livewire;
+use Tests\TenantTestCase;
 use Tests\TestCase;
 
-class SemesterEditingTest extends TestCase
+class SemesterEditingTest extends TenantTestCase
 {
     use RefreshDatabase;
 

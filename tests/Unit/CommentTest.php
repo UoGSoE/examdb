@@ -5,11 +5,13 @@ namespace Tests\Unit;
 use App\Comment;
 use App\Paper;
 use App\User;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TenantTestCase;
 use Tests\TestCase;
 
-class CommentTest extends TestCase
+class CommentTest extends TenantTestCase
 {
     use RefreshDatabase;
 

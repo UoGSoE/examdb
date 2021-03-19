@@ -6,11 +6,13 @@ use App\Course;
 use App\Discipline;
 use App\Paper;
 use App\User;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TenantTestCase;
 use Tests\TestCase;
 
-class DisciplineContactsTest extends TestCase
+class DisciplineContactsTest extends TenantTestCase
 {
     use RefreshDatabase;
 

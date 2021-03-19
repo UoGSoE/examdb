@@ -10,11 +10,13 @@ use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\PaperForRegistryUploaded;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TenantTestCase;
 
-class PaperForRegistryTest extends TestCase
+class PaperForRegistryTest extends TenantTestCase
 {
     use RefreshDatabase;
 

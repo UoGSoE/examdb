@@ -5,11 +5,13 @@ namespace Tests\Feature;
 use App\Course;
 use App\Paper;
 use App\User;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TenantTestCase;
 use Tests\TestCase;
 
-class LivewirePaperChecklistTest extends TestCase
+class LivewirePaperChecklistTest extends TenantTestCase
 {
     use RefreshDatabase;
 

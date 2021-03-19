@@ -4,13 +4,15 @@ namespace Tests\Feature;
 
 use App\Mail\ExternalLoginUrl;
 use App\User;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Activitylog\Models\Activity;
+use Tests\TenantTestCase;
 use Tests\TestCase;
 
-class ExternalUsersLoginTest extends TestCase
+class ExternalUsersLoginTest extends TenantTestCase
 {
     use RefreshDatabase;
 

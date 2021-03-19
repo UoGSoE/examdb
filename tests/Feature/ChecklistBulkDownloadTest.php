@@ -9,15 +9,17 @@ use App\Jobs\RemoveChecklistZip;
 use App\Mail\ChecklistsReadyToDownload;
 use App\PaperChecklist;
 use App\User;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
+use Tests\TenantTestCase;
 use Tests\TestCase;
 
-class ChecklistBulkDownloadTest extends TestCase
+class ChecklistBulkDownloadTest extends TenantTestCase
 {
     use RefreshDatabase;
 

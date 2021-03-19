@@ -1,8 +1,10 @@
 <?php
-
 namespace Tests;
 
+use App\Tenant;
+use Illuminate\Support\Str;
 use Illuminate\Testing\Assert;
+use App\Actions\CreateTenantAction;
 use Illuminate\Testing\TestResponse;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -13,9 +15,14 @@ abstract class TestCase extends BaseTestCase
     use CreatesApplication;
     use RefreshDatabase;
 
+    protected $createStripeCustomer = false;
+
     protected function setUp(): void
     {
         parent::setUp();
+
+        config(['tenancy.database.prefix' => 'test_tenant']);
+
         TestResponse::macro('data', function ($key) {
             return $this->original->getData()[$key];
         });
@@ -45,5 +52,16 @@ abstract class TestCase extends BaseTestCase
         $this->assertTrue(collect($schedular->events())->contains(function ($task) use ($command) {
             return preg_match("/ 'artisan' {$command}$/", $task->command) === 1;
         }), "Command {$command} is not registered with the schedular");
+    }
+
+    protected function createTenant(array $data = [], string $domain = null, bool $createStriperCustomer = null): Tenant
+    {
+        $domain = $domain ?? Str::random('10');
+        return (new CreateTenantAction)(array_merge([
+            'company' => 'Foo company',
+            'name' => 'John Doe',
+            'email' => 'foo@tenant.localhost',
+            'password' => bcrypt('password'),
+        ], $data), $domain, $createStriperCustomer ?? $this->createStripeCustomer);
     }
 }
