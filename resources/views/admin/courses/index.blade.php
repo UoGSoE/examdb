@@ -76,6 +76,9 @@
             <td>{{ $course->title }}</td>
             <td>{{ optional($course->discipline)->title }}</td>
             <td>
+                <span class="icon {{ $course->hasSetterChecklist('main') ? 'has-text-info' : 'has-text-grey-light' }}" title="Setter has filled checklist?">
+                    <i class="fas fa-user-tie"></i>
+                </span>
                 <span class="icon {{ $course->isApprovedByModerator('main') ? 'has-text-info' : 'has-text-grey-light' }}" title="Moderator approved?">
                     <i class="fas fa-user-graduate"></i>
                 </span>
@@ -84,6 +87,9 @@
                 </span>
             </td>
             <td>
+                <span class="icon {{ $course->hasSetterChecklist('resit') ? 'has-text-info' : 'has-text-grey-light' }}" title="Setter has filled checklist?">
+                    <i class="fas fa-user-tie"></i>
+                </span>
                 <span class="icon {{ $course->isApprovedByModerator('resit') ? 'has-text-info' : 'has-text-grey-light' }}" title="Moderator approved?">
                     <i class="fas fa-user-graduate"></i>
                 </span>
