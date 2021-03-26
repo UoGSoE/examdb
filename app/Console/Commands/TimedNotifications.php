@@ -222,16 +222,17 @@ class TimedNotifications extends Command
 
         $emailAddresses = collect([]);
         if ($subType == 'upcoming') {
-            $mailableName = SubmissionDeadlineMail::class;
             $emailAddresses = $this->getAllSetterEmails($area);
+            $emailAddresses->each(function ($email) use ($date) {
+                Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new SubmissionDeadlineMail($date));
+            });
         } else {
-            $mailableName = SubmissionDeadlinePassedMail::class;
             $emailAddresses = $this->getIncompletePaperworkSetterEmails($area);
+            collect($emailAddresses)->each(function ($courses, $email) use ($date) {
+                Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new SubmissionDeadlinePassedMail($date, $courses));
+            });
         }
 
-        $emailAddresses->each(function ($email) use ($mailableName, $date) {
-            Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new $mailableName($date));
-        });
 
         option(["{$optionName}_email_sent_{$subType}_semester_{$currentSemester}" => now()->format('Y-m-d')]);
     }
@@ -394,9 +395,23 @@ class TimedNotifications extends Command
 
     protected function getIncompletePaperworkSetterEmails(string $area)
     {
-        return Course::forArea($area)->forSemester($this->semester)->doesntHave('checklists')->with('setters')->get()->flatMap(function ($course) {
-            return $course->setters->pluck('email');
-        })->filter()->unique();
+        //
+        // we want :
+        // $unique_email => [ $course_code, $course_code, $course_code]
+        //
+        $result = [];
+
+        $courses = Course::forArea($area)->forSemester($this->semester)->doesntHave('checklists')->with('setters')->get();
+        foreach ($courses as $course) {
+            foreach ($course->setters as $setter) {
+                $result[$setter->email][] = $course->code;
+            }
+        }
+
+        return $result;
+        // return Course::forArea($area)->forSemester($this->semester)->doesntHave('checklists')->with('setters')->get()->flatMap(function ($course) {
+        //     return ['emails' => $course->setters->pluck('email'), 'course' => $course->code];
+        // })->filter()->unique();
     }
 
     protected function getAllModeratorEmails(string $area)

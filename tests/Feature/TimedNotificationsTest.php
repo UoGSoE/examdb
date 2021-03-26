@@ -195,7 +195,6 @@ class TimedNotificationsTest extends TestCase
         $course3 = create(Course::class, ['code' => 'UESTC1234']);
         $setter1 = create(User::class);
         $setter1->markAsSetter($course1);
-        $setter1->markAsSetter($course2);
         $setter2 = create(User::class);
         $setter2->markAsSetter($course1);
         $setter2->markAsSetter($course2);
@@ -229,11 +228,15 @@ class TimedNotificationsTest extends TestCase
         $this->artisan('examdb:timed-notifications');
 
         Mail::assertQueued(SubmissionDeadlinePassedMail::class, 2);
-        Mail::assertQueued(SubmissionDeadlinePassedMail::class, function ($mail) use ($setter1) {
-            return $mail->hasTo($setter1->email);
+        Mail::assertQueued(SubmissionDeadlinePassedMail::class, function ($mail) use ($setter1, $course1, $course2) {
+            return $mail->hasTo($setter1->email) &&
+                   $mail->courses->contains($course1->code) &&
+                   ! $mail->courses->contains($course2->code);
         });
-        Mail::assertQueued(SubmissionDeadlinePassedMail::class, function ($mail) use ($setter2) {
-            return $mail->hasTo($setter2->email);
+        Mail::assertQueued(SubmissionDeadlinePassedMail::class, function ($mail) use ($setter2, $course1, $course2) {
+            return $mail->hasTo($setter2->email) &&
+                   $mail->courses->contains($course1->code) &&
+                   $mail->courses->contains($course2->code);
         });
         $this->assertNotNull(option('glasgow_staff_submission_deadline_email_sent_reminder_semester_1'));
     }
