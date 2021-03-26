@@ -23,7 +23,7 @@
             <span class="icon">
               <i class="fas fa-tasks"></i>
             </span>
-            <span>Paper Checklist</span>
+            <span>Exam Paper Checklist</span>
           </a>
         </div>
         <div class="level-item" v-if="category == 'main'">
@@ -31,7 +31,7 @@
             <span class="icon">
               <i class="fas fa-tasks"></i>
             </span>
-            <span>Assessment Checklist</span>
+            <span>Coursework Checklist</span>
           </a>
         </div>
       </div>
