@@ -42849,7 +42849,11 @@ var render = function() {
               staticClass: "button",
               attrs: { href: _vm.checklistRoute + "?category=" + _vm.category }
             },
-            [_vm._m(0), _vm._v(" "), _c("span", [_vm._v("Paper Checklist")])]
+            [
+              _vm._m(0),
+              _vm._v(" "),
+              _c("span", [_vm._v("Exam Paper Checklist")])
+            ]
           )
         ]),
         _vm._v(" "),
@@ -42864,7 +42868,7 @@ var render = function() {
                 [
                   _vm._m(1),
                   _vm._v(" "),
-                  _c("span", [_vm._v("Assessment Checklist")])
+                  _c("span", [_vm._v("Coursework Checklist")])
                 ]
               )
             ])
@@ -58121,8 +58125,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/finlay/Code/exam-papers/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/finlay/Code/exam-papers/resources/css/app.scss */"./resources/css/app.scss");
+__webpack_require__(/*! /Users/billy/Documents/code/examdb/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/billy/Documents/code/examdb/resources/css/app.scss */"./resources/css/app.scss");
 
 
 /***/ })
