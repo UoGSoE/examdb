@@ -13,15 +13,17 @@ class ModerationDeadlinePassedMail extends Mailable
     use Queueable, SerializesModels;
 
     public $deadline;
+    public $courses;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Carbon $deadline)
+    public function __construct(Carbon $deadline, array $courses)
     {
         $this->deadline = $deadline;
+        $this->courses = collect($courses);
     }
 
     /**

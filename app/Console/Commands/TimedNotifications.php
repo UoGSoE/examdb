@@ -233,7 +233,6 @@ class TimedNotifications extends Command
             });
         }
 
-
         option(["{$optionName}_email_sent_{$subType}_semester_{$currentSemester}" => now()->format('Y-m-d')]);
     }
 
@@ -271,14 +270,16 @@ class TimedNotifications extends Command
         if ($subType == 'upcoming') {
             $mailableName = ModerationDeadlineMail::class;
             $emailAddresses = $this->getAllModeratorEmails($area);
+            $emailAddresses->each(function ($email) use ($mailableName, $date) {
+                Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new $mailableName($date));
+            });
         } else {
-            $mailableName = ModerationDeadlinePassedMail::class;
             $emailAddresses = $this->getIncompletePaperworkModeratorEmails($area);
+            collect($emailAddresses)->each(function ($courses, $email) use ($date) {
+                Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new ModerationDeadlinePassedMail($date, $courses));
+            });
         }
 
-        $emailAddresses->each(function ($email) use ($mailableName, $date, $subType) {
-            Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new $mailableName($date));
-        });
 
         option(["{$optionName}_email_sent_{$subType}_semester_{$currentSemester}" => now()->format('Y-m-d')]);
     }
@@ -337,7 +338,7 @@ class TimedNotifications extends Command
         }
 
         $courses = Course::forArea($area)->with('papers')->get()->filter(function ($course) {
-            return $course->papers->contains(function ($paper) {
+            return ! $course->papers->contains(function ($paper) {
                 return $paper->subcategory == Paper::PAPER_FOR_REGISTRY;
             });
         });
@@ -429,6 +430,20 @@ class TimedNotifications extends Command
 
     protected function getIncompletePaperworkModeratorEmails(string $area)
     {
+        $courses = Course::forArea($area)->forSemester($this->semester)->with('moderators')
+        ->where(function ($query) {
+            $query->where('moderator_approved_main', '!=', true)
+                ->orWhere('moderator_approved_resit', '!=', true);
+        })
+        ->get();
+        $result = [];
+        foreach ($courses as $course) {
+            foreach ($course->moderators as $moderator) {
+                $result[$moderator->email][] = $course->code;
+            }
+        }
+        return $result;
+
         return Course::forArea($area)->forSemester($this->semester)->with('moderators')
             ->where(function ($query) {
                 $query->where('moderator_approved_main', '!=', true)
