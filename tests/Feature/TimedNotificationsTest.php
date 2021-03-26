@@ -13,6 +13,7 @@ use App\Mail\PrintReadyDeadlineMail;
 use App\Mail\PrintReadyDeadlinePassedMail;
 use App\Mail\SubmissionDeadlineMail;
 use App\Mail\SubmissionDeadlinePassedMail;
+use App\Paper;
 use App\PaperChecklist;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -195,7 +196,6 @@ class TimedNotificationsTest extends TestCase
         $course3 = create(Course::class, ['code' => 'UESTC1234']);
         $setter1 = create(User::class);
         $setter1->markAsSetter($course1);
-        $setter1->markAsSetter($course2);
         $setter2 = create(User::class);
         $setter2->markAsSetter($course1);
         $setter2->markAsSetter($course2);
@@ -229,11 +229,15 @@ class TimedNotificationsTest extends TestCase
         $this->artisan('examdb:timed-notifications');
 
         Mail::assertQueued(SubmissionDeadlinePassedMail::class, 2);
-        Mail::assertQueued(SubmissionDeadlinePassedMail::class, function ($mail) use ($setter1) {
-            return $mail->hasTo($setter1->email);
+        Mail::assertQueued(SubmissionDeadlinePassedMail::class, function ($mail) use ($setter1, $course1, $course2) {
+            return $mail->hasTo($setter1->email) &&
+                   $mail->courses->contains($course1->code) &&
+                   ! $mail->courses->contains($course2->code);
         });
-        Mail::assertQueued(SubmissionDeadlinePassedMail::class, function ($mail) use ($setter2) {
-            return $mail->hasTo($setter2->email);
+        Mail::assertQueued(SubmissionDeadlinePassedMail::class, function ($mail) use ($setter2, $course1, $course2) {
+            return $mail->hasTo($setter2->email) &&
+                   $mail->courses->contains($course1->code) &&
+                   $mail->courses->contains($course2->code);
         });
         $this->assertNotNull(option('glasgow_staff_submission_deadline_email_sent_reminder_semester_1'));
     }
@@ -431,8 +435,10 @@ class TimedNotificationsTest extends TestCase
         $this->artisan('examdb:timed-notifications');
 
         Mail::assertQueued(ModerationDeadlinePassedMail::class, 1);
-        Mail::assertQueued(ModerationDeadlinePassedMail::class, function ($mail) use ($moderator) {
-            return $mail->hasTo($moderator->email);
+        Mail::assertQueued(ModerationDeadlinePassedMail::class, function ($mail) use ($moderator, $course1) {
+            return $mail->hasTo($moderator->email) &&
+                   $mail->courses->count() === 1 &&
+                   $mail->courses->contains($course1->code);
         });
         $this->assertNotNull(option('glasgow_internal_moderation_deadline_email_sent_reminder_semester_1'));
     }
@@ -620,6 +626,11 @@ class TimedNotificationsTest extends TestCase
     public function emails_are_sent_to_the_glasgow_teaching_office_one_day_before_and_one_day_after_the_print_deadline()
     {
         Mail::fake();
+        $course1 = create(Course::class);
+        $paper1 = create(Paper::class, ['course_id' => $course1->id, 'subcategory' => Paper::PAPER_FOR_REGISTRY]);
+        $course2 = create(Course::class);
+        $paper2 = create(Paper::class, ['course_id' => $course2->id, 'subcategory' => 'oh, I say!']);
+
         option(['start_semester_1' => now()->format('Y-m-d')]);
         option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
@@ -632,8 +643,10 @@ class TimedNotificationsTest extends TestCase
         $this->artisan('examdb:timed-notifications');
 
         Mail::assertQueued(PrintReadyDeadlineMail::class, 1);
-        Mail::assertQueued(PrintReadyDeadlineMail::class, function ($mail) {
-            return $mail->hasTo('glasgow@example.com');
+        Mail::assertQueued(PrintReadyDeadlineMail::class, function ($mail) use ($course1, $course2) {
+            return $mail->hasTo('glasgow@example.com') &&
+                   $mail->courses->contains($course2) &&
+                   ! $mail->courses->contains($course1);
         });
         $this->assertNull(option('glasgow_print_ready_deadline_email_sent'));
 
