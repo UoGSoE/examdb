@@ -12,19 +12,8 @@ class CourseController extends Controller
 {
     public function index()
     {
-        $query = Course::with(['setters', 'moderators', 'externals', 'discipline', 'checklists'])->orderBy('code');
-        if (request()->withtrashed) {
-            $query = $query->withTrashed();
-        }
-        if (request()->discipline) {
-            $query = $query->where('discipline_id', '=', request()->discipline);
-        }
 
-        return view('admin.courses.index', [
-            'courses' => $query->get(),
-            'disciplines' => Discipline::orderBy('title')->get(),
-            'disciplineFilter' => request()->discipline,
-        ]);
+        return view('admin.courses.index');
     }
 
     public function edit(Course $course)
@@ -44,9 +33,10 @@ class CourseController extends Controller
             ],
             'title' => 'required',
             'discipline_id' => 'required|integer',
+            'is_examined' => 'required|boolean',
         ]);
 
-        $course->update($request->only(['code', 'title', 'discipline_id']));
+        $course->update($request->only(['code', 'title', 'discipline_id', 'is_examined']));
 
         return redirect(route('course.show', $course->id));
     }

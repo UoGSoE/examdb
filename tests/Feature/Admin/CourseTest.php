@@ -2,12 +2,13 @@
 
 namespace Tests\Feature\Admin;
 
+use App\User;
 use App\Course;
 use App\Discipline;
-use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Livewire\Livewire;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CourseTest extends TestCase
 {
@@ -17,8 +18,8 @@ class CourseTest extends TestCase
     public function an_admin_can_see_the_list_of_all_courses()
     {
         $admin = create(User::class, ['is_admin' => true]);
-        $course1 = create(Course::class);
-        $course2 = create(Course::class);
+        $course1 = Course::factory()->create();
+        $course2 = Course::factory()->notExamined()->create();
 
         $response = $this->actingAs($admin)->get(route('course.index'));
 
@@ -26,26 +27,37 @@ class CourseTest extends TestCase
         $response->assertSee('Course List');
         $response->assertSee($course1->code);
         $response->assertSee($course2->code);
-        $response->assertViewHas('courses');
-        $response->assertViewHas('disciplines');
-        $response->assertViewHas('disciplineFilter');
+        $response->assertSeeLivewire('course-index');
     }
 
     /** @test */
-    public function an_admin_can_see_the_list_of_all_courses_for_a_specific_discipline()
+    public function an_admin_can_filter_the_list_of_courses_in_various_ways()
     {
         $admin = create(User::class, ['is_admin' => true]);
         $discipline1 = create(Discipline::class);
         $discipline2 = create(Discipline::class);
         $course1 = create(Course::class, ['discipline_id' => $discipline1->id]);
         $course2 = create(Course::class, ['discipline_id' => $discipline2->id]);
+        $course3 = Course::factory()->notExamined()->create(['discipline_id' => $discipline1->id]);
+        $course4 = Course::factory()->create(['discipline_id' => $discipline2->id]);
+        $course4->delete();
 
-        $response = $this->actingAs($admin)->get(route('course.index', ['discipline' => $discipline2->id]));
-
-        $response->assertOk();
-        $response->assertSee('Course List');
-        $response->assertDontSee($course1->code);
-        $response->assertSee($course2->code);
+        Livewire::actingAs($admin)->test('course-index')
+            ->assertSee($course1->code)
+            ->assertSee($course2->code)
+            ->assertSee($course3->code)
+            ->assertDontSee($course4->code)
+            ->set('includeTrashed', true)
+            ->assertSee($course4->code)
+            ->set('excludeNotExamined', true)
+            ->assertDontSee($course3->code)
+            ->set('excludeNotExamined', false)
+            ->assertSee($course3->code)
+            ->set('disciplineFilter', $discipline1->id)
+            ->assertSee($course1->code)
+            ->assertDontSee($course2->code)
+            ->assertSee($course3->code)
+            ->assertDontSee($course4->code);
     }
 
     /** @test */
@@ -112,6 +124,7 @@ class CourseTest extends TestCase
             'code' => 'ENG9999',
             'title' => 'BLAH',
             'discipline_id' => $discipline2->id,
+            'is_examined' => 0,
         ]);
 
         $response->assertRedirect(route('course.show', $course->id));
@@ -119,6 +132,7 @@ class CourseTest extends TestCase
             $this->assertEquals('ENG9999', $course->code);
             $this->assertEquals('BLAH', $course->title);
             $this->assertTrue($course->discipline->is($discipline2));
+            $this->assertFalse($course->isExamined());
         });
     }
 
