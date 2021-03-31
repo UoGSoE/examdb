@@ -57,6 +57,11 @@ class CourseTest extends TestCase
             ->assertSee($course1->code)
             ->assertDontSee($course2->code)
             ->assertSee($course3->code)
+            ->assertDontSee($course4->code)
+            ->set('searchTerm', $course1->code)
+            ->assertSee($course1->code)
+            ->assertDontSee($course2->code)
+            ->assertDontSee($course3->code)
             ->assertDontSee($course4->code);
     }
 

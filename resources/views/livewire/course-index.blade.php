@@ -16,6 +16,9 @@
                         </button>
                     </p>
                     @endforeach
+                    <p class="control">
+                        <input wire:model="searchTerm" type="text" class="input" placeholder="Search course code or title..." autofocus>
+                    </p>
                 </div>
             </div>
         </div>
