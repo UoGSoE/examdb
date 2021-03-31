@@ -22,6 +22,7 @@ class CourseExportController extends Controller
         $rows[] = [
             'Code',
             'Semester',
+            'Examined',
             'Title',
             'Discipline',
             'Main/Moderator',
@@ -36,6 +37,7 @@ class CourseExportController extends Controller
             $rows[] = [
                 $course->code,
                 $course->semester,
+                $course->isExamined() ? 'Y' : 'N',
                 $course->title,
                 optional($course->discipline)->title,
                 $course->isApprovedByModerator('main') ? 'Y' : 'N',

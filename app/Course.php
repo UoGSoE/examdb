@@ -28,6 +28,7 @@ class Course extends Model
     protected $guarded = [];
 
     protected $casts = [
+        'is_examined' => 'boolean',
         'moderator_approved_main' => 'boolean',
         'moderator_approved_resit' => 'boolean',
         'moderator_approved_assessment' => 'boolean',
@@ -646,5 +647,15 @@ class Course extends Model
         $this->externals->each(fn ($setter) => $setter->markAsExternal($newCourse));
 
         return $newCourse;
+    }
+
+    public function isExamined(): bool
+    {
+        return $this->is_examined;
+    }
+
+    public function isntExamined(): bool
+    {
+        return ! $this->isExamined();
     }
 }

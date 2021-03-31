@@ -40,6 +40,21 @@
     @enderror
 
     <div class="field">
+        <label class="label" for="is_examined">Is Examined?</label>
+        <div class="control">
+            <div class="select">
+            <select id="is_examined" name="is_examined">
+                <option value="0" @if (old("is_examined", $course->is_examined) == 0) selected @endif>No</option>
+                <option value="1" @if (old("is_examined", $course->is_examined) == 1) selected @endif>Yes</option>
+            </select>
+            </div>
+        </div>
+    </div>
+    @error('is_examined')
+        <p class="has-text-danger">{{ $message }}</p>
+    @enderror
+
+    <div class="field">
         <div class="control">
             <button class="button">Save</button>
         </div>
