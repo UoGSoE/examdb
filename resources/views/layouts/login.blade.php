@@ -24,7 +24,7 @@
     </div>
     <footer style="position: fixed; bottom: 0px; width: 100%;" class="footer">
         <div class="content has-text-centered">
-            University of Glasgow, School of Engineering Exam Database
+            University of Glasgow, College of Science & Engineering Exam Database
         </div>
     </footer>
     <!-- Scripts -->

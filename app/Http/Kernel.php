@@ -42,6 +42,11 @@ class Kernel extends HttpKernel
             'throttle:60,1',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
+
+        'universal' => [
+            // this keeps livewire happy when using the multi-tenancy package.
+            // see https://tenancyforlaravel.com/docs/v3/integrations/livewire
+        ],
     ];
 
     /**
