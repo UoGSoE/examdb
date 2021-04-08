@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use Stancl\Tenancy\Jobs;
+use Stancl\Tenancy\Events;
+use Stancl\Tenancy\Listeners;
+use Stancl\Tenancy\Resolvers;
+use Stancl\Tenancy\Middleware;
+use Stancl\JobPipeline\JobPipeline;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Stancl\JobPipeline\JobPipeline;
-use Stancl\Tenancy\Events;
-use Stancl\Tenancy\Jobs;
-use Stancl\Tenancy\Listeners;
-use Stancl\Tenancy\Middleware;
+use Stancl\Tenancy\Resolvers\DomainTenantResolver;
 
 class TenancyServiceProvider extends ServiceProvider
 {
@@ -103,6 +105,11 @@ class TenancyServiceProvider extends ServiceProvider
         $this->mapRoutes();
 
         $this->makeTenancyMiddlewareHighestPriority();
+
+        // enable caching of the tenant lookup so every request doesn't need to re-request it from the db
+        DomainTenantResolver::$shouldCache = true;
+        DomainTenantResolver::$cacheTTL = 3600;
+        DomainTenantResolver::$cacheStore = 'redis';
     }
 
     protected function bootEvents()
