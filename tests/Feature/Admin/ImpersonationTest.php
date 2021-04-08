@@ -11,7 +11,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class ImpersonationTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function an_admin_can_impersonate_other_users()

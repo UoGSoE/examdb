@@ -23,7 +23,7 @@ use Tests\TestCase;
 
 class PaperUploadTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function a_setter_can_upload_a_paper()

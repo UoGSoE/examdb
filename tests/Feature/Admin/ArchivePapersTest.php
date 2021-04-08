@@ -14,7 +14,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class ArchivePapersTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function admins_can_archive_the_papers_for_a_single_course()

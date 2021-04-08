@@ -18,7 +18,7 @@ use Tests\TenantTestCase;
 
 class PaperForRegistryTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function when_an_admin_uploads_the_paper_for_registy_an_email_is_sent_to_the_setters()

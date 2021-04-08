@@ -11,7 +11,7 @@ use Tests\TestCase;
 
 class RemoveAllApprovalFlagsTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function we_can_remove_all_approval_flags_from_all_courses()

@@ -21,7 +21,7 @@ use Tests\TenantTestCase;
 
 class ChecklistFormTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function people_associated_with_a_course_can_see_the_form_to_create_a_checklist()

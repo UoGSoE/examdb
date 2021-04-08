@@ -13,7 +13,7 @@ use Tests\TestCase;
 
 class HomePageTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function users_see_courses_they_are_setting_moderator_external_and_all_papers_they_have_uploaded()

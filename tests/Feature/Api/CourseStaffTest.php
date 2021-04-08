@@ -12,7 +12,7 @@ use Tests\TestCase;
 
 class CourseStaffTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function we_can_get_the_staff_associated_with_a_course()

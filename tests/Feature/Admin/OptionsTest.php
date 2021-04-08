@@ -12,7 +12,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class OptionsTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function regular_users_cant_see_the_admin_options_page()

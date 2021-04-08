@@ -14,7 +14,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 
 class CourseTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function an_admin_can_see_the_list_of_all_courses()

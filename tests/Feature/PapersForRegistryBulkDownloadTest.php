@@ -24,7 +24,7 @@ use ZipArchive;
 
 class PapersForRegistryBulkDownloadTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function regular_users_cant_do_the_export()

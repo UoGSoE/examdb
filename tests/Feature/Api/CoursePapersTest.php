@@ -12,7 +12,7 @@ use Tests\TestCase;
 
 class CoursePapersTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function we_can_get_a_list_of_papers_for_a_course()

@@ -12,7 +12,7 @@ use Tests\TestCase;
 
 class GdprTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function admins_can_export_all_data_about_a_user()

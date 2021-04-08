@@ -13,7 +13,7 @@ use Tests\TestCase;
 
 class LivewirePaperChecklistTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function we_can_see_the_paper_checklist_page_for_a_course()

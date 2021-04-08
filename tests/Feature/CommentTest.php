@@ -15,7 +15,7 @@ use Tests\TestCase;
 
 class CommentTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function users_can_add_a_comment_to_courses_they_are_involved_with_without_needing_a_paper()

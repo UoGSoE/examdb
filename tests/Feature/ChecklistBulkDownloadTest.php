@@ -21,7 +21,7 @@ use Tests\TestCase;
 
 class ChecklistBulkDownloadTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function regular_users_cant_request_the_bulk_download_of_all_checklists()

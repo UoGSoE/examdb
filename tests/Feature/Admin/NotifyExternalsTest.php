@@ -20,7 +20,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class NotifyExternalsTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function admins_can_trigger_a_job_to_notify_externals_to_look_at_the_system()

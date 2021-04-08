@@ -13,7 +13,7 @@ use Tests\TestCase;
 
 class CommentTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function a_paper_can_have_comments_added_to_it()

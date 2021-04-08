@@ -12,7 +12,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class CourseUserTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function an_admin_can_update_the_staff_associated_with_a_course()

@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
-    use RefreshDatabase;
+
 
     protected $createStripeCustomer = false;
 

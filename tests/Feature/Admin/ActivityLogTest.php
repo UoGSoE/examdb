@@ -11,8 +11,6 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class ActivityLogTest extends TenantTestCase
 {
-    use RefreshDatabase;
-
     /** @test */
     public function admins_can_see_the_activity_log_page()
     {

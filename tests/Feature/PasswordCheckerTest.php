@@ -19,7 +19,7 @@ use Tests\TestCase;
 
 class PasswordCheckerTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function when_an_admin_logs_in_a_job_is_dispatched_to_check_their_password_against_nist_guidelines_and_p0wned_if_so_configured()

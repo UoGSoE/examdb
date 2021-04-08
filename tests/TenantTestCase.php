@@ -8,7 +8,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 abstract class TenantTestCase extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseMigrations;
 
     /**
      * Create tenant and initialize tenancy?
@@ -16,7 +16,7 @@ abstract class TenantTestCase extends TestCase
      * @var boolean
      */
     protected $tenancy = true;
-    protected $shouldSeed = true;
+    protected $shouldSeed = false;
 
     public function setUp(): void
     {

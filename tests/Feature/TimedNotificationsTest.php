@@ -25,7 +25,7 @@ use Tests\TestCase;
 
 class TimedNotificationsTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function the_scheduled_command_to_run_the_timed_notifications_is_registered()

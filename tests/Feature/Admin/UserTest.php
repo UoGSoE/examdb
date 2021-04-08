@@ -17,7 +17,7 @@ use Tests\TestCase;
 
 class UserTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     protected $tenancy = true;
 

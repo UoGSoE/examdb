@@ -14,7 +14,7 @@ use Tests\TestCase;
 
 class ExternalUsersLoginTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function an_external_can_be_emailed_a_time_limited_signed_login_url()

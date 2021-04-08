@@ -14,7 +14,7 @@ use Tests\TestCase;
 
 class DisciplineContactsTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function admins_can_update_the_contacts_for_each_discipline()

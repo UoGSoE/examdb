@@ -18,7 +18,7 @@ use Tests\TestCase;
 
 class SetterTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function a_user_can_see_all_the_courses_they_are_a_setter_for()

@@ -13,7 +13,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class PaperTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function admins_can_see_all_the_paper_statuses_for_all_the_courses()

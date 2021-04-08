@@ -13,7 +13,7 @@ use Tests\TestCase;
 
 class SemesterEditingTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function admins_can_see_the_semester_edit_box_on_the_course_index_page()

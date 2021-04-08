@@ -13,7 +13,7 @@ use Tests\TestCase;
 
 class CourseTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function we_can_get_a_list_of_all_courses()

@@ -25,7 +25,7 @@ use Tests\TestCase;
 
 class WlmImportTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function can_import_the_data_from_the_fake_wlm()

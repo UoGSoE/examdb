@@ -14,7 +14,7 @@ use Tests\TestCase;
 
 class CourseTest extends TenantTestCase
 {
-    use RefreshDatabase;
+
 
     /** @test */
     public function a_course_can_have_many_main_papers_added()
