@@ -389,7 +389,7 @@
                     x-data="{}"
                     x-init="new Pikaday({ field: $refs.external_signed_at, format: 'DD/MM/YYYY' })"
                 >
-                    <input class="input" @if (! auth()->user()->isExternalFor($course)) disabled @endif x-ref="external_signed_at" type="text" wire:model="checklist.fields.external_signed_at">
+                    <input class="input" @if (! auth()->user()->isExternalFor($course)) disabled @endif x-ref="external_signed_at" type="text" wire:model.lazy="checklist.fields.external_signed_at">
                 </p>
             </div>
         </div>

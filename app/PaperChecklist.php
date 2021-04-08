@@ -141,6 +141,7 @@ class PaperChecklist extends Model
             'external_futher_comments' => null,
             'external_completed_at' => null,
             'external_esignature' => '',
+            'exgternal_signed_at' => null,
             'archived_at' => null,
         ]);
     }

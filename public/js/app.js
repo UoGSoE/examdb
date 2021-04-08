@@ -42849,7 +42849,11 @@ var render = function() {
               staticClass: "button",
               attrs: { href: _vm.checklistRoute + "?category=" + _vm.category }
             },
-            [_vm._m(0), _vm._v(" "), _c("span", [_vm._v("Paper Checklist")])]
+            [
+              _vm._m(0),
+              _vm._v(" "),
+              _c("span", [_vm._v("Exam Paper Checklist")])
+            ]
           )
         ]),
         _vm._v(" "),
@@ -42864,7 +42868,7 @@ var render = function() {
                 [
                   _vm._m(1),
                   _vm._v(" "),
-                  _c("span", [_vm._v("Assessment Checklist")])
+                  _c("span", [_vm._v("Coursework Checklist")])
                 ]
               )
             ])

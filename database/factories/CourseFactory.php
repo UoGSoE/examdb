@@ -30,11 +30,17 @@ class CourseFactory extends Factory
             'registry_approved_main' => false,
             'registry_approved_resit' => false,
             'semester' => 1,
+            'is_examined' => true,
         ];
     }
 
     public function uestc()
     {
         return $this->state(fn ($attribs) => ['code' => 'UESTC'.$this->faker->numberBetween(1000, 8999)]);
+    }
+
+    public function notExamined()
+    {
+        return $this->state(fn ($attribs) => ['is_examined' => false]);
     }
 }
