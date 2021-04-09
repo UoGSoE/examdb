@@ -1,52 +1,63 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Jobs;
 
-use App\Course;
-use App\Exceptions\TimedNotificationException;
-use App\Jobs\NotificationChecks;
-use App\Mail\CallForPapersMail;
-use App\Mail\ExternalModerationDeadlineMail;
-use App\Mail\ModerationDeadlineMail;
-use App\Mail\ModerationDeadlinePassedMail;
-use App\Mail\NotifyExternalsReminderMail;
-use App\Mail\PrintReadyDeadlineMail;
-use App\Mail\PrintReadyDeadlinePassedMail;
-use App\Mail\SubmissionDeadlineMail;
-use App\Mail\SubmissionDeadlinePassedMail;
 use App\Paper;
+use Exception;
+use App\Course;
 use App\Tenant;
 use Carbon\Carbon;
-use Exception;
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use RuntimeException;
+use Illuminate\Bus\Queueable;
+use App\Mail\CallForPapersMail;
+use App\Mail\ModerationDeadlineMail;
+use App\Mail\PrintReadyDeadlineMail;
+use App\Mail\SubmissionDeadlineMail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use App\Mail\NotifyExternalsReminderMail;
+use App\Mail\ModerationDeadlinePassedMail;
+use App\Mail\PrintReadyDeadlinePassedMail;
+use App\Mail\SubmissionDeadlinePassedMail;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use App\Mail\ExternalModerationDeadlineMail;
+use App\Exceptions\TimedNotificationException;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 
-class TimedNotifications extends Command
+class NotificationChecks implements ShouldQueue
 {
-    protected $signature = 'examdb:timed-notifications';
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $description = 'Send any automatic notifications that are due';
+    public $tenant;
 
-    protected $exceptions = [];
+    public $exceptions = [];
 
-    protected $semester;
-
-    public function __construct()
+    /**
+     * Create a new job instance.
+     *
+     * @return void
+     */
+    public function __construct(Tenant $tenant)
     {
-        parent::__construct();
+        $this->tenant = $tenant;
     }
 
+    /**
+     * Execute the job.
+     *
+     * @return void
+     */
     public function handle()
     {
-        Tenant::all()->each(fn ($tenant) => NotificationChecks::dispatch($tenant));
+        $this->tenant->run(function ($tenant) {
+            $this->runAllNotifcationChecks();
+        });
     }
 
-    public function runAllNotifcationChecks(Tenant $tenant)
+    public function runAllNotifcationChecks()
     {
-        tenancy()->initialize($tenant);
-
         $this->semester = $this->getCurrentSemester();
 
         // 😢
@@ -96,7 +107,6 @@ class TimedNotifications extends Command
     protected function handleCallForPapers()
     {
         if (! option('date_receive_call_for_papers')) {
-            $this->info('Skipping call for papers email as no date set');
             throw new \Exception('Skipping call for papers email as no date set');
         }
 

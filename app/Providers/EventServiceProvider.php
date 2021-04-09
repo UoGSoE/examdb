@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
+use Stancl\Tenancy\Events\TenantCreated;
 
 class EventServiceProvider extends ServiceProvider
 {

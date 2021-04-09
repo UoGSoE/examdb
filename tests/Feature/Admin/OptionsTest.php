@@ -42,8 +42,7 @@ class OptionsTest extends TenantTestCase
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
 
-        // external deadlines
-        $this->assertNull(option('date_receive_call_for_papers'));
+        option(['date_recieve_call_for_papers' => '2020-01-03']);
 
         Livewire::actingAs($admin)
             ->test('options-editor')
@@ -78,7 +77,7 @@ class OptionsTest extends TenantTestCase
         $admin = create(User::class, ['is_admin' => true]);
 
         // external deadlines
-        $this->assertNull(option('date_receive_call_for_papers'));
+        option(['date_receive_call_for_papers' => '2020-01-04']);
 
         Livewire::actingAs($admin)
             ->test('options-editor')

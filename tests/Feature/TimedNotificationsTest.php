@@ -2,26 +2,29 @@
 
 namespace Tests\Feature;
 
-use App\Course;
-use App\Exceptions\TimedNotificationException;
-use App\Mail\CallForPapersMail;
-use App\Mail\ExternalModerationDeadlineMail;
-use App\Mail\ModerationDeadlineMail;
-use App\Mail\ModerationDeadlinePassedMail;
-use App\Mail\NotifyExternalsReminderMail;
-use App\Mail\PrintReadyDeadlineMail;
-use App\Mail\PrintReadyDeadlinePassedMail;
-use App\Mail\SubmissionDeadlineMail;
-use App\Mail\SubmissionDeadlinePassedMail;
-use App\Paper;
-use App\PaperChecklist;
 use App\User;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Mail;
-use Tests\TenantTestCase;
+use App\Paper;
+use App\Course;
+use App\Tenant;
 use Tests\TestCase;
+use App\PaperChecklist;
+use Tests\TenantTestCase;
+use App\Mail\CallForPapersMail;
+use App\Jobs\NotificationChecks;
+use App\Mail\ModerationDeadlineMail;
+use App\Mail\PrintReadyDeadlineMail;
+use App\Mail\SubmissionDeadlineMail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Queue;
+use App\Mail\NotifyExternalsReminderMail;
+use App\Mail\ModerationDeadlinePassedMail;
+use App\Mail\PrintReadyDeadlinePassedMail;
+use App\Mail\SubmissionDeadlinePassedMail;
+use App\Mail\ExternalModerationDeadlineMail;
+use Illuminate\Foundation\Testing\WithFaker;
+use App\Exceptions\TimedNotificationException;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class TimedNotificationsTest extends TenantTestCase
 {
@@ -29,24 +32,23 @@ class TimedNotificationsTest extends TenantTestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        $baseDate = now()->subYears(1)->format('Y-m-d');
-        option(['staff_submission_deadline' => $baseDate]);
-        option(['date_receive_call_for_papers' => $baseDate]);
-        option(['internal_moderation_deadline' => $baseDate]);
-        option(['date_remind_office_externals' => $baseDate]);
-        option(['external_moderation_deadline' => $baseDate]);
-        option(['print_ready_deadline' => $baseDate]);
-        option(['teaching_office_contact' => 'glasgow@example.com']);
-        option(['start_semester_1' => $baseDate]);
-        option(['start_semester_2' => $baseDate]);
-        option(['start_semester_3' => $baseDate]);
     }
 
     /** @test */
     public function the_scheduled_command_to_run_the_timed_notifications_is_registered()
     {
         $this->assertCommandIsScheduled('examdb:timed-notifications');
+    }
+
+    /** @test */
+    public function the_timed_notifications_trigger_a_job_for_each_tenant_in_the_system()
+    {
+        Queue::fake();
+        $secondTenant = Tenant::create(['id' => 'first']);
+
+        $this->artisan('examdb:timed-notifications');
+
+        Queue::assertPushed(NotificationChecks::class, 2);
     }
 
     /** @test */

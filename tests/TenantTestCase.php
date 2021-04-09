@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Tenant;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -16,7 +17,7 @@ abstract class TenantTestCase extends TestCase
      * @var boolean
      */
     protected $tenancy = true;
-    protected $shouldSeed = false;
+    protected $shouldSeed = true;
 
     public function setUp(): void
     {
@@ -44,5 +45,10 @@ abstract class TenantTestCase extends TestCase
             // Login as superuser
             // auth()->loginUsingId(1);
         }
+    }
+
+    public function tearDown(): void
+    {
+        Tenant::all()->each->delete();
     }
 }
