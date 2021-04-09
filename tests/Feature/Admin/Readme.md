@@ -57,7 +57,8 @@ secret keys from the script and click the button at the bottom right of the scre
 ### Testing
 As the project now uses the https://tenancyforlaravel.com/ package - testing is a little more complicated than with a normal app.  To run the basic tests you need Docker installed and then :
 ```sh
-./mysql_tmpfs.sh  # runs mysql in docker using a tmpfs to speed things up
+# run mysql in docker using a tmpfs to speed things up
+./mysql_tmpfs.sh
 # then in another terminal
 CI=1 phpunit
 ```
