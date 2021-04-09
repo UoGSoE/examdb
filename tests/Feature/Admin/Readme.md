@@ -53,3 +53,11 @@ which will start a docker container running minio.  You can also steal the api/s
 in your .env for dev.  Once minio is running you'll have to log in via the web (localhost:9000) with the
 secret keys from the script and click the button at the bottom right of the screen to add a new 'bucket' called
 'exampapers'.  Then you should be good to go.
+
+### Testing
+As the project now uses the https://tenancyforlaravel.com/ package - testing is a little more complicated than with a normal app.  To run the basic tests you need Docker installed and then :
+```sh
+./mysql_tmpfs.sh  # runs mysql in docker using a tmpfs to speed things up
+# then in another terminal
+CI=1 phpunit
+```
