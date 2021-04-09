@@ -14,6 +14,7 @@ use App\Mail\PrintReadyDeadlinePassedMail;
 use App\Mail\SubmissionDeadlineMail;
 use App\Mail\SubmissionDeadlinePassedMail;
 use App\Paper;
+use App\Tenant;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
@@ -38,9 +39,18 @@ class TimedNotifications extends Command
 
     public function handle()
     {
+        foreach (Tenant::all() as $tenant) {
+            $this->runAllNotifcationChecks($tenant);
+        }
+    }
+
+    public function runAllNotifcationChecks(Tenant $tenant)
+    {
+        tenancy()->initialize($tenant);
+
         $this->semester = $this->getCurrentSemester();
 
-        // :: sad face ::
+        // 😢
         try {
             $this->handleCallForPapers();
         } catch (\Exception $e) {
@@ -48,113 +58,78 @@ class TimedNotifications extends Command
         }
 
         try {
-            $this->handleSubmissionDeadline('glasgow');
+            $this->handleSubmissionDeadline();
         } catch (\Exception $e) {
             $this->exceptions[] = $e;
         }
 
         try {
-            $this->handleSubmissionDeadline('uestc');
+            $this->handleModerationDeadline();
         } catch (\Exception $e) {
             $this->exceptions[] = $e;
         }
 
         try {
-            $this->handleModerationDeadline('glasgow');
+            $this->handleNotifyExternalsReminder();
         } catch (\Exception $e) {
             $this->exceptions[] = $e;
         }
 
         try {
-            $this->handleModerationDeadline('uestc');
+            $this->handleExternalModerationDeadline();
         } catch (\Exception $e) {
             $this->exceptions[] = $e;
         }
 
         try {
-            $this->handleNotifyExternalsReminder('glasgow');
-        } catch (\Exception $e) {
-            $this->exceptions[] = $e;
-        }
-
-        try {
-            $this->handleNotifyExternalsReminder('uestc');
-        } catch (\Exception $e) {
-            $this->exceptions[] = $e;
-        }
-
-        try {
-            $this->handleExternalModerationDeadline('glasgow');
-        } catch (\Exception $e) {
-            $this->exceptions[] = $e;
-        }
-
-        try {
-            $this->handleExternalModerationDeadline('uestc');
-        } catch (\Exception $e) {
-            $this->exceptions[] = $e;
-        }
-
-        try {
-            $this->handlePrintReadyDeadline('glasgow');
-        } catch (\Exception $e) {
-            $this->exceptions[] = $e;
-        }
-
-        try {
-            $this->handlePrintReadyDeadline('uestc');
+            $this->handlePrintReadyDeadline();
         } catch (\Exception $e) {
             $this->exceptions[] = $e;
         }
 
         if (count($this->exceptions) > 0) {
-            $messages = collect($this->exceptions)->each(fn ($e) => $e->getMessage() . $e->getTraceAsString());
+            $messages = collect($this->exceptions)->map(fn ($e) => $e->getMessage() . $e->getTraceAsString());
             throw new TimedNotificationException($messages);
         }
     }
+
 
     protected function handleCallForPapers()
     {
         if (! option('date_receive_call_for_papers')) {
             $this->info('Skipping call for papers email as no date set');
-
-            return;
+            throw new \Exception('Skipping call for papers email as no date set');
         }
+
         try {
             $date = Carbon::parse(option('date_receive_call_for_papers'));
         } catch (Exception $e) {
-            $this->info('Could not parse date_receive_call_for_papers');
-
-            return;
+            throw new \Exception('Could not parse date_receive_call_for_papers');
         }
 
         if ($date->dayOfYear > now()->dayOfYear) {
             return;
         }
 
-        $currentSemester = $this->getCurrentSemester();
-
-        if (option('date_receive_call_for_papers_email_sent_semester_' . $currentSemester)) {
+        if (option('date_receive_call_for_papers_email_sent_semester_' . $this->semester)) {
             return;
         }
 
-        // TODO we need to break apart the date_receive_call_for_papers option above for Glasgow and UESTC
-        $optionName = "glasgow_staff_submission_deadline";
+        $optionName = "staff_submission_deadline";
         if (! option($optionName)) {
-            $this->info('Skipping submission deadline email as no date set');
-
-            return;
+            throw new \Exception('Skipping submission deadline email as no date set');
         }
+
         try {
             $date = Carbon::parse(option($optionName));
         } catch (Exception $e) {
-            $this->info("Could not parse $optionName");
+            throw new \Exception("Could not parse $optionName");
 
             return;
         }
 
         $emailAddresses = Course::with('setters')
-            ->forSemester($currentSemester)
+            ->forSemester($this->semester)
             ->get()
             ->flatMap(function ($course) {
                 return $course->setters->pluck('email');
@@ -164,7 +139,7 @@ class TimedNotifications extends Command
             Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new CallForPapersMail($date));
         });
 
-        option(['date_receive_call_for_papers_email_sent_semester_' . $currentSemester => now()->format('Y-m-d')]);
+        option(['date_receive_call_for_papers_email_sent_semester_' . $this->semester => now()->format('Y-m-d')]);
     }
 
     protected function getCurrentSemester(): int
@@ -188,20 +163,17 @@ class TimedNotifications extends Command
         throw new RuntimeException('Could not figure out semester');
     }
 
-    protected function handleSubmissionDeadline(string $area)
+    protected function handleSubmissionDeadline()
     {
-        $optionName = "{$area}_staff_submission_deadline";
+        $optionName = "staff_submission_deadline";
         if (! option($optionName)) {
-            $this->info('Skipping submission deadline email as no date set');
-
-            return;
+            throw new \Exception('Skipping submission deadline email as no date set');
         }
+
         try {
             $date = Carbon::parse(option($optionName));
         } catch (Exception $e) {
-            $this->info("Could not parse $optionName");
-
-            return;
+            throw new \Exception("Could not parse $optionName");
         }
 
         if ($date->dayOfYear != now()->subDay()->dayOfYear && $date->dayOfYear != now()->addWeek()->dayOfYear) {
@@ -214,42 +186,37 @@ class TimedNotifications extends Command
             $subType = 'reminder';
         }
 
-        $currentSemester = $this->getCurrentSemester();
-
-        if (option("{$optionName}_email_sent_{$subType}_semester_{$currentSemester}")) {
+        if (option("{$optionName}_email_sent_{$subType}_semester_{$this->semester}")) {
             return;
         }
 
         $emailAddresses = collect([]);
         if ($subType == 'upcoming') {
-            $emailAddresses = $this->getAllSetterEmails($area);
+            $emailAddresses = $this->getAllSetterEmails();
             $emailAddresses->each(function ($email) use ($date) {
                 Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new SubmissionDeadlineMail($date));
             });
         } else {
-            $emailAddresses = $this->getIncompletePaperworkSetterEmails($area);
+            $emailAddresses = $this->getIncompletePaperworkSetterEmails();
             collect($emailAddresses)->each(function ($courses, $email) use ($date) {
                 Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new SubmissionDeadlinePassedMail($date, $courses));
             });
         }
 
-        option(["{$optionName}_email_sent_{$subType}_semester_{$currentSemester}" => now()->format('Y-m-d')]);
+        option(["{$optionName}_email_sent_{$subType}_semester_{$this->semester}" => now()->format('Y-m-d')]);
     }
 
-    protected function handleModerationDeadline(string $area)
+    protected function handleModerationDeadline()
     {
-        $optionName = "{$area}_internal_moderation_deadline";
+        $optionName = "internal_moderation_deadline";
         if (! option($optionName)) {
-            $this->info('Skipping moderation deadline email as no date set');
-
-            return;
+            throw new \Exception('Skipping moderation deadline email as no date set');
         }
+
         try {
             $date = Carbon::parse(option($optionName));
         } catch (Exception $e) {
-            $this->info("Could not parse $optionName");
-
-            return;
+            throw new \Exception("Could not parse $optionName");
         }
 
         if ($date->dayOfYear != now()->subDay()->dayOfYear && $date->dayOfYear != now()->addDays(3)->dayOfYear) {
@@ -262,42 +229,38 @@ class TimedNotifications extends Command
             $subType = 'reminder';
         }
 
-        $currentSemester = $this->getCurrentSemester();
-        if (option("{$optionName}_email_sent_{$subType}_semester_{$currentSemester}")) {
+        if (option("{$optionName}_email_sent_{$subType}_semester_{$this->semester}")) {
             return;
         }
 
         if ($subType == 'upcoming') {
             $mailableName = ModerationDeadlineMail::class;
-            $emailAddresses = $this->getAllModeratorEmails($area);
+            $emailAddresses = $this->getAllModeratorEmails();
             $emailAddresses->each(function ($email) use ($mailableName, $date) {
                 Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new $mailableName($date));
             });
         } else {
-            $emailAddresses = $this->getIncompletePaperworkModeratorEmails($area);
+            $emailAddresses = $this->getIncompletePaperworkModeratorEmails();
             collect($emailAddresses)->each(function ($courses, $email) use ($date) {
                 Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new ModerationDeadlinePassedMail($date, $courses));
             });
         }
 
 
-        option(["{$optionName}_email_sent_{$subType}_semester_{$currentSemester}" => now()->format('Y-m-d')]);
+        option(["{$optionName}_email_sent_{$subType}_semester_{$this->semester}" => now()->format('Y-m-d')]);
     }
 
-    protected function handleNotifyExternalsReminder(string $area)
+    protected function handleNotifyExternalsReminder()
     {
-        $optionName = "date_remind_{$area}_office_externals";
+        $optionName = "date_remind_office_externals";
         if (! option($optionName)) {
-            $this->info('Skipping reminder about externals email as no date set');
-
-            return;
+            throw new \Exception('Skipping reminder about externals email as no date set');
         }
+
         try {
             $date = Carbon::parse(option($optionName));
         } catch (Exception $e) {
-            $this->info("Could not parse $optionName");
-
-            return;
+            throw new \Exception("Could not parse $optionName");
         }
 
         if ($date->dayOfYear != now()->dayOfYear) {
@@ -308,36 +271,34 @@ class TimedNotifications extends Command
             return;
         }
 
-        Mail::to(option("teaching_office_contact_{$area}"))
+        Mail::to(option("teaching_office_contact"))
             ->later(now()->addSeconds(rand(1, 200)), new NotifyExternalsReminderMail);
 
         option(["{$optionName}_email_sent" => now()->format('Y-m-d')]);
     }
 
-    protected function handlePrintReadyDeadline(string $area)
+    protected function handlePrintReadyDeadline()
     {
-        $optionName = "{$area}_print_ready_deadline";
+        $optionName = "print_ready_deadline";
         if (! option($optionName)) {
-            $this->info('Skipping print ready deadline email as no date set');
-
-            return;
+            throw new \Exception('Skipping print ready deadline email as no date set');
         }
+
         try {
             $date = Carbon::parse(option($optionName));
         } catch (Exception $e) {
-            $this->info("Could not parse $optionName");
-
-            return;
+            throw new \Exception("Could not parse $optionName");
         }
 
         if ($date->dayOfYear != now()->subDay()->dayOfYear && $date->dayOfYear != now()->addDay()->dayOfYear) {
             return;
         }
+
         if (option("{$optionName}_email_sent")) {
             return;
         }
 
-        $courses = Course::forArea($area)->with('papers')->get()->filter(function ($course) {
+        $courses = Course::with('papers')->get()->filter(function ($course) {
             return ! $course->papers->contains(function ($paper) {
                 return $paper->subcategory == Paper::PAPER_FOR_REGISTRY;
             });
@@ -349,7 +310,7 @@ class TimedNotifications extends Command
             $mailableName = PrintReadyDeadlinePassedMail::class;
         }
 
-        Mail::to(option("teaching_office_contact_{$area}"))
+        Mail::to(option("teaching_office_contact"))
             ->later(now()->addSeconds(rand(1, 200)), new $mailableName($date, $courses));
 
         if ($date->addDay()->dayOfYear == now()->dayOfYear) {
@@ -357,20 +318,17 @@ class TimedNotifications extends Command
         }
     }
 
-    protected function handleExternalModerationDeadline(string $area)
+    protected function handleExternalModerationDeadline()
     {
-        $optionName = "{$area}_external_moderation_deadline";
+        $optionName = "external_moderation_deadline";
         if (! option($optionName)) {
-            $this->info('Skipping reminder about external moderation email as no date set');
-
-            return;
+            throw new \Exception('Skipping reminder about external moderation email as no date set');
         }
+
         try {
             $date = Carbon::parse(option($optionName));
         } catch (Exception $e) {
-            $this->info("Could not parse $optionName");
-
-            return;
+            throw new \Exception("Could not parse $optionName");
         }
 
         if ($date->dayOfYear != now()->dayOfYear) {
@@ -381,28 +339,33 @@ class TimedNotifications extends Command
             return;
         }
 
-        Mail::to(option("teaching_office_contact_{$area}"))
+        Mail::to(option("teaching_office_contact"))
             ->later(now()->addSeconds(rand(1, 200)), new ExternalModerationDeadlineMail);
 
         option(["{$optionName}_email_sent" => now()->format('Y-m-d')]);
     }
 
-    protected function getAllSetterEmails(string $area)
+    protected function getAllSetterEmails()
     {
-        return Course::forArea($area)->forSemester($this->semester)->with('setters')->get()->flatMap(function ($course) {
+        return Course::forSemester($this->semester)->with('setters')->get()->flatMap(function ($course) {
             return $course->setters->pluck('email');
         })->filter()->unique();
     }
 
-    protected function getIncompletePaperworkSetterEmails(string $area)
+    /**
+     *
+     *  Structure of returned array :
+     *  [
+     *   $unique_email => [ $course_code, $course_code, $course_code],
+     *   ...,
+     *  ]
+     *
+     */
+    protected function getIncompletePaperworkSetterEmails(): array
     {
-        //
-        // we want :
-        // $unique_email => [ $course_code, $course_code, $course_code]
-        //
         $result = [];
 
-        $courses = Course::forArea($area)->forSemester($this->semester)->doesntHave('checklists')->with('setters')->get();
+        $courses = Course::forSemester($this->semester)->doesntHave('checklists')->with('setters')->get();
         foreach ($courses as $course) {
             foreach ($course->setters as $setter) {
                 $result[$setter->email][] = $course->code;
@@ -410,15 +373,11 @@ class TimedNotifications extends Command
         }
 
         return $result;
-        // return Course::forArea($area)->forSemester($this->semester)->doesntHave('checklists')->with('setters')->get()->flatMap(function ($course) {
-        //     return ['emails' => $course->setters->pluck('email'), 'course' => $course->code];
-        // })->filter()->unique();
     }
 
-    protected function getAllModeratorEmails(string $area)
+    protected function getAllModeratorEmails()
     {
-        return Course::forArea($area)
-            ->forSemester($this->semester)
+        return Course::forSemester($this->semester)
             ->with('moderators')
             ->get()
             ->flatMap(function ($course) {
@@ -428,14 +387,23 @@ class TimedNotifications extends Command
             ->unique();
     }
 
-    protected function getIncompletePaperworkModeratorEmails(string $area)
+    /**
+     * Structure of returned array :
+     * [
+     *   'unique_email_address' => ['ENG1234', 'ENG5432', 'ENG9191],
+     *   ...,
+     * ]
+     *
+     */
+    protected function getIncompletePaperworkModeratorEmails(): array
     {
-        $courses = Course::forArea($area)->forSemester($this->semester)->with('moderators')
-        ->where(function ($query) {
-            $query->where('moderator_approved_main', '!=', true)
-                ->orWhere('moderator_approved_resit', '!=', true);
-        })
-        ->get();
+        $courses = Course::forSemester($this->semester)->with('moderators')
+            ->where(function ($query) {
+                $query->where('moderator_approved_main', '!=', true)
+                    ->orWhere('moderator_approved_resit', '!=', true);
+            })
+            ->get();
+
         $result = [];
         foreach ($courses as $course) {
             foreach ($course->moderators as $moderator) {
@@ -443,15 +411,5 @@ class TimedNotifications extends Command
             }
         }
         return $result;
-
-        return Course::forArea($area)->forSemester($this->semester)->with('moderators')
-            ->where(function ($query) {
-                $query->where('moderator_approved_main', '!=', true)
-                    ->orWhere('moderator_approved_resit', '!=', true);
-            })
-            ->get()
-            ->flatMap(function ($course) {
-                return $course->moderators->pluck('email');
-            })->filter()->unique();
     }
 }

@@ -26,6 +26,22 @@ use Tests\TestCase;
 class TimedNotificationsTest extends TenantTestCase
 {
 
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $baseDate = now()->subYears(1)->format('Y-m-d');
+        option(['staff_submission_deadline' => $baseDate]);
+        option(['date_receive_call_for_papers' => $baseDate]);
+        option(['internal_moderation_deadline' => $baseDate]);
+        option(['date_remind_office_externals' => $baseDate]);
+        option(['external_moderation_deadline' => $baseDate]);
+        option(['print_ready_deadline' => $baseDate]);
+        option(['teaching_office_contact' => 'glasgow@example.com']);
+        option(['start_semester_1' => $baseDate]);
+        option(['start_semester_2' => $baseDate]);
+        option(['start_semester_3' => $baseDate]);
+    }
 
     /** @test */
     public function the_scheduled_command_to_run_the_timed_notifications_is_registered()
@@ -50,7 +66,7 @@ class TimedNotificationsTest extends TenantTestCase
 
         $callForPapersDate = now()->subHour()->format('Y-m-d');
         $deadlineDate = now()->addWeeks(2)->format('Y-m-d');
-        option(['glasgow_staff_submission_deadline' => $deadlineDate]);
+        option(['staff_submission_deadline' => $deadlineDate]);
         option(['date_receive_call_for_papers' => $callForPapersDate]);
         option(['start_semester_1' => now()->format('Y-m-d')]);
         option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
@@ -86,7 +102,7 @@ class TimedNotificationsTest extends TenantTestCase
         $moderator->markAsModerator($course1);
 
         $deadlineDate = now()->addWeeks(2)->format('Y-m-d');
-        option(['glasgow_staff_submission_deadline' => $deadlineDate]);
+        option(['staff_submission_deadline' => $deadlineDate]);
         option(['date_receive_call_for_papers' => now()->subDays(3)->format('Y-m-d')]);
         option(['start_semester_1' => now()->format('Y-m-d')]);
         option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
@@ -118,7 +134,7 @@ class TimedNotificationsTest extends TenantTestCase
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
 
         $deadlineDate = now()->addWeeks(2)->format('Y-m-d');
-        option(['glasgow_staff_submission_deadline' => $deadlineDate]);
+        option(['staff_submission_deadline' => $deadlineDate]);
 
         option(['date_receive_call_for_papers' => now()->addDay()]);
 
@@ -126,7 +142,7 @@ class TimedNotificationsTest extends TenantTestCase
 
         $this->artisan('examdb:timed-notifications');
 
-        Mail::assertNothingQueued();
+        Mail::assertNotQueued(CallForPapersMail::class);
         $this->assertNull(option('date_receive_call_for_papers_email_sent_semester_1'));
     }
 
@@ -146,7 +162,7 @@ class TimedNotificationsTest extends TenantTestCase
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
         option(['date_receive_call_for_papers' => now()->subDays(3)->format('Y-m-d')]);
         $deadlineDate = now()->addWeeks(2)->format('Y-m-d');
-        option(['glasgow_staff_submission_deadline' => $deadlineDate]);
+        option(['staff_submission_deadline' => $deadlineDate]);
 
         $this->assertNull(option('date_receive_call_for_papers_email_sent_semester_1'));
 
@@ -170,7 +186,7 @@ class TimedNotificationsTest extends TenantTestCase
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
 
         $deadlineDate = now()->addWeeks(2)->format('Y-m-d');
-        option(['glasgow_staff_submission_deadline' => $deadlineDate]);
+        option(['staff_submission_deadline' => $deadlineDate]);
 
         option(['date_receive_call_for_papers' => now()->subHour()->format('Y-m-d')]);
 
@@ -186,11 +202,11 @@ class TimedNotificationsTest extends TenantTestCase
         Mail::fake();
 
         $this->artisan('examdb:timed-notifications');
-        Mail::assertNothingQueued();
+        Mail::assertNotQueued(CallForPapersMail::class);
     }
 
     /** @test */
-    public function emails_are_sent_for_the_glasgow_staff_submission_deadline_option_when_it_is_the_week_before_and_day_after()
+    public function emails_are_sent_for_the_staff_submission_deadline_option_when_it_is_the_week_before_and_day_after()
     {
         Mail::fake();
         $course1 = create(Course::class, ['code' => 'ENG1234']);
@@ -209,28 +225,31 @@ class TimedNotificationsTest extends TenantTestCase
         option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
 
-        option(['glasgow_staff_submission_deadline' => now()->addWeek()->format('Y-m-d')]);
+        option(['staff_submission_deadline' => now()->addWeek()->format('Y-m-d')]);
 
-        $this->assertNull(option('glasgow_staff_submission_deadline_email_sent'));
+        $this->assertNull(option('staff_submission_deadline_email_sent'));
 
         $this->artisan('examdb:timed-notifications');
 
-        Mail::assertQueued(SubmissionDeadlineMail::class, 2);
+        Mail::assertQueued(SubmissionDeadlineMail::class, 3);
         Mail::assertQueued(SubmissionDeadlineMail::class, function ($mail) use ($setter1) {
             return $mail->hasTo($setter1->email);
         });
         Mail::assertQueued(SubmissionDeadlineMail::class, function ($mail) use ($setter2) {
             return $mail->hasTo($setter2->email);
         });
-        $this->assertNull(option('glasgow_staff_submission_deadline_email_sent'));
+        Mail::assertQueued(SubmissionDeadlineMail::class, function ($mail) use ($setter3) {
+            return $mail->hasTo($setter3->email);
+        });
+        $this->assertNull(option('staff_submission_deadline_email_sent'));
 
-        option(['glasgow_staff_submission_deadline' => now()->subDay()->format('Y-m-d')]);
+        option(['staff_submission_deadline' => now()->subDay()->format('Y-m-d')]);
 
         Mail::fake();
 
         $this->artisan('examdb:timed-notifications');
 
-        Mail::assertQueued(SubmissionDeadlinePassedMail::class, 2);
+        Mail::assertQueued(SubmissionDeadlinePassedMail::class, 3);
         Mail::assertQueued(SubmissionDeadlinePassedMail::class, function ($mail) use ($setter1, $course1, $course2) {
             return $mail->hasTo($setter1->email) &&
                    $mail->courses->contains($course1->code) &&
@@ -241,55 +260,11 @@ class TimedNotificationsTest extends TenantTestCase
                    $mail->courses->contains($course1->code) &&
                    $mail->courses->contains($course2->code);
         });
-        $this->assertNotNull(option('glasgow_staff_submission_deadline_email_sent_reminder_semester_1'));
-    }
-
-    /** @test */
-    public function emails_are_sent_for_the_uestc_staff_submission_deadline_option_when_it_is_a_week_before_and_day_after()
-    {
-        Mail::fake();
-        $course1 = create(Course::class, ['code' => 'ENG1234']);
-        $course2 = create(Course::class, ['code' => 'ENG4567']);
-        $course3 = create(Course::class, ['code' => 'UESTC1234']);
-        $setter1 = create(User::class);
-        $setter1->markAsSetter($course1);
-        $setter1->markAsSetter($course2);
-        $setter2 = create(User::class);
-        $setter2->markAsSetter($course1);
-        $setter2->markAsSetter($course2);
-        $setter3 = create(User::class);
-        $setter3->markAsSetter($course3);
-        $moderator = create(User::class);
-        $moderator->markAsModerator($course1);
-        option(['start_semester_1' => now()->format('Y-m-d')]);
-        option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
-        option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
-
-        option(['uestc_staff_submission_deadline' => now()->addWeek()->format('Y-m-d')]);
-
-        $this->assertNull(option('uestc_staff_submission_deadline_email_sent_upcoming_semester_1'));
-
-        $this->artisan('examdb:timed-notifications');
-
-        Mail::assertQueued(SubmissionDeadlineMail::class, 1);
-        Mail::assertQueued(SubmissionDeadlineMail::class, function ($mail) use ($setter3) {
-            return $mail->hasTo($setter3->email);
+        Mail::assertQueued(SubmissionDeadlinePassedMail::class, function ($mail) use ($setter3, $course3) {
+            return $mail->hasTo($setter3->email) &&
+                   $mail->courses->contains($course3->code);
         });
-        $this->assertNotNull(option('uestc_staff_submission_deadline_email_sent_upcoming_semester_1'));
-
-        option(['uestc_staff_submission_deadline' => now()->subDay()->format('Y-m-d')]);
-
-        Mail::fake();
-
-        $this->assertNull(option('uestc_staff_submission_deadline_email_sent_reminder_semester_1'));
-
-        $this->artisan('examdb:timed-notifications');
-
-        Mail::assertQueued(SubmissionDeadlinePassedMail::class, 1);
-        Mail::assertQueued(SubmissionDeadlinePassedMail::class, function ($mail) use ($setter3) {
-            return $mail->hasTo($setter3->email);
-        });
-        $this->assertNotNull(option('uestc_staff_submission_deadline_email_sent_reminder_semester_1'));
+        $this->assertNotNull(option('staff_submission_deadline_email_sent_reminder_semester_1'));
     }
 
     /** @test */
@@ -313,17 +288,15 @@ class TimedNotificationsTest extends TenantTestCase
         option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
 
-        option(['glasgow_staff_submission_deadline' => now()->addDays(10)->format('Y-m-d')]);
-        option(['uestc_staff_submission_deadline' => now()->addDays(20)->format('Y-m-d')]);
+        option(['staff_submission_deadline' => now()->addDays(10)->format('Y-m-d')]);
 
-        $this->assertNull(option('glasgow_staff_submission_deadline_email_sent'));
-        $this->assertNull(option('uestc_staff_submission_deadline_email_sent'));
+        $this->assertNull(option('staff_submission_deadline_email_sent'));
 
         $this->artisan('examdb:timed-notifications');
 
-        Mail::assertNothingQueued();
-        $this->assertNull(option('glasgow_staff_submission_deadline_email_sent'));
-        $this->assertNull(option('uestc_staff_submission_deadline_email_sent'));
+        Mail::assertNotQueued(SubmissionDeadlineMail::class);
+        Mail::assertNotQueued(SubmissionDeadlinePassedMail::class);
+        $this->assertNull(option('staff_submission_deadline_email_sent'));
     }
 
     /** @test */
@@ -342,14 +315,15 @@ class TimedNotificationsTest extends TenantTestCase
         option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
 
-        option(['glasgow_staff_submission_deadline' => now()->subDays(1)->format('Y-m-d')]);
+        option(['staff_submission_deadline' => now()->subDays(1)->format('Y-m-d')]);
 
-        $this->assertNull(option('glasgow_staff_submission_deadline_email_sent_reminder_semester_1'));
+        $this->assertNull(option('staff_submission_deadline_email_sent_reminder_semester_1'));
 
         $this->artisan('examdb:timed-notifications');
 
-        Mail::assertNothingQueued();
-        $this->assertNotNull(option('glasgow_staff_submission_deadline_email_sent_reminder_semester_1'));
+        Mail::assertNotQueued(SubmissionDeadlineMail::class);
+        Mail::assertNotQueued(SubmissionDeadlinePassedMail::class);
+        $this->assertNotNull(option('staff_submission_deadline_email_sent_reminder_semester_1'));
     }
 
     /** @test */
@@ -368,9 +342,9 @@ class TimedNotificationsTest extends TenantTestCase
         option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
 
-        option(['glasgow_staff_submission_deadline' => now()->addWeek()->format('Y-m-d')]);
+        option(['staff_submission_deadline' => now()->addWeek()->format('Y-m-d')]);
 
-        $this->assertNull(option('glasgow_staff_submission_deadline_email_sent_upcoming_semester_1'));
+        $this->assertNull(option('staff_submission_deadline_email_sent_upcoming_semester_1'));
 
         $this->artisan('examdb:timed-notifications');
 
@@ -378,12 +352,12 @@ class TimedNotificationsTest extends TenantTestCase
         Mail::assertQueued(SubmissionDeadlineMail::class, function ($mail) use ($setter1) {
             return $mail->hasTo($setter1);
         });
-        $this->assertNotNull(option('glasgow_staff_submission_deadline_email_sent_upcoming_semester_1'));
+        $this->assertNotNull(option('staff_submission_deadline_email_sent_upcoming_semester_1'));
 
         Mail::fake();
 
-        option(['glasgow_staff_submission_deadline' => now()->subDay()->format('Y-m-d')]);
-        $this->assertNull(option('glasgow_staff_submission_deadline_email_sent_reminder_semester_1'));
+        option(['staff_submission_deadline' => now()->subDay()->format('Y-m-d')]);
+        $this->assertNull(option('staff_submission_deadline_email_sent_reminder_semester_1'));
 
         $this->artisan('examdb:timed-notifications');
 
@@ -391,7 +365,7 @@ class TimedNotificationsTest extends TenantTestCase
         Mail::assertQueued(SubmissionDeadlinePassedMail::class, function ($mail) use ($setter1) {
             return $mail->hasTo($setter1->email);
         });
-        $this->assertNotNull(option('glasgow_staff_submission_deadline_email_sent_reminder_semester_1'));
+        $this->assertNotNull(option('staff_submission_deadline_email_sent_reminder_semester_1'));
     }
 
     /** @test */
@@ -416,9 +390,9 @@ class TimedNotificationsTest extends TenantTestCase
         option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
 
-        option(['glasgow_internal_moderation_deadline' => now()->addDays(3)->format('Y-m-d')]);
+        option(['internal_moderation_deadline' => now()->addDays(3)->format('Y-m-d')]);
 
-        $this->assertNull(option('glasgow_internal_moderation_deadline_email_sent_upcoming_semester_1'));
+        $this->assertNull(option('internal_moderation_deadline_email_sent_upcoming_semester_1'));
 
         $this->artisan('examdb:timed-notifications');
 
@@ -426,13 +400,13 @@ class TimedNotificationsTest extends TenantTestCase
         Mail::assertQueued(ModerationDeadlineMail::class, function ($mail) use ($moderator) {
             return $mail->hasTo($moderator->email);
         });
-        $this->assertNotNull(option('glasgow_internal_moderation_deadline_email_sent_upcoming_semester_1'));
+        $this->assertNotNull(option('internal_moderation_deadline_email_sent_upcoming_semester_1'));
 
-        option(['glasgow_internal_moderation_deadline' => now()->subDay()->format('Y-m-d')]);
+        option(['internal_moderation_deadline' => now()->subDay()->format('Y-m-d')]);
 
         Mail::fake();
 
-        $this->assertNull(option('glasgow_internal_moderation_deadline_email_sent_reminder_semester_1'));
+        $this->assertNull(option('internal_moderation_deadline_email_sent_reminder_semester_1'));
 
         $this->artisan('examdb:timed-notifications');
 
@@ -442,7 +416,7 @@ class TimedNotificationsTest extends TenantTestCase
                    $mail->courses->count() === 1 &&
                    $mail->courses->contains($course1->code);
         });
-        $this->assertNotNull(option('glasgow_internal_moderation_deadline_email_sent_reminder_semester_1'));
+        $this->assertNotNull(option('internal_moderation_deadline_email_sent_reminder_semester_1'));
     }
 
     /** @test */
@@ -466,17 +440,15 @@ class TimedNotificationsTest extends TenantTestCase
         option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
 
-        option(['glasgow_internal_moderation_deadline' => now()->addDays(10)->format('Y-m-d')]);
-        option(['uesct_internal_moderation_deadline' => now()->addDays(20)->format('Y-m-d')]);
+        option(['internal_moderation_deadline' => now()->addDays(10)->format('Y-m-d')]);
 
-        $this->assertNull(option('glasgow_internal_moderation_deadline_email_sent'));
-        $this->assertNull(option('uestc_internal_moderation_deadline_email_sent'));
+        $this->assertNull(option('internal_moderation_deadline_email_sent'));
 
         $this->artisan('examdb:timed-notifications');
 
-        Mail::assertNothingQueued();
-        $this->assertNull(option('glasgow_internal_moderation_deadline_email_sent'));
-        $this->assertNull(option('uestc_internal_moderation_deadline_email_sent'));
+        Mail::assertNotQueued(ModerationDeadlineMail::class);
+        Mail::assertNotQueued(ModerationDeadlinePassedMail::class);
+        $this->assertNull(option('internal_moderation_deadline_email_sent'));
     }
 
     /** @test */
@@ -496,17 +468,15 @@ class TimedNotificationsTest extends TenantTestCase
         option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
 
-        option(['glasgow_internal_moderation_deadline' => now()->subDays(1)->format('Y-m-d')]);
-        option(['uestc_internal_moderation_deadline' => now()->subDays(1)->format('Y-m-d')]);
+        option(['internal_moderation_deadline' => now()->subDays(1)->format('Y-m-d')]);
 
-        $this->assertNull(option('glasgow_internal_moderation_deadline_email_sent_reminder_semester_1'));
-        $this->assertNull(option('uestc_internal_moderation_deadline_email_sent_reminder_semester_1'));
+        $this->assertNull(option('internal_moderation_deadline_email_sent_reminder_semester_1'));
 
         $this->artisan('examdb:timed-notifications');
 
-        Mail::assertNothingQueued();
-        $this->assertNotNull(option('glasgow_internal_moderation_deadline_email_sent_reminder_semester_1'));
-        $this->assertNotNull(option('uestc_internal_moderation_deadline_email_sent_reminder_semester_1'));
+        Mail::assertNotQueued(ModerationDeadlineMail::class);
+        Mail::assertNotQueued(ModerationDeadlinePassedMail::class);
+        $this->assertNotNull(option('internal_moderation_deadline_email_sent_reminder_semester_1'));
     }
 
     /** @test */
@@ -528,11 +498,9 @@ class TimedNotificationsTest extends TenantTestCase
         option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
 
-        option(['glasgow_internal_moderation_deadline' => now()->addDays(3)->format('Y-m-d')]);
-        option(['uestc_internal_moderation_deadline' => now()->addDays(3)->format('Y-m-d')]);
+        option(['internal_moderation_deadline' => now()->addDays(3)->format('Y-m-d')]);
 
-        $this->assertNull(option('glasgow_internal_moderation_deadline_email_sent_upcoming_semester_1'));
-        $this->assertNull(option('uestc_internal_moderation_deadline_email_sent_upcoming_semester_1'));
+        $this->assertNull(option('internal_moderation_deadline_email_sent_upcoming_semester_1'));
 
         $this->artisan('examdb:timed-notifications');
 
@@ -540,16 +508,13 @@ class TimedNotificationsTest extends TenantTestCase
         Mail::assertQueued(ModerationDeadlineMail::class, function ($mail) use ($moderator1) {
             return $mail->hasTo($moderator1->email);
         });
-        $this->assertNotNull(option('glasgow_internal_moderation_deadline_email_sent_upcoming_semester_1'));
-        $this->assertNotNull(option('uestc_internal_moderation_deadline_email_sent_upcoming_semester_1'));
+        $this->assertNotNull(option('internal_moderation_deadline_email_sent_upcoming_semester_1'));
 
         Mail::fake();
 
-        option(['glasgow_internal_moderation_deadline' => now()->subDays(1)->format('Y-m-d')]);
-        option(['uestc_internal_moderation_deadline' => now()->subDays(1)->format('Y-m-d')]);
+        option(['internal_moderation_deadline' => now()->subDays(1)->format('Y-m-d')]);
 
-        $this->assertNull(option('glasgow_internal_moderation_deadline_email_sent_reminder_semester_1'));
-        $this->assertNull(option('uestc_internal_moderation_deadline_email_sent_reminder_semester_1'));
+        $this->assertNull(option('internal_moderation_deadline_email_sent_reminder_semester_1'));
 
         $this->artisan('examdb:timed-notifications');
 
@@ -557,8 +522,7 @@ class TimedNotificationsTest extends TenantTestCase
         Mail::assertQueued(ModerationDeadlinePassedMail::class, function ($mail) use ($moderator1) {
             return $mail->hasTo($moderator1->email);
         });
-        $this->assertNotNull(option('glasgow_internal_moderation_deadline_email_sent_reminder_semester_1'));
-        $this->assertNotNull(option('uestc_internal_moderation_deadline_email_sent_reminder_semester_1'));
+        $this->assertNotNull(option('internal_moderation_deadline_email_sent_reminder_semester_1'));
     }
 
     /** @test */
@@ -569,10 +533,10 @@ class TimedNotificationsTest extends TenantTestCase
         option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
 
-        option(['date_remind_glasgow_office_externals' => now()->format('Y-m-d')]);
-        option(['teaching_office_contact_glasgow' => 'glasgow@example.com']);
+        option(['date_remind_office_externals' => now()->format('Y-m-d')]);
+        option(['teaching_office_contact' => 'glasgow@example.com']);
 
-        $this->assertNull(option('date_remind_glasgow_office_externals_email_sent'));
+        $this->assertNull(option('date_remind_office_externals_email_sent'));
 
         $this->artisan('examdb:timed-notifications');
 
@@ -580,29 +544,7 @@ class TimedNotificationsTest extends TenantTestCase
         Mail::assertQueued(NotifyExternalsReminderMail::class, function ($mail) {
             return $mail->hasTo('glasgow@example.com');
         });
-        $this->assertNotNull(option('date_remind_glasgow_office_externals_email_sent'));
-    }
-
-    /** @test */
-    public function email_is_sent_to_uestc_teaching_office_about_notifying_externals()
-    {
-        Mail::fake();
-        option(['start_semester_1' => now()->format('Y-m-d')]);
-        option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
-        option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
-
-        option(['date_remind_uestc_office_externals' => now()->format('Y-m-d')]);
-        option(['teaching_office_contact_uestc' => 'uestc@example.com']);
-
-        $this->assertNull(option('date_remind_uestc_office_externals_email_sent'));
-
-        $this->artisan('examdb:timed-notifications');
-
-        Mail::assertQueued(NotifyExternalsReminderMail::class, 1);
-        Mail::assertQueued(NotifyExternalsReminderMail::class, function ($mail) {
-            return $mail->hasTo('uestc@example.com');
-        });
-        $this->assertNotNull(option('date_remind_uestc_office_externals_email_sent'));
+        $this->assertNotNull(option('date_remind_office_externals_email_sent'));
     }
 
     /** @test */
@@ -613,15 +555,15 @@ class TimedNotificationsTest extends TenantTestCase
         option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
 
-        option(['date_remind_uestc_office_externals' => now()->addDays(10)->format('Y-m-d')]);
-        option(['teaching_office_contact_uestc' => 'uestc@example.com']);
+        option(['date_remind_office_externals' => now()->addDays(10)->format('Y-m-d')]);
+        option(['teaching_office_contact' => 'uestc@example.com']);
 
-        $this->assertNull(option('date_remind_uestc_office_externals_email_sent'));
+        $this->assertNull(option('date_remind_office_externals_email_sent'));
 
         $this->artisan('examdb:timed-notifications');
 
-        Mail::assertNothingQueued();
-        $this->assertNull(option('date_remind_uestc_office_externals_email_sent'));
+        Mail::assertNotQueued(NotifyExternalsReminderMail::class);
+        $this->assertNull(option('date_remind_office_externals_email_sent'));
     }
 
     /** @test */
@@ -637,10 +579,10 @@ class TimedNotificationsTest extends TenantTestCase
         option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
 
-        option(['glasgow_print_ready_deadline' => now()->addDay()->format('Y-m-d')]);
+        option(['print_ready_deadline' => now()->addDay()->format('Y-m-d')]);
         option(['teaching_office_contact_glasgow' => 'glasgow@example.com']);
 
-        $this->assertNull(option('glasgow_print_ready_deadline_email_sent'));
+        $this->assertNull(option('print_ready_deadline_email_sent'));
 
         $this->artisan('examdb:timed-notifications');
 
@@ -650,10 +592,10 @@ class TimedNotificationsTest extends TenantTestCase
                    $mail->courses->contains($course2) &&
                    ! $mail->courses->contains($course1);
         });
-        $this->assertNull(option('glasgow_print_ready_deadline_email_sent'));
+        $this->assertNull(option('print_ready_deadline_email_sent'));
 
         Mail::fake();
-        option(['glasgow_print_ready_deadline' => now()->subDay()->format('Y-m-d')]);
+        option(['print_ready_deadline' => now()->subDay()->format('Y-m-d')]);
 
         $this->artisan('examdb:timed-notifications');
 
@@ -661,40 +603,7 @@ class TimedNotificationsTest extends TenantTestCase
         Mail::assertQueued(PrintReadyDeadlinePassedMail::class, function ($mail) {
             return $mail->hasTo('glasgow@example.com');
         });
-        $this->assertNotNull(option('glasgow_print_ready_deadline_email_sent'));
-    }
-
-    /** @test */
-    public function emails_are_sent_to_the_uestc_teaching_office_one_day_before_and_one_day_after_the_print_deadline()
-    {
-        Mail::fake();
-        option(['start_semester_1' => now()->format('Y-m-d')]);
-        option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
-        option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
-
-        option(['uestc_print_ready_deadline' => now()->addDay()->format('Y-m-d')]);
-        option(['teaching_office_contact_uestc' => 'uestc@example.com']);
-
-        $this->assertNull(option('uestc_print_ready_deadline_email_sent'));
-
-        $this->artisan('examdb:timed-notifications');
-
-        Mail::assertQueued(PrintReadyDeadlineMail::class, 1);
-        Mail::assertQueued(PrintReadyDeadlineMail::class, function ($mail) {
-            return $mail->hasTo('uestc@example.com');
-        });
-        $this->assertNull(option('uestc_print_ready_deadline_email_sent'));
-
-        Mail::fake();
-        option(['uestc_print_ready_deadline' => now()->subDay()->format('Y-m-d')]);
-
-        $this->artisan('examdb:timed-notifications');
-
-        Mail::assertQueued(PrintReadyDeadlinePassedMail::class, 1);
-        Mail::assertQueued(PrintReadyDeadlinePassedMail::class, function ($mail) {
-            return $mail->hasTo('uestc@example.com');
-        });
-        $this->assertNotNull(option('uestc_print_ready_deadline_email_sent'));
+        $this->assertNotNull(option('print_ready_deadline_email_sent'));
     }
 
     /** @test */
@@ -705,19 +614,15 @@ class TimedNotificationsTest extends TenantTestCase
         option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
 
-        option(['uestc_print_ready_deadline' => now()->addDays(33)->format('Y-m-d')]);
-        option(['teaching_office_contact_uestc' => 'uestc@example.com']);
-        option(['glasgow_print_ready_deadline' => now()->addDays(33)->format('Y-m-d')]);
-        option(['teaching_office_contact_glasgow' => 'glasgow@example.com']);
+        option(['print_ready_deadline' => now()->addDays(33)->format('Y-m-d')]);
+        option(['teaching_office_contact' => 'glasgow@example.com']);
 
-        $this->assertNull(option('uestc_print_ready_deadline_email_sent'));
-        $this->assertNull(option('glasgow_print_ready_deadline_email_sent'));
+        $this->assertNull(option('print_ready_deadline_email_sent'));
 
         $this->artisan('examdb:timed-notifications');
 
         Mail::assertNothingQueued();
-        $this->assertNull(option('uestc_print_ready_deadline_email_sent'));
-        $this->assertNull(option('glasgow_print_ready_deadline_email_sent'));
+        $this->assertNull(option('print_ready_deadline_email_sent'));
     }
 
     /** @test */
@@ -728,8 +633,7 @@ class TimedNotificationsTest extends TenantTestCase
         option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
 
-        option(['glasgow_print_ready_deadline' => now()->subDay()->format('Y-m-d')]);
-        option(['teaching_office_contact_glasgow' => 'glasgow@example.com']);
+        option(['print_ready_deadline' => now()->subDay()->format('Y-m-d')]);
 
         $this->artisan('examdb:timed-notifications');
         $this->artisan('examdb:timed-notifications');
@@ -738,7 +642,7 @@ class TimedNotificationsTest extends TenantTestCase
         Mail::assertQueued(PrintReadyDeadlinePassedMail::class, function ($mail) {
             return $mail->hasTo('glasgow@example.com');
         });
-        $this->assertNotNull(option('glasgow_print_ready_deadline_email_sent'));
+        $this->assertNotNull(option('print_ready_deadline_email_sent'));
     }
 
     /** @test */
@@ -749,10 +653,9 @@ class TimedNotificationsTest extends TenantTestCase
         option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
 
-        option(['glasgow_external_moderation_deadline' => now()->format('Y-m-d')]);
-        option(['teaching_office_contact_glasgow' => 'glasgow@example.com']);
+        option(['external_moderation_deadline' => now()->format('Y-m-d')]);
 
-        $this->assertNull(option('glasgow_external_moderation_deadline_email_sent'));
+        $this->assertNull(option('external_moderation_deadline_email_sent'));
 
         $this->artisan('examdb:timed-notifications');
 
@@ -760,29 +663,7 @@ class TimedNotificationsTest extends TenantTestCase
         Mail::assertQueued(ExternalModerationDeadlineMail::class, function ($mail) {
             return $mail->hasTo('glasgow@example.com');
         });
-        $this->assertNotNull(option('glasgow_external_moderation_deadline_email_sent'));
-    }
-
-    /** @test */
-    public function email_is_sent_to_uestc_teaching_office_about_externals_deadline()
-    {
-        Mail::fake();
-        option(['start_semester_1' => now()->format('Y-m-d')]);
-        option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
-        option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
-
-        option(['uestc_external_moderation_deadline' => now()->format('Y-m-d')]);
-        option(['teaching_office_contact_uestc' => 'uestc@example.com']);
-
-        $this->assertNull(option('uestc_external_moderation_deadline_email_sent'));
-
-        $this->artisan('examdb:timed-notifications');
-
-        Mail::assertQueued(ExternalModerationDeadlineMail::class, 1);
-        Mail::assertQueued(ExternalModerationDeadlineMail::class, function ($mail) {
-            return $mail->hasTo('uestc@example.com');
-        });
-        $this->assertNotNull(option('uestc_external_moderation_deadline_email_sent'));
+        $this->assertNotNull(option('external_moderation_deadline_email_sent'));
     }
 
     /** @test */
@@ -793,15 +674,14 @@ class TimedNotificationsTest extends TenantTestCase
         option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
 
-        option(['uestc_external_moderation_deadline' => now()->addDays(14)->format('Y-m-d')]);
-        option(['teaching_office_contact_uestc' => 'uestc@example.com']);
+        option(['external_moderation_deadline' => now()->addDays(14)->format('Y-m-d')]);
 
-        $this->assertNull(option('uestc_external_moderation_deadline_email_sent'));
+        $this->assertNull(option('external_moderation_deadline_email_sent'));
 
         $this->artisan('examdb:timed-notifications');
 
-        Mail::assertNothingQueued(ExternalModerationDeadlineMail::class, 1);
-        $this->assertNull(option('uestc_external_moderation_deadline_email_sent'));
+        Mail::assertNotQueued(ExternalModerationDeadlineMail::class);
+        $this->assertNull(option('external_moderation_deadline_email_sent'));
     }
 
     /** @test */
@@ -812,8 +692,8 @@ class TimedNotificationsTest extends TenantTestCase
         option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
 
-        option(['uestc_external_moderation_deadline' => now()->format('Y-m-d')]);
-        option(['teaching_office_contact_uestc' => 44]);
+        option(['external_moderation_deadline' => now()->format('Y-m-d')]);
+        option(['teaching_office_contact' => 44]);
 
         $this->artisan('examdb:timed-notifications');
 

@@ -42,4 +42,6 @@ return [
      * used by the Activity model shipped with this package.
      */
     'table_name' => 'activity_log',
+
+    'database_connection' => null,  // use the default - see https://tenancyforlaravel.com/docs/v3/integrations/spatie
 ];
