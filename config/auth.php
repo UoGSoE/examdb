@@ -41,6 +41,11 @@ return [
             'provider' => 'ldapusers',
         ],
 
+        'sysadmin' => [
+            'driver' => 'session',
+            'provider' => 'ldapsysadmins',
+        ],
+
         'api' => [
             'driver' => 'token',
             'provider' => 'users',
@@ -74,6 +79,11 @@ return [
         'ldapusers' => [
             'driver' => 'ldapeloquent',
             'model' => App\User::class,
+        ],
+
+        'ldapsysadmins' => [
+            'driver' => 'ldapeloquent',
+            'model' => App\Sysadmin::class,
         ],
 
         // 'users' => [

@@ -5,6 +5,7 @@ docker run --rm -p 3333:3306 \
   -e MYSQL_USER=homestead \
   -e MYSQL_PASSWORD=secret \
   -e MYSQL_DATABASE=examdb_test \
+  --name examdb_test_sql \
   --ulimit nofile=65000:65000 \
   --tmpfs=/var/lib/mysql/:rw,noexec,nosuid,size=600m \
   --tmpfs=/tmp/:rw,noexec,nosuid,size=50m \
