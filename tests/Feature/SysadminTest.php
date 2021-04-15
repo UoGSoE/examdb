@@ -20,7 +20,7 @@ class SysadminTest extends TestCase
     {
         $user = Sysadmin::factory()->create(['is_sysadmin' => false]);
 
-        $response = $this->actingAs($user)->get(route('sysadmin.dashboard'));
+        $response = $this->actingAs($user, 'sysadmin')->get(route('sysadmin.dashboard'));
 
         $response->assertForbidden();
     }
@@ -34,7 +34,7 @@ class SysadminTest extends TestCase
         $tenant2 = Tenant::create(['id' => 'test2']);
         $tenant2->domains()->create(['domain' => 'test2.examdb.test']);
 
-        $response = $this->actingAs($admin)->get(route('sysadmin.dashboard'));
+        $response = $this->actingAs($admin, 'sysadmin')->get(route('sysadmin.dashboard'));
 
         $response->assertSee('test1.examdb.test');
         $response->assertSee('test2.examdb.test');
