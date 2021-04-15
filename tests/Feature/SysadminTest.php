@@ -48,12 +48,12 @@ class SysadminTest extends TestCase
 
         Livewire::actingAs($admin)->test('tenant-editor')
             ->assertSee('Add new school')
-            ->set('newName', 'foobar')
+            ->set('newName', 'foo')
             ->call('createNew')
             ->assertHasNoErrors();
 
         tap(Tenant::first(), function ($tenant) {
-            $this->assertEquals('foobar.examdb.test', $tenant->domains()->first()->domain);
+            $this->assertEquals('foo.examdb.test', $tenant->domains()->first()->domain);
         });
     }
 
