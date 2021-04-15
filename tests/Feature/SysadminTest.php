@@ -49,12 +49,44 @@ class SysadminTest extends TestCase
         Livewire::actingAs($admin)->test('tenant-editor')
             ->assertSee('Add new school')
             ->set('newName', 'foo')
+            ->set('newUsername', 'fred')
+            ->set('newEmail', 'fred@example.com')
+            ->set('newForenames', 'Fred Regina')
+            ->set('newSurname', 'Smith')
             ->call('createNew')
             ->assertHasNoErrors();
 
         tap(Tenant::first(), function ($tenant) {
             $this->assertEquals('foo.examdb.test', $tenant->domains()->first()->domain);
+            $tenant->run(function ($tenant) {
+                $user = User::first();
+                $this->assertEquals('fred', $user->username);
+                $this->assertEquals('fred@example.com', $user->email);
+                $this->assertEquals('Fred Regina', $user->forenames);
+                $this->assertEquals('Smith', $user->surname);
+                $this->assertTrue($user->isAdmin());
+            });
         });
+    }
+
+    /** @test */
+    public function sysadmins_cant_create_a_new_tenant_domain_with_an_existing_name()
+    {
+        $admin = Sysadmin::factory()->create();
+        $existingTenant = Tenant::create(['id' => 'spaff']);
+        $existingTenant->domains()->create(['domain' => 'spaffy.examdb.test']);
+
+        Livewire::actingAs($admin)->test('tenant-editor')
+            ->assertSee('Add new school')
+            ->set('newName', 'spaffy')
+            ->set('newUsername', 'fred')
+            ->set('newEmail', 'fred@example.com')
+            ->set('newForenames', 'Fred Regina')
+            ->set('newSurname', 'Smith')
+            ->call('createNew')
+            ->assertHasErrors('tempNewName');
+
+        $this->assertEquals(1, Tenant::count());
     }
 
     /** @test */
@@ -68,7 +100,7 @@ class SysadminTest extends TestCase
             ->assertDontSee('Save')
             ->call('editDomain', $tenant->id)
             ->assertSee('Save')
-            ->set('editingDomainName', 'whizzo')
+            ->set('editingDomainName', 'whizzo.examdb.test')
             ->call('saveDomain')
             ->assertHasNoErrors();
 
