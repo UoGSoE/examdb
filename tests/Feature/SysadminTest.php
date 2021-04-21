@@ -56,8 +56,9 @@ class SysadminTest extends TestCase
             ->call('createNew')
             ->assertHasNoErrors();
 
-        tap(Tenant::first(), function ($tenant) {
+        tap(Tenant::first(), function ($tenant) use ($admin) {
             $this->assertEquals('foo.examdb.test', $tenant->domains()->first()->domain);
+            $this->assertEquals($admin->username, $tenant->created_by);
             $tenant->run(function ($tenant) {
                 $user = User::first();
                 $this->assertEquals('fred', $user->username);

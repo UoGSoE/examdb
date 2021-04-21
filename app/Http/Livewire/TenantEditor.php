@@ -43,22 +43,20 @@ class TenantEditor extends Component
             'newSurname' => 'required|string',
         ]);
 
-        // TODO when creating the tenant - set the initial guid rather than this inline-create-user
-        // use the BootstrapNewTenant to pull the guid out and create the user then - that way
-        // it happens after the database tables etc have all been created.
-        $tenant = Tenant::create(['id' => $this->newName]);
-        $tenant->domains()->create(['domain' => $this->getDomainString($this->newName)]);
-        $tenant->run(function ($tenant) {
-            User::create([
+        // see BootstrapNewTenant for what happens when the tenant is created
+        $tenant = Tenant::create([
+            'id' => $this->newName,
+            'created_by' => auth()->user()->username,
+            'initial_user' => [
                 'username' => strtolower(trim($this->newUsername)),
                 'email' => $this->newEmail,
-                'password' => bcrypt(Str::random(64)),
                 'forenames' => $this->newForenames,
                 'surname' => $this->newSurname,
-                'is_admin' => true,
-                'is_staff' => true,
-            ]);
-        });
+            ]
+        ]);
+
+        $tenant->domains()->create(['domain' => $this->getDomainString($this->newName)]);
+
         $this->newName = '';
         $this->newUsername = '';
         $this->newEmail = '';

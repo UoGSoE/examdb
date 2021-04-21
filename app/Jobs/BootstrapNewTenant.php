@@ -2,7 +2,9 @@
 
 namespace App\Jobs;
 
+use App\User;
 use App\Tenant;
+use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -45,6 +47,18 @@ class BootstrapNewTenant implements ShouldQueue
             option(['start_semester_1' => now()->subMonths(1)->format('Y-m-d')]);
             option(['start_semester_2' => now()->addMonths(3)->format('Y-m-d')]);
             option(['start_semester_3' => now()->addMonths(9)->format('Y-m-d')]);
+            if ($tenant->initial_user) {
+                User::create([
+                    'username' => $tenant->initial_user['username'],
+                    'email' => $tenant->initial_user['email'],
+                    'password' => bcrypt(Str::random(64)),
+                    'forenames' => $tenant->initial_user['forenames'],
+                    'surname' => $tenant->initial_user['surname'],
+                    'is_admin' => true,
+                    'is_staff' => true,
+                ]);
+                $tenant->initial_user = [];
+            }
         });
     }
 }
