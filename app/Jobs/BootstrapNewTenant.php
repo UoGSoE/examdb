@@ -58,6 +58,7 @@ class BootstrapNewTenant implements ShouldQueue
                     'is_staff' => true,
                 ]);
                 $tenant->initial_user = [];
+                $tenant->save();
             }
         });
     }

@@ -66,6 +66,7 @@ class SysadminTest extends TestCase
                 $this->assertEquals('Fred Regina', $user->forenames);
                 $this->assertEquals('Smith', $user->surname);
                 $this->assertTrue($user->isAdmin());
+                $this->assertEquals([], $tenant->initial_user);
             });
         });
     }
