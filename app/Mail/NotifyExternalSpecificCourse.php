@@ -14,14 +14,16 @@ class NotifyExternalSpecificCourse extends Mailable implements ShouldQueue
 
     public $course;
 
+    public $courseId;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Course $course)
+    public function __construct(int $courseId)
     {
-        $this->course = $course;
+        $this->courseId = $courseId;
     }
 
     /**
@@ -31,6 +33,7 @@ class NotifyExternalSpecificCourse extends Mailable implements ShouldQueue
      */
     public function build()
     {
+        $this->course = Course::findOrFail($this->courseId);
         return $this->markdown('emails.notify_external_specific_course');
     }
 }

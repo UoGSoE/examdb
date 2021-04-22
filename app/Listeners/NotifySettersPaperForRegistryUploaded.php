@@ -37,7 +37,7 @@ class NotifySettersPaperForRegistryUploaded
             ->each(
                 fn ($email) => Mail::to($email)->later(
                     now()->addSeconds(rand(1, 200)),
-                    new PaperForRegistryUploaded($event->paper->course)
+                    new PaperForRegistryUploaded($event->paper->course->id)
                 )
             );
     }

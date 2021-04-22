@@ -15,6 +15,8 @@ class SetterHasUpdatedTheChecklist extends Mailable
 
     public $course;
 
+    public $couseId;
+
     public $deadline;
 
     /**
@@ -22,9 +24,9 @@ class SetterHasUpdatedTheChecklist extends Mailable
      *
      * @return void
      */
-    public function __construct(Course $course, string $deadline)
+    public function __construct(int $courseId, string $deadline)
     {
-        $this->course = $course;
+        $this->courseId = $courseId;
         $this->deadline = $deadline;
     }
 
@@ -35,6 +37,7 @@ class SetterHasUpdatedTheChecklist extends Mailable
      */
     public function build()
     {
+        $this->course = Course::findOrFail($this->courseId);
         return $this->markdown('emails.setter_has_updated_the_checklist');
     }
 }

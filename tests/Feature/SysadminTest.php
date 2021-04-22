@@ -2,14 +2,15 @@
 
 namespace Tests\Feature;
 
-use App\Sysadmin;
-use App\Tenant;
 use App\User;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Livewire\Livewire;
+use App\Tenant;
+use App\Sysadmin;
 use Tests\TestCase;
+use Livewire\Livewire;
+use Illuminate\Support\Str;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class SysadminTest extends TestCase
 {
@@ -95,8 +96,8 @@ class SysadminTest extends TestCase
     public function sysadmins_can_edit_a_domain()
     {
         $admin = Sysadmin::factory()->create();
-        $tenant = Tenant::create(['id' => 'foobar']);
-        $tenant->domains()->create(['domain' => 'foobar.examdb.test']);
+        $tenant = Tenant::create(['id' => 'glitter']);
+        $tenant->domains()->create(['domain' => 'glitter.examdb.test']);
 
         Livewire::actingAs($admin)->test('tenant-editor')
             ->assertDontSee('Save')
@@ -111,4 +112,48 @@ class SysadminTest extends TestCase
         });
     }
 
+    /** @test */
+    public function sysadmins_cant_edit_a_domain_to_have_the_same_name_as_another()
+    {
+        $admin = Sysadmin::factory()->create();
+        $tenant1 = Tenant::create(['id' => 'foobar']);
+        $tenant1->domains()->create(['domain' => 'salami.examdb.test']);
+        $tenant2 = Tenant::create(['id' => 'blahblah']);
+        $tenant2->domains()->create(['domain' => 'blahblah.examdb.test']);
+
+        Livewire::actingAs($admin)->test('tenant-editor')
+            ->assertDontSee('Save')
+            ->call('editDomain', $tenant1->id)
+            ->assertSee('Save')
+            ->set('editingDomainName', 'blahblah.examdb.test')
+            ->call('saveDomain')
+            ->assertHasErrors('editingDomainName')
+            ->assertSee('The editing domain name has already been taken');
+
+        $this->assertEquals('salami.examdb.test', $tenant1->domains()->first()->domain);
+    }
+
+    /** @test */
+    public function sysadmins_can_log_into_any_domain_as_the_first_admin_user()
+    {
+        $admin = Sysadmin::factory()->create();
+        $tenant1 = Tenant::create(['id' => 'stilton']);
+        $tenant1->domains()->create(['domain' => 'stilton.examdb.test']);
+        $tenant1->run(function ($tenant) {
+            User::create([
+                'username' => 'jenny1x',
+                'email' => 'jenny@example.com',
+                'password' => bcrypt(Str::random(64)),
+                'forenames' => 'Jenny',
+                'surname' => 'Smith',
+                'is_admin' => true,
+                'is_staff' => true,
+            ]);
+        });
+
+        $component = Livewire::actingAs($admin)->test('tenant-editor')
+            ->call('loginToTenant', $tenant1->id);
+
+        $this->assertMatchesRegularExpression('|stilton.examdb.test/sysadmin/impersonate/.*|', $component->payload['effects']['redirect']);
+    }
 }

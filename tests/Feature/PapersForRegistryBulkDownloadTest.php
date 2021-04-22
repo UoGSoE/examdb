@@ -88,7 +88,7 @@ class PapersForRegistryBulkDownloadTest extends TenantTestCase
         }
         $admin = create(User::class, ['is_admin' => true]);
 
-        ExportPapersForRegistry::dispatchNow($admin);
+        ExportPapersForRegistry::dispatchNow($admin->id);
 
         Storage::disk('exampapers')->assertExists('registry/papers_'.$admin->id.'.zip');
         $this->assertEmpty(glob(sys_get_temp_dir().'/'.config('exampapers.registry_temp_file_prefix').'*'));

@@ -35,4 +35,12 @@ class RemoveChecklistZip implements ShouldQueue
         Storage::disk('exampapers')->delete($this->filename);
         activity()->log('Automatically removed checklist zip '.$this->filename);
     }
+
+    public function tags()
+    {
+        return [
+            'tenant:' . tenant('id'),
+            'filename:' . $this->filename,
+        ];
+    }
 }

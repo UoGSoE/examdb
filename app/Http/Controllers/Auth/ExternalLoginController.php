@@ -21,7 +21,7 @@ class ExternalLoginController extends Controller
         $user = User::where('username', '=', strtolower($request->email))->first();
 
         if ($user) {
-            Mail::to($user)->queue(new ExternalLoginUrl($user));
+            Mail::to($user)->queue(new ExternalLoginUrl($user->id));
             activity()->causedBy($user)->log('External asked for login url');
         } else {
             activity()->log('External asked for login url - but no matching email address '.$request->email);

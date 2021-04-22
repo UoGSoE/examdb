@@ -14,14 +14,16 @@ class ExternalLoginUrl extends Mailable
 
     public $user;
 
+    public $userId;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(User $user)
+    public function __construct(int $userId)
     {
-        $this->user = $user;
+        $this->userId = $userId;
     }
 
     /**
@@ -31,6 +33,7 @@ class ExternalLoginUrl extends Mailable
      */
     public function build()
     {
+        $this->user = User::findOrFail($this->userId);
         return $this->markdown('emails.external.login');
     }
 }

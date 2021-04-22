@@ -39,6 +39,6 @@ class NotifyTeachingOfficeThatExternalHasCommented
             abort(500, 'No contact email address found');
         }
 
-        Mail::to($contact)->queue(new NotifyTeachingOfficeExternalHasCommented($event->paper->course));
+        Mail::to($contact)->queue(new NotifyTeachingOfficeExternalHasCommented($event->paper->course->id));
     }
 }

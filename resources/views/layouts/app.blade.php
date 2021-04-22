@@ -54,7 +54,6 @@
                 </form>
             </div>
             @endImpersonating
-
         </section>
 
         <div id="footer" class="footer">

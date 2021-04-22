@@ -14,11 +14,13 @@ class NotifyModeratorAboutUnapproval extends Mailable implements ShouldQueue
 
     public $course;
 
+    public $courseId;
+
     public $category;
 
-    public function __construct(Course $course, string $category)
+    public function __construct(int $courseId, string $category)
     {
-        $this->course = $course;
+        $this->courseId = $courseId;
         $this->category = $category;
     }
 
@@ -29,6 +31,7 @@ class NotifyModeratorAboutUnapproval extends Mailable implements ShouldQueue
      */
     public function build()
     {
+        $this->course = Course::findOrFail($this->courseId);
         return $this->markdown('emails.notify_moderator_unapproved');
     }
 }

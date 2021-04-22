@@ -35,4 +35,12 @@ class RemoveRegistryZip implements ShouldQueue
         Storage::disk('exampapers')->delete($this->filename);
         activity()->log('Automatically removed registry zip '.$this->filename);
     }
+
+    public function tags()
+    {
+        return [
+            'tenant:' . tenant('id'),
+            'filename:' . $this->filename,
+        ];
+    }
 }

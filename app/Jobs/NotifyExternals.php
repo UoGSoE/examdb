@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Course;
 use Carbon\Carbon;
 use App\Discipline;
+use RuntimeException;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Queue\SerializesModels;
@@ -17,16 +18,16 @@ class NotifyExternals implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $area;
+    public $disciplineTitle;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(string $area)
+    public function __construct(string $disciplineTitle)
     {
-        $this->area = $area;
+        $this->disciplineTitle = $disciplineTitle;
     }
 
     /**
@@ -36,11 +37,11 @@ class NotifyExternals implements ShouldQueue
      */
     public function handle()
     {
-        if (! Discipline::all()->pluck('title')->contains($this->area)) {
-            abort(500, 'Invalid area given : '.$this->area);
+        if (! Discipline::all()->pluck('title')->contains($this->disciplineTitle)) {
+            abort(500, 'Invalid disciplineTitle given : '.$this->disciplineTitle);
         }
 
-        $discipline = Discipline::where('title', '=', $this->area)->first();
+        $discipline = Discipline::where('title', '=', $this->disciplineTitle)->first();
         $emails = Course::forDiscipline($discipline)
                     ->forSemester($this->getCurrentSemester())
                     ->externalsNotNotified()
@@ -78,5 +79,13 @@ class NotifyExternals implements ShouldQueue
         }
 
         throw new RuntimeException('Could not figure out semester');
+    }
+
+    public function tags()
+    {
+        return [
+            'tenant:' . tenant('id'),
+            'discipline:' . $this->disciplineTitle,
+        ];
     }
 }

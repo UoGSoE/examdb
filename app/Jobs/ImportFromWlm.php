@@ -18,14 +18,16 @@ class ImportFromWlm implements ShouldQueue
 
     public $user;
 
+    public $userId;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(User $user)
+    public function __construct(int $userId)
     {
-        $this->user = $user;
+        $this->userId = $userId;
     }
 
     /**
@@ -35,10 +37,20 @@ class ImportFromWlm implements ShouldQueue
      */
     public function handle(WlmClientInterface $client)
     {
+        $this->user = User::find($this->userId);
+
         $importer = new WlmImporter($client);
 
         $importer->run();
 
         event(new WlmImportComplete($this->user));
+    }
+
+    public function tags()
+    {
+        return [
+            'tenant:' . tenant('id'),
+            'user:' . $this->userId,
+        ];
     }
 }

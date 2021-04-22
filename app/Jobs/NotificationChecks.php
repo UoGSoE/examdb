@@ -32,6 +32,8 @@ class NotificationChecks implements ShouldQueue
 
     public $tenant;
 
+    public $tenantId;
+
     public $exceptions = [];
 
     /**
@@ -39,9 +41,9 @@ class NotificationChecks implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(Tenant $tenant)
+    public function __construct($tenantId)
     {
-        $this->tenant = $tenant;
+        $this->tenantId = $tenantId;
     }
 
     /**
@@ -51,9 +53,17 @@ class NotificationChecks implements ShouldQueue
      */
     public function handle()
     {
+        $this->tenant = Tenant::findOrFail($this->tenantId);
         $this->tenant->run(function ($tenant) {
             $this->runAllNotifcationChecks();
         });
+    }
+
+    public function tags()
+    {
+        return [
+            'tenant:' . $this->tenantId,
+        ];
     }
 
     public function runAllNotifcationChecks()

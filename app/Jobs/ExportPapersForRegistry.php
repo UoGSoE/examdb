@@ -20,14 +20,17 @@ class ExportPapersForRegistry implements ShouldQueue
 
     public $user;
 
+    public $userId;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(User $user)
+    public function __construct(int $userId)
     {
-        $this->user = $user;
+        ray($userId);
+        $this->userId = $userId;
     }
 
     /**
@@ -37,8 +40,18 @@ class ExportPapersForRegistry implements ShouldQueue
      */
     public function handle()
     {
+        $this->user = User::find($this->userId);
+
         $link = (new PaperExporter(Paper::PAPER_FOR_REGISTRY, $this->user))->export();
 
         Mail::to($this->user->email)->queue(new RegistryPapersExported($link));
+    }
+
+    public function tags()
+    {
+        return [
+            'tenant:' . tenant('id'),
+            'user:' . $this->userId,
+        ];
     }
 }

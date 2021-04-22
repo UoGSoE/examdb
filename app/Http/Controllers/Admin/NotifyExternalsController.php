@@ -43,7 +43,7 @@ class NotifyExternalsController extends Controller
     public function course(Course $course)
     {
         $course->externals->each(function ($external) use ($course) {
-            Mail::to($external->email)->queue(new NotifyExternalSpecificCourse($course));
+            Mail::to($external->email)->queue(new NotifyExternalSpecificCourse($course->id));
         });
 
         $course->markExternalNotified();

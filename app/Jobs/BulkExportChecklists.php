@@ -18,14 +18,16 @@ class BulkExportChecklists implements ShouldQueue
 
     public $user;
 
+    public $userId;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(User $user)
+    public function __construct(int $userId)
     {
-        $this->user = $user;
+        $this->userId = $userId;
     }
 
     /**
@@ -35,8 +37,17 @@ class BulkExportChecklists implements ShouldQueue
      */
     public function handle()
     {
+        $this->user = User::find($this->userId);
         $link = (new ChecklistExporter($this->user))->export();
 
         Mail::to($this->user->email)->queue(new ChecklistsReadyToDownload($link));
+    }
+
+    public function tags()
+    {
+        return [
+            'tenant:' . tenant('id'),
+            'user:' . $this->userId,
+        ];
     }
 }

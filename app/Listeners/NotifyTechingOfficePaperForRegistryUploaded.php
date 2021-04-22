@@ -38,6 +38,6 @@ class NotifyTechingOfficePaperForRegistryUploaded
             // @TODO something better...
             abort(500, 'No contact email address found');
         }
-        Mail::to($contact)->queue(new PaperForRegistry($event->paper->course));
+        Mail::to($contact)->queue(new PaperForRegistry($event->paper->course->id));
     }
 }

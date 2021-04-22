@@ -16,9 +16,13 @@ class NotifySetterAboutApproval extends Mailable
 
     public $course;
 
+    public $courseId;
+
     public $category;
 
     public $user;
+
+    public $userId;
 
     public $userType;
 
@@ -27,12 +31,11 @@ class NotifySetterAboutApproval extends Mailable
      *
      * @return void
      */
-    public function __construct(Course $course, string $category, User $user)
+    public function __construct(int $courseId, string $category, int $userId)
     {
-        $this->course = $course;
+        $this->courseId = $courseId;
         $this->category = $category;
-        $this->user = $user;
-        $this->userType = $user->isModeratorFor($course) ? 'moderator' : 'external';
+        $this->userId = $userId;
     }
 
     /**
@@ -42,6 +45,9 @@ class NotifySetterAboutApproval extends Mailable
      */
     public function build()
     {
+        $this->course = Course::findOrFail($this->courseId);
+        $this->user = User::findOrFail($this->userId);
+        $this->userType = $this->user->isModeratorFor($this->course) ? 'moderator' : 'external';
         return $this->markdown('emails.notify_moderator_approved');
     }
 }

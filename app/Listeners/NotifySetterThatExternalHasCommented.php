@@ -33,7 +33,7 @@ class NotifySetterThatExternalHasCommented
         }
 
         $event->paper->course->setters->each(function ($setter) use ($event) {
-            Mail::to($setter->email)->queue(new NotifySetterAboutExternalComments($event->paper->course));
+            Mail::to($setter->email)->queue(new NotifySetterAboutExternalComments($event->paper->course->id));
         });
     }
 }

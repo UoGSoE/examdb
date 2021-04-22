@@ -119,4 +119,15 @@ class TenantEditor extends Component
             $this->newSurname &&
             $this->newForenames;
     }
+
+    public function loginToTenant($tenantId)
+    {
+        // see https://tenancyforlaravel.com/docs/v3/features/user-impersonation for how this works
+        $tenant = Tenant::findOrFail($tenantId);
+        $admin = $tenant->run(fn ($tenant) => User::where('is_admin', '=', true)->firstOrFail());
+        $domain = $tenant->domains()->first()->domain;
+        $token = tenancy()->impersonate($tenant, $admin->id, '/', 'web');
+
+        return redirect("https://{$domain}/sysadmin/impersonate/{$token->token}");
+    }
 }

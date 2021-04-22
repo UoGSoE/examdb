@@ -6,6 +6,7 @@
                 <th width="5%"></th>
                 <th>Domain</th>
                 <th>Created</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -46,6 +47,13 @@
                     </td>
                     <td>
                         {{ $tenant->created_at->format('d/m/Y H:i') }}
+                    </td>
+                    <td>
+                        <button class="button is-small" wire:click.prevent="loginToTenant('{{ $tenant->id }}')" title="Log into {{ $tenant->id }} as an admin">
+                            <span class="icon is-small">
+                                <i class="fas fa-user-secret"></i>
+                            </span>
+                        </button>
                     </td>
                 </tr>
             @endforeach

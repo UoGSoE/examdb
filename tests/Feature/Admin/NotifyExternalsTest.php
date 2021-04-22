@@ -38,7 +38,7 @@ class NotifyExternalsTest extends TenantTestCase
         $response->assertSessionDoesntHaveErrors();
 
         Bus::assertDispatched(NotifyExternals::class, function ($job) use ($discipline) {
-            return $job->area === $discipline->title;
+            return $job->disciplineTitle === $discipline->title;
         });
     }
 

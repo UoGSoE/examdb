@@ -40,7 +40,7 @@ class TimedNotifications extends Command
 
     public function handle()
     {
-        Tenant::all()->each(fn ($tenant) => NotificationChecks::dispatch($tenant));
+        Tenant::all()->each(fn ($tenant) => NotificationChecks::dispatch($tenant->id));
     }
 
     public function runAllNotifcationChecks(Tenant $tenant)

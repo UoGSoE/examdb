@@ -197,7 +197,7 @@ class Course extends Model
             }
 
             $this->moderators->pluck('email')->each(function ($email) use ($deadline) {
-                Mail::to($email)->queue(new SetterHasUpdatedTheChecklist($this, $deadline));
+                Mail::to($email)->queue(new SetterHasUpdatedTheChecklist($this->id, $deadline));
             });
 
             $flashMessage = 'Checklist Saved - moderators notified';
@@ -205,14 +205,14 @@ class Course extends Model
 
         if (auth()->check() && auth()->user()->isModeratorFor($this)) {
             $this->setters->pluck('email')->each(function ($email) {
-                Mail::to($email)->queue(new ModeratorHasUpdatedTheChecklist($this));
+                Mail::to($email)->queue(new ModeratorHasUpdatedTheChecklist($this->id));
             });
             $flashMessage = 'Checklist Saved - setters notified';
         }
 
         if (auth()->check() && auth()->user()->isExternalFor($this)) {
             $this->setters->pluck('email')->each(function ($email) {
-                Mail::to($email)->queue(new ExternalHasUpdatedTheChecklist($this));
+                Mail::to($email)->queue(new ExternalHasUpdatedTheChecklist($this->id));
             });
         }
 

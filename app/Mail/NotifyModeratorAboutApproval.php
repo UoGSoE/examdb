@@ -15,16 +15,19 @@ class NotifyModeratorAboutApproval extends Mailable implements ShouldQueue
 
     public $course;
 
+    public $courseId;
+
     public $category;
 
-    public function __construct(Course $course, string $category)
+    public function __construct(int $courseId, string $category)
     {
-        $this->course = $course;
+        $this->courseId = $courseId;
         $this->category = $category;
     }
 
     public function build()
     {
+        $this->courseId = Course::findOrFail($this->courseId);
         return $this->markdown('emails.notify_setter_approved');
     }
 }

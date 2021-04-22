@@ -10,7 +10,7 @@ class ExportPapersForRegistryController extends Controller
 {
     public function store()
     {
-        ExportPapersForRegistry::dispatch(request()->user())->onQueue('long-running-queue');
+        ExportPapersForRegistry::dispatch(request()->user()->id)->onQueue('long-running-queue');
 
         activity()->causedBy(request()->user())->log('Created a ZIP of the papers for registry');
 

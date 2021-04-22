@@ -15,14 +15,16 @@ class ChecklistUpdated extends Mailable
 
     public $checklist;
 
+    public $checklistId;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(PaperChecklist $checklist)
+    public function __construct(int $checklistId)
     {
-        $this->checklist = $checklist;
+        $this->checklistId = $checklistId;
     }
 
     /**
@@ -32,6 +34,7 @@ class ChecklistUpdated extends Mailable
      */
     public function build()
     {
+        $this->checklist = PaperChecklist::findOrFail($this->checklistId);
         return $this->markdown('emails.checklist_updated');
     }
 }

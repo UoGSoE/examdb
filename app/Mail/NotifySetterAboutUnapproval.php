@@ -15,6 +15,8 @@ class NotifySetterAboutUnapproval extends Mailable
 
     public $course;
 
+    public $courseId;
+
     public $category;
 
     /**
@@ -22,9 +24,9 @@ class NotifySetterAboutUnapproval extends Mailable
      *
      * @return void
      */
-    public function __construct(Course $course, string $category)
+    public function __construct(int $courseId, string $category)
     {
-        $this->course = $course;
+        $this->courseId = $courseId;
         $this->category = $category;
     }
 
@@ -35,6 +37,7 @@ class NotifySetterAboutUnapproval extends Mailable
      */
     public function build()
     {
+        $this->course = Course::findOrFail($this->courseId);
         return $this->markdown('emails.notify_setter_unapproved');
     }
 }
