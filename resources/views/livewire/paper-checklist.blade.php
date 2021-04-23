@@ -66,9 +66,8 @@
                 </div>
             </div>
 
-@if ($course->isUestc())
 <div class="field">
-    <label for="" class="label">Please confirm that you have reviewed the Exam Assessment and Continuous Assessment Handbooks for this task.</label>
+    <label for="" class="label">Please confirm that you have reviewed the Exam Assessment and Continuous Assessment Handbooks for this task (UESTC Only).</label>
     <p class="control is-expanded">
         <div class="select is-fullwidth">
             <select wire:model="checklist.fields.setter_reviews">
@@ -78,7 +77,6 @@
         </div>
     </p>
 </div>
-@endif
 
 <div class="field">
     <label for="" class="label">Assessment title and number (UESTC only)</label>

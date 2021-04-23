@@ -106,12 +106,6 @@ class Course extends Model
         return $query->where('external_notified', '=', false);
     }
 
-    public function scopeForArea($query, $area)
-    {
-        $codePrefix = ($area == 'uestc' ? 'UESTC' : 'ENG');
-        return $query->where('code', 'like', $codePrefix.'%');
-    }
-
     public function scopeForDiscipline($query, $discipline)
     {
         return $query->where('discipline_id', '=', $discipline->id);
@@ -189,8 +183,7 @@ class Course extends Model
         $flashMessage = 'Checklist Saved';
 
         if (auth()->check() && auth()->user()->isSetterFor($this) && $checklist->shouldNotifyModerator()) {
-            $area = str_contains($this, 'ENG') ? 'glasgow' : 'uestc';
-            $optionName = "{$area}_internal_moderation_deadline";
+            $optionName = "internal_moderation_deadline";
             $deadline = '';
             if (option($optionName)) {
                 $deadline = Carbon::createFromFormat('Y-m-d', option($optionName))->format('d/m/Y');
@@ -517,50 +510,6 @@ class Course extends Model
     public static function findByCode($code)
     {
         return static::withTrashed()->where('code', '=', $code)->first();
-    }
-
-    /**
-     * Create a course based on import data from the WLM.
-     */
-    public static function fromWlmData(array $wlmCourse): self
-    {
-        // TODO mark courses which aren't current as deleted/disabled in this system
-        $code = $wlmCourse['Code'];
-        $title = $wlmCourse['Title'];
-        $disciplineTitle = trim($wlmCourse['Discipline']);
-        $discipline = Discipline::firstOrCreate(['title' => $disciplineTitle]);
-        $course = static::findByCode($code);
-        if (! $course) {
-            $course = new static(['code' => $code]);
-        }
-        $course->is_active = $course->getWlmStatus($wlmCourse);
-        $course->title = $title;
-        $course->discipline()->associate($discipline);
-        $course->save();
-
-        return $course;
-    }
-
-    protected function getWlmStatus($wlmCourse)
-    {
-        if (! array_key_exists('CurrentFlag', $wlmCourse)) {
-            return false;
-        }
-        if ($wlmCourse['CurrentFlag'] === 'Yes') {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function isUestc()
-    {
-        return preg_match('/^UESTC/i', $this->code) === 1;
-    }
-
-    public function getIsUestcAttribute()
-    {
-        return $this->isUestc();
     }
 
     public function isDisabled()

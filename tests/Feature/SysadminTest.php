@@ -27,6 +27,59 @@ class SysadminTest extends TestCase
     }
 
     /** @test */
+    public function we_can_get_to_the_sysadmin_login_page()
+    {
+        $response = $this->get(route('sysadmin.login.show'));
+
+        $response->assertSee('ExamDB Login');
+    }
+
+    /** @test */
+    public function sysadmins_can_log_in()
+    {
+        $this->withoutExceptionHandling();
+        $sysadmin = Sysadmin::factory()->create(['username' => 'servalan', 'password' => bcrypt('swoon')]);
+
+        $response = $this->post(route('sysadmin.login'), [
+            'username' => 'servalan',
+            'password' => 'swoon',
+        ]);
+
+        $response->assertSessionDoesntHaveErrors();
+        $response->assertRedirect(route('sysadmin.dashboard'));
+    }
+
+    /** @test */
+    public function sysadmins_cant_log_in_with_the_wrong_password()
+    {
+        $this->withoutExceptionHandling();
+        $sysadmin = Sysadmin::factory()->create(['username' => 'servalan', 'password' => bcrypt('swoon')]);
+
+        $response = $this->post(route('sysadmin.login'), [
+            'username' => 'servalan',
+            'password' => 'avon',
+        ]);
+
+        $response->assertSessionHasErrors('auth');
+        $response->assertRedirect('/');
+    }
+
+    /** @test */
+    public function regular_users_cant_log_in_even_with_the_right_password()
+    {
+        $this->withoutExceptionHandling();
+        $sysadmin = Sysadmin::factory()->create(['is_sysadmin' => false, 'username' => 'servalan', 'password' => bcrypt('swoon')]);
+
+        $response = $this->post(route('sysadmin.login'), [
+            'username' => 'servalan',
+            'password' => 'swoon',
+        ]);
+
+        $response->assertSessionHasErrors('auth');
+        $response->assertRedirect('/');
+    }
+
+    /** @test */
     public function sysadmins_see_a_list_of_existing_tenants_when_they_login()
     {
         $admin = Sysadmin::factory()->create();
@@ -155,5 +208,28 @@ class SysadminTest extends TestCase
             ->call('loginToTenant', $tenant1->id);
 
         $this->assertMatchesRegularExpression('|stilton.examdb.test/sysadmin/impersonate/.*|', $component->payload['effects']['redirect']);
+    }
+
+    /** @test */
+    public function there_is_an_artisan_command_to_create_a_new_sysadmin()
+    {
+        $this->assertEquals(0, Sysadmin::count());
+
+        $this->artisan('examdb:makesysadmin', [
+            'username' => 'avon',
+            'email' => 'avon@example.com',
+            'surname' => 'Avon',
+            'forename' => 'Kerr',
+        ]);
+
+        $this->assertEquals(1, Sysadmin::count());
+        tap(Sysadmin::first(), function ($sysadmin) {
+            $this->assertEquals('avon', $sysadmin->username);
+            $this->assertEquals('avon@example.com', $sysadmin->email);
+            $this->assertNotNull($sysadmin->password);
+            $this->assertEquals('Avon', $sysadmin->surname);
+            $this->assertEquals('Kerr', $sysadmin->forenames);
+            $this->assertTrue($sysadmin->isSysadmin());
+        });
     }
 }

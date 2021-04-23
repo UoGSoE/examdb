@@ -3,22 +3,12 @@
 
       <form method="POST">
           <div class="field">
-              <label class="label">Glasgow General Teaching Office Email</label>
+              <label class="label">General Teaching Office Email</label>
               <div class="control">
-                  <input class="input" type="email" wire:model.lazy="options.teaching_office_contact_glasgow">
+                  <input class="input" type="email" wire:model.lazy="options.teaching_office_contact">
               </div>
           </div>
-          @error('options.teaching_office_contact_glasgow')
-          <p class="has-text-danger">{{ $message }}</p>
-          @enderror
-
-          <div class="field">
-              <label class="label">UESTC General Teaching Office Email</label>
-              <div class="control">
-                  <input class="input" type="email" wire:model.lazy="options.teaching_office_contact_uestc">
-              </div>
-          </div>
-          @error('options.teaching_office_contact_uestc')
+          @error('options.teaching_office_contact')
           <p class="has-text-danger">{{ $message }}</p>
           @enderror
 

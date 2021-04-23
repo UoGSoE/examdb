@@ -63,22 +63,20 @@ class ArchivePapersTest extends TenantTestCase
         $this->assertTrue($course2->fresh()->isApprovedByExternal('resit'));
         $this->assertTrue($course3->fresh()->isApprovedByModerator('main'));
 
-        $response = $this->actingAs($admin)->post(route('area.papers.archive'), [
-            'area' => 'glasgow',
-        ]);
+        $response = $this->actingAs($admin)->post(route('area.papers.archive'));
 
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
 
         $this->assertTrue($paper1->fresh()->isArchived());
         $this->assertTrue($paper2->fresh()->isArchived());
-        $this->assertFalse($paper3->fresh()->isArchived());
+        $this->assertTrue($paper3->fresh()->isArchived());
         $this->assertTrue($checklist1->fresh()->isArchived());
         $this->assertTrue($checklist2->fresh()->isArchived());
-        $this->assertFalse($checklist3->fresh()->isArchived());
+        $this->assertTrue($checklist3->fresh()->isArchived());
         $this->assertFalse($course1->fresh()->isApprovedByModerator('main'));
         $this->assertFalse($course2->fresh()->isApprovedByExternal('resit'));
-        $this->assertTrue($course3->fresh()->isApprovedByModerator('main'));
+        $this->assertFalse($course3->fresh()->isApprovedByModerator('main'));
     }
 
     /** @test */

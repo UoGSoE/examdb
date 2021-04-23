@@ -13,7 +13,7 @@
             Are you
             <strong>
               <em>sure</em>
-            </strong> you want to archive <em>all</em> papers and checklists for <em>all {{ area }}</em> courses? This
+            </strong> you want to archive <em>all</em> papers and checklists for <em>all</em> courses? This
             <em>cannot</em> be undone!
           </section>
           <footer class="modal-card-foot">
@@ -27,7 +27,6 @@
 </template>
 <script>
 export default {
-  props: ["area"],
   data() {
     return {
         showModal: false,
@@ -36,9 +35,7 @@ export default {
   methods: {
     archivePapers() {
       axios
-        .post(route('area.papers.archive', {
-            area: this.area
-        }))
+        .post(route('area.papers.archive'))
         .then(response => {
           window.location = route('paper.index');
         })

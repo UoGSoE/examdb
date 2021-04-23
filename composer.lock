@@ -127,16 +127,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.178.6",
+            "version": "3.178.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "0aa83b522d5ffa794c02e7411af87a0e241a3082"
+                "reference": "9443aecbf56eb43e0c7a409494ae4c09f4cebf5f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/0aa83b522d5ffa794c02e7411af87a0e241a3082",
-                "reference": "0aa83b522d5ffa794c02e7411af87a0e241a3082",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/9443aecbf56eb43e0c7a409494ae4c09f4cebf5f",
+                "reference": "9443aecbf56eb43e0c7a409494ae4c09f4cebf5f",
                 "shasum": ""
             },
             "require": {
@@ -211,9 +211,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.178.6"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.178.7"
             },
-            "time": "2021-04-19T18:13:17+00:00"
+            "time": "2021-04-21T18:37:31+00:00"
         },
         {
             "name": "barryvdh/laravel-snappy",
@@ -4631,16 +4631,16 @@
         },
         {
             "name": "stancl/tenancy",
-            "version": "v3.4.3",
+            "version": "v3.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stancl/tenancy.git",
-                "reference": "0d14911538d190c61787b3066137d66ce1cceaa1"
+                "reference": "54a33f93a85a5e0a4d53ac48fabacd8ebb716eec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stancl/tenancy/zipball/0d14911538d190c61787b3066137d66ce1cceaa1",
-                "reference": "0d14911538d190c61787b3066137d66ce1cceaa1",
+                "url": "https://api.github.com/repos/stancl/tenancy/zipball/54a33f93a85a5e0a4d53ac48fabacd8ebb716eec",
+                "reference": "54a33f93a85a5e0a4d53ac48fabacd8ebb716eec",
                 "shasum": ""
             },
             "require": {
@@ -4698,7 +4698,7 @@
             ],
             "support": {
                 "issues": "https://github.com/stancl/tenancy/issues",
-                "source": "https://github.com/stancl/tenancy/tree/v3.4.3"
+                "source": "https://github.com/stancl/tenancy/tree/v3.4.4"
             },
             "funding": [
                 {
@@ -4710,7 +4710,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-04-16T17:57:51+00:00"
+            "time": "2021-04-22T09:09:22+00:00"
         },
         {
             "name": "stancl/virtualcolumn",

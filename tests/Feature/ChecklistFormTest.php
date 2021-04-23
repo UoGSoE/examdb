@@ -199,7 +199,7 @@ class ChecklistFormTest extends TenantTestCase
         $setter->markAsSetter($course);
         $moderator1->markAsModerator($course);
         $moderator2->markAsModerator($course);
-        option(['glasgow_internal_moderation_deadline' => now()->format('Y-m-d')]);
+        option(['internal_moderation_deadline' => now()->format('Y-m-d')]);
 
         $this->actingAs($setter);
         Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])

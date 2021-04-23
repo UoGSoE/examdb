@@ -43,6 +43,8 @@ class TimedNotifications extends Command
         Tenant::all()->each(fn ($tenant) => NotificationChecks::dispatch($tenant->id));
     }
 
+    // TODO remove all the rest of this stuff
+
     public function runAllNotifcationChecks(Tenant $tenant)
     {
         tenancy()->initialize($tenant);

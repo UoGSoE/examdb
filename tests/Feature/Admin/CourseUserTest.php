@@ -130,6 +130,7 @@ class CourseUserTest extends TenantTestCase
     /** @test */
     public function all_users_show_up_in_the_staff_list_admins_can_use_to_choose_who_are_setters_and_moderatorss()
     {
+        $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
         $course = create(Course::class);
         $internal1 = create(User::class);

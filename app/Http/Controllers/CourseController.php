@@ -18,7 +18,6 @@ class CourseController extends Controller
         $course->load('moderators');
         $course->load('externals');
         $course->load('papers');
-        $course->append('is_uestc');
         $course->append('has_main_paper_for_registry');
         $course->append('has_resit_paper_for_registry');
 

@@ -47,44 +47,24 @@ return [
           'name' => 'date_receive_call_for_papers',
         ],
         [
-          'label' => 'Deadline for Glasgow staff to submit exam materials to Management Database (staff are emailed 1 week before and again 1 day after the deadline if paperwork isn\'t complete)',
-          'name' => 'glasgow_staff_submission_deadline',
+          'label' => 'Deadline for staff to submit exam materials to Management Database (staff are emailed 1 week before and again 1 day after the deadline if paperwork isn\'t complete)',
+          'name' => 'staff_submission_deadline',
         ],
         [
-          'label' => 'Deadline for UESTC staff to submit exam materials to Management Database (staff are emailed 1 week before and again 1 day after deadline if paperwork isn\'t complete)',
-          'name' => 'uestc_staff_submission_deadline',
+          'label' => 'Deadline for Internal moderation to be completed (staff are emailed 3 days before and again 1 day after the deadline if paperwork isn\'t complete)',
+          'name' => 'internal_moderation_deadline',
         ],
         [
-          'label' => 'Deadline for Internal moderation to be completed for UoG courses (staff are emailed 3 days before and again 1 day after the deadline if paperwork isn\'t complete)',
-          'name' => 'glasgow_internal_moderation_deadline',
+          'label' => 'Date Teaching office will be notified to look at papers before alerting externals',
+          'name' => 'date_remind_office_externals',
         ],
         [
-          'label' => 'Deadline for Internal moderation to be completed for UESTC courses (staff are emailed 3 days before and again 1 day after the deadline if paperwork isn\'t complete)',
-          'name' => 'uestc_internal_moderation_deadline',
+          'label' => 'Deadline for External moderation to be completed.',
+          'name' => 'external_moderation_deadline',
         ],
         [
-          'label' => 'Date UoG Teaching office will be notified to look at papers before alerting externals',
-          'name' => 'date_remind_glasgow_office_externals',
-        ],
-        [
-          'label' => 'Date UESTC Teaching office will be notified to look at papers before alerting externals',
-          'name' => 'date_remind_uestc_office_externals',
-        ],
-        [
-          'label' => 'Deadline for External moderation to be completed for UoG courses.',
-          'name' => 'glasgow_external_moderation_deadline',
-        ],
-        [
-          'label' => 'Deadline for External moderation to be completed for UESTC courses',
-          'name' => 'uestc_external_moderation_deadline',
-        ],
-        [
-          'label' => 'Deadline for print-ready version of UoG papers (UoG teaching office staff are emailed 1 day before and again 1 day after the deadline if paperwork isn\'t complete)',
-          'name' => 'glasgow_print_ready_deadline',
-        ],
-        [
-          'label' => 'Deadline for print-ready version of UESTC papers (UESTC teaching office staff are emailed 1 days before and again 1 day after the deadline if the paperwork isn\'t complete)',
-          'name' => 'uestc_print_ready_deadline',
+          'label' => 'Deadline for print-ready version of papers (teaching office staff are emailed 1 day before and again 1 day after the deadline if paperwork isn\'t complete)',
+          'name' => 'print_ready_deadline',
         ],
         [
           'label' => 'Start of Semester One',
