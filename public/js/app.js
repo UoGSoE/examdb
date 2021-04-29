@@ -12602,7 +12602,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ["area"],
   data: function data() {
     return {
       showModal: false
@@ -12610,9 +12609,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     archivePapers: function archivePapers() {
-      axios.post(route('area.papers.archive', {
-        area: this.area
-      })).then(function (response) {
+      axios.post(route('area.papers.archive')).then(function (response) {
         window.location = route('paper.index');
       })["catch"](function (error) {
         console.error(error);
@@ -12632,20 +12629,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -40674,7 +40657,7 @@ var render = function() {
                   _vm._v(" you want to archive "),
                   _c("em", [_vm._v("all")]),
                   _vm._v(" papers and checklists for "),
-                  _c("em", [_vm._v("all " + _vm._s(_vm.area))]),
+                  _c("em", [_vm._v("all")]),
                   _vm._v(" courses? This\n          "),
                   _c("em", [_vm._v("cannot")]),
                   _vm._v(" be undone!\n        ")
@@ -40739,75 +40722,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c("div", { staticClass: "field" }, [
-        _c("div", { staticClass: "control" }, [
-          _c("label", { staticClass: "label", attrs: { for: "area" } }, [
-            _vm._v("Choose which area to archive")
-          ]),
-          _vm._v(" "),
-          _c("label", { staticClass: "radio" }, [
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.area,
-                  expression: "area"
-                }
-              ],
-              attrs: {
-                type: "radio",
-                name: "area",
-                value: "glasgow",
-                required: ""
-              },
-              domProps: { checked: _vm._q(_vm.area, "glasgow") },
-              on: {
-                change: function($event) {
-                  _vm.area = "glasgow"
-                }
-              }
-            }),
-            _vm._v("\n        Glasgow\n      ")
-          ]),
-          _vm._v(" "),
-          _c("label", { staticClass: "radio" }, [
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.area,
-                  expression: "area"
-                }
-              ],
-              attrs: {
-                type: "radio",
-                name: "area",
-                value: "uestc",
-                required: ""
-              },
-              domProps: { checked: _vm._q(_vm.area, "uestc") },
-              on: {
-                change: function($event) {
-                  _vm.area = "uestc"
-                }
-              }
-            }),
-            _vm._v("\n        UESTC\n      ")
-          ])
-        ])
-      ]),
-      _vm._v(" "),
-      _c("hr"),
-      _vm._v(" "),
-      _c("archive-all-papers-button", { attrs: { area: _vm.area } })
-    ],
-    1
-  )
+  return _c("div", [_c("archive-all-papers-button")], 1)
 }
 var staticRenderFns = []
 render._withStripped = true
