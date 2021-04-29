@@ -11,6 +11,8 @@ use Illuminate\Support\Str;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Ohffs\Ldap\FakeLdapConnection;
+use Ohffs\Ldap\LdapConnectionInterface;
 
 class SysadminTest extends TestCase
 {
@@ -52,6 +54,10 @@ class SysadminTest extends TestCase
     /** @test */
     public function sysadmins_cant_log_in_with_the_wrong_password()
     {
+        if (env("CI")) {
+            $this->markTestSkipped('Skipping in CI to avoid LDAP lookups');
+        }
+
         $this->withoutExceptionHandling();
         $sysadmin = Sysadmin::factory()->create(['username' => 'servalan', 'password' => bcrypt('swoon')]);
 
@@ -67,6 +73,10 @@ class SysadminTest extends TestCase
     /** @test */
     public function regular_users_cant_log_in_even_with_the_right_password()
     {
+        if (env("CI")) {
+            $this->markTestSkipped('Skipping in CI to avoid LDAP lookups');
+        }
+
         $this->withoutExceptionHandling();
         $sysadmin = Sysadmin::factory()->create(['is_sysadmin' => false, 'username' => 'servalan', 'password' => bcrypt('swoon')]);
 
