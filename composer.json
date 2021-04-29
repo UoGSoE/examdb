@@ -15,6 +15,7 @@
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "lab404/laravel-impersonate": "^1.7",
+        "langleyfoxall/laravel-nist-password-rules": "^5.0",
         "laravel/framework": "^8.3",
         "laravel/horizon": "^5.0",
         "laravel/tinker": "^2.0",
@@ -26,8 +27,8 @@
         "predis/predis": "^1.1",
         "sentry/sentry-laravel": "^2.4",
         "spatie/laravel-activitylog": "^3.15",
-        "stancl/tenancy": "^3.4",
         "spatie/laravel-ray": "^1.17",
+        "stancl/tenancy": "^3.4",
         "tightenco/ziggy": "^0.9",
         "uogsoe/ldap-laravel": "^3.0"
     },
