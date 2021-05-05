@@ -22,7 +22,7 @@ class LoginController extends Controller
         if (Auth::guard('sysadmin')->attempt($credentials)) {
             $request->session()->regenerate();
 
-            return redirect()->intended(route('sysadmin.dashboard'));
+            return redirect()->intended('/dashboard');
         }
 
         return back()->withErrors([

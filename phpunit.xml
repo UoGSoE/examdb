@@ -35,5 +35,6 @@
         <env name="SESSION_DRIVER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="MAIL_MAILER" value="log"/>
+        <env name="API_KEY" value="secret"/>
     </php>
 </phpunit>

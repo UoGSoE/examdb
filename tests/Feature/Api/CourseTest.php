@@ -19,7 +19,8 @@ class CourseTest extends TenantTestCase
     public function we_can_get_a_list_of_all_courses()
     {
         $this->withoutExceptionHandling();
-        config(['exampapers.api_key' => 'secret']);
+        // exampapers.api_key comes from an env variable in phpunit.xml
+        // config(['exampapers.api_key' => 'secret']);
         $course1 = create(Course::class, ['code' => 'ENG1000']);
         $course2 = create(Course::class, ['code' => 'ENG2000']);
 
@@ -38,7 +39,8 @@ class CourseTest extends TenantTestCase
     public function we_can_get_the_details_for_one_course()
     {
         $this->withoutExceptionHandling();
-        config(['exampapers.api_key' => 'secret']);
+        // exampapers.api_key comes from an env variable in phpunit.xml
+        // config(['exampapers.api_key' => 'secret']);
         $course1 = create(Course::class, ['code' => 'ENG1000']);
 
         $response = $this->getJson(route('api.course.show', $course1->code), ['x-api-key' => 'secret']);
@@ -56,7 +58,8 @@ class CourseTest extends TenantTestCase
     public function we_can_get_a_list_of_applicable_drop_down_options_for_setters_add_paper_button()
     {
         $this->withoutExceptionHandling();
-        config(['exampapers.api_key' => 'secret']);
+        // exampapers.api_key comes from an env variable in phpunit.xml
+        // config(['exampapers.api_key' => 'secret']);
         $course = create(Course::class);
         $setter = User::factory()->create();
         $setter->markAsSetter($course);
@@ -124,7 +127,8 @@ class CourseTest extends TenantTestCase
     public function we_can_get_a_list_of_applicable_drop_down_options_for_moderators_add_paper_button()
     {
         $this->withoutExceptionHandling();
-        config(['exampapers.api_key' => 'secret']);
+        // exampapers.api_key comes from an env variable in phpunit.xml
+        // config(['exampapers.api_key' => 'secret']);
         $course = create(Course::class);
         $setter = User::factory()->create();
         $setter->markAsModerator($course);
@@ -171,7 +175,8 @@ class CourseTest extends TenantTestCase
     public function we_can_get_a_list_of_applicable_drop_down_options_for_externals_add_paper_button()
     {
         $this->withoutExceptionHandling();
-        config(['exampapers.api_key' => 'secret']);
+        // exampapers.api_key comes from an env variable in phpunit.xml
+        // config(['exampapers.api_key' => 'secret']);
         $course = create(Course::class);
         $setter = User::factory()->create();
         $setter->markAsExternal($course);
@@ -218,7 +223,8 @@ class CourseTest extends TenantTestCase
     public function if_someone_is_a_setter_and_moderator_for_the_same_course_they_see_the_right_add_paper_options()
     {
         $this->withoutExceptionHandling();
-        config(['exampapers.api_key' => 'secret']);
+        // exampapers.api_key comes from an env variable in phpunit.xml
+        // config(['exampapers.api_key' => 'secret']);
         $course = create(Course::class);
         $setter = User::factory()->create();
         $setter->markAsSetter($course);

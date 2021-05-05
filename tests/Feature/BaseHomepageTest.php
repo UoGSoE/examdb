@@ -20,7 +20,7 @@ class BaseHomepageTest extends TestCase
         $tenant2 = Tenant::create(['id' => 'drip']);
         $tenant2->domains()->create(['domain' => 'drip.examdb.test']);
 
-        $response = $this->get(route('base.homepage'));
+        $response = $this->get('/');
 
         $response->assertSee("splash.examdb.test");
         $response->assertSee("drip.examdb.test");
