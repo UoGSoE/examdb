@@ -71,6 +71,10 @@ Route::middleware([
             Route::post('user/{user}/edit', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin.user.update');
 
             Route::get('search/user', [\App\Http\Controllers\Admin\UserSearchController::class, 'show'])->name('user.search');
+
+            Route::get('course/import', [\App\Http\Controllers\Admin\CourseImportController::class, 'show'])->name('course.import');
+            Route::post('course/import', [\App\Http\Controllers\Admin\CourseImportController::class, 'store'])->name('course.import.store');
+
             Route::post('course/{course}/users', [\App\Http\Controllers\Admin\CourseUsersController::class, 'update'])->name('course.users.update');
             Route::post('courses/remove-staff', [\App\Http\Controllers\Admin\CourseUsersController::class, 'destroy'])->name('admin.courses.clear_staff');
 
@@ -79,6 +83,7 @@ Route::middleware([
 
             Route::get('course/{course}/edit', [\App\Http\Controllers\Admin\CourseController::class, 'edit'])->name('course.edit');
             Route::post('course/{course}', [\App\Http\Controllers\Admin\CourseController::class, 'update'])->name('course.update');
+
 
             Route::post('discipline/contacts', [\App\Http\Controllers\Admin\DisciplineContactController::class, 'update'])->name('discipline.contacts.update');
 

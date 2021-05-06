@@ -26,6 +26,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('activitylog:clean')->daily();
         $schedule->command('examdb:timed-notifications')->dailyAt('03:00');
+        $schedule->command('queue:prune-batches')->daily();
     }
 
     /**
