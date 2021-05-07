@@ -13,6 +13,7 @@ use App\Mail\CourseImportProcessComplete;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Support\Facades\Redis;
 
 class ImportCourseDataBatch implements ShouldQueue
 {
@@ -42,9 +43,12 @@ class ImportCourseDataBatch implements ShouldQueue
     {
         $batch = Bus::batch([]);
         $user = User::find($this->userId);
-        collect($this->spreadsheetData)->each(fn ($row) => $batch->add(new ImportCourseRow($row)));
-        $batch->allowFailures()->finally(function () use ($user) {
-            Mail::to($user)->queue(new CourseImportProcessComplete);
+        collect($this->spreadsheetData)->each(fn ($row, $rowNumber) => $batch->add(new ImportCourseRow($row, $rowNumber + 1)));
+        $batch->allowFailures()->finally(function ($batch) use ($user) {
+            $errors = Redis::smembers($batch->id . '-errors');
+            ray('hello');
+            Redis::del($batch->id . '-errors');
+            Mail::to($user)->queue(new CourseImportProcessComplete($errors));
         })->dispatch();
     }
 }

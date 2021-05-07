@@ -29,7 +29,6 @@ class ExportPapersForRegistry implements ShouldQueue
      */
     public function __construct(int $userId)
     {
-        ray($userId);
         $this->userId = $userId;
     }
 

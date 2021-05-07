@@ -21,6 +21,7 @@ use Ohffs\Ldap\LdapConnectionInterface;
 use App\Mail\CourseImportProcessComplete;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Redis;
 
 class ImportCourseDataSpreadsheetTest extends TenantTestCase
 {
@@ -132,14 +133,14 @@ class ImportCourseDataSpreadsheetTest extends TenantTestCase
         ]));
 
         $data = [
-            ['Course Code', 'Course Name', 'Discipline', 'Semester', 'Setters', 'Moderators'],
-            ['ENG1234', 'Lasers', 'Elec', '1', 'abc1x, trs80y', ' bob1q,lol9s'],
-            ['ENG5678', 'Helicopters', 'Bio', '2', 'cde1x,pop80y', ' bob1q,trs80y'],
+            ['Course Code', 'Course Name', 'Discipline', 'Semester', 'Setters', 'Moderators', 'Examined?'],
+            ['ENG1234', 'Lasers', 'Elec', '1', 'abc1x, trs80y', ' bob1q,lol9s', 'N'],
+            ['ENG5678', 'Helicopters', 'Bio', '2', 'cde1x,pop80y', ' bob1q,trs80y', 'Y'],
         ];
 
-        ImportCourseRow::dispatch($data[1]);
+        ImportCourseRow::dispatch($data[1], 1);
 
-        $this->assertDatabaseHas('courses', ['code' => 'ENG1234', 'title' => 'Lasers', 'semester' => 1]);
+        $this->assertDatabaseHas('courses', ['code' => 'ENG1234', 'title' => 'Lasers', 'semester' => 1, 'is_examined' => false]);
         $this->assertDatabaseHas('disciplines', ['title' => 'Elec']);
 
         $this->assertDatabaseHas('users', ['username' => 'abc1x']);
@@ -151,6 +152,8 @@ class ImportCourseDataSpreadsheetTest extends TenantTestCase
         $this->assertTrue(Course::first()->moderators->contains(User::findByUsername('bob1q')));
         $this->assertDatabaseHas('users', ['username' => 'lol9s']);
         $this->assertTrue(Course::first()->moderators->contains(User::findByUsername('lol9s')));
+
+        \Mockery::close();
     }
 
     /** @test */
@@ -198,12 +201,12 @@ class ImportCourseDataSpreadsheetTest extends TenantTestCase
         $existingCourse = Course::factory()->create(['code' => 'ENG1234', 'title' => 'Fred', 'semester' => 3]);
         $existingUser = User::factory()->create(['username' => 'abc1x']);
         $data = [
-            ['Course Code', 'Course Name', 'Discipline', 'Semester', 'Setters', 'Moderators'],
-            ['ENG1234', 'Lasers', 'Elec', '1', 'abc1x, trs80y', ' bob1q,lol9s,abc1x '],
-            ['ENG5678', 'Helicopters', 'Bio', '2', 'cde1x,pop80y', ' bob1q,trs80y'],
+            ['Course Code', 'Course Name', 'Discipline', 'Semester', 'Setters', 'Moderators', 'Examined?'],
+            ['ENG1234', 'Lasers', 'Elec', '1', 'abc1x, trs80y', ' bob1q,lol9s,abc1x ', 'Y'],
+            ['ENG5678', 'Helicopters', 'Bio', '2', 'cde1x,pop80y', ' bob1q,trs80y', 'N'],
         ];
 
-        ImportCourseRow::dispatch($data[1]);
+        ImportCourseRow::dispatch($data[1], 1);
 
         $this->assertEquals(1, Course::count());
 
@@ -221,6 +224,8 @@ class ImportCourseDataSpreadsheetTest extends TenantTestCase
         $this->assertTrue(Course::first()->moderators->contains(User::findByUsername('bob1q')));
         $this->assertDatabaseHas('users', ['username' => 'lol9s']);
         $this->assertTrue(Course::first()->moderators->contains(User::findByUsername('lol9s')));
+
+        \Mockery::close();
     }
 
     /** @test */
@@ -229,17 +234,64 @@ class ImportCourseDataSpreadsheetTest extends TenantTestCase
         Mail::fake();
         $admin = User::factory()->admin()->create();
         $this->fakeLdapConnection();
+        // errors mock - five invalid GUIDs
+        Redis::shouldReceive('sadd')->times(5)->andReturn(true);
+        $this->fakeRedisErrors();
         ImportCourseDataBatch::dispatch([
-            ['ENG1234', 'Lasers', 'Elec', '1', 'abc1x, trs80y', ' bob1q,lol9s,abc1x '],
+            ['ENG1234', 'Lasers', 'Elec', '1', 'abc1x, trs80y', ' bob1q,lol9s,abc1x ', 'Y'],
         ], $admin->id);
 
         Mail::assertQueued(CourseImportProcessComplete::class, 1);
+        Mail::assertQueued(CourseImportProcessComplete::class, function ($mail) use ($admin) {
+            return $mail->hasTo($admin);
+        });
+
+        \Mockery::close();
     }
 
     /** @test */
-    public function any_errors_during_the_import_are_passed_to_the_email_that_is_sent()
+    public function any_errors_during_the_import_are_stored_in_redis()
     {
-        $this->fail(' TODO ');
+        Mail::fake();
+        $admin = User::factory()->admin()->create();
+        $this->fakeLdapConnection();
+        // two invalid GUIDs and one missing course code
+        Redis::shouldReceive('sadd')->times(3)->andReturn(true);
+        $this->fakeRedisErrors();
+
+        ImportCourseDataBatch::dispatch([
+            ['ENG1234', 'Lasers', 'Elec', '1', 'abc1x', ' bob1q', 'Y'],
+            ['', 'Lasers', 'Elec', '1', 'abc1x', ' bob1q', 'N'],
+        ], $admin->id);
+
+        Mail::assertQueued(CourseImportProcessComplete::class, function ($mail) use ($admin) {
+            return $mail->hasTo($admin);
+        });
+
+        \Mockery::close();
+    }
+
+    /** @test */
+    public function any_errors_are_pulled_from_redis_and_passed_to_the_email()
+    {
+        Mail::fake();
+        $admin = User::factory()->admin()->create();
+        $this->fakeLdapConnection();
+        // two invalid GUIDs and one missing course code
+        Redis::shouldReceive('sadd')->times(3)->andReturn(true);
+        $this->fakeRedisErrors();
+
+        ImportCourseDataBatch::dispatch([
+            ['ENG1234', 'Lasers', 'Elec', '1', 'abc1x', ' bob1q', 'Y'],
+            ['', 'Lasers', 'Elec', '1', 'abc1x', ' bob1q', 'N'],
+        ], $admin->id);
+
+        Mail::assertQueued(CourseImportProcessComplete::class, function ($mail) use ($admin) {
+            return $mail->hasTo($admin) &&
+                count($mail->errors) === 3;
+        });
+
+        \Mockery::close();
     }
 
     private function fakeLdapConnection()
@@ -248,5 +300,11 @@ class ImportCourseDataSpreadsheetTest extends TenantTestCase
             LdapConnectionInterface::class,
             new FakeLdapConnection('up', 'whatever')
         );
+    }
+
+    public function fakeRedisErrors()
+    {
+        Redis::shouldReceive('smembers')->times(1)->andReturn(['error 1', 'error 2', 'error 3']);
+        Redis::shouldReceive('del')->times(1)->andReturn(true);
     }
 }

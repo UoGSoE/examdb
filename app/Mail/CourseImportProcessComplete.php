@@ -11,14 +11,16 @@ class CourseImportProcessComplete extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public array $errors = [];
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(array $errors)
     {
-        //
+        $this->errors = $errors;
     }
 
     /**

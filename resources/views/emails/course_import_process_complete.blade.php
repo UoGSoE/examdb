@@ -7,6 +7,13 @@ The import of the course data spreadsheet has now completed.  Exciting!
 You can see it here
 @endcomponent
 
+@if (count($errors) > 0)
+The following errors occurred while importing :
+@foreach ($errors as $error)
+* {{ $error }}
+@endforeach
+@endif
+
 Thanks,<br>
 {{ config('app.name') }}
 @endcomponent
