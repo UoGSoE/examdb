@@ -19,7 +19,7 @@ jobs:
       redis:
         image: redis:6
         ports:
-          - 96379:6379
+          - 56379:6379
     steps:
       - name: Checkout
         uses: actions/checkout@v2
