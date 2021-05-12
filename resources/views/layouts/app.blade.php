@@ -13,7 +13,7 @@
 
 
     <!-- Styles -->
-    <link href="{{ global_asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ mix('css/app.css') }}" rel="stylesheet">
     @livewireStyles
 
     <script>
@@ -66,7 +66,7 @@
     </div>
 
     @livewireScripts
-    <script src="{{ global_asset('js/app.js') }}"></script>
+    <script src="{{ mix('js/app.js') }}"></script>
 
     @stack('scripts')
 </body>
