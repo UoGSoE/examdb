@@ -91,6 +91,7 @@ RUN mkdir -p /var/www/html/public/js /var/www/html/public/css
 COPY --from=frontend /home/node/public/js /var/www/html/public/js
 COPY --from=frontend /home/node/public/css /var/www/html/public/css
 COPY --from=frontend /home/node/mix-manifest.json /var/www/html/mix-manifest.json
+COPY --from=frontend /home/node/mix-manifest.json /var/www/html/public/mix-manifest.json
 
 #- Copy in our code
 COPY . /var/www/html
