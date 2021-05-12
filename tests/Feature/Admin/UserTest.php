@@ -76,6 +76,7 @@ class UserTest extends TenantTestCase
     /** @test */
     public function admins_can_see_the_details_for_a_given_user()
     {
+        $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
         $internalUser = create(User::class);
         $externalUser = User::factory()->external()->create();
