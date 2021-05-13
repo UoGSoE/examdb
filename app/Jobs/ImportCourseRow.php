@@ -76,7 +76,7 @@ class ImportCourseRow implements ShouldQueue
                 'title' => $row['title'],
                 'semester' => $row['semester'],
                 'discipline_id' => $discipline->id,
-                'is_examined' => preg_match('/yY/', $row['is_examined']) === 1,
+                'is_examined' => preg_match('/[yY]/', $row['is_examined']) === 1,
             ],
         );
 

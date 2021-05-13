@@ -19,7 +19,7 @@
         <div class="media-content">
           <div class="content">
             <p>
-              <a v-if="paper.subcategory != 'comment'" :href="getDownloadRoute(paper)">
+              <a v-if="paper.subcategory != 'comment'" :href="getDownloadRoute(paper)" download>
                 <strong>{{ paper.original_filename }}</strong>
               </a>
               <small>{{ paper.formatted_date }} ({{ paper.diff_for_humans }})</small>

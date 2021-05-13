@@ -53,11 +53,9 @@ class UserController extends Controller
 
         $user = User::create($data);
 
-        activity()
-            ->causedBy($request->user())
-            ->log(
-                'Created new '.($user->isExternal() ? 'external' : 'local user')." '{$user->username}'"
-            );
+        activity()->causedBy($request->user())->log(
+            'Created new '.($user->isExternal() ? 'external' : 'local user')." '{$user->username}'"
+        );
 
         return response()->json([
             'user' => $user,
