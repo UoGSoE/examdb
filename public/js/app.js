@@ -43165,7 +43165,12 @@ var render = function() {
                   paper.subcategory != "comment"
                     ? _c(
                         "a",
-                        { attrs: { href: _vm.getDownloadRoute(paper) } },
+                        {
+                          attrs: {
+                            href: _vm.getDownloadRoute(paper),
+                            download: ""
+                          }
+                        },
                         [
                           _c("strong", [
                             _vm._v(_vm._s(paper.original_filename))
