@@ -1,0 +1,13 @@
+resources:
+- base
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+images:
+- name: the-app
+  newName: fred
+  newTag: "1.2"
+namespace: freddy
+secretGenerator:
+  - name: dotenv
+    envs:
+    - .env

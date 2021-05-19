@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: schedular
+  labels:
+    app: schedular
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: schedular
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: schedular
+    spec:
+      containers:
+      - image: the-app
+        name: schedular
+        env:
+        - name: APP_ROLE
+          value: schedular
+        resources:
+          requests:
+            memory: "100Mi"
+            cpu: "250m"
+          limits:
+            memory: "2048Mi"
+            cpu: "2000m"
+        livenessProbe:
+          exec:
+            command:
+            - pgrep php
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readynessProbe:
+          exec:
+            command:
+            - pgrep php
+          initialDelaySeconds: 5
+          periodSeconds: 3

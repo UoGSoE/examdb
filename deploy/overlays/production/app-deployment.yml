@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+  namespace: default
+  labels:
+    app: app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: app
+  template:
+    spec:
+      volumes:
+      - name: dotenv
+        secret:
+          secretName: dotenv
+      initContainers:
+      - name: run-migrations
+        volumeMounts:
+          - name: dotenv
+            mountPath: "/var/www/html/.env"
+            readOnly: true
+      containers:
+      - name: app
+        volumeMounts:
+          - name: dotenv
+            mountPath: "/var/www/html/.env"
+            readOnly: true

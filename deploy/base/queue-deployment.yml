@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: queue
+  namespace: default
+  labels:
+    app: queue
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: queue
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: queue
+    spec:
+      containers:
+      - image: the-app
+        name: queue
+        env:
+        - name: APP_ROLE
+          value: queue
+        resources:
+          requests:
+            memory: "200Mi"
+            cpu: "250m"
+          limits:
+            memory: "2048Mi"
+            cpu: "2000m"
+        livenessProbe:
+          exec:
+            command:
+            - php /var/www/html/artisan horizon:status | grep -q 'Horizon is running' || exit 1
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readynessProbe:
+          exec:
+            command:
+            - php /var/www/html/artisan horizon:status | grep -q 'Horizon is running' || exit 1
+          initialDelaySeconds: 5
+          periodSeconds: 3
