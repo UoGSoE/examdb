@@ -35,7 +35,7 @@ spec:
             - pgrep php
           initialDelaySeconds: 10
           periodSeconds: 30
-        readynessProbe:
+        readinessProbe:
           exec:
             command:
             - pgrep php

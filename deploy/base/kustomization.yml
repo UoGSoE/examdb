@@ -4,3 +4,5 @@ resources:
 - queue-deployment.yml
 - schedular-deployment.yml
 - namespace.yml
+- redis-deployment.yml
+- redis-service.yml

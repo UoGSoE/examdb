@@ -1,2 +1,5 @@
 bases:
 - ../../base
+resources:
+- database-deployment.yml
+- database-service.yml

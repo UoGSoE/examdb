@@ -1,28 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: queue
+  name: redis
   namespace: default
   labels:
-    app: queue
+    app: redis
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: queue
+      app: redis
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: queue
+        app: redis
     spec:
       containers:
-      - image: the-app
-        name: queue
-        env:
-        - name: APP_ROLE
-          value: queue
+      - name: redis
+        image: redis@sha256:365eddf64356169aa0cbfbeaf928eb80762de3cc364402e7653532bcec912973
+        ports:
+        - containerPort: 6379
+          name: redis
         resources:
           requests:
             memory: "200Mi"
@@ -33,16 +33,14 @@ spec:
         livenessProbe:
           exec:
             command:
-            - sh
-            - -c
-            - php /var/www/html/artisan horizon:status | grep -q 'Horizon is running'
-          initialDelaySeconds: 10
-          periodSeconds: 30
+            - redis-cli
+            - ping
+          initialDelaySeconds: 5
+          timeoutSeconds: 3
         readinessProbe:
           exec:
             command:
-            - sh
-            - -c
-            - php /var/www/html/artisan horizon:status | grep -q 'Horizon is running'
+            - redis-cli
+            - ping
           initialDelaySeconds: 5
-          periodSeconds: 3
+          timeoutSeconds: 3
