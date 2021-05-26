@@ -1,0 +1,15 @@
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: "mailhog-ingress"
+  namespace: default
+
+spec:
+  rules:
+    - host: mail-${TRAEFIK_HOSTNAME}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: mailhog-service
+              servicePort: 8025
