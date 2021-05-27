@@ -2,7 +2,7 @@ apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
   name: app-cert
-  namespace: default
+  namespace: ${NAMESPACE}
 spec:
   commonName: ${TRAEFIK_HOSTNAME}
   secretName: app-cert

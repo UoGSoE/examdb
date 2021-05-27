@@ -17,7 +17,7 @@ spec:
         app: schedular
     spec:
       containers:
-      - image: the-app
+      - image: ${IMAGE_NAME}
         name: schedular
         env:
         - name: APP_ROLE
