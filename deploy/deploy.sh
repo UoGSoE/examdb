@@ -16,7 +16,7 @@ echo "NAMESPACE: ${NAMESPACE}"
 echo "TRAEFIK_HOSTNAME: ${TRAEFIK_HOSTNAME}"
 echo
 
-echo "${DOTENV}" > .env
+# echo "${DOTENV}" > .env
 kustomize build overlays/$1 | envsubst | tee deployed.yml
-rm -f .env
+# rm -f .env
 # kubectl apply -f deployed.yml
