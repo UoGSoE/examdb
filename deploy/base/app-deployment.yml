@@ -17,13 +17,25 @@ spec:
       labels:
         app: app
     spec:
+      volumes:
+      - name: dotenv
+        secret:
+          secretName: dotenv
       initContainers:
       - name: run-migrations
+        volumeMounts:
+          - name: dotenv
+            mountPath: "/var/www/html/.env"
+            readOnly: true
         image: ${IMAGE_NAME}
         command: ["php"]
         args: ["/var/www/html/artisan", "migrate", "--force"]
       containers:
       - name: app
+        volumeMounts:
+          - name: dotenv
+            mountPath: "/var/www/html/.env"
+            readOnly: true
         image: ${IMAGE_NAME}
         env:
         - name: APP_ROLE

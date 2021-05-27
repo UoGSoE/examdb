@@ -16,4 +16,3 @@ spec:
       port: 1025
   selector:
     app: mailhog
-  type: LoadBalancer

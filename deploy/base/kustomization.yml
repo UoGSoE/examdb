@@ -8,3 +8,4 @@ resources:
 - schedular-deployment.yml
 - redis-deployment.yml
 - redis-service.yml
+- dotenv-secret.yml

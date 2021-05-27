@@ -8,6 +8,6 @@ images:
   newTag: v1.2.24
 namespace: examdb
 secretGenerator:
-- envs:
+- name: dotenv
+  files:
   - .env
-  name: dotenv
