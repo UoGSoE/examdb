@@ -22,7 +22,7 @@ class PaperExporter
 
     public function export(): string
     {
-        $papers = Paper::where('subcategory', '=', $this->subcategory)->get();
+        $papers = Paper::where('subcategory', 'like', $this->subcategory . '%')->get();
 
         $localZipname = tempnam(sys_get_temp_dir(), '/'.config('exampapers.registry_temp_file_prefix'));
         $zip = new \ZipArchive();
