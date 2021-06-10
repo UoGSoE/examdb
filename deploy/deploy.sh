@@ -10,6 +10,8 @@ fi
 
 set -u
 
+DIRNAME=$(dirname $0)
+
 echo "Deploying to ${1} with :"
 echo "IMAGE_NAME: ${IMAGE_NAME}"
 echo "NAMESPACE: ${NAMESPACE}"
@@ -18,6 +20,6 @@ echo
 
 # echo "${DOTENV}" > .env
 ## TODO dotenv-secret.yml
-kustomize build overlays/$1 | envsubst | tee deployed.yml
+kustomize build ${DIRNAME}/overlays/$1 | envsubst | tee deployed.yml
 # rm -f .env
 # kubectl apply -f deployed.yml
