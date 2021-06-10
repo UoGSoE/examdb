@@ -29,9 +29,8 @@ class PaperExporter
         $zip = new \ZipArchive();
         $zip->open($localZipname, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
         $papers->each(function ($paper) use ($zip) {
-            $decryptedContent = decrypt(Storage::disk('exampapers')->get($paper->filename));
             $localFilename = sys_get_temp_dir() . '/' . Str::random(64);
-            file_put_contents($localFilename, $decryptedContent);
+            file_put_contents($localFilename, decrypt(Storage::disk('exampapers')->get($paper->filename)));
             $paperFilename = $paper->course->code.'_'.ucfirst($paper->category).'_'.$paper->original_filename;
             $zip->addFile($localFilename, '/papers/'.$paperFilename);
         });
