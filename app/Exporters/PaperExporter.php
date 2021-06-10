@@ -2,11 +2,12 @@
 
 namespace App\Exporters;
 
-use App\Jobs\RemoveRegistryZip;
-use App\Paper;
 use App\User;
-use Illuminate\Support\Facades\Storage;
+use App\Paper;
+use Illuminate\Support\Str;
+use App\Jobs\RemoveRegistryZip;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Storage;
 
 class PaperExporter
 {
@@ -29,8 +30,10 @@ class PaperExporter
         $zip->open($localZipname, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
         $papers->each(function ($paper) use ($zip) {
             $decryptedContent = decrypt(Storage::disk('exampapers')->get($paper->filename));
+            $localFilename = sys_get_temp_dir() . '/' . Str::random(64);
+            file_put_contents($localFilename, $decryptedContent);
             $paperFilename = $paper->course->code.'_'.ucfirst($paper->category).'_'.$paper->original_filename;
-            $zip->addFromString('/papers/'.$paperFilename, $decryptedContent);
+            $zip->addFile($localFilename, '/papers/'.$paperFilename);
         });
         $zip->addFromString('/papers/tmp.txt', 'Hello');
         $zip->close();
