@@ -37,7 +37,8 @@ class PaperExporter
         $zip->addFromString('/papers/tmp.txt', 'Hello');
         $zip->close();
         $remoteFilename = 'registry/papers_'.$this->user->id.'.zip';
-        Storage::disk('exampapers')->put($remoteFilename, encrypt(file_get_contents($localZipname)));
+        // Storage::disk('exampapers')->put($remoteFilename, encrypt(file_get_contents($localZipname)));
+        Storage::disk('exampapers')->put($remoteFilename, file_get_contents($localZipname));
         unlink($localZipname);
 
         RemoveRegistryZip::dispatch($remoteFilename)
