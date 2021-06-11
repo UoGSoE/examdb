@@ -15,6 +15,8 @@ class PaperExporter
 
     public $user;
 
+    public $allFilenames = [];
+
     public function __construct(string $subcategory, User $user)
     {
         $this->subcategory = $subcategory;
@@ -32,6 +34,10 @@ class PaperExporter
             $localFilename = sys_get_temp_dir() . '/' . Str::random(64);
             file_put_contents($localFilename, decrypt(Storage::disk('exampapers')->get($paper->filename)));
             $paperFilename = $paper->course->code.'_'.ucfirst($paper->category).'_'.$paper->original_filename;
+            if (in_array($paperFilename, $this->allFilenames)) {
+                $paperFilename = $paper->course->code . '_' . ucfirst($paper->category) . '_' . rand(1, 9) . '_' . $paper->original_filename;
+            }
+            $this->allFilenames[] = $paperFilename;
             $zip->addFile($localFilename, '/papers/'.$paperFilename);
         });
         $zip->addFromString('/papers/tmp.txt', 'Hello');
