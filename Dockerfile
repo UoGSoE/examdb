@@ -82,6 +82,7 @@ ENV APP_DEBUG=0
 #- Copy our start scripts and php/ldap configs in
 COPY docker/ldap.conf /etc/ldap/ldap.conf
 COPY docker/custom_php.ini /usr/local/etc/php/conf.d/custom_php.ini
+RUN rm /usr/local/etc/php/conf.d/uploads.ini
 
 #- Copy in our prod php dep's
 COPY --from=prod-composer /var/www/html/vendor /var/www/html/vendor
