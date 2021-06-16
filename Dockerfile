@@ -107,7 +107,8 @@ RUN if grep -q horizon composer.json; then php /var/www/html/artisan horizon:pub
 RUN php /var/www/html/artisan vendor:publish --tag=laravel-mail
 
 #- Symlink the docker secret to the local .env so Laravel can see it
-RUN ln -sf /run/secrets/.env /var/www/html/.env
+# RUN ln -sf /run/secrets/.env /var/www/html/.env
+RUN ln -sf /secrets/.env /var/www/html/.env
 
 #- Clean up and production-cache our apps settings/views/routing
 RUN php /var/www/html/artisan storage:link && \
@@ -129,4 +130,5 @@ COPY --from=qa-composer /var/www/html/vendor /var/www/html/vendor
 RUN composer global require enlightn/security-checker && \
     curl -OL -o /usr/local/bin/phpcs https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar && \
     php /var/www/html/artisan view:clear && \
-    php /var/www/html/artisan cache:clear
+    php /var/www/html/artisan cache:clear && \
+    php /var/www/html/artisan optimize:clear

@@ -17,11 +17,19 @@ spec:
       labels:
         app: queue
     spec:
+      volumes:
+      - name: dotenv
+        secret:
+          secretName: dotenv
       containers:
       - image: ${IMAGE_NAME}
+        volumeMounts:
+          - name: dotenv
+            mountPath: "/secrets/"
+            readOnly: true
         name: queue
         env:
-        - name: APP_ROLE
+        - name: CONTAINER_ROLE
           value: queue
         resources:
           requests:

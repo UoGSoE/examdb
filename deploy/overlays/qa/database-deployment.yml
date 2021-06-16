@@ -23,6 +23,8 @@ spec:
         env:
           - name: MYSQL_ROOT_PASSWORD
             value: homestead
+          - name: MYSQL_DATABASE
+            value: examdb
         ports:
         - containerPort: 3306
           name: mysql

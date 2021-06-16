@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: schedular
+  namespace: ${NAMESPACE}
   labels:
     app: schedular
 spec:
@@ -16,12 +17,20 @@ spec:
       labels:
         app: schedular
     spec:
+      volumes:
+      - name: dotenv
+        secret:
+          secretName: dotenv
       containers:
       - image: ${IMAGE_NAME}
+        volumeMounts:
+          - name: dotenv
+            mountPath: "/secrets/"
+            readOnly: true
         name: schedular
         env:
-        - name: APP_ROLE
-          value: schedular
+        - name: CONTAINER_ROLE
+          value: scheduler
         resources:
           requests:
             memory: "100Mi"
@@ -32,12 +41,14 @@ spec:
         livenessProbe:
           exec:
             command:
-            - pgrep php
+            - pgrep
+            - php
           initialDelaySeconds: 10
           periodSeconds: 30
         readinessProbe:
           exec:
             command:
-            - pgrep php
+            - pgrep
+            - php
           initialDelaySeconds: 5
           periodSeconds: 3
