@@ -106,6 +106,9 @@ RUN if grep -q horizon composer.json; then php /var/www/html/artisan horizon:pub
 #- Force-publish laravel's mail templates - see https://github.com/laravel/framework/issues/21493#issuecomment-427986812
 RUN php /var/www/html/artisan vendor:publish --tag=laravel-mail
 
+#- Force-publish livewires css and js assets to work-around multi-tenancy behind traefik - see https://github.com/livewire/livewire/issues/242
+RUN if grep -q livewire composer.json; then php /var/www/html/artisan vendor:publish --force --tag=livewire:assets; fi
+
 #- Symlink the docker secret to the local .env so Laravel can see it
 # RUN ln -sf /run/secrets/.env /var/www/html/.env
 RUN ln -sf /secrets/.env /var/www/html/.env

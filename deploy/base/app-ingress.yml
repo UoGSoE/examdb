@@ -15,3 +15,10 @@ spec:
             backend:
               serviceName: app-service
               servicePort: 80
+    - host: "*.${TRAEFIK_HOSTNAME}"
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: app-service
+              servicePort: 80

@@ -20,6 +20,7 @@ return [
         '127.0.0.1',
         'localhost',
         'examdb.test',
+        preg_replace('/.+\//', '', env('APP_URL', 'examdb.localhost')),
     ],
 
     /**

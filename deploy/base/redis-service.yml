@@ -10,4 +10,3 @@ spec:
     - port: 6379
   selector:
     app: redis
-  type: LoadBalancer
