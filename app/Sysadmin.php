@@ -46,4 +46,15 @@ class Sysadmin extends Authenticatable
     {
         return ! $this->is_sysadmin;
     }
+
+    public function getFullNameAttribute()
+    {
+        return $this->forenames.' '.$this->surname;
+    }
+
+    public function toggleEnabled()
+    {
+        $this->is_sysadmin = ! $this->is_sysadmin;
+        $this->save();
+    }
 }

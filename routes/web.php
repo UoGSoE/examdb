@@ -11,5 +11,6 @@ Route::group(['middleware' => [
     ]
 ], function () {
     Route::get('/dashboard', [\App\Http\Controllers\Sysadmin\DashboardController::class, 'show']);
+    Route::get('/dashboard/users', [\App\Http\Controllers\Sysadmin\UserController::class, 'show']);
     Route::post('/logout', [\App\Http\Controllers\Sysadmin\LoginController::class, 'logout']);
 });

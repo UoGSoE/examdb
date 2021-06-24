@@ -226,6 +226,85 @@ class SysadminTest extends TestCase
     }
 
     /** @test */
+    public function existing_sysadmins_can_create_a_new_sysadmin()
+    {
+        $admin = Sysadmin::factory()->create(['surname' => 'Avon', 'forenames' => 'Kerr']);
+
+        $response = $this->actingAs($admin, 'sysadmin')->get('/dashboard/users');
+
+        $response->assertOk();
+        $response->assertSeeLivewire('sysadmin-editor');
+
+        Livewire::actingAs($admin)->test('sysadmin-editor')
+             ->assertSee('Existing Sysadmins')
+             ->assertSee('Kerr Avon')
+             ->assertDontSee('Roj Blake')
+             ->set('username', 'abc1x')
+             ->set('surname', 'Blake')
+             ->set('forenames', 'Roj')
+             ->set('email', 'blake@example.com')
+             ->call('create')
+             ->assertSee('Kerr Avon')
+             ->assertSee('Roj Blake');
+
+        $blake = Sysadmin::where('surname', '=', 'Blake')->first();
+        $this->assertTrue($blake->isSysadmin());
+    }
+
+    /** @test */
+    public function existing_sysadmins_cant_create_a_new_sysadmin_with_an_existing_username()
+    {
+        $admin = Sysadmin::factory()->create(['username' => 'avon']);
+
+        Livewire::actingAs($admin)->test('sysadmin-editor')
+             ->set('username', 'avon')
+             ->set('surname', 'Avon')
+             ->set('forenames', 'Kerr')
+             ->set('email', 'avon@example.com')
+             ->call('create')
+             ->assertSee('The username has already been taken');
+
+        $this->assertEquals(1, Sysadmin::count());
+    }
+
+    /** @test */
+    public function existing_sysadmins_can_disable_and_enable_other_sysadmins()
+    {
+        $avon = Sysadmin::factory()->create(['surname' => 'Avon', 'forenames' => 'Kerr']);
+        $blake = Sysadmin::factory()->create(['surname' => 'Blake', 'forenames' => 'Roj']);
+
+        Livewire::actingAs($avon)->test('sysadmin-editor')
+             ->assertSee('Existing Sysadmins')
+             ->assertSee('Kerr Avon')
+             ->assertSee('Roj Blake')
+             ->call('toggleEnabled', $blake->id)
+             ->assertSee('Kerr Avon')
+             ->assertSee('Roj Blake');
+
+        $this->assertFalse($blake->fresh()->isSysadmin());
+
+        Livewire::actingAs($avon)->test('sysadmin-editor')
+             ->call('toggleEnabled', $blake->id);
+
+        $this->assertTrue($blake->fresh()->isSysadmin());
+    }
+
+    /** @test */
+    public function existing_sysadmins_cant_disable_and_enable_themselves()
+    {
+        $avon = Sysadmin::factory()->create(['surname' => 'Avon', 'forenames' => 'Kerr']);
+        $blake = Sysadmin::factory()->create(['surname' => 'Blake', 'forenames' => 'Roj']);
+
+        Livewire::actingAs($avon)->test('sysadmin-editor')
+             ->assertSee('Existing Sysadmins')
+             ->assertSee('Kerr Avon')
+             ->assertSee('Roj Blake')
+             ->call('toggleEnabled', $avon->id);
+
+        $this->assertTrue($avon->fresh()->isSysadmin());
+    }
+
+    /** @test */
     public function there_is_an_artisan_command_to_create_a_new_sysadmin()
     {
         $this->assertEquals(0, Sysadmin::count());
