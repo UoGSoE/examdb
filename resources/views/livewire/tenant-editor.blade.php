@@ -41,7 +41,7 @@
                             </form>
                         @else
                             <span>
-                                <span>{{ $tenant->domains()->first()->domain }}</span>
+                                <span>{{ optional($tenant->domains()->first())->domain }}</span>
                             </span>
                         @endif
                     </td>

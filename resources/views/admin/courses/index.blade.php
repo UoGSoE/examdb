@@ -21,7 +21,7 @@
             <remove-staff-button></remove-staff-button>
         </span>
         <span class="level-item">
-            <wlm-importer></wlm-importer>
+            <a href="{{ route('course.import') }}" class="button">Import Courses</a>
         </span>
     </div>
 </div>
