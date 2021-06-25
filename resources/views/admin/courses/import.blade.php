@@ -6,8 +6,8 @@
 
 <h4 class="title is-4">Format:</h4>
 <pre>
-    Course Code | Course Name | Discipline | Semester | Setters      | Moderators
-    ENG1234     | Lasers      | Elec       | 1        | abc1x,trs80y | bob1q,lol9s
+    Course Code | Course Name | Discipline | Semester | Setters GUIDs | Setters Names               | Moderators GUIDs | Moderators Names             | Externals Emails  | Externals Names | Examined?
+    ENG1234     | Lasers      | Elec       | 1        | abc1x,trs80y  | Anne Smith, Debbie McTavish | bob1q,lol9s      | Bob Syeruncle, Lola McGovern | jenny@example.com | Jenny Smith     | Y
 </pre>
 
 <hr>

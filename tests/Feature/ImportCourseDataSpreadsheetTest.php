@@ -133,9 +133,9 @@ class ImportCourseDataSpreadsheetTest extends TenantTestCase
         ]));
 
         $data = [
-            ['Course Code', 'Course Name', 'Discipline', 'Semester', 'Setters', 'Moderators', 'Examined?'],
-            ['ENG1234', 'Lasers', 'Elec', '1', 'abc1x, trs80y', ' bob1q,lol9s', 'N'],
-            ['ENG5678', 'Helicopters', 'Bio', '2', 'cde1x,pop80y', ' bob1q,trs80y', 'Y'],
+            ['Course Code', 'Course Name', 'Discipline', 'Semester', 'Setters GUIDs', 'Setters Names', 'Moderators GUIDs', 'Moderators Names', 'Externals Emails', 'Externals Names', 'Examined?'],
+            ['ENG1234', 'Lasers', 'Elec', '1', 'abc1x, trs80y', 'Jim Smith, Tina Smith', ' bob1q,lol9s', 'Bob Jones, Lola McVitie', 'someone@example.com', 'Some One', 'N'],
+            ['ENG5678', 'Helicopters', 'Bio', '2', 'cde1x,pop80y', 'Carol Exmouth, Poppy Flower', ' bob1q,trs80y', 'Bob Jones, Tina Smith', 'fran@example.com', 'Fran Smith', 'Y'],
         ];
 
         ImportCourseRow::dispatch($data[1], 1);
@@ -202,8 +202,8 @@ class ImportCourseDataSpreadsheetTest extends TenantTestCase
         $existingUser = User::factory()->create(['username' => 'abc1x']);
         $data = [
             ['Course Code', 'Course Name', 'Discipline', 'Semester', 'Setters', 'Moderators', 'Examined?'],
-            ['ENG1234', 'Lasers', 'Elec', '1', 'abc1x, trs80y', ' bob1q,lol9s,abc1x ', 'Y'],
-            ['ENG5678', 'Helicopters', 'Bio', '2', 'cde1x,pop80y', ' bob1q,trs80y', 'N'],
+            ['ENG1234', 'Lasers', 'Elec', '1', 'abc1x, trs80y', 'Jim Smith, Tina Smith', ' bob1q,lol9s', 'Bob Jones, Lola McVitie', 'someone@example.com', 'Some One', 'N'],
+            ['ENG5678', 'Helicopters', 'Bio', '2', 'cde1x,pop80y', 'Carol Exmouth, Poppy Flower', ' bob1q,trs80y', 'Bob Jones, Tina Smith', 'fran@example.com', 'Fran Smith', 'Y'],
         ];
 
         ImportCourseRow::dispatch($data[1], 1);
@@ -238,7 +238,7 @@ class ImportCourseDataSpreadsheetTest extends TenantTestCase
         Redis::shouldReceive('sadd')->times(5)->andReturn(true);
         $this->fakeRedisErrors();
         ImportCourseDataBatch::dispatch([
-            ['ENG1234', 'Lasers', 'Elec', '1', 'abc1x, trs80y', ' bob1q,lol9s,abc1x ', 'Y'],
+            ['ENG1234', 'Lasers', 'Elec', '1', 'abc1x, trs80y', 'Jim Smith, Tina Smith', ' bob1q,lol9s,abc1x', 'Bob Jones, Lola McVitie, Anne Chalmers', 'someone@example.com', 'Some One', 'Y'],
         ], $admin->id);
 
         Mail::assertQueued(CourseImportProcessComplete::class, 1);
@@ -260,8 +260,8 @@ class ImportCourseDataSpreadsheetTest extends TenantTestCase
         $this->fakeRedisErrors();
 
         ImportCourseDataBatch::dispatch([
-            ['ENG1234', 'Lasers', 'Elec', '1', 'abc1x', ' bob1q', 'Y'],
-            ['', 'Lasers', 'Elec', '1', 'abc1x', ' bob1q', 'N'],
+            ['ENG1234', 'Lasers', 'Elec', '1', 'abc1x', 'Jim Smith', ' bob1q', 'Bob Jones', 'someone@example.com', 'Some One', 'Y'],
+            ['', 'Lasers', 'Elec', '1', 'abc1x', 'Jim Smith', ' bob1q', 'Bob Jones', 'someone@example.com', 'Some One', 'N'],
         ], $admin->id);
 
         Mail::assertQueued(CourseImportProcessComplete::class, function ($mail) use ($admin) {
@@ -282,8 +282,8 @@ class ImportCourseDataSpreadsheetTest extends TenantTestCase
         $this->fakeRedisErrors();
 
         ImportCourseDataBatch::dispatch([
-            ['ENG1234', 'Lasers', 'Elec', '1', 'abc1x', ' bob1q', 'Y'],
-            ['', 'Lasers', 'Elec', '1', 'abc1x', ' bob1q', 'N'],
+            ['ENG1234', 'Lasers', 'Elec', '1', 'abc1x', 'Jim Smith', ' bob1q', 'Bob Jones', 'someone@example.com', 'Some One', 'Y'],
+            ['', 'Lasers', 'Elec', '1', 'abc1x', 'Jim Smith', ' bob1q', 'Bob Jones', 'someone@example.com', 'Some One', 'N'],
         ], $admin->id);
 
         Mail::assertQueued(CourseImportProcessComplete::class, function ($mail) use ($admin) {
