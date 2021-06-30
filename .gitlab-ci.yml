@@ -39,7 +39,7 @@ test:
   image: $QA_IMAGE_NAME
 
   services:
-  - mysql:5.7
+  - ohffs/mysql:8-2000connections
 
   variables:
     MYSQL_DATABASE: examdb_test
@@ -64,6 +64,7 @@ test:
   - php artisan migrate:fresh
   - cat .env
   - composer dump-autoload
+  - ulimit -n 4000
   - php artisan test -c phpunit.gitlab.xml
   - egrep -r '[^a-zA-Z](dd\(|dump\()' app && exit 1
   - if [[ -f /root/.composer/vendor/bin/security-checker ]]; then php /root/.composer/vendor/bin/security-checker security:check ./composer.lock ; fi
