@@ -20,7 +20,8 @@ do
 done
 
 ulimit -n 4000
-CI=1 phpunit
+#CI=1 phpunit
+CI=1 php artisan test
 EXITCODE=$?
 docker stop examdb_test_sql >> /dev/null
 

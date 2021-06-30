@@ -67,6 +67,7 @@ test:
   - cat .env
   - composer dump-autoload
   - ulimit -n 4000
+  - export REDIS_PORT=6379
   - php artisan test -c phpunit.gitlab.xml
   - egrep -r '[^a-zA-Z](dd\(|dump\()' app && exit 1
   - if [[ -f /root/.composer/vendor/bin/security-checker ]]; then php /root/.composer/vendor/bin/security-checker security:check ./composer.lock ; fi
