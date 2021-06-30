@@ -44,7 +44,7 @@ class ArchivePapersTest extends TenantTestCase
     }
 
     /** @test */
-    public function admins_can_archive_the_papers_for_a_whole_area()
+    public function admins_can_archive_all_the_papers()
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
