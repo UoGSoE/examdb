@@ -41,6 +41,7 @@ test:
   services:
   - name: ohffs/mysql:8-2000connections
     alias: mysql
+  - redis:latest
 
   variables:
     MYSQL_DATABASE: examdb_test
