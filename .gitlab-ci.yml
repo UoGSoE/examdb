@@ -42,7 +42,7 @@ test:
   - mysql:5.7
 
   variables:
-    MYSQL_DATABASE: homestead
+    MYSQL_DATABASE: examdb_test
     MYSQL_ROOT_PASSWORD: secret
     MYSQL_USER: homestead
     MYSQL_PASSWORD: secret
