@@ -57,7 +57,7 @@ test:
   # - php vendor/bin/phpunit --coverage-text --colors=never
   - cd /var/www/html
   - mkdir -p /run/secrets
-  - cp -f .env.gitlab /run/secrets/.env
+  - cp -f .env.gitlab /secrets/.env
   - export APP_ENV=testing
   - php artisan key:generate
   - php artisan config:clear
