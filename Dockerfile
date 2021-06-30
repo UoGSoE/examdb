@@ -82,6 +82,7 @@ ENV APP_DEBUG=0
 #- Copy our start scripts and php/ldap configs in
 COPY docker/ldap.conf /etc/ldap/ldap.conf
 COPY docker/custom_php.ini /usr/local/etc/php/conf.d/custom_php.ini
+RUN rm /usr/local/etc/php/conf.d/uploads.ini
 
 #- Copy in our prod php dep's
 COPY --from=prod-composer /var/www/html/vendor /var/www/html/vendor
@@ -105,8 +106,12 @@ RUN if grep -q horizon composer.json; then php /var/www/html/artisan horizon:pub
 #- Force-publish laravel's mail templates - see https://github.com/laravel/framework/issues/21493#issuecomment-427986812
 RUN php /var/www/html/artisan vendor:publish --tag=laravel-mail
 
+#- Force-publish livewires css and js assets to work-around multi-tenancy behind traefik - see https://github.com/livewire/livewire/issues/242
+RUN if grep -q livewire composer.json; then php /var/www/html/artisan vendor:publish --force --tag=livewire:assets; fi
+
 #- Symlink the docker secret to the local .env so Laravel can see it
-RUN ln -sf /run/secrets/.env /var/www/html/.env
+# RUN ln -sf /run/secrets/.env /var/www/html/.env
+RUN ln -sf /secrets/.env /var/www/html/.env
 
 #- Clean up and production-cache our apps settings/views/routing
 RUN php /var/www/html/artisan storage:link && \
@@ -128,4 +133,5 @@ COPY --from=qa-composer /var/www/html/vendor /var/www/html/vendor
 RUN composer global require enlightn/security-checker && \
     curl -OL -o /usr/local/bin/phpcs https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar && \
     php /var/www/html/artisan view:clear && \
-    php /var/www/html/artisan cache:clear
+    php /var/www/html/artisan cache:clear && \
+    php /var/www/html/artisan optimize:clear

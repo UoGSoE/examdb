@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: schedular
+  namespace: ${NAMESPACE}
+  labels:
+    app: schedular
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: schedular
+  template:
+    metadata:
+      labels:
+        app: schedular
+    spec:
+      volumes:
+      - name: dotenv
+        secret:
+          secretName: dotenv
+      containers:
+      - image: ${IMAGE_NAME}
+        volumeMounts:
+          - name: dotenv
+            mountPath: "/secrets/"
+            readOnly: true
+        name: schedular
+        env:
+        - name: CONTAINER_ROLE
+          value: scheduler
+        resources:
+          requests:
+            memory: "100Mi"
+            cpu: "250m"
+          limits:
+            memory: "2048Mi"
+            cpu: "2000m"
+        livenessProbe:
+          exec:
+            command:
+            - pgrep
+            - php
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          exec:
+            command:
+            - pgrep
+            - php
+          initialDelaySeconds: 5
+          periodSeconds: 3

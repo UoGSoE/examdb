@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+  namespace: ${NAMESPACE}
+  labels:
+    app: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      volumes:
+      - name: dotenv
+        secret:
+          secretName: dotenv
+      initContainers:
+      - name: debug
+        volumeMounts:
+          - name: dotenv
+            mountPath: "/secrets/"
+            readOnly: true
+        image: ${IMAGE_NAME}
+        command: ["cat"]
+        args: ["/secrets/.env"]
+      - name: run-migrations
+        volumeMounts:
+          - name: dotenv
+            mountPath: "/secrets/"
+            readOnly: true
+        image: ${IMAGE_NAME}
+        command: ["php"]
+        args: ["/var/www/html/artisan", "migrate", "--force"]
+      - name: run-tenant-migrations
+        volumeMounts:
+          - name: dotenv
+            mountPath: "/secrets/"
+            readOnly: true
+        image: ${IMAGE_NAME}
+        command: ["php"]
+        args: ["/var/www/html/artisan", "tenants:migrate", "--force"]
+      containers:
+      - name: app
+        volumeMounts:
+          - name: dotenv
+            mountPath: "/secrets/"
+            readOnly: true
+        image: ${IMAGE_NAME}
+        env:
+        - name: CONTAINER_ROLE
+          value: app
+        ports:
+        - containerPort: 80
+          name: http
+        resources:
+          requests:
+            memory: "200Mi"
+            cpu: "250m"
+          limits:
+            memory: "2048Mi"
+            cpu: "2000m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+            httpHeaders:
+            - name: Host
+              value: localhost
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+            httpHeaders:
+            - name: Host
+              value: localhost
+          initialDelaySeconds: 10
+          periodSeconds: 3

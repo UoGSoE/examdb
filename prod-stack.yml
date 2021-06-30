@@ -38,7 +38,7 @@ x-deploy:
       - "node.labels.weaksauce==false"
   resources:
     limits:
-      memory: 2048M
+      memory: 4096M
   update_config:
     parallelism: 1
     failure_action: rollback

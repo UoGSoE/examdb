@@ -1,0 +1,11 @@
+resources:
+- namespace.yml
+- app-cert.yml
+- app-deployment.yml
+- app-ingress.yml
+- app-service.yml
+- queue-deployment.yml
+- schedular-deployment.yml
+- redis-deployment.yml
+- redis-service.yml
+- dotenv-secret.yml

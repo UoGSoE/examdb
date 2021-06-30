@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: queue
+  namespace: ${NAMESPACE}
+  labels:
+    app: queue
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: queue
+  template:
+    metadata:
+      labels:
+        app: queue
+    spec:
+      volumes:
+      - name: dotenv
+        secret:
+          secretName: dotenv
+      containers:
+      - image: ${IMAGE_NAME}
+        volumeMounts:
+          - name: dotenv
+            mountPath: "/secrets/"
+            readOnly: true
+        name: queue
+        env:
+        - name: CONTAINER_ROLE
+          value: queue
+        resources:
+          requests:
+            memory: "200Mi"
+            cpu: "250m"
+          limits:
+            memory: "2048Mi"
+            cpu: "2000m"
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - php /var/www/html/artisan horizon:status | grep -q 'Horizon is running'
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - php /var/www/html/artisan horizon:status | grep -q 'Horizon is running'
+          initialDelaySeconds: 5
+          periodSeconds: 3

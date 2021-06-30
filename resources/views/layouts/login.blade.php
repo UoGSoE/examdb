@@ -13,6 +13,8 @@
     <!-- Styles -->
     <link href="{{ global_asset('css/app.css') }}" rel="stylesheet">
 
+    @livewireStyles
+
     <!-- Routes -->
     @routes
 
@@ -28,6 +30,7 @@
         </div>
     </footer>
     <!-- Scripts -->
+    @livewireScripts
     <script src="{{ global_asset('js/app.js') }}" defer></script>
 </body>
 </html>

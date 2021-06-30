@@ -1,0 +1,13 @@
+resources:
+- base
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+images:
+- name: ${IMAGE_NAME}
+  newName: uogsoe/examdb
+  newTag: v1.2.24
+namespace: examdb
+secretGenerator:
+- name: dotenv
+  files:
+  - .env

@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: mailhog-cert
+  namespace: ${NAMESPACE}
+spec:
+  commonName: mail-${TRAEFIK_HOSTNAME}
+  secretName: mailhog-cert
+  dnsNames:
+    - mail-${TRAEFIK_HOSTNAME}
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer

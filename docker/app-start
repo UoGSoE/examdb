@@ -5,17 +5,25 @@ set -e
 role=${CONTAINER_ROLE:-app}
 env=${APP_ENV:-production}
 
+# if [ -e /secrets/.env ];
+# then
+  # we're in k8s - time to debug
+#   php artisan optimize:clear
+#   rm -f .env
+#   cp -f /secrets/.env .env
+# fi
+
 if [ "${env}" != "production" ];
 then
     # in QA/testing we wait for the local mysql container to come up
-    until nc -z -v -w30 mysql 3306
+    until nc -z -v -w30 mysql-service 3306
     do
         echo "Waiting for database connection..."
         sleep 5
     done
 fi
 
-until echo 'PING' | nc -w 1 redis 6379 | grep -q PONG
+until echo 'PING' | nc -w 1 redis-service 6379 | grep -q PONG
 do
     echo "Waiting for Redis connection..."
     sleep 5

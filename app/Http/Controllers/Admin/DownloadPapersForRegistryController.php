@@ -20,7 +20,8 @@ class DownloadPapersForRegistryController extends Controller
             abort(401);
         }
 
-        $decryptedContent = decrypt(Storage::disk('exampapers')->get('registry/papers_'.$user->id.'.zip'));
+        // $decryptedContent = decrypt(Storage::disk('exampapers')->get('registry/papers_'.$user->id.'.zip'));
+        $decryptedContent = Storage::disk('exampapers')->get('registry/papers_'.$user->id.'.zip');
 
         activity()
             ->causedBy($user)

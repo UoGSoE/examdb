@@ -1,0 +1,9 @@
+bases:
+- ../../base
+resources:
+- database-deployment.yml
+- database-service.yml
+- mailhog-deployment.yml
+- mailhog-service.yml
+- mailhog-ingress.yml
+- mailhog-cert.yml
