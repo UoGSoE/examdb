@@ -39,7 +39,8 @@ test:
   image: $QA_IMAGE_NAME
 
   services:
-  - ohffs/mysql:8-2000connections
+  - name: ohffs/mysql:8-2000connections
+    alias: mysql
 
   variables:
     MYSQL_DATABASE: examdb_test
