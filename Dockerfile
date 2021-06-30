@@ -1,8 +1,8 @@
 ### PHP version we are targetting
-ARG PHP_VERSION=8.0
+ARG COLLEGE_PHP_VERSION=8.0
 
 ### Placeholder for basic dev stage for use with docker-compose
-FROM uogsoe/soe-php-apache:${PHP_VERSION} as dev
+FROM uogsoe/soe-php-apache:${COLLEGE_PHP_VERSION} as dev
 
 ARG WKHTML_VERSION="0.12.6-1"
 
@@ -37,7 +37,7 @@ RUN npm install && \
 
 
 ### Prod php dependencies
-FROM uogsoe/soe-php-apache:${PHP_VERSION} as prod-composer
+FROM uogsoe/soe-php-apache:${COLLEGE_PHP_VERSION} as prod-composer
 ENV APP_ENV=production
 ENV APP_DEBUG=0
 
