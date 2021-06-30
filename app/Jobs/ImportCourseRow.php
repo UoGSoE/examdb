@@ -54,8 +54,8 @@ class ImportCourseRow implements ShouldQueue
             'discipline' => $this->spreadsheetRow[2],
             'semester' => $this->spreadsheetRow[3],
             'setters' => $this->spreadsheetRow[4] ?? '',
-            'moderators' => $this->spreadsheetRow[5] ?? '',
-            'is_examined' => $this->spreadsheetRow[6] ?? 'Y',
+            'moderators' => $this->spreadsheetRow[6] ?? '',
+            'is_examined' => $this->spreadsheetRow[10] ?? 'Y',
         ];
         $validator = Validator::make($row, [
             'code' => 'required|regex:/^[A-Z]+[0-9]+/i',
