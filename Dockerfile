@@ -116,9 +116,9 @@ RUN if grep -q livewire composer.json; then php -d memory_limit=2048M /var/www/h
 RUN ln -sf /secrets/.env /var/www/html/.env
 
 #- Clean up and production-cache our apps settings/views/routing
-RUN php /var/www/html/artisan storage:link && \
-    php /var/www/html/artisan view:cache && \
-    php /var/www/html/artisan route:cache && \
+RUN php -d memory_limit=2048M /var/www/html/artisan storage:link && \
+    php -d memory_limit=2048M /var/www/html/artisan view:cache && \
+    php -d memory_limit=2048M /var/www/html/artisan route:cache && \
     chown -R www-data:www-data storage bootstrap/cache
 
 
@@ -134,6 +134,6 @@ COPY --from=qa-composer /var/www/html/vendor /var/www/html/vendor
 #- Install sensiolabs security scanner and clear the caches
 RUN composer global require enlightn/security-checker && \
     curl -OL -o /usr/local/bin/phpcs https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar && \
-    php /var/www/html/artisan view:clear && \
-    php /var/www/html/artisan cache:clear && \
-    php /var/www/html/artisan optimize:clear
+    php -d memory_limit=2048M /var/www/html/artisan view:clear && \
+    php -d memory_limit=2048M /var/www/html/artisan cache:clear && \
+    php -d memory_limit=2048M /var/www/html/artisan optimize:clear
