@@ -36,7 +36,9 @@ cache:
   # - node_modules/
 
 test:
-  image: docker/compose:1.29.2
+  image:
+    name: docker/compose:1.29.2
+    entrypoint: [""]
 
   script:
   - export IMAGE_NAME=$QA_IMAGE_NAME
