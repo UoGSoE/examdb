@@ -1,0 +1,85 @@
+version: "2.4"
+
+x-env:
+  environment: &default-env
+    MAIL_MAILER: log
+    MAIL_ENCRYPTION: 0
+    REDIS_HOST: redis
+    QUEUE_CONNECTION: sync
+    SESSION_DRIVER: redis
+    DB_CONNECTION: mysql
+    DB_HOST: mysql
+    DB_PORT: 3306
+    DB_DATABASE: examdb_test
+    DB_USERNAME: root
+    DB_PASSWORD: secret
+    APP_NAME: "Exam Papers"
+    APP_ENV: testing
+    APP_KEY: base64:keR1/6nEaaCrtVwYR7e/dh053Sv0AfGUFoNWEgx7XP8=
+    APP_DEBUG: 1
+    CI: 1
+    APP_URL: http://examdb.test
+    LOG_CHANNEL: stderr
+    BROADCAST_DRIVER: log
+    CACHE_DRIVER: redis
+    SESSION_LIFETIME: 120
+    MAIL_FROM_ADDRESS: someone@example.com
+    MAIL_FROM_NAME: "Exam Database"
+    PASSWORD_CHECK: 0
+    SYSADMIN_EMAIL: someone@glasgow.ac.uk
+    FALLBACK_EMAIL: someone@glasgow.ac.uk
+    WLM_URI: ""
+    LDAP_SERVER: blah.blah.com
+    LDAP_OU: Gla
+    LDAP_USERNAME: 'your-gla-ldap-admin-username'
+    LDAP_PASSWORD: 'your-gla-ldap-admin-password'
+    API_KEY: secret
+    MINIO_KEY: ALIAIOSFODNN7EXAMPLE
+    MINIO_SECRET: wPalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    MINIO_REGION: us-east-1
+    MINIO_BUCKET: exampapers
+    MINIO_ENDPOINT: http://minio:9000
+
+services:
+  test:
+    image: ${IMAGE_NAME}
+    environment:
+      <<: *default-env
+    command: php artisan test -c phpunit.compose.xml
+    depends_on:
+      mysql:
+        condition: service_healthy
+      minio:
+        condition: service_started
+      redis:
+        condition: service_started
+
+  redis:
+    image: redis:5.0.4
+
+  mysql:
+    image: ohffs/mysql:8-2000connections
+    tmpfs:
+      - /var/lib/mysql
+    #   - /tmp
+    healthcheck:
+      test: "/usr/bin/mysql --user=root --password=secret --execute \"SHOW DATABASES;\""
+      interval: 3s
+      timeout: 1s
+      retries: 10
+    environment:
+      MYSQL_DATABASE: examdb_test
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_USER: homestead
+      MYSQL_PASSWORD: secret
+
+  minio:
+    image: minio/minio:RELEASE.2019-10-12T01-39-57Z
+    entrypoint: sh
+    command: -c 'mkdir -p /data/exampapers && /usr/bin/minio server /data'
+    environment:
+      MINIO_ACCESS_KEY: ALIAIOSFODNN7EXAMPLE
+      MINIO_SECRET_KEY: wPalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      MINIO_REGION: "us-east-1"
+      MINIO_BUCKET: "exampapers"
+      MINIO_ENDPOINT: "http://localhost:9000"
