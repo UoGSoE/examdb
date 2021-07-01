@@ -103,13 +103,13 @@ RUN rm -fr /var/www/html/bootstrap/cache/*.php
 RUN php -i | grep -i memory_limit
 RUN free -m
 #- If horizon is installed force it to rebuild it's public assets
-RUN if grep -q horizon composer.json; then php /var/www/html/artisan horizon:publish; fi
+RUN if grep -q horizon composer.json; then php -d memory_limit=2048M /var/www/html/artisan horizon:publish; fi
 
 #- Force-publish laravel's mail templates - see https://github.com/laravel/framework/issues/21493#issuecomment-427986812
-RUN php /var/www/html/artisan vendor:publish --tag=laravel-mail
+RUN php -d memory_limit=2048M /var/www/html/artisan vendor:publish --tag=laravel-mail
 
 #- Force-publish livewires css and js assets to work-around multi-tenancy behind traefik - see https://github.com/livewire/livewire/issues/242
-RUN if grep -q livewire composer.json; then php /var/www/html/artisan vendor:publish --force --tag=livewire:assets; fi
+RUN if grep -q livewire composer.json; then php -d memory_limit=2048M /var/www/html/artisan vendor:publish --force --tag=livewire:assets; fi
 
 #- Symlink the docker secret to the local .env so Laravel can see it
 # RUN ln -sf /run/secrets/.env /var/www/html/.env
