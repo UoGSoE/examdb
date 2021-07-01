@@ -132,7 +132,7 @@ ENV APP_DEBUG=0
 COPY --from=qa-composer /var/www/html/vendor /var/www/html/vendor
 
 #- Install sensiolabs security scanner and clear the caches
-RUN composer global require enlightn/security-checker && \
+RUN COMPOSER_MEMORY_LIMIT=2048M composer global require enlightn/security-checker && \
     curl -OL -o /usr/local/bin/phpcs https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar && \
     php -d memory_limit=2048M /var/www/html/artisan view:clear && \
     php -d memory_limit=2048M /var/www/html/artisan cache:clear && \
