@@ -100,6 +100,8 @@ COPY . /var/www/html
 #- Clear any cached composer stuff
 RUN rm -fr /var/www/html/bootstrap/cache/*.php
 
+RUN php -i | grep -i memory_limit
+RUN free -m
 #- If horizon is installed force it to rebuild it's public assets
 RUN if grep -q horizon composer.json; then php /var/www/html/artisan horizon:publish; fi
 
