@@ -137,7 +137,7 @@ COPY --from=qa-composer /var/www/html/vendor /var/www/html/vendor
 #     php -d memory_limit=2048M /var/www/html/artisan view:clear && \
 #     php -d memory_limit=2048M /var/www/html/artisan cache:clear && \
 #     php -d memory_limit=2048M /var/www/html/artisan optimize:clear
-RUN COMPOSER_MEMORY_LIMIT=2048M composer global require enlightn/security-checker
+RUN COMPOSER_MEMORY_LIMIT=2048M php -d memory_limit=2048M /usr/local/bin/composer global require enlightn/security-checker
 RUN curl -OL -o /usr/local/bin/phpcs https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar
 RUN php -d memory_limit=2048M /var/www/html/artisan view:clear
 RUN php -d memory_limit=2048M /var/www/html/artisan cache:clear
