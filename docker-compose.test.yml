@@ -2,7 +2,7 @@ version: "2.4"
 
 x-env:
   environment: &default-env
-    MAIL_MAILER: log
+    MAIL_MAILER: array
     MAIL_ENCRYPTION: 0
     REDIS_HOST: redis
     QUEUE_CONNECTION: sync
