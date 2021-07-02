@@ -10,8 +10,6 @@ spec:
   selector:
     matchLabels:
       app: mailhog
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:

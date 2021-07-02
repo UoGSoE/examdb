@@ -7,3 +7,5 @@ resources:
 - mailhog-service.yml
 - mailhog-ingress.yml
 - mailhog-cert.yml
+- minio-deployment.yml
+- minio-service.yml
