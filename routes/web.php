@@ -6,11 +6,10 @@ use App\Http\Controllers\Admin\UserController;
 Auth::routes();
 Route::post('/external-login', [\App\Http\Controllers\Auth\ExternalLoginController::class, 'sendLoginEmail'])->name('external-generate-login');
 Route::get('/external-login/{user}', [\App\Http\Controllers\Auth\ExternalLoginController::class, 'login'])->name('external-login')->middleware('signed');
-Route::get('/api/checklist/{checklist}', [\App\Http\Controllers\ChecklistController::class, 'show'])->name('api.course.checklist.show');
 
 Route::get('/clt', [\App\Http\Controllers\ChecklistController::class, 'test']);
-Route::get('/pdf/checklist/{checklist}', [\App\Http\Controllers\ChecklistController::class, 'test2'])->name('checklist.pdf')->middleware('signed');
-Route::get('/pdftest/{checklist}', [\App\Http\Controllers\ChecklistController::class, 'test2'])->name('checklist.pdfffff');
+Route::get('/pdf/checklist/{checklist}', [\App\Http\Controllers\ChecklistController::class, 'showForPdfPrinter'])->name('checklist.pdf')->middleware('signed');
+Route::get('/pdftest/{checklist}', [\App\Http\Controllers\ChecklistController::class, 'showForPdfPrinter'])->name('checklist.pdfffff');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::redirect('/', '/home', 301);

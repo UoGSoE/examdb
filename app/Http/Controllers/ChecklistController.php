@@ -43,12 +43,7 @@ class ChecklistController extends Controller
         ]);
     }
 
-    public function test()
-    {
-        BulkExportChecklists::dispatch(User::first());
-    }
-
-    public function test2(PaperChecklist $checklist)
+    public function showForPdfPrinter(PaperChecklist $checklist)
     {
         auth()->login(User::first());
         return view('pdf.checklist', [
