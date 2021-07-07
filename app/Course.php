@@ -122,6 +122,11 @@ class Course extends Model
         return $query->papers()->where('subcategory', '=', Paper::PAPER_FOR_REGISTRY);
     }
 
+    public function scopeExamined($query)
+    {
+        return $query->where('is_examined', '=', true);
+    }
+
     /**
      * This is horrific
      * TODO : make it not horrific.

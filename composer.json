@@ -10,6 +10,7 @@
     "require": {
         "php": "^7.3|^8.0",
         "appstract/laravel-options": "^2.2",
+        "barryvdh/laravel-dompdf": "^0.9.0",
         "barryvdh/laravel-snappy": "^0.4.8",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^2.0",

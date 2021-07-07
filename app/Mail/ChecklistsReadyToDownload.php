@@ -30,6 +30,6 @@ class ChecklistsReadyToDownload extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails/checklists_ready_to_download');
+        return $this->markdown('emails.checklists_ready_to_download');
     }
 }

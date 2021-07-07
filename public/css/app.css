@@ -18504,3 +18504,8 @@ readers do not read off random characters that represent icons */
   }
 }
 
+.level-is-shrinkable .level-left,
+.level-is-shrinkable .level-right {
+  flex-shrink: 1;
+}
+
