@@ -33,7 +33,6 @@ class BulkExportChecklists implements ShouldQueue
      */
     public function __construct(User $user)
     {
-        info('here2');
         $this->user = $user;
     }
 
@@ -44,7 +43,6 @@ class BulkExportChecklists implements ShouldQueue
      */
     public function handle()
     {
-        info('here3');
         Course::examined()->get()->each(function ($course) {
             $this->generatePdf($course, 'main');
             $this->generatePdf($course, 'resit');
@@ -53,15 +51,11 @@ class BulkExportChecklists implements ShouldQueue
 
         $this->zipAllPdfs();
 
-        $downloadLink = URL::temporarySignedRoute(
-            'download.checklists',
-            now()->addHours(config('exampapers.zip_expire_hours', 12)),
-            ['user' => $this->user->id]
-        );
-        Mail::to($this->user->email)->queue(new ChecklistsReadyToDownload($downloadLink));
+        $this->emailUserDownloadLink();
 
-        RemoveChecklistZip::dispatch("checklists/checklists_{$this->user->id}.zip")
-            ->delay(now()->addHours(config('exampapers.zip_expire_hours', 12)));
+        $this->queueRemovalOfZipFile();
+
+        $this->removeTempFiles();
     }
 
     protected function generatePdf(Course $course, string $type): void
@@ -70,6 +64,7 @@ class BulkExportChecklists implements ShouldQueue
         if (! $latestChecklist) {
             return;
         }
+
         $url = URL::temporarySignedRoute('checklist.pdf', now()->addMinutes(5), ['checklist' => $latestChecklist->id]);
         $response = Http::asMultipart()->post(config('exampapers.pdf_api_url'), [
             'remoteURL' => $url,
@@ -93,7 +88,7 @@ class BulkExportChecklists implements ShouldQueue
             $pdfName = basename($filename);
             $zip->addFile($filename, 'checklists/'.$pdfName);
         }
-        $zip->addFromString('ignore_me.txt', '?');
+        $zip->addFromString('ignore_me.txt', '?');  // to avoid possibly creating a zip with 0 files in - which causes a crash
         $zip->close();
 
         $url = Storage::disk('exampapers')->putFileAs('checklists', $localZipname, "checklists_{$this->user->id}.zip");
@@ -101,5 +96,26 @@ class BulkExportChecklists implements ShouldQueue
         unlink($localZipname);
 
         return $url;
+    }
+
+    protected function emailUserDownloadLink()
+    {
+        $downloadLink = URL::temporarySignedRoute(
+            'download.checklists',
+            now()->addHours(config('exampapers.zip_expire_hours', 12)),
+            ['user' => $this->user->id]
+        );
+        Mail::to($this->user->email)->queue(new ChecklistsReadyToDownload($downloadLink));
+    }
+
+    protected function queueRemovalOfZipFile()
+    {
+        RemoveChecklistZip::dispatch("checklists/checklists_{$this->user->id}.zip")
+            ->delay(now()->addHours(config('exampapers.zip_expire_hours', 12)));
+    }
+
+    protected function removeTempFiles()
+    {
+        collect($this->paths)->each(fn ($path) => unlink($path));
     }
 }

@@ -56,6 +56,7 @@ class ChecklistBulkDownloadTest extends TestCase
             config('exampapers.pdf_api_url') => Http::response('whatever', 200),
         ]);
         Storage::fake('exampapers');
+        Storage::fake('local');
         Queue::fake();
         $admin = create(User::class, ['is_admin' => true]);
         $glaCourse1 = create(Course::class, ['code' => 'ENG1234']);
@@ -72,6 +73,9 @@ class ChecklistBulkDownloadTest extends TestCase
             return $mail->hasTo($admin->email) && ! is_null($mail->link);
         });
         Storage::disk('exampapers')->assertExists('checklists/checklists_'.$admin->id.'.zip');
+
+        // this is just to assert that we didn't leave any temp files around - too lazy to write a specific test for it :-/
+        $this->assertCount(0, Storage::disk('local')->files('checklists/' . $admin->id));
     }
 
     /** @test */
