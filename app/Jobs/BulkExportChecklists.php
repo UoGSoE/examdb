@@ -48,6 +48,7 @@ class BulkExportChecklists implements ShouldQueue
         Course::examined()->get()->each(function ($course) {
             $this->generatePdf($course, 'main');
             $this->generatePdf($course, 'resit');
+            $this->generatePdf($course, 'assessment');
         });
 
         $this->zipAllPdfs();
