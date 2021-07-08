@@ -12,11 +12,13 @@ use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
+// fake the HTTP calls to the pdf printer api
 class ChecklistBulkDownloadTest extends TestCase
 {
     use RefreshDatabase;
@@ -50,6 +52,9 @@ class ChecklistBulkDownloadTest extends TestCase
     public function the_bulk_export_job_creates_a_zip_file_and_emails_the_person_who_requested_it()
     {
         Mail::fake();
+        Http::fake([
+            config('exampapers.pdf_api_url') => Http::response('whatever', 200),
+        ]);
         Storage::fake('exampapers');
         Queue::fake();
         $admin = create(User::class, ['is_admin' => true]);
@@ -94,6 +99,9 @@ class ChecklistBulkDownloadTest extends TestCase
     public function a_job_is_queued_which_will_remove_the_zip_file()
     {
         Mail::fake();
+        Http::fake([
+            config('exampapers.pdf_api_url') => Http::response('whatever', 200),
+        ]);
         Storage::fake('exampapers');
         Queue::fake();
         $admin = create(User::class, ['is_admin' => true]);
@@ -113,6 +121,9 @@ class ChecklistBulkDownloadTest extends TestCase
     public function the_remove_checklist_zip_job_does_remove_the_zip()
     {
         Mail::fake();
+        Http::fake([
+            config('exampapers.pdf_api_url') => Http::response('whatever', 200),
+        ]);
         Storage::fake('exampapers');
         $admin = create(User::class, ['is_admin' => true]);
         $glaCourse1 = create(Course::class, ['code' => 'ENG1234']);
