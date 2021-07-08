@@ -33,6 +33,7 @@ class BulkExportChecklists implements ShouldQueue
      */
     public function __construct(User $user)
     {
+        info('here2');
         $this->user = $user;
     }
 
@@ -43,6 +44,7 @@ class BulkExportChecklists implements ShouldQueue
      */
     public function handle()
     {
+        info('here3');
         Course::examined()->get()->each(function ($course) {
             $this->generatePdf($course, 'main');
             $this->generatePdf($course, 'resit');
@@ -68,13 +70,13 @@ class BulkExportChecklists implements ShouldQueue
             return;
         }
         $url = URL::temporarySignedRoute('checklist.pdf', now()->addMinutes(5), ['checklist' => $latestChecklist->id]);
-        $response = Http::attach('guff', 'hello', 'hello')->post(config('exampapers.pdf_api_url', [
+        $response = Http::asMultipart()->post(config('exampapers.pdf_api_url'), [
             'remoteURL' => $url,
             'marginTop' => 0,
             'marginBottom' => 0,
             'marginLeft' => 0,
             'marginRight' => 0,
-        ]));
+        ]);
 
         $filename = "checklists/{$this->user->id}/{$course->code}_{$type}_checklist.pdf";
         Storage::disk('local')->put($filename, $response->body());
