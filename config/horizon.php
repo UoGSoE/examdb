@@ -138,7 +138,7 @@ return [
                 'balance' => 'simple',
                 'processes' => 3,
                 'tries' => 2,
-                'timeout' => 1800,
+                'timeout' => 18000,
             ],
         ],
 
@@ -158,7 +158,7 @@ return [
                 'balance' => 'simple',
                 'processes' => 3,
                 'tries' => 2,
-                'timeout' => 1800,
+                'timeout' => 18000,
             ],
         ],
     ],
