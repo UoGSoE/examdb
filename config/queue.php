@@ -71,7 +71,7 @@ return [
             'driver' => 'redis',
             'connection' => 'default',
             'queue' => 'long-running-queue',
-            'retry_after' => 1200,
+            'retry_after' => 24000,
         ],
 
     ],
