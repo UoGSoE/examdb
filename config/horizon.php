@@ -109,7 +109,7 @@ return [
     | this value according to the resources available to your server.
     |
     */
-    'memory_limit' => 64,
+    'memory_limit' => 1024,
     /*
     |--------------------------------------------------------------------------
     | Queue Worker Configuration

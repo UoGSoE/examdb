@@ -18,8 +18,8 @@
     @livewireStyles
 
     <script>
-        window.user_id = {{ Auth::id() }};
-        window.user_admin = {{ Auth::user()->isAdmin() }};
+        window.user_id = {{ Auth::id() ?? 0 }};
+        window.user_admin = {{ Auth::user()->isAdmin() ? 1 : 0}};
         @if (isset($course))
             window.is_external = {{ Auth::check() && Auth::user()->isExternalFor($course) ? 1 : 0 }};
         @else

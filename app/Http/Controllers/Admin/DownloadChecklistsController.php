@@ -20,16 +20,13 @@ class DownloadChecklistsController extends Controller
             abort(401);
         }
 
-        $decryptedContent = decrypt(Storage::disk('exampapers')->get('checklists/checklists_'.$user->id.'.zip'));
 
-        activity()
-            ->causedBy($user)
-            ->log(
-                'Downloaded paper checklists ZIP'
-            );
+        activity()->causedBy($user)->log('Downloaded paper checklists ZIP');
 
-        return response()->streamDownload(function () use ($decryptedContent) {
-            echo $decryptedContent;
+        $contents = Storage::disk('exampapers')->get('checklists/checklists_'.$user->id.'.zip');
+
+        return response()->streamDownload(function () use ($contents) {
+            echo $contents;
         }, 'paper_checklists_'.now()->format('d_m_Y_H_i').'.zip', ['content-type' => 'application/zip']);
     }
 }

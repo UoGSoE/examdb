@@ -35,7 +35,6 @@ RUN npm install && \
     npm run production && \
     npm cache clean --force
 
-
 ### Prod php dependencies
 FROM uogsoe/soe-php-apache:${PHP_VERSION} as prod-composer
 ENV APP_ENV=production
