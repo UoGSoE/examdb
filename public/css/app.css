@@ -16729,3 +16729,12 @@ readers do not read off random characters that represent icons */
     transform: scale(1);
   }
 }
+<<<<<<< HEAD
+=======
+
+.level-is-shrinkable .level-left,
+.level-is-shrinkable .level-right {
+  flex-shrink: 1;
+}
+
+>>>>>>> master

@@ -13,6 +13,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
@@ -51,9 +52,12 @@ class ChecklistBulkDownloadTest extends TenantTestCase
     /** @test */
     public function the_bulk_export_job_creates_a_zip_file_and_emails_the_person_who_requested_it()
     {
-        $this->markTestSkipped('TODO - switch to puppateer based pdf renderer');
         Mail::fake();
+        Http::fake([
+            config('exampapers.pdf_api_url') => Http::response('whatever', 200),
+        ]);
         Storage::fake('exampapers');
+        Storage::fake('local');
         Queue::fake();
         $admin = create(User::class, ['is_admin' => true]);
         $glaCourse1 = create(Course::class, ['code' => 'ENG1234']);
@@ -70,12 +74,15 @@ class ChecklistBulkDownloadTest extends TenantTestCase
             return $mail->hasTo($admin->email) && ! is_null($mail->link);
         });
         Storage::disk('exampapers')->assertExists('checklists/checklists_'.$admin->id.'.zip');
+
+        // this is just to assert that we didn't leave any temp files around - too lazy to write a specific test for it :-/
+        $this->assertCount(0, Storage::disk('local')->files('checklists/' . $admin->id));
     }
 
     /** @test */
     public function only_the_person_who_requested_the_download_can_access_it()
     {
-        $this->markTestSkipped('TODO - switch to puppateer based pdf renderer');
+        $this->markTestSkipped('TODO - fix this up as the ChecklistExporter isnt used any more');
 
         Mail::fake();
         Storage::fake('exampapers');
@@ -96,9 +103,10 @@ class ChecklistBulkDownloadTest extends TenantTestCase
     /** @test */
     public function a_job_is_queued_which_will_remove_the_zip_file()
     {
-        $this->markTestSkipped('TODO - switch to puppateer based pdf renderer');
-
         Mail::fake();
+        Http::fake([
+            config('exampapers.pdf_api_url') => Http::response('whatever', 200),
+        ]);
         Storage::fake('exampapers');
         Queue::fake();
         $admin = create(User::class, ['is_admin' => true]);
@@ -117,9 +125,10 @@ class ChecklistBulkDownloadTest extends TenantTestCase
     /** @test */
     public function the_remove_checklist_zip_job_does_remove_the_zip()
     {
-        $this->markTestSkipped('TODO - switch to puppateer based pdf renderer');
-
         Mail::fake();
+        Http::fake([
+            config('exampapers.pdf_api_url') => Http::response('whatever', 200),
+        ]);
         Storage::fake('exampapers');
         $admin = create(User::class, ['is_admin' => true]);
         $glaCourse1 = create(Course::class, ['code' => 'ENG1234']);

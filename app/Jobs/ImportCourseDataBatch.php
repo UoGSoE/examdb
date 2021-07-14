@@ -46,7 +46,6 @@ class ImportCourseDataBatch implements ShouldQueue
         collect($this->spreadsheetData)->each(fn ($row, $rowNumber) => $batch->add(new ImportCourseRow($row, $rowNumber + 1)));
         $batch->allowFailures()->finally(function ($batch) use ($user) {
             $errors = Redis::smembers($batch->id . '-errors');
-            ray('hello');
             Redis::del($batch->id . '-errors');
             Mail::to($user)->queue(new CourseImportProcessComplete($errors));
         })->dispatch();

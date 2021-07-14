@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Course;
-use App\PaperChecklist;
 use App\User;
+use App\Course;
+use App\Jobs\BulkExportChecklists;
+use App\PaperChecklist;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 
 class ChecklistController extends Controller
 {
@@ -36,6 +40,16 @@ class ChecklistController extends Controller
             'course' => $course,
             'category' => $category,
             'checklist' => $checklist,
+        ]);
+    }
+
+    public function showForPdfPrinter(PaperChecklist $checklist)
+    {
+        auth()->login(User::first());
+        return view('pdf.checklist', [
+            'checklist' => $checklist,
+            'course' => $checklist->course,
+            'category' => $checklist->category,
         ]);
     }
 }

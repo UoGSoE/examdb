@@ -7,6 +7,7 @@ return [
     'fallback_email' => env('FALLBACK_EMAIL'),
     'wlm_uri' => env('WLM_URI'),
     'api_key' => env('API_KEY', 'SET_ME_TO_SOMETHING_RANDOM'),
+    'pdf_api_url' => env('PDF_API_URL'),
     'zip_expire_hours' => 2, // length of download link is valid, and file removed after expires
     'registry_temp_file_prefix' => 'ARGH',
     'checklist_temp_file_prefix' => 'MNGH',
