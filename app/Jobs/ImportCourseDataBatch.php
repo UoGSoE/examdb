@@ -41,13 +41,19 @@ class ImportCourseDataBatch implements ShouldQueue
      */
     public function handle()
     {
-        $batch = Bus::batch([]);
         $user = User::find($this->userId);
-        collect($this->spreadsheetData)->each(fn ($row, $rowNumber) => $batch->add(new ImportCourseRow($row, $rowNumber + 1)));
-        $batch->allowFailures()->finally(function ($batch) use ($user) {
-            $errors = Redis::smembers($batch->id . '-errors');
-            Redis::del($batch->id . '-errors');
-            Mail::to($user)->queue(new CourseImportProcessComplete($errors));
-        })->dispatch();
+        Bus::batch([])
+            ->add(
+                collect($this->spreadsheetData)
+                    ->map(fn ($row, $rowNumber) => new ImportCourseRow($row, $rowNumber + 1))
+                    ->all()
+            )
+            ->allowFailures()
+            ->finally(function ($batch) use ($user) {
+                $errors = Redis::smembers($batch->id . '-errors');
+                Redis::del($batch->id . '-errors');
+                Mail::to($user)->queue(new CourseImportProcessComplete($errors));
+            })
+            ->dispatch();
     }
 }
