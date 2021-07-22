@@ -18,16 +18,13 @@ class NotifyExternals implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $disciplineTitle;
-
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(string $disciplineTitle)
+    public function __construct(public string $disciplineTitle)
     {
-        $this->disciplineTitle = $disciplineTitle;
     }
 
     /**

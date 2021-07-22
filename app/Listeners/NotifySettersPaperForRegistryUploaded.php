@@ -12,15 +12,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 class NotifySettersPaperForRegistryUploaded
 {
     /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-    }
-
-    /**
      * Handle the event.
      *
      * @param  object  $event

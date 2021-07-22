@@ -27,7 +27,6 @@ class NotifyStaffThatChecklistUpdated
     /**
      * Handle the event.
      *
-     * @param  EventsChecklistUpdated  $event
      * @return void
      */
     public function handle(EventsChecklistUpdated $event)

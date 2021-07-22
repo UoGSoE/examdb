@@ -130,7 +130,6 @@ class User extends Authenticatable
             ->wherePivot('is_setter', true)
             ->count() > 0
         );
-        return $this->$cacheKey;
     }
 
     public function isModeratorFor(Course $course): bool
@@ -180,7 +179,7 @@ class User extends Authenticatable
 
     public function isExternal()
     {
-        return strpos($this->username, '@') !== false;
+        return str_contains($this->username, '@');
     }
 
     public function isInternal()

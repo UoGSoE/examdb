@@ -8,7 +8,7 @@ use Livewire\Component;
 
 class CourseIndex extends Component
 {
-    public $disciplineFilter = null;
+    public $disciplineFilter;
 
     public $includeTrashed = false;
     public $excludeNotExamined = false;

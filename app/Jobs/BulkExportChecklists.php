@@ -20,9 +20,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 
 class BulkExportChecklists implements ShouldQueue
 {
+    public $userId;
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    public $user;
 
     protected $paths = [];
 
@@ -31,9 +30,8 @@ class BulkExportChecklists implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(User $user)
+    public function __construct(public User $user)
     {
-        $this->user = $user;
     }
 
     /**

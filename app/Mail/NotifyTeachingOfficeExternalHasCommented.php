@@ -14,16 +14,13 @@ class NotifyTeachingOfficeExternalHasCommented extends Mailable implements Shoul
 
     public $course;
 
-    public $courseId;
-
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(int $courseId)
+    public function __construct(public int $courseId)
     {
-        $this->courseId = $courseId;
     }
 
     /**

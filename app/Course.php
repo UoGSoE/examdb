@@ -160,15 +160,13 @@ class Course extends Model
         // figure out if the moderator has fully approved the paper
         if (auth()->check() && auth()->user()->isModeratorFor($this)) {
             $fieldName = "moderator_approved_{$category}";
-            $this->$fieldName = (bool) (
-                Arr::get($fields, 'overall_quality_appropriate', false)
-                &&
-                ! Arr::get($fields, 'should_revise_questions', false)
-                &&
-                Arr::get($fields, 'solution_marks_appropriate', false)
-                &&
-                ! Arr::get($fields, 'solutions_marks_adjusted', false)
-            );
+            $this->$fieldName = Arr::get($fields, 'overall_quality_appropriate', false)
+            &&
+            ! Arr::get($fields, 'should_revise_questions', false)
+            &&
+            Arr::get($fields, 'solution_marks_appropriate', false)
+            &&
+            ! Arr::get($fields, 'solutions_marks_adjusted', false);
         }
 
         if (auth()->check() && auth()->user()->isExternalFor($this)) {
@@ -477,7 +475,7 @@ class Course extends Model
 
     public function getUserApprovedMainAttribute(? User $user): bool
     {
-        if (! $user) {
+        if ($user === null) {
             $user = auth()->user();
         }
 
@@ -486,7 +484,7 @@ class Course extends Model
 
     public function getUserApprovedResitAttribute(? User $user): bool
     {
-        if (! $user) {
+        if ($user === null) {
             $user = auth()->user();
         }
 
@@ -574,7 +572,7 @@ class Course extends Model
      */
     public function createDuplicate(string $newCode): Course
     {
-        if (preg_match('/^[A-Z]+[0-9]+/', $newCode) !== 1) {
+        if (preg_match('/^[A-Z]+\d+/', $newCode) !== 1) {
             throw new InvalidArgumentException("New course code of {$newCode} looks invalid...");
         }
 

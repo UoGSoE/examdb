@@ -19,7 +19,6 @@ class ImpersonationStarted
     /**
      * Handle the event.
      *
-     * @param  TakeImpersonation  $event
      * @return void
      */
     public function handle(TakeImpersonation $event)

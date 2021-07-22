@@ -24,7 +24,6 @@ class PaperWasApproved
     /**
      * Handle the event.
      *
-     * @param  PaperApproved  $event
      * @return void
      */
     public function handle(PaperApproved $event)

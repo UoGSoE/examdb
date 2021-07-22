@@ -12,18 +12,21 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $parameters = $containerConfigurator->parameters();
 
     // Define what rule sets will be applied
-    $parameters->set(Option::SETS, [
-        SetList::DEAD_CODE,
-        SetList::PHP_80,
-    ]);
+    $containerConfigurator->import(SetList::DEAD_CODE);
+    $containerConfigurator->import(SetList::PHP_80);
+
     $parameters->set(Option::SKIP, [
         \Rector\DeadCode\Rector\ClassMethod\RemoveUnusedParameterRector::class,
         \Rector\DeadCode\Rector\ClassMethod\RemoveDelegatingParentCallRector::class,
 // uncomment the next line on a first run to prevent some weirdness
-//        \Rector\DeadCode\Rector\Assign\RemoveUnusedVariableAssignRector::class,
+        \Rector\DeadCode\Rector\Assign\RemoveUnusedVariableAssignRector::class,
     ]);
 
     // get services (needed for register a single rule)
+    // $services = $containerConfigurator->services();
+
+    // register a single rule
+    // $services->set(TypedPropertyRector::class);
     $services = $containerConfigurator->services();
 
     // register a single rule
@@ -46,6 +49,4 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(\Rector\CodeQuality\Rector\Return_\SimplifyUselessVariableRector::class);
     $services->set(\Rector\CodeQuality\Rector\Catch_\ThrowWithPreviousExceptionRector::class);
     $services->set(\Rector\CodingStyle\Rector\FuncCall\ConsistentImplodeRector::class);
-
-
 };

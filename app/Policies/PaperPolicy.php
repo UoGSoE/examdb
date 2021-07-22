@@ -14,8 +14,6 @@ class PaperPolicy
     /**
      * Determine whether the user can view the paper.
      *
-     * @param  \App\User  $user
-     * @param  \App\Paper  $paper
      * @return mixed
      */
     public function view(User $user, Paper $paper)
@@ -30,7 +28,6 @@ class PaperPolicy
     /**
      * Determine whether the user can create papers.
      *
-     * @param  \App\User  $user
      * @return mixed
      */
     public function create(User $user)
@@ -41,8 +38,6 @@ class PaperPolicy
     /**
      * Determine whether the user can update the paper.
      *
-     * @param  \App\User  $user
-     * @param  \App\Paper  $paper
      * @return mixed
      */
     public function update(User $user, Paper $paper)
@@ -53,8 +48,6 @@ class PaperPolicy
     /**
      * Determine whether the user can delete the paper.
      *
-     * @param  \App\User  $user
-     * @param  \App\Paper  $paper
      * @return mixed
      */
     public function delete(User $user, Paper $paper)
@@ -73,8 +66,6 @@ class PaperPolicy
     /**
      * Determine whether the user can restore the paper.
      *
-     * @param  \App\User  $user
-     * @param  \App\Paper  $paper
      * @return mixed
      */
     public function restore(User $user, Paper $paper)
@@ -85,8 +76,6 @@ class PaperPolicy
     /**
      * Determine whether the user can permanently delete the paper.
      *
-     * @param  \App\User  $user
-     * @param  \App\Paper  $paper
      * @return mixed
      */
     public function forceDelete(User $user, Paper $paper)

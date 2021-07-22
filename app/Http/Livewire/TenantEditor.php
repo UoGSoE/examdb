@@ -19,7 +19,7 @@ class TenantEditor extends Component
 
     public $tempNewName = '';
 
-    public $editingTenantId = null;
+    public $editingTenantId;
 
     public $editingDomainName = '';
 
@@ -97,7 +97,7 @@ class TenantEditor extends Component
 
         try {
             $user = \Ldap::findUser($this->newUsername);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->ldapErrorMessage = 'Could not connect to LDAP.';
             return;
         }

@@ -60,7 +60,7 @@ class SysadminEditor extends Component
 
         try {
             $user = \Ldap::findUser($this->username);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->ldapErrorMessage = 'Could not connect to LDAP.';
             return;
         }

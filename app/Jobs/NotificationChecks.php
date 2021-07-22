@@ -28,11 +28,13 @@ use Illuminate\Contracts\Queue\ShouldBeUnique;
 
 class NotificationChecks implements ShouldQueue
 {
+    /**
+     * @var int|mixed
+     */
+    public $semester;
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $tenant;
-
-    public $tenantId;
 
     public $exceptions = [];
 
@@ -41,9 +43,8 @@ class NotificationChecks implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($tenantId)
+    public function __construct(public $tenantId)
     {
-        $this->tenantId = $tenantId;
     }
 
     /**
@@ -123,7 +124,7 @@ class NotificationChecks implements ShouldQueue
         try {
             $date = Carbon::parse(option('date_receive_call_for_papers'));
         } catch (Exception $e) {
-            throw new \Exception('Could not parse date_receive_call_for_papers');
+            throw new \Exception('Could not parse date_receive_call_for_papers', $e->getCode(), $e);
         }
 
         if ($date->dayOfYear > now()->dayOfYear) {
@@ -141,10 +142,8 @@ class NotificationChecks implements ShouldQueue
 
         try {
             $date = Carbon::parse(option($optionName));
-        } catch (Exception $e) {
+        } catch (Exception) {
             throw new \Exception("Could not parse $optionName");
-
-            return;
         }
 
         $emailAddresses = Course::with('setters')
@@ -191,7 +190,7 @@ class NotificationChecks implements ShouldQueue
 
         try {
             $date = Carbon::parse(option($optionName));
-        } catch (Exception $e) {
+        } catch (Exception) {
             throw new \Exception("Could not parse $optionName");
         }
 
@@ -234,7 +233,7 @@ class NotificationChecks implements ShouldQueue
 
         try {
             $date = Carbon::parse(option($optionName));
-        } catch (Exception $e) {
+        } catch (Exception) {
             throw new \Exception("Could not parse $optionName");
         }
 
@@ -278,7 +277,7 @@ class NotificationChecks implements ShouldQueue
 
         try {
             $date = Carbon::parse(option($optionName));
-        } catch (Exception $e) {
+        } catch (Exception) {
             throw new \Exception("Could not parse $optionName");
         }
 
@@ -305,7 +304,7 @@ class NotificationChecks implements ShouldQueue
 
         try {
             $date = Carbon::parse(option($optionName));
-        } catch (Exception $e) {
+        } catch (Exception) {
             throw new \Exception("Could not parse $optionName");
         }
 
@@ -346,7 +345,7 @@ class NotificationChecks implements ShouldQueue
 
         try {
             $date = Carbon::parse(option($optionName));
-        } catch (Exception $e) {
+        } catch (Exception) {
             throw new \Exception("Could not parse $optionName");
         }
 

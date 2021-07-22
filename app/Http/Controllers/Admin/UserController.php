@@ -41,7 +41,7 @@ class UserController extends Controller
         ]);
 
         // if the username is an email address, then user is external to the uni
-        $data['is_external'] = strpos($data['username'], '@') !== false;
+        $data['is_external'] = str_contains($data['username'], '@');
 
         // convert usernames & emails to all lower-case
         $data['username'] = strtolower($data['username']);

@@ -23,7 +23,6 @@ class NotifySetterThatExternalHasCommented
     /**
      * Handle the event.
      *
-     * @param  PaperAdded  $event
      * @return void
      */
     public function handle(PaperAdded $event)

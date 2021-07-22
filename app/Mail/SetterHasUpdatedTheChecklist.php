@@ -15,19 +15,13 @@ class SetterHasUpdatedTheChecklist extends Mailable
 
     public $course;
 
-    public $couseId;
-
-    public $deadline;
-
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(int $courseId, string $deadline)
+    public function __construct(public int $courseId, public string $deadline)
     {
-        $this->courseId = $courseId;
-        $this->deadline = $deadline;
     }
 
     /**

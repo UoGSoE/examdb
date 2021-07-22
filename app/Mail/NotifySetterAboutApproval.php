@@ -16,13 +16,7 @@ class NotifySetterAboutApproval extends Mailable
 
     public $course;
 
-    public $courseId;
-
-    public $category;
-
     public $user;
-
-    public $userId;
 
     public $userType;
 
@@ -31,11 +25,8 @@ class NotifySetterAboutApproval extends Mailable
      *
      * @return void
      */
-    public function __construct(int $courseId, string $category, int $userId)
+    public function __construct(public int $courseId, public string $category, public int $userId)
     {
-        $this->courseId = $courseId;
-        $this->category = $category;
-        $this->userId = $userId;
     }
 
     /**

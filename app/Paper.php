@@ -143,11 +143,7 @@ class Paper extends Model
         if ($this->mimetype === 'application/pdf') {
             return true;
         }
-        if (preg_match('/.pdf$/i', $this->original_filename) === 1) {
-            return true;
-        }
-
-        return false;
+        return preg_match('/.pdf$/i', $this->original_filename) === 1;
     }
 
     protected function isAWordDocument()
@@ -155,11 +151,7 @@ class Paper extends Model
         if ($this->mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
             return true;
         }
-        if (preg_match('/.doc(?x)$/i', $this->original_filename) === 1) {
-            return true;
-        }
-
-        return false;
+        return preg_match('/.doc(?x)$/i', $this->original_filename) === 1;
     }
 
     protected function isAZip()
@@ -167,11 +159,7 @@ class Paper extends Model
         if ($this->mimetype === 'application/zip') {
             return true;
         }
-        if (preg_match('/.zip$/i', $this->original_filename) === 1) {
-            return true;
-        }
-
-        return false;
+        return preg_match('/.zip$/i', $this->original_filename) === 1;
     }
 
     public function getFormattedDateAttribute()
