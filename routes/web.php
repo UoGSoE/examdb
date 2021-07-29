@@ -7,11 +7,9 @@ Auth::routes();
 Route::post('/external-login', [\App\Http\Controllers\Auth\ExternalLoginController::class, 'sendLoginEmail'])->name('external-generate-login');
 Route::get('/external-login/{user}', [\App\Http\Controllers\Auth\ExternalLoginController::class, 'login'])->name('external-login')->middleware('signed');
 
-Route::get('/clt', [\App\Http\Controllers\ChecklistController::class, 'test']);
 Route::get('/pdf/checklist/{checklist}', [\App\Http\Controllers\ChecklistController::class, 'showForPdfPrinter'])->name('checklist.pdf')->middleware('signed');
-Route::get('/pdftest/{checklist}', [\App\Http\Controllers\ChecklistController::class, 'showForPdfPrinter'])->name('checklist.pdfffff');
 
-Route::group(['middleware' => 'auth'], function () {
+Route::group(['middleware' => ['auth', 'academicsession']], function () {
     Route::redirect('/', '/home', 301);
 
     Route::impersonate(); // https: //github.com/404labfr/laravel-impersonate
@@ -33,6 +31,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/archivedpaper/{id}', [\App\Http\Controllers\ArchivedPaperController::class, 'show'])->name('archived.paper.show');
 
     Route::group(['middleware' => 'admin', 'prefix' => '/admin'], function () {
+        Route::post('/academicsession/{session}/set', [\App\Http\Controllers\Admin\AcademicSessionController::class, 'set'])->name('academicsession.set');
+        Route::post('/academicsession', [\App\Http\Controllers\Admin\AcademicSessionController::class, 'store'])->name('academicsession.store');
+
         Route::get('log', [\App\Http\Controllers\Admin\ActivityLogController::class, 'index'])->name('activity.index');
         Route::get('course', [\App\Http\Controllers\Admin\CourseController::class, 'index'])->name('course.index');
         Route::get('paper', [\App\Http\Controllers\Admin\PaperController::class, 'index'])->name('paper.index');
