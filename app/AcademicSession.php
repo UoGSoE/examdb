@@ -23,4 +23,9 @@ class AcademicSession extends Model
             'session' => $year . '/' . $year + 1,
         ]);
     }
+
+    public static function findBySession(string $session)
+    {
+        return static::where('session', '=', $session)->first();
+    }
 }

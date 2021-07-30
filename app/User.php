@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\AcademicSession;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Cache;
 use App\CanBeCreatedFromOutsideSources;
@@ -91,6 +92,11 @@ class User extends Authenticatable
             ->with('course')
             ->orderByDesc('created_at')
             ->get();
+    }
+
+    public function getCurrentAcademicSession()
+    {
+        return AcademicSession::findBySession(session('academic_session'));
     }
 
     public function markAsSetter(Course $course)

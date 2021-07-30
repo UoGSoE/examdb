@@ -22,10 +22,10 @@ class AcademicSessionController extends Controller
             'session' => 'required|string|max:255'
         ]);
 
-        $session = AcademicSession::create($data);
+        $newSession = AcademicSession::create($data);
 
-        CopyDataToNewAcademicSession::dispatch($session);
+        CopyDataToNewAcademicSession::dispatch($request->user()->getCurrentAcademicSession(), $newSession, $request()->user());
 
-        return redirect('/home')->with('success', 'Session ' . $session->session . ' created.  You will get an email once all the data is copied.');
+        return redirect('/home')->with('success', 'Session ' . $newSession->session . ' created.  You will get an email once all the data is copied.');
     }
 }

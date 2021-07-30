@@ -22,7 +22,8 @@ class AcademicSessionFactory extends Factory
     public function definition()
     {
         return [
-            'session' => '2020/2021',
+            'session' => now()->year . '/' . (now()->year + 1),
+            'is_default' => false,
         ];
     }
 }
