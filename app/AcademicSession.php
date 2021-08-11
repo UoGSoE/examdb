@@ -9,9 +9,9 @@ class AcademicSession extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['session'];
+    protected $fillable = ['session', 'is_default'];
 
-    public static function createForThisYear()
+    public static function createFirstSession(): static
     {
         if (now()->month < 9) {
             $year = now()->year;
@@ -21,7 +21,13 @@ class AcademicSession extends Model
 
         return static::create([
             'session' => $year . '/' . $year + 1,
+            'is_default' => true,
         ]);
+    }
+
+    public static function getDefault()
+    {
+        return static::where('is_default', '=', true)->first();
     }
 
     public static function findBySession(string $session)

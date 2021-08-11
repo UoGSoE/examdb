@@ -18,11 +18,11 @@ class AcademicSessionMiddleware
     public function handle(Request $request, Closure $next)
     {
         if ($request->session()->missing('academic_session')) {
-            $latestSession = AcademicSession::latest()->first();
-            if (! $latestSession) {
-                $latestSession = AcademicSession::createForThisYear();
+            $defaultSession = AcademicSession::getDefault();
+            if (! $defaultSession) {
+                $defaultSession = AcademicSession::createFirstSession();
             };
-            $request->session()->put('academic_session', $latestSession->session);
+            $request->session()->put('academic_session', $defaultSession->session);
         }
 
         return $next($request);

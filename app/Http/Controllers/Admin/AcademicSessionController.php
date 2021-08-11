@@ -19,12 +19,13 @@ class AcademicSessionController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'session' => 'required|string|max:255'
+            'session' => 'required|string|max:255',
+            'is_default' => 'required|boolean',
         ]);
 
         $newSession = AcademicSession::create($data);
 
-        CopyDataToNewAcademicSession::dispatch($request->user()->getCurrentAcademicSession(), $newSession, $request()->user());
+        CopyDataToNewAcademicSession::dispatch($request->user()->getCurrentAcademicSession(), $newSession, $request->user());
 
         return redirect('/home')->with('success', 'Session ' . $newSession->session . ' created.  You will get an email once all the data is copied.');
     }

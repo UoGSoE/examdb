@@ -20,11 +20,11 @@ class AcademicSessionTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function logged_in_users_default_to_the_latest_academic_session()
+    public function logged_in_users_default_to_the_default_academic_session()
     {
-        $oldSession = AcademicSession::factory()->create(['session' => '1904/1905', 'created_at' => '2018-01-01']);
-        $newSession = AcademicSession::factory()->create(['session' => '2020/2021', 'created_at' => '2020-01-01']);
-        $midSession = AcademicSession::factory()->create(['session' => '1944/1945', 'created_at' => '2019-01-01']);
+        $oldSession = AcademicSession::factory()->create(['session' => '1904/1905', 'is_default' => false]);
+        $newSession = AcademicSession::factory()->create(['session' => '2020/2021', 'is_default' => true]);
+        $midSession = AcademicSession::factory()->create(['session' => '1944/1945', 'is_default' => false]);
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->get('/home');
@@ -52,7 +52,7 @@ class AcademicSessionTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $this->travel(Carbon::createFromFormat('Y-m-d', '2020-01-01'));
+        $this->travelTo(Carbon::createFromFormat('Y-m-d', '2020-01-01'));
 
         $response = $this->actingAs($user)->get('/home');
 
@@ -103,8 +103,8 @@ class AcademicSessionTest extends TestCase
     public function regular_users_cant_change_their_academic_session()
     {
         $user = User::factory()->create();
-        $session1 = AcademicSession::factory()->create(['session' => '1990/1991', 'created_at' => '2019-01-01']);
-        $session2 = AcademicSession::factory()->create(['session' => '1980/1981', 'created_at' => '2018-01-01']);
+        $session1 = AcademicSession::factory()->create(['session' => '1990/1991', 'is_default' => true]);
+        $session2 = AcademicSession::factory()->create(['session' => '1980/1981', 'is_default' => false]);
 
         $response = $this->actingAs($user)->post(route('academicsession.set', ['session' => $session2->id]));
 
@@ -115,18 +115,20 @@ class AcademicSessionTest extends TestCase
     /** @test */
     public function admins_can_create_a_new_academic_session()
     {
+        $this->withoutExceptionHandling();
         Queue::fake();
         $admin = User::factory()->admin()->create();
         $existingSession = AcademicSession::factory()->create(['session' => '1980/1981']);
 
         $response = $this->actingAs($admin)->post(route('academicsession.store'), [
             'session' => '1990/1991',
+            'is_default' => false,
         ]);
 
         $response->assertRedirect('/home');
         $this->assertDatabaseHas('academic_sessions', ['session' => '1990/1991']);
         Queue::assertPushed(CopyDataToNewAcademicSession::class, 1);
-        Queue::assertPushed(CopyDataToNewAcademicSession::class, fn ($job) => $job->session->session === '1990/1991');
+        Queue::assertPushed(CopyDataToNewAcademicSession::class, fn ($job) => $job->targetSession->session === '1990/1991');
     }
 
     /** @test */
@@ -144,12 +146,13 @@ class AcademicSessionTest extends TestCase
         $response->assertRedirect('/home');
         $this->assertDatabaseHas('academic_sessions', ['session' => '1990/1991', 'is_default' => true]);
         Queue::assertPushed(CopyDataToNewAcademicSession::class, 1);
-        Queue::assertPushed(CopyDataToNewAcademicSession::class, fn ($job) => $job->session->session === '1990/1991');
+        Queue::assertPushed(CopyDataToNewAcademicSession::class, fn ($job) => $job->targetSession->session === '1990/1991');
     }
 
     /** @test */
     public function when_the_new_session_is_created_the_existing_session_data_is_copied_and_updated_with_the_right_session_info()
     {
+        $admin = User::factory()->admin()->create();
         $oldSession = AcademicSession::factory()->create(['session' => '1980/1981']);
         $discipline1 = Discipline::factory()->create(['academic_session_id' => $oldSession->id]);
         $discipline2 = Discipline::factory()->create(['academic_session_id' => $oldSession->id]);
@@ -165,7 +168,7 @@ class AcademicSessionTest extends TestCase
         $externaUser->markAsExternal($course2);
         $newSession = AcademicSession::factory()->create(['session' => '1990/1991']);
 
-        CopyDataToNewAcademicSession::dispatchSync($oldSession, $newSession);
+        CopyDataToNewAcademicSession::dispatchSync($oldSession, $newSession, $admin);
 
         $this->assertDatabaseHas('courses', ['code' => $course1->code, 'academic_session_id' => $newSession->id]);
         $this->assertDatabaseHas('courses', ['code' => $course2->code, 'academic_session_id' => $newSession->id]);
