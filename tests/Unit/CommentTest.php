@@ -2,16 +2,23 @@
 
 namespace Tests\Unit;
 
-use App\Comment;
-use App\Paper;
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Paper;
+use App\Comment;
 use Tests\TestCase;
+use App\AcademicSession;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CommentTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        AcademicSession::createFirstSession();
+    }
 
     /** @test */
     public function a_paper_can_have_comments_added_to_it()

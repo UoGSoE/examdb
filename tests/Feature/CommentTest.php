@@ -2,18 +2,25 @@
 
 namespace Tests\Feature;
 
-use App\Course;
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Course;
+use Tests\TestCase;
+use App\AcademicSession;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
-use Tests\TestCase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CommentTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        AcademicSession::createFirstSession();
+    }
 
     /** @test */
     public function users_can_add_a_comment_to_courses_they_are_involved_with_without_needing_a_paper()

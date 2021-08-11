@@ -2,17 +2,24 @@
 
 namespace Tests\Feature\Admin;
 
-use App\Course;
-use App\Paper;
-use App\PaperChecklist;
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Paper;
+use App\Course;
 use Tests\TestCase;
+use App\PaperChecklist;
+use App\AcademicSession;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ArchivePapersTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        AcademicSession::createFirstSession();
+    }
 
     /** @test */
     public function admins_can_archive_the_papers_for_a_single_course()

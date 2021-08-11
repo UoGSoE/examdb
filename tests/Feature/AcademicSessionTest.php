@@ -50,7 +50,7 @@ class AcademicSessionTest extends TestCase
     /** @test */
     public function if_there_are_no_existing_academic_sessions_then_one_is_created()
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['academic_session_id' => null]); // stop the factory creating a new academic session
 
         $this->travelTo(Carbon::createFromFormat('Y-m-d', '2020-01-01'));
 
@@ -233,4 +233,41 @@ class AcademicSessionTest extends TestCase
         $this->assertEquals($newlyCreatedAcademicSession->id, $discipline1->fresh()->academic_session_id);
         $this->assertEquals($newlyCreatedAcademicSession->id, $discipline2->fresh()->academic_session_id);
     }
+
+    /** @test */
+    public function courses_and_disciplines_are_globally_scoped_to_the_current_session_and_users_can_use_a_local_scope()
+    {
+        $oldSession = AcademicSession::factory()->create(['session' => '1980/1981', 'is_default' => true]);
+        $newSession = AcademicSession::factory()->create(['session' => '1990/1991', 'is_default' => false]);
+        $admin = User::factory()->admin()->create(['academic_session_id' => $oldSession->id]);
+        $course1 = Course::factory()->create(['academic_session_id' => $oldSession->id]);
+        $course2 = Course::factory()->create(['academic_session_id' => $oldSession->id]);
+        $course3 = Course::factory()->create(['academic_session_id' => $newSession->id]);
+        $course4 = Course::factory()->create(['academic_session_id' => $newSession->id]);
+        $discipline1 = Discipline::factory()->create(['academic_session_id' => $oldSession->id]);
+        $discipline2 = Discipline::factory()->create(['academic_session_id' => $oldSession->id]);
+        $discipline3 = Discipline::factory()->create(['academic_session_id' => $newSession->id]);
+        $discipline4 = Discipline::factory()->create(['academic_session_id' => $newSession->id]);
+        $user1 = User::factory()->create(['academic_session_id' => $oldSession->id]);
+        $user2 = User::factory()->create(['academic_session_id' => $oldSession->id]);
+        $user3 = User::factory()->create(['academic_session_id' => $newSession->id]);
+        $user4 = User::factory()->create(['academic_session_id' => $newSession->id]);
+
+        login($admin);
+        session(['academic_session' => '1980/1981']);
+
+        $courses = Course::all();
+        $this->assertCount(2, $courses);
+        $this->assertTrue($courses->contains($course1));
+        $this->assertTrue($courses->contains($course2));
+        $disciplines = Discipline::all();
+        $this->assertCount(2, $disciplines);
+        $this->assertTrue($disciplines->contains($discipline1));
+        $this->assertTrue($disciplines->contains($discipline2));
+        $users = User::forAcademicSession($oldSession)->get();
+        $this->assertCount(3, $users);
+        $this->assertTrue($users->contains($user1));
+        $this->assertTrue($users->contains($user2));
+    }
+
 }

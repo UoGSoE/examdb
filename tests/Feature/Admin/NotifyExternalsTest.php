@@ -6,6 +6,7 @@ use App\User;
 use App\Course;
 use App\Discipline;
 use Tests\TestCase;
+use App\AcademicSession;
 use App\Jobs\NotifyExternals;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Bus;
@@ -19,6 +20,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class NotifyExternalsTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        AcademicSession::createFirstSession();
+    }
 
     /** @test */
     public function admins_can_trigger_a_job_to_notify_externals_to_look_at_the_system()

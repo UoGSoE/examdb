@@ -2,21 +2,28 @@
 
 namespace Tests\Feature;
 
-use App\Course;
-use App\Mail\NotifyModeratorAboutApproval;
-use App\Mail\NotifyModeratorAboutUnapproval;
-use App\Paper;
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Paper;
+use App\Course;
+use Tests\TestCase;
+use App\AcademicSession;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
-use Tests\TestCase;
+use App\Mail\NotifyModeratorAboutApproval;
+use App\Mail\NotifyModeratorAboutUnapproval;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class SetterTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        AcademicSession::createFirstSession();
+    }
 
     /** @test */
     public function a_user_can_see_all_the_courses_they_are_a_setter_for()

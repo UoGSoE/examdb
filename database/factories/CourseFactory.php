@@ -32,7 +32,7 @@ class CourseFactory extends Factory
             'registry_approved_resit' => false,
             'semester' => 1,
             'is_examined' => true,
-            'academic_session_id' => AcademicSession::factory(),
+            'academic_session_id' => optional(AcademicSession::first())->id ?? AcademicSession::factory(),
         ];
     }
 

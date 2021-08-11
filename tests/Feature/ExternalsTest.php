@@ -2,24 +2,31 @@
 
 namespace Tests\Feature;
 
-use App\Course;
-use App\Mail\NotifyLocalsAboutExternalComments;
-use App\Mail\NotifySetterAboutApproval;
-use App\Mail\NotifySetterAboutExternalComments;
-use App\Mail\NotifySetterAboutUnapproval;
-use App\Paper;
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Paper;
+use App\Course;
+use Tests\TestCase;
+use App\AcademicSession;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\NotifySetterAboutApproval;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
-use Tests\TestCase;
+use App\Mail\NotifySetterAboutUnapproval;
+use Illuminate\Foundation\Testing\WithFaker;
+use App\Mail\NotifyLocalsAboutExternalComments;
+use App\Mail\NotifySetterAboutExternalComments;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ExternalsTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        AcademicSession::createFirstSession();
+    }
 
     /** @test */
     public function a_user_can_see_all_the_courses_they_are_an_external_for()

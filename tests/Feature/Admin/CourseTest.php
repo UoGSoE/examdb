@@ -7,12 +7,19 @@ use App\Course;
 use App\Discipline;
 use Tests\TestCase;
 use Livewire\Livewire;
+use App\AcademicSession;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CourseTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        AcademicSession::createFirstSession();
+    }
 
     /** @test */
     public function an_admin_can_see_the_list_of_all_courses()

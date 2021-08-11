@@ -2,27 +2,34 @@
 
 namespace Tests\Feature;
 
-use App\Course;
-use App\Exporters\PaperExporter;
-use App\Http\Controllers\Admin\ExportPapersForRegistryController;
-use App\Jobs\ExportPapersForRegistry;
-use App\Jobs\RemoveRegistryZip;
-use App\Mail\RegistryPapersExported;
-use App\Paper;
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Paper;
+use App\Course;
+use ZipArchive;
+use Tests\TestCase;
+use App\AcademicSession;
+use App\Jobs\RemoveRegistryZip;
+use App\Exporters\PaperExporter;
 use Illuminate\Http\UploadedFile;
+use App\Mail\RegistryPapersExported;
 use Illuminate\Support\Facades\Mail;
+use App\Jobs\ExportPapersForRegistry;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
-use Tests\TestCase;
-use ZipArchive;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Http\Controllers\Admin\ExportPapersForRegistryController;
 
 class PapersForRegistryBulkDownloadTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        AcademicSession::createFirstSession();
+    }
 
     /** @test */
     public function regular_users_cant_do_the_export()

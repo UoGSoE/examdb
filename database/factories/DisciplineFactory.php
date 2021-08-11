@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Discipline;
+use App\AcademicSession;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class DisciplineFactory extends Factory
@@ -23,6 +24,7 @@ class DisciplineFactory extends Factory
     {
         return [
             'title' => $this->faker->word,
+            'academic_session_id' => optional(AcademicSession::first())->id ?? AcademicSession::factory(),
         ];
     }
 }

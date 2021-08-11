@@ -9,6 +9,7 @@ use App\CanBeCreatedFromOutsideSources;
 use Spatie\Activitylog\Models\Activity;
 use Illuminate\Notifications\Notifiable;
 use Lab404\Impersonate\Models\Impersonate;
+use App\Scopes\CurrentAcademicSessionScope;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -48,6 +49,11 @@ class User extends Authenticatable
     public function papers()
     {
         return $this->hasMany(Paper::class);
+    }
+
+    public function scopeForAcademicSession($query, AcademicSession $session)
+    {
+        return $query->where('academic_session_id', '=', $session->id);
     }
 
     public static function getStaffForVueSelect()
@@ -96,6 +102,9 @@ class User extends Authenticatable
 
     public function getCurrentAcademicSession()
     {
+        if (session()->missing('academic_session')) {
+            return AcademicSession::getDefault();
+        }
         return AcademicSession::findBySession(session('academic_session'));
     }
 

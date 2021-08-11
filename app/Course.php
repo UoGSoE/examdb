@@ -7,6 +7,7 @@ use App\Events\PaperUnapproved;
 use App\Mail\ExternalHasUpdatedTheChecklist;
 use App\Mail\ModeratorHasUpdatedTheChecklist;
 use App\Mail\SetterHasUpdatedTheChecklist;
+use App\Scopes\CurrentAcademicSessionScope;
 use App\Scopes\CurrentScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -39,6 +40,13 @@ class Course extends Model
         'registry_approved_main' => 'boolean',
         'registry_approved_resit' => 'boolean',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new CurrentAcademicSessionScope);
+    }
 
     public function staff()
     {
