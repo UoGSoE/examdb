@@ -2,12 +2,13 @@
 
 namespace App\Console\Commands;
 
-use App\AcademicSession;
+use App\User;
 use App\Course;
 use App\Discipline;
-use App\User;
+use App\AcademicSession;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use App\Scopes\CurrentAcademicSessionScope;
 
 class RetrofitAcademicSession extends Command
 {
@@ -43,21 +44,19 @@ class RetrofitAcademicSession extends Command
     public function handle()
     {
         DB::transaction(function () {
-            $newSession = AcademicSession::create([
-                'session' => $this->argument('new_session'),
-            ]);
+            $newSession = AcademicSession::where('session', '=', $this->argument('new_session'))->firstOrFail();
 
-            Course::where('academic_session_id', '=', null)->get()->each(function ($course) use ($newSession) {
+            Course::withoutGlobalScope(CurrentAcademicSessionScope::class)->where('academic_session_id', '=', null)->get()->each(function ($course) use ($newSession) {
                 $course->academic_session_id = $newSession->id;
                 $course->save();
             });
 
-            User::where('academic_session_id', '=', null)->get()->each(function ($user) use ($newSession) {
+            User::withoutGlobalScope(CurrentAcademicSessionScope::class)->where('academic_session_id', '=', null)->get()->each(function ($user) use ($newSession) {
                 $user->academic_session_id = $newSession->id;
                 $user->save();
             });
 
-            Discipline::where('academic_session_id', '=', null)->get()->each(function ($discipline) use ($newSession) {
+            Discipline::withoutGlobalScope(CurrentAcademicSessionScope::class)->where('academic_session_id', '=', null)->get()->each(function ($discipline) use ($newSession) {
                 $discipline->academic_session_id = $newSession->id;
                 $discipline->save();
             });

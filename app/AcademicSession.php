@@ -11,6 +11,10 @@ class AcademicSession extends Model
 
     protected $fillable = ['session', 'is_default'];
 
+    protected $casts = [
+        'is_default' => 'boolean',
+    ];
+
     public static function createFirstSession(): static
     {
         if (now()->month < 9) {
@@ -28,6 +32,12 @@ class AcademicSession extends Model
     public static function getDefault()
     {
         return static::where('is_default', '=', true)->first();
+    }
+
+    public function setAsDefault()
+    {
+        AcademicSession::all()->each(fn ($session) => $session->update(['is_default' => false]));
+        $this->update(['is_default' => true]);
     }
 
     public static function findBySession(string $session)

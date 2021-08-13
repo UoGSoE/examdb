@@ -3,13 +3,20 @@
 namespace Tests\Feature\Admin;
 
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Spatie\Activitylog\Models\Activity;
 use Tests\TestCase;
+use App\AcademicSession;
+use Spatie\Activitylog\Models\Activity;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ImpersonationTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        AcademicSession::createFirstSession();
+    }
 
     /** @test */
     public function an_admin_can_impersonate_other_users()

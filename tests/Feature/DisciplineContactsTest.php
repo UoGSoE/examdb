@@ -2,17 +2,24 @@
 
 namespace Tests\Feature;
 
+use App\User;
+use App\Paper;
 use App\Course;
 use App\Discipline;
-use App\Paper;
-use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\AcademicSession;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class DisciplineContactsTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        AcademicSession::createFirstSession();
+    }
 
     /** @test */
     public function admins_can_update_the_contacts_for_each_discipline()

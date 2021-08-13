@@ -32,7 +32,9 @@ Route::group(['middleware' => ['auth', 'academicsession']], function () {
 
     Route::group(['middleware' => 'admin', 'prefix' => '/admin'], function () {
         Route::post('/academicsession/{session}/set', [\App\Http\Controllers\Admin\AcademicSessionController::class, 'set'])->name('academicsession.set');
+        Route::get('/academicsession', [\App\Http\Controllers\Admin\AcademicSessionController::class, 'edit'])->name('academicsession.edit');
         Route::post('/academicsession', [\App\Http\Controllers\Admin\AcademicSessionController::class, 'store'])->name('academicsession.store');
+        Route::post('/academicsession/{session}/default', [\App\Http\Controllers\Admin\AcademicSessionController::class, 'setDefault'])->name('academicsession.default.update');
 
         Route::get('log', [\App\Http\Controllers\Admin\ActivityLogController::class, 'index'])->name('activity.index');
         Route::get('course', [\App\Http\Controllers\Admin\CourseController::class, 'index'])->name('course.index');

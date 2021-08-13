@@ -2,16 +2,23 @@
 
 namespace Tests\Feature\Admin;
 
+use App\User;
 use App\Course;
 use App\Discipline;
-use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\AcademicSession;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class PaperTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        AcademicSession::createFirstSession();
+    }
 
     /** @test */
     public function admins_can_see_all_the_paper_statuses_for_all_the_courses()

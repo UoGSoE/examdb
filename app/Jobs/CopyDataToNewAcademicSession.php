@@ -13,6 +13,7 @@ use Illuminate\Queue\SerializesModels;
 use App\Mail\DataWasCopiedToNewSession;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Queue\InteractsWithQueue;
+use App\Scopes\CurrentAcademicSessionScope;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -45,29 +46,29 @@ class CopyDataToNewAcademicSession implements ShouldQueue
     public function handle()
     {
         DB::transaction(function () {
-            Discipline::where('academic_session_id', '=', $this->sourceSession->id)->get()->each(fn ($discipline) => $this->replicateForNewSession($discipline)->save());
+            Discipline::withoutGlobalScope(CurrentAcademicSessionScope::class)->where('academic_session_id', '=', $this->sourceSession->id)->get()->each(fn ($discipline) => $this->replicateForNewSession($discipline)->save());
 
-            User::where('academic_session_id', '=', $this->sourceSession->id)->get()->each(fn ($user) => $this->replicateForNewSession($user)->save());
+            User::withTrashed()->withoutGlobalScope(CurrentAcademicSessionScope::class)->where('academic_session_id', '=', $this->sourceSession->id)->get()->each(fn ($user) => $this->replicateForNewSession($user)->save());
 
-            Course::where('academic_session_id', '=', $this->sourceSession->id)->with('discipline')->get()->each(function ($course) {
+            Course::withTrashed()->withoutGlobalScope(CurrentAcademicSessionScope::class)->where('academic_session_id', '=', $this->sourceSession->id)->get()->each(function ($course) {
                 $newDiscipline = new Discipline();
                 if ($course->discipline_id) {
-                    $newDiscipline = Discipline::where('title', '=', $course->discipline->title)
+                    $newDiscipline = Discipline::withoutGlobalScope(CurrentAcademicSessionScope::class)->where('title', '=', $course->discipline->title)
                                         ->where('academic_session_id', '=', $this->targetSession->id)
                                         ->first();
                 }
                 $newCourse = $this->replicateForNewSession($course, ['discipline_id' => optional($newDiscipline)->id]);
                 $newCourse->save();
                 $course->setters->each(function ($setter) use ($newCourse) {
-                    $newSetter = User::where('username', '=', $setter->username)->where('academic_session_id', '=', $this->targetSession->id)->first();
+                    $newSetter = User::withoutGlobalScope(CurrentAcademicSessionScope::class)->where('username', '=', $setter->username)->where('academic_session_id', '=', $this->targetSession->id)->first();
                     $newSetter->markAsSetter($newCourse);
                 });
                 $course->moderators->each(function ($moderator) use ($newCourse) {
-                    $newModerator = User::where('username', '=', $moderator->username)->where('academic_session_id', '=', $this->targetSession->id)->first();
+                    $newModerator = User::withoutGlobalScope(CurrentAcademicSessionScope::class)->where('username', '=', $moderator->username)->where('academic_session_id', '=', $this->targetSession->id)->first();
                     $newModerator->markAsModerator($newCourse);
                 });
                 $course->externals->each(function ($external) use ($newCourse) {
-                    $newExternal = User::where('username', '=', $external->username)->where('academic_session_id', '=', $this->targetSession->id)->first();
+                    $newExternal = User::withoutGlobalScope(CurrentAcademicSessionScope::class)->where('username', '=', $external->username)->where('academic_session_id', '=', $this->targetSession->id)->first();
                     $newExternal->markAsExternal($newCourse);
                 });
             });

@@ -2,15 +2,22 @@
 
 namespace Tests\Feature;
 
-use App\Paper;
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Paper;
 use Tests\TestCase;
+use App\AcademicSession;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class GdprTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        AcademicSession::createFirstSession();
+    }
 
     /** @test */
     public function admins_can_export_all_data_about_a_user()

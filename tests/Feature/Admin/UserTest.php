@@ -2,19 +2,26 @@
 
 namespace Tests\Feature\Admin;
 
-use App\Course;
-use App\Paper;
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Paper;
+use App\Course;
+use Tests\TestCase;
+use App\AcademicSession;
+use Ohffs\Ldap\FakeLdapConnection;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
-use Ohffs\Ldap\FakeLdapConnection;
 use Spatie\Activitylog\Models\Activity;
-use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        AcademicSession::createFirstSession();
+    }
 
     /** @test */
     public function admins_can_see_a_list_of_all_users()

@@ -17,6 +17,7 @@ class AcademicSessionMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
+        info('MIDDLE: ' . $request->session()->get('academic_session'));
         if ($request->session()->missing('academic_session')) {
             $defaultSession = AcademicSession::getDefault();
             if (! $defaultSession) {

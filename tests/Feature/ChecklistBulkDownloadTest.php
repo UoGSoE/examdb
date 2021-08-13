@@ -2,26 +2,33 @@
 
 namespace Tests\Feature;
 
-use App\Course;
-use App\Exporters\ChecklistExporter;
-use App\Jobs\BulkExportChecklists;
-use App\Jobs\RemoveChecklistZip;
-use App\Mail\ChecklistsReadyToDownload;
-use App\PaperChecklist;
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Course;
+use Tests\TestCase;
+use App\PaperChecklist;
+use App\AcademicSession;
+use App\Jobs\RemoveChecklistZip;
+use App\Jobs\BulkExportChecklists;
 use Illuminate\Support\Facades\Bus;
+use App\Exporters\ChecklistExporter;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
+use App\Mail\ChecklistsReadyToDownload;
 use Illuminate\Support\Facades\Storage;
-use Tests\TestCase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 // fake the HTTP calls to the pdf printer api
 class ChecklistBulkDownloadTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        AcademicSession::createFirstSession();
+    }
 
     /** @test */
     public function regular_users_cant_request_the_bulk_download_of_all_checklists()

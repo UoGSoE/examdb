@@ -36,6 +36,11 @@ class User extends Authenticatable
 
     protected $appends = ['full_name'];
 
+    protected static function booted()
+    {
+        static::addGlobalScope(new CurrentAcademicSessionScope);
+    }
+
     public function courses()
     {
         return $this->belongsToMany(Course::class)->withPivot('is_setter', 'is_moderator', 'is_external');
@@ -103,6 +108,7 @@ class User extends Authenticatable
     public function getCurrentAcademicSession()
     {
         if (session()->missing('academic_session')) {
+            info('WUT');
             return AcademicSession::getDefault();
         }
         return AcademicSession::findBySession(session('academic_session'));

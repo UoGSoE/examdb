@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\AcademicSession;
 use App\Course;
 use App\Discipline;
 use App\User;
@@ -16,6 +17,8 @@ class TestDataSeeder extends Seeder
      */
     public function run()
     {
+        cache()->forget('navbarAcademicSessions');
+        $session = AcademicSession::createFirstSession();
         $admin = User::factory()->create([
             'username' => 'admin',
             'password' => bcrypt('secret'),

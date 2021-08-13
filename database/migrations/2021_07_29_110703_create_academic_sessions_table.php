@@ -15,7 +15,7 @@ class CreateAcademicSessionsTable extends Migration
     {
         Schema::create('academic_sessions', function (Blueprint $table) {
             $table->id();
-            $table->string('session');
+            $table->string('session')->unique();
             $table->boolean('is_default')->default(false);
             $table->timestamps();
         });

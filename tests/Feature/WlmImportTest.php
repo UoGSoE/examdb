@@ -4,26 +4,33 @@
 
 namespace Tests\Feature;
 
-use App\Course;
-use App\Discipline;
-use App\Events\WlmImportComplete;
-use App\Jobs\ImportFromWlm;
-use App\Mail\WlmImportComplete as MailableWlmImportComplete;
 use App\User;
-use App\Wlm\FakeWlmClient;
-use App\Wlm\WlmClient;
-use App\Wlm\WlmClientInterface;
-use App\Wlm\WlmImporter;
+use App\Course;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Queue;
+use App\Discipline;
 use Tests\TestCase;
+use App\Wlm\WlmClient;
+use App\AcademicSession;
+use App\Wlm\WlmImporter;
+use App\Wlm\FakeWlmClient;
+use App\Jobs\ImportFromWlm;
+use App\Wlm\WlmClientInterface;
+use App\Events\WlmImportComplete;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Queue;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Mail\WlmImportComplete as MailableWlmImportComplete;
 
 class WlmImportTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        AcademicSession::createFirstSession();
+    }
 
     /** @test */
     public function can_import_the_data_from_the_fake_wlm()

@@ -11,13 +11,20 @@ class CurrentAcademicSessionScope implements Scope
 {
     public function apply(Builder $builder, Model $model)
     {
-        if (! auth()->check()) {
-            // we are *probably* running an artisan command or queued job
-            // so we don't want to run this scope as we normally would
-            return AcademicSession::getDefault();
+        // if (auth()->hasUser()) {
+        //     $currentSession = auth()->user()->getCurrentAcademicSession();
+        if (session()->has('academic_session')) {
+            info('PWPWPWP');
+            $currentSession = AcademicSession::findBySession(session()->get('academic_session'));
+            info('currentSession happy : ' . $currentSession->session);
+        } else {
+            // we are *probably* running an artisan command, queued job or in the process of logging in
+            // so we don't want to run this scope against the auth'd user
+            info('WRRRORRORO');
+            $currentSession = AcademicSession::getDefault();
+            info('currentSession sad : ' . $currentSession->session);
         }
 
-        $currentSession = auth()->user()->getCurrentAcademicSession();
         if (!$currentSession) {
             abort(500, 'No academic session set');
         }
