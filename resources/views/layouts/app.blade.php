@@ -75,6 +75,8 @@
     <script src="{{ asset('js/app.js') }}"></script>
 
     @stack('scripts')
+
+    <!-- {{ session('academic_session') }} -->
 </body>
 
 </html>

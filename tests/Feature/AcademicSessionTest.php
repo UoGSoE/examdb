@@ -108,20 +108,28 @@ class AcademicSessionTest extends TestCase
     /** @test */
     public function admin_users_can_change_their_academic_session()
     {
-        AcademicSession::createFirstSession();
-        $admin = User::factory()->admin()->create();
+        $this->withoutExceptionHandling();
+        $defaultSession = AcademicSession::createFirstSession();
         $session1 = AcademicSession::factory()->create(['session' => '1980/1981']);
         $session2 = AcademicSession::factory()->create(['session' => '1990/1991']);
+        $adminV1 = User::factory()->admin()->create(['username' => 'jenny', 'academic_session_id' => $defaultSession->id]);
+        $adminV2 = User::factory()->admin()->create(['username' => 'jenny', 'academic_session_id' => $session2->id]);
 
-        $response = $this->actingAs($admin)->post(route('academicsession.set', ['session' => $session2->id]));
+        login($adminV1);
+        session(['academic_session' => $defaultSession->session]);
+        $response = $this->post(route('academicsession.set', ['session' => $session2->id]));
 
         $response->assertRedirect('/home');
         $response->assertSessionHas('academic_session' , '1990/1991');
+        $this->assertTrue(auth()->user()->is($adminV2));
 
-        $response = $this->actingAs($admin)->post(route('academicsession.set', ['session' => $session1->id]));
+        login($adminV2);
+        session(['academic_session' => $session2->session]);
+        $response = $this->post(route('academicsession.set', ['session' => $defaultSession->id]));
 
         $response->assertRedirect('/home');
-        $response->assertSessionHas('academic_session' , '1980/1981');
+        $response->assertSessionHas('academic_session' , $defaultSession->session);
+        $this->assertTrue(auth()->user()->is($adminV1));
     }
 
     /** @test */

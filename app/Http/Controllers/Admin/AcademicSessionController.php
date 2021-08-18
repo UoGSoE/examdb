@@ -13,9 +13,15 @@ class AcademicSessionController extends Controller
 {
     public function set(AcademicSession $session, Request $request)
     {
+        $username = $request->user()->username;
+
+        auth()->logout();
+
+        // we set the session twice - first time to get the user scoped to the session they have chosen, then log them in as that
+        // 'version' of their user which in turn clears the session so we need to set it again
+        session(['academic_session' => $session->session]);
         auth()->login(
-            \App\User::withoutGlobalScope(CurrentAcademicSessionScope::class)
-                ->where('username', '=', $request->user()->username)->first()
+            \App\User::where('username', '=', $username)->first()
         );
         session(['academic_session' => $session->session]);
 
@@ -50,11 +56,12 @@ class AcademicSessionController extends Controller
         return redirect('/home')->with('success', 'Session ' . $newSession->session . ' created.  You will get an email once all the data is copied.');
     }
 
-    public function setDefault(AcademicSession $session)
+    public function setDefault(AcademicSession $session, Request $request)
     {
         $session->setAsDefault();
 
-        info(session('academic_session'));
+        activity()->causedBy($request->user())->log('Changed the default academic session to ' . $session->session);
+
         return redirect()->back();
     }
 }

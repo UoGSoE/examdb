@@ -108,7 +108,6 @@ class User extends Authenticatable
     public function getCurrentAcademicSession()
     {
         if (session()->missing('academic_session')) {
-            info('WUT');
             return AcademicSession::getDefault();
         }
         return AcademicSession::findBySession(session('academic_session'));

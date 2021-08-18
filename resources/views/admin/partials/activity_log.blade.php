@@ -14,9 +14,7 @@
                 </td>
                 <td>
                     @if ($log->causer)
-                        <a href="{{ route('user.show', $log->causer) }}">
-                            {{ $log->causer->full_name }}
-                        </a>
+                        {{ $log->causer->full_name }}
                     @endif
                 </td>
                 <td>
