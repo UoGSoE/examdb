@@ -20,9 +20,6 @@
         <span class="level-item">
             <remove-staff-button></remove-staff-button>
         </span>
-        <span class="level-item">
-            <wlm-importer></wlm-importer>
-        </span>
     </div>
 </div>
 

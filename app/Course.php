@@ -41,6 +41,18 @@ class Course extends Model
         'registry_approved_resit' => 'boolean',
     ];
 
+    public $flagsToClearOnDuplication = [
+        'moderator_approved_main',
+        'moderator_approved_resit',
+        'external_approved_main',
+        'external_approved_resit',
+        'moderator_approved_assessment',
+        'external_approved_assessment',
+        'external_notified',
+        'registry_approved_main',
+        'registry_approved_resit',
+    ];
+
     protected static function boot()
     {
         parent::boot();
@@ -629,7 +641,7 @@ class Course extends Model
     }
 
     /**
-     * @throws InvalidAgurmentException
+     * @throws InvalidArgumentException
      */
     public function createDuplicate(string $newCode): Course
     {
@@ -637,21 +649,10 @@ class Course extends Model
             throw new InvalidArgumentException("New course code of {$newCode} looks invalid...");
         }
 
-        $flagsToClear = [
-            'moderator_approved_main',
-            'moderator_approved_resit',
-            'external_approved_main',
-            'external_approved_resit',
-            'moderator_approved_assessment',
-            'external_approved_assessment',
-            'external_notified',
-            'registry_approved_main',
-            'registry_approved_resit',
-        ];
 
         $newCourse = $this->replicate();
         $newCourse->code = $newCode;
-        foreach ($flagsToClear as $flag) {
+        foreach ($this->flagsToClearOnDuplication as $flag) {
             $newCourse->$flag = false;
         }
         $newCourse->save();

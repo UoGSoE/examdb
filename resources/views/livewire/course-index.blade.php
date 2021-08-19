@@ -16,32 +16,40 @@
                         </button>
                     </p>
                     @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <div class="field">
                     <p class="control">
                         <input wire:model="searchTerm" type="text" class="input" placeholder="Search course code or title..." autofocus>
                     </p>
                 </div>
             </div>
-        </div>
-        <div class="level-right">
             <div class="level-item">
                 <div class="field is-grouped">
                     <div class="control">
-                      <label class="checkbox">
-                        <input type="checkbox" wire:model="includeTrashed">
-                        Include disabled?
-                      </label>
+                        <label class="checkbox">
+                            <input type="checkbox" wire:model="includeTrashed">
+                            Include disabled?
+                        </label>
                     </div>
                     <div class="control">
                         <label class="checkbox">
-                          <input type="checkbox" wire:model="excludeNotExamined">
-                          Exclude non-examined?
+                        <input type="checkbox" wire:model="excludeNotExamined">
+                        Exclude non-examined?
                         </label>
-                      </div>
                     </div>
+                </div>
             </div>
         </div>
-
     </div>
+
+    <hr>
 
     <table class="table is-striped is-fullwidth is-narrow is-hoverable">
         <thead>
@@ -119,4 +127,4 @@
             @endforeach
         </tbody>
     </table>
-    </div>
+</div>

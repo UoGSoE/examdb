@@ -264,6 +264,30 @@ class AcademicSessionTest extends TestCase
     }
 
     /** @test */
+    public function when_course_data_is_copied_to_a_new_session_all_of_the_flags_on_it_are_cleared()
+    {
+        Mail::fake();
+        $admin = User::factory()->admin()->create();
+        $oldSession = AcademicSession::factory()->create(['session' => '1980/1981', 'is_default' => true]);
+        $newSession = AcademicSession::factory()->create(['session' => '1990/1991', 'is_default' => false]);
+        $course1 = Course::factory()->create(['academic_session_id' => $oldSession->id]);
+        foreach ($course1->flagsToClearOnDuplication as $flag) {
+            $course1->$flag = true;
+        }
+        $course1->save();
+
+        CopyDataToNewAcademicSession::dispatchSync($oldSession, $newSession, $admin);
+
+        $copyOfCourse = Course::withoutGlobalScope(CurrentAcademicSessionScope::class)
+                ->where('code', '=', $course1->code)
+                ->where('academic_session_id', '=', $newSession->id)
+                ->firstOrFail();
+        foreach ($copyOfCourse->flagsToClearOnDuplication as $flag) {
+            $this->assertFalse($copyOfCourse->$flag);
+        }
+    }
+
+    /** @test */
     public function once_the_data_is_copied_an_email_is_sent_to_the_user_who_requested_the_new_session()
     {
         Mail::fake();

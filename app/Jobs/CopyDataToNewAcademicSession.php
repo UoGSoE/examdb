@@ -58,6 +58,9 @@ class CopyDataToNewAcademicSession implements ShouldQueue
                                         ->first();
                 }
                 $newCourse = $this->replicateForNewSession($course, ['discipline_id' => optional($newDiscipline)->id]);
+                foreach ($newCourse->flagsToClearOnDuplication as $flag) {
+                    $newCourse->$flag = false;
+                }
                 $newCourse->save();
                 $course->setters->each(function ($setter) use ($newCourse) {
                     $newSetter = User::withoutGlobalScope(CurrentAcademicSessionScope::class)->where('username', '=', $setter->username)->where('academic_session_id', '=', $this->targetSession->id)->first();

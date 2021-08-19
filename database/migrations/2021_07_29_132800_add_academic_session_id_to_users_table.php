@@ -14,8 +14,8 @@ class AddAcademicSessionIdToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->unsignedInteger('academic_session_id')->nullable();
-            $table->foreign('academic_session_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('academic_session_id')->nullable();
+            $table->foreign('academic_session_id')->references('id')->on('academic_sessions')->onDelete('cascade');
         });
     }
 
