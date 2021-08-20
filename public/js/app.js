@@ -12800,6 +12800,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["course", "papers", "subcategories", "user", "staff", "externals"],
   data: function data() {
@@ -12811,6 +12818,9 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    allPapersRoute: function allPapersRoute() {
+      return route('course.all_papers', this.course.id);
+    },
     disableRoute: function disableRoute() {
       return route("course.disable", this.course.id);
     },
@@ -40491,6 +40501,18 @@ var render = function() {
       _c("div", { staticClass: "level-left" }, [
         _c("h2", { staticClass: "title is-2 has-text-grey-dark level-item" }, [
           _vm._v(_vm._s(_vm.theCourse.code) + " " + _vm._s(_vm.theCourse.title))
+        ])
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "level" }, [
+      _c("div", { staticClass: "level-left" }, [
+        _c("div", { staticClass: "level-item" }, [
+          _c(
+            "a",
+            { staticClass: "button", attrs: { href: _vm.allPapersRoute } },
+            [_vm._v("View all previous papers")]
+          )
         ])
       ])
     ]),

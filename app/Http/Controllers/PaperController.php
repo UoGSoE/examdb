@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Course;
 use App\Events\PaperAdded;
 use App\Paper;
+use App\Scopes\CurrentAcademicSessionScope;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +15,28 @@ use Illuminate\Validation\Rule;
 
 class PaperController extends Controller
 {
+    public function index(int $id)
+    {
+        $course = Course::findOrFail($id);
+
+        $this->authorize('show', $course);
+
+        $allSessionCourses = Course::withoutGlobalScope(CurrentAcademicSessionScope::class)->where('code', '=', $course->code)->get();
+        $papers = Paper::withoutGlobalScope(CurrentAcademicSessionScope::class)
+                    ->with([
+                        'user' => fn ($query) => $query->withoutGlobalScope(CurrentAcademicSessionScope::class),
+                        'comments'
+                    ])
+                    ->whereIn('course_id', $allSessionCourses->pluck('id')->values())
+                    ->orderByDesc('created_at')
+                    ->get();
+
+        return view('course.all.index', [
+            'course' => $course,
+            'papers' => $papers,
+        ]);
+    }
+
     public function store(Course $course, Request $request)
     {
         Gate::authorize('upload_paper', $course);
@@ -42,8 +65,18 @@ class PaperController extends Controller
         return redirect()->route('course.show', $course);
     }
 
-    public function show(Paper $paper)
+    public function show(int $paperId)
     {
+        // in order to check if the user can view this paper, we need to find the associated course in the
+        // _current_ academic session to see if they are the setter/moderator/external for it.
+        // then we can check if they can view the paper from past 'versions' of the course in the
+        // PaperPolicy::view() method which they might not have had anything to do with.
+        $paper = Paper::withoutGlobalScope(CurrentAcademicSessionScope::class)
+                    ->with(['course' => fn ($query) => $query->withoutGlobalScope(CurrentAcademicSessionScope::class)])
+                    ->findOrFail($paperId);
+        $currentVersionOfCourse = Course::where('code', '=', $paper->course->code)->firstOrFail();
+        $paper->setRelation('course', $currentVersionOfCourse);
+
         $this->authorize('view', $paper);
 
         $encryptedContent = Storage::disk('exampapers')->get($paper->filename);
@@ -58,7 +91,6 @@ class PaperController extends Controller
         return response()->streamDownload(function () use ($decryptedContent) {
             echo $decryptedContent;
         }, $paper->original_filename, ['Content-Type', $paper->mimetype]);
-        //return Storage::disk('exampapers')->download($paper->filename, $paper->original_filename);
     }
 
     public function destroy(Paper $paper)

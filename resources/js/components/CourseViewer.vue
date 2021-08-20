@@ -7,6 +7,13 @@
         >{{ theCourse.code }} {{ theCourse.title }}</h2>
       </div>
     </div>
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <a :href="allPapersRoute" class="button">View all previous papers</a>
+            </div>
+        </div>
+    </div>
     <div class="level" v-if="user.is_admin">
       <div class="level-left">
         <course-archive-papers-button :course="theCourse" class="level-item"></course-archive-papers-button>
@@ -132,6 +139,9 @@ export default {
     };
   },
   computed: {
+    allPapersRoute() {
+        return route('course.all_papers', this.course.id);
+    },
     disableRoute() {
       return route("course.disable", this.course.id);
     },

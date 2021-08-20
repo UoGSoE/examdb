@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\CourseController;
+use App\Http\Controllers\Admin\PaperController;
 use App\Http\Controllers\Admin\UserController;
 
 Auth::routes();
@@ -20,15 +21,16 @@ Route::group(['middleware' => ['auth', 'academicsession']], function () {
     Route::post('/course/{course}/comment', [\App\Http\Controllers\CommentController::class, 'store'])->name('course.comment.store');
     Route::post('/course/{course}/approve-registry', [\App\Http\Controllers\PaperForRegistryApprovalController::class, 'approve'])->name('registry.approve');
 
+    Route::get('/course/{id}/all-papers', [\App\Http\Controllers\PaperController::class, 'index'])->name('course.all_papers');
+
     Route::get('/course/{course}/checklist', [\App\Http\Controllers\ChecklistController::class, 'create'])->name('course.checklist.create');
     Route::get('/checklist/{checklist}', [\App\Http\Controllers\ChecklistController::class, 'show'])->name('course.checklist.show');
     Route::get('/checklist/{checklist}/pdf', [\App\Http\Controllers\ChecklistPdfController::class, 'show'])->name('course.checklist.pdf');
 
     Route::get('/api/course/{course:code}/dropdown-options', [\App\Http\Controllers\Api\DropdownOptionsController::class, 'show'])->name('api.course.paper_options');
 
-    Route::get('/paper/{paper}', [\App\Http\Controllers\PaperController::class, 'show'])->name('paper.show');
+    Route::get('/paper/{id}', [\App\Http\Controllers\PaperController::class, 'show'])->name('paper.show');
     Route::delete('/paper/{paper}', [\App\Http\Controllers\PaperController::class, 'destroy'])->name('paper.delete');
-    Route::get('/archivedpaper/{id}', [\App\Http\Controllers\ArchivedPaperController::class, 'show'])->name('archived.paper.show');
 
     Route::group(['middleware' => 'admin', 'prefix' => '/admin'], function () {
         Route::post('/academicsession/{session}/set', [\App\Http\Controllers\Admin\AcademicSessionController::class, 'set'])->name('academicsession.set');
