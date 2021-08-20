@@ -70,27 +70,6 @@ class SetterTest extends TestCase
     }
 
     /** @test */
-    public function archived_papers_show_up_in_the_course_view()
-    {
-        $this->withoutExceptionHandling();
-        $staff = create(User::class);
-        $course1 = create(Course::class);
-        $staff->markAsSetter($course1);
-        $archivedPaper = create(Paper::class, ['course_id' => $course1->id]);
-        $archivedPaper->archive();
-        $archivedCommentPaper = create(Paper::class, ['course_id' => $course1->id, 'subcategory' => Paper::COMMENT_SUBCATEGORY]);
-        $archivedCommentPaper->archive();
-
-        $response = $this->actingAs($staff)->get(route('course.show', $course1->id));
-
-        $response->assertSuccessful();
-        $this->assertTrue($response->data('course')->is($course1));
-        // archived comments shouldn't show up in the list of archives
-        $this->assertCount(1, $response->data('archivedPapers'));
-        $this->assertTrue($response->data('archivedPapers')->contains($archivedPaper));
-    }
-
-    /** @test */
     public function hidden_papers_dont_show_up_in_the_course_view()
     {
         $this->withoutExceptionHandling();

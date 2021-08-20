@@ -72,12 +72,6 @@ Route::group(['middleware' => ['auth', 'academicsession']], function () {
         Route::get('options', [\App\Http\Controllers\Admin\OptionsController::class, 'edit'])->name('admin.options.edit');
         Route::post('options', [\App\Http\Controllers\Admin\OptionsController::class, 'update'])->name('admin.options.update');
 
-        Route::get('archives', [\App\Http\Controllers\Admin\ArchiveController::class, 'index'])->name('archive.index');
-        Route::post('course/{course}/archive', [\App\Http\Controllers\Admin\ArchiveCourseController::class, 'store'])->name('course.papers.archive');
-        Route::get('area/archive', [\App\Http\Controllers\Admin\ArchiveAreaController::class, 'show'])
-                ->name('area.papers.archive_form');
-        Route::post('area/archive', [\App\Http\Controllers\Admin\ArchiveAreaController::class, 'store'])->name('area.papers.archive');
-
         Route::get('/notify/externals', [\App\Http\Controllers\Admin\NotifyExternalsController::class, 'show'])
                 ->name('admin.notify.externals.show');
         Route::post('notify/externals', [\App\Http\Controllers\Admin\NotifyExternalsController::class, 'store'])->name('admin.notify.externals');

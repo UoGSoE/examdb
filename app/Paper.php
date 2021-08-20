@@ -86,16 +86,6 @@ class Paper extends Model
         return $query->where('subcategory', '!=', self::COMMENT_SUBCATEGORY);
     }
 
-    public function isArchived(): bool
-    {
-        return $this->archived_at != null;
-    }
-
-    public function archive()
-    {
-        $this->update(['archived_at' => now()]);
-    }
-
     public function addComment($comment)
     {
         $this->comments()->create([
