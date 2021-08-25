@@ -1,0 +1,59 @@
+<?php
+
+namespace App\Jobs;
+
+use App\User;
+use Illuminate\Bus\Batchable;
+use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use App\Mail\CourseImportProcessComplete;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Support\Facades\Redis;
+
+class ImportCourseDataBatch implements ShouldQueue
+{
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public array $spreadsheetData = [];
+
+    public int $userId;
+
+    /**
+     * Create a new job instance.
+     *
+     * @return void
+     */
+    public function __construct(array $spreadsheetData, int $userId)
+    {
+        $this->spreadsheetData = $spreadsheetData;
+        $this->userId = $userId;
+    }
+
+    /**
+     * Execute the job.
+     *
+     * @return void
+     */
+    public function handle()
+    {
+        $user = User::find($this->userId);
+        Bus::batch([])
+            ->add(
+                collect($this->spreadsheetData)
+                    ->map(fn ($row, $rowNumber) => new ImportCourseRow($row, $rowNumber + 1))
+                    ->all()
+            )
+            ->allowFailures()
+            ->finally(function ($batch) use ($user) {
+                $errors = Redis::smembers($batch->id . '-errors');
+                Redis::del($batch->id . '-errors');
+                Mail::to($user)->queue(new CourseImportProcessComplete($errors));
+            })
+            ->dispatch();
+    }
+}
