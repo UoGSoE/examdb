@@ -25,7 +25,6 @@ Vue.component('paper-heading', require('./components/PaperHeading.vue').default)
 Vue.component('add-local-user', require('./components/AddLocalUser.vue').default);
 Vue.component('add-external-user', require('./components/AddExternalUser.vue').default);
 Vue.component('staff-course-editor', require('./components/StaffCourseEditor.vue').default);
-Vue.component('wlm-importer', require('./components/WlmImporter.vue').default);
 Vue.component('user-list', require('./components/UserList.vue').default);
 Vue.component('impersonate-button', require('./components/ImpersonateButton.vue').default);
 Vue.component('undelete-user-button', require('./components/UndeleteUserButton.vue').default);

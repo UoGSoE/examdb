@@ -58,6 +58,10 @@ Route::group(['middleware' => ['auth', 'academicsession']], function () {
         Route::post('user/{user}/edit', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin.user.update');
 
         Route::get('search/user', [\App\Http\Controllers\Admin\UserSearchController::class, 'show'])->name('user.search');
+
+        Route::get('course/import', [\App\Http\Controllers\Admin\CourseImportController::class, 'show'])->name('course.import');
+        Route::post('course/import', [\App\Http\Controllers\Admin\CourseImportController::class, 'store'])->name('course.import.store');
+
         Route::post('course/{course}/users', [\App\Http\Controllers\Admin\CourseUsersController::class, 'update'])->name('course.users.update');
         Route::post('courses/remove-staff', [\App\Http\Controllers\Admin\CourseUsersController::class, 'destroy'])->name('admin.courses.clear_staff');
 
@@ -69,7 +73,6 @@ Route::group(['middleware' => ['auth', 'academicsession']], function () {
 
         Route::post('discipline/contacts', [\App\Http\Controllers\Admin\DisciplineContactController::class, 'update'])->name('discipline.contacts.update');
 
-        Route::post('wlm/import', [\App\Http\Controllers\Admin\WlmImportController::class, 'update'])->name('wlm.import');
         Route::post('user/{user}/toggle-admin', [\App\Http\Controllers\Admin\AdminPermissionController::class, 'update'])->name('admin.toggle');
         Route::get('options', [\App\Http\Controllers\Admin\OptionsController::class, 'edit'])->name('admin.options.edit');
         Route::post('options', [\App\Http\Controllers\Admin\OptionsController::class, 'update'])->name('admin.options.update');

@@ -544,40 +544,6 @@ class Course extends Model
         return static::withTrashed()->where('code', '=', $code)->first();
     }
 
-    /**
-     * Create a course based on import data from the WLM.
-     */
-    public static function fromWlmData(array $wlmCourse): self
-    {
-        // TODO mark courses which aren't current as deleted/disabled in this system
-        $code = $wlmCourse['Code'];
-        $title = $wlmCourse['Title'];
-        $disciplineTitle = trim($wlmCourse['Discipline']);
-        $discipline = Discipline::firstOrCreate(['title' => $disciplineTitle]);
-        $course = static::findByCode($code);
-        if (! $course) {
-            $course = new static(['code' => $code]);
-        }
-        $course->is_active = $course->getWlmStatus($wlmCourse);
-        $course->title = $title;
-        $course->discipline()->associate($discipline);
-        $course->save();
-
-        return $course;
-    }
-
-    protected function getWlmStatus($wlmCourse)
-    {
-        if (! array_key_exists('CurrentFlag', $wlmCourse)) {
-            return false;
-        }
-        if ($wlmCourse['CurrentFlag'] === 'Yes') {
-            return true;
-        }
-
-        return false;
-    }
-
     public function isUestc()
     {
         return preg_match('/^UESTC/i', $this->code) === 1;

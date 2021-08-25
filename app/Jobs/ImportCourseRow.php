@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\AcademicSession;
 use Exception;
 use App\Course;
 use App\Discipline;
@@ -75,7 +76,9 @@ class ImportCourseRow implements ShouldQueue
             return;
         }
 
-        $discipline = Discipline::firstOrCreate(['title' => $row['discipline']]);
+        $currentSession = AcademicSession::getDefault();
+
+        $discipline = Discipline::firstOrCreate(['title' => $row['discipline'], 'academic_session_id' => $currentSession->id]);
         $course = Course::updateOrCreate(
             ['code' => $row['code']],
             [
@@ -83,6 +86,7 @@ class ImportCourseRow implements ShouldQueue
                 'semester' => $row['semester'],
                 'discipline_id' => $discipline->id,
                 'is_examined' => preg_match('/[yY]/', $row['is_examined']) === 1,
+                'academic_session_id' => $currentSession->id,
             ],
         );
 
