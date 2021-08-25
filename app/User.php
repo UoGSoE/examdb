@@ -181,6 +181,13 @@ class User extends Authenticatable
     {
         $this->is_admin = ! $this->is_admin;
         $this->save();
+
+        // this reflects the current admin status of the user for all academic sessions
+        // so that people can be admins (or not) for previous/future sessions
+        self::withoutGlobalScope(CurrentAcademicSessionScope::class)
+            ->where('username', '=', $this->username)
+            ->update(['is_admin' => $this->is_admin]);
+
         activity()
             ->causedBy(request()->user())
             ->log(

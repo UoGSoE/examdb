@@ -7,6 +7,7 @@ use App\Paper;
 use App\Course;
 use Tests\TestCase;
 use App\AcademicSession;
+use App\Scopes\CurrentAcademicSessionScope;
 use Ohffs\Ldap\FakeLdapConnection;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
@@ -436,6 +437,61 @@ class UserTest extends TestCase
             );
         });
     }
+
+    /** @test */
+    public function when_the_admin_status_is_toggled_it_is_updated_in_all_academic_sessions()
+    {
+        $this->withoutExceptionHandling();
+        $session1 = AcademicSession::factory()->create(['session' => '1990/1991']);
+        $session2 = AcademicSession::factory()->create(['session' => '1991/1992']);
+        $admin = User::factory()->admin()->create(['username' => 'fred']);
+        $adminV2 = User::factory()->admin()->create(['username' => 'fred', 'academic_session_id' => $session1->id]);
+        $adminV3 = User::factory()->admin()->create(['username' => 'fred', 'academic_session_id' => $session2->id]);
+        $user = User::factory()->create(['username' => 'ginger']);
+        $userV2 = User::factory()->create(['username' => 'ginger', 'academic_session_id' => $session1->id]);
+        $userV3 = User::factory()->create(['username' => 'ginger', 'academic_session_id' => $session2->id]);
+
+        $response = $this->actingAs($admin)->postJson(route('admin.toggle', $user->id));
+
+        $response->assertOk();
+        $response->assertJson([
+            'user' => [
+                'id' => $user->id,
+                'is_admin' => true,
+            ],
+        ]);
+        $this->assertTrue($user->fresh()->isAdmin());
+        User::withoutGlobalScope(CurrentAcademicSessionScope::class)
+            ->where('username', '=', 'ginger')
+            ->get()
+            ->each(fn ($user) => $this->assertTrue($user->isAdmin()));
+        // double-check that we don't clobber other users
+        User::withoutGlobalScope(CurrentAcademicSessionScope::class)
+            ->where('username', '=', 'fred')
+            ->get()
+            ->each(fn ($user) => $this->assertTrue($user->isAdmin()));
+
+        $response = $this->actingAs($admin)->postJson(route('admin.toggle', $user->id));
+
+        $response->assertOk();
+        $response->assertJson([
+            'user' => [
+                'id' => $user->id,
+                'is_admin' => false,
+            ],
+        ]);
+        $this->assertFalse($user->fresh()->isAdmin());
+        User::withoutGlobalScope(CurrentAcademicSessionScope::class)
+            ->where('username', '=', 'ginger')
+            ->get()
+            ->each(fn ($user) => $this->assertFalse($user->isAdmin()));
+        // double-check that we don't clobber other users
+        User::withoutGlobalScope(CurrentAcademicSessionScope::class)
+            ->where('username', '=', 'fred')
+            ->get()
+            ->each(fn ($user) => $this->assertTrue($user->isAdmin()));
+    }
+
 
     /** @test */
     public function regular_users_cant_toggle_admin_status_of_users()
