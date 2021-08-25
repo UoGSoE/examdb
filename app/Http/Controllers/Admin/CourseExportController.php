@@ -21,32 +21,38 @@ class CourseExportController extends Controller
 
         $rows[] = [
             'Code',
-            'Semester',
-            'Examined',
             'Title',
             'Discipline',
+            'Semester',
+            'Setters GUIDs',
+            'Setters Names',
+            'Moderators GUIDs',
+            'Moderators Names',
+            'Externals Emails',
+            'Externals Names',
+            'Examined?',
             'Main/Moderator',
             'Main/External',
             'Resit/Moderator',
             'Resit/External',
-            'Setters',
-            'Moderators',
-            'Externals'
         ];
         foreach ($courses as $course) {
             $rows[] = [
                 $course->code,
-                $course->semester,
-                $course->isExamined() ? 'Y' : 'N',
                 $course->title,
                 optional($course->discipline)->title,
+                $course->semester,
+                $course->setters->pluck('username')->implode(', '),
+                $course->setters->pluck('full_name')->implode(', '),
+                $course->moderators->pluck('username')->implode(', '),
+                $course->moderators->pluck('full_name')->implode(', '),
+                $course->externals->pluck('email')->implode(', '),
+                $course->externals->pluck('full_name')->implode(', '),
+                $course->isExamined() ? 'Y' : 'N',
                 $course->isApprovedByModerator('main') ? 'Y' : 'N',
                 $course->hasExternalChecklist('main') ? 'Y' : 'N',
                 $course->isApprovedByModerator('resit') ? 'Y' : 'N',
                 $course->hasExternalChecklist('resit') ? 'Y' : 'N',
-                $course->setters->pluck('full_name')->implode(', '),
-                $course->moderators->pluck('full_name')->implode(', '),
-                $course->externals->pluck('full_name')->implode(', '),
             ];
         }
 
