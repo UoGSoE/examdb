@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Ohffs\Ldap\LdapUser;
 use Illuminate\Support\Str;
 
 trait CanBeCreatedFromOutsideSources
@@ -35,5 +36,17 @@ trait CanBeCreatedFromOutsideSources
         $user->save();
 
         return $user;
+    }
+
+    public static function createFromLdap(LdapUser $ldapUser)
+    {
+        return static::create([
+            'username' => $ldapUser->username,
+            'email' => $ldapUser->email,
+            'surname' => $ldapUser->surname,
+            'forenames' => $ldapUser->forenames,
+            'is_staff' => true,
+            'password' => bcrypt(Str::random(64)),
+        ]);
     }
 }
