@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Redis;
 use Ohffs\Ldap\LdapConnectionInterface;
 use App\Mail\CourseImportProcessComplete;
+use App\Scopes\CurrentAcademicSessionScope;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -91,7 +92,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
             ['ENG5678', 'Helicopters', 'Bio', '2', 'cde1x,pop80y', ' bob1q,trs80y'],
         ];
 
-        ImportCourseDataBatch::dispatchNow($data, $admin->id);
+        ImportCourseDataBatch::dispatchNow($data, $admin->id, $admin->getCurrentAcademicSession()->id);
 
         Queue::assertPushed(ImportCourseRow::class, 3);
     }
@@ -145,23 +146,101 @@ class ImportCourseDataSpreadsheetTest extends TestCase
             ['ENG5678', 'Helicopters', 'Bio', '2', 'cde1x,pop80y', 'Carol Exmouth, Poppy Flower', ' bob1q,trs80y', 'Bob Jones, Tina Smith', 'fran@example.com', 'Fran Smith', 'Y'],
         ];
 
-        ImportCourseRow::dispatch($data[1], 1);
+        ImportCourseRow::dispatch($data[1], 1, $admin->getCurrentAcademicSession()->id);
 
-        $this->assertDatabaseHas('courses', ['code' => 'ENG1234', 'title' => 'Lasers', 'semester' => 1, 'is_examined' => false]);
-        $this->assertDatabaseHas('disciplines', ['title' => 'Elec']);
+        $academicSession = AcademicSession::firstOrFail();
+        $this->assertDatabaseHas('courses', ['code' => 'ENG1234', 'title' => 'Lasers', 'semester' => 1, 'is_examined' => false, 'academic_session_id' => $academicSession->id]);
+        $this->assertDatabaseHas('disciplines', ['title' => 'Elec', 'academic_session_id' => $academicSession->id]);
 
-        $this->assertDatabaseHas('users', ['username' => 'abc1x']);
+        $this->assertDatabaseHas('users', ['username' => 'abc1x', 'academic_session_id' => $academicSession->id]);
         $this->assertTrue(Course::first()->setters->contains(User::findByUsername('abc1x')));
-        $this->assertDatabaseHas('users', ['username' => 'trs80y']);
+        $this->assertDatabaseHas('users', ['username' => 'trs80y', 'academic_session_id' => $academicSession->id]);
         $this->assertTrue(Course::first()->setters->contains(User::findByUsername('trs80y')));
 
-        $this->assertDatabaseHas('users', ['username' => 'bob1q']);
+        $this->assertDatabaseHas('users', ['username' => 'bob1q', 'academic_session_id' => $academicSession->id]);
         $this->assertTrue(Course::first()->moderators->contains(User::findByUsername('bob1q')));
-        $this->assertDatabaseHas('users', ['username' => 'lol9s']);
+        $this->assertDatabaseHas('users', ['username' => 'lol9s', 'academic_session_id' => $academicSession->id]);
         $this->assertTrue(Course::first()->moderators->contains(User::findByUsername('lol9s')));
 
         \Mockery::close();
     }
+
+    /** @test */
+    public function the_import_sets_all_created_records_academic_session_id_to_the_correct_academic_session()
+    {
+        $this->withoutExceptionHandling();
+        $admin = User::factory()->admin()->create();
+        $session2 = AcademicSession::factory()->create(['session' => '1990/1991']);
+
+        $this->fakeLdapConnection();
+        \Ldap::shouldReceive('findUser')->with('abc1x')->andReturn(new LdapUser([
+            [
+            'uid' => ['abc1x'],
+            'mail' => ['abc@example.com'],
+            'sn' => ['smith'],
+            'givenname' => ['jenny'],
+            'telephonenumber' => ['12345'],
+            ],
+        ]));
+        \Ldap::shouldReceive('findUser')->with('trs80y')->andReturn(new LdapUser([
+            [
+            'uid' => ['trs80y'],
+            'mail' => ['trs@example.com'],
+            'sn' => ['blah'],
+            'givenname' => ['whatever'],
+            'telephonenumber' => ['12345'],
+            ],
+        ]));
+        \Ldap::shouldReceive('findUser')->with('bob1q')->andReturn(new LdapUser([
+            [
+            'uid' => ['bob1q'],
+            'mail' => ['bob@example.com'],
+            'sn' => ['blah blah'],
+            'givenname' => ['whatever whatever'],
+            'telephonenumber' => ['12345'],
+            ],
+        ]));
+        \Ldap::shouldReceive('findUser')->with('lol9s')->andReturn(new LdapUser([
+            [
+            'uid' => ['lol9s'],
+            'mail' => ['lol@example.com'],
+            'sn' => ['fruit'],
+            'givenname' => ['sundae'],
+            'telephonenumber' => ['12345'],
+            ],
+        ]));
+
+        $data = [
+            ['Course Code', 'Course Name', 'Discipline', 'Semester', 'Setters GUIDs', 'Setters Names', 'Moderators GUIDs', 'Moderators Names', 'Externals Emails', 'Externals Names', 'Examined?'],
+            ['ENG1234', 'Lasers', 'Elec', '1', 'abc1x, trs80y', 'Jim Smith, Tina Smith', ' bob1q,lol9s', 'Bob Jones, Lola McVitie', 'someone@example.com', 'Some One', 'N'],
+            ['ENG5678', 'Helicopters', 'Bio', '2', 'cde1x,pop80y', 'Carol Exmouth, Poppy Flower', ' bob1q,trs80y', 'Bob Jones, Tina Smith', 'fran@example.com', 'Fran Smith', 'Y'],
+        ];
+
+        ImportCourseRow::dispatch($data[1], 1, $session2->id);
+
+        $academicSession = AcademicSession::firstOrFail();
+        session(['academic_session' => $academicSession->session]);
+
+        $this->assertDatabaseHas('courses', ['code' => 'ENG1234', 'title' => 'Lasers', 'semester' => 1, 'is_examined' => false, 'academic_session_id' => $session2->id]);
+        $this->assertDatabaseHas('disciplines', ['title' => 'Elec', 'academic_session_id' => $session2->id]);
+
+        $course = Course::withoutGlobalScope(CurrentAcademicSessionScope::class)->with([
+            'setters' => fn ($query) => $query->withoutGlobalScope(CurrentAcademicSessionScope::class),
+            'moderators' => fn ($query) => $query->withoutGlobalScope(CurrentAcademicSessionScope::class),
+        ])->first();
+        $this->assertDatabaseHas('users', ['username' => 'abc1x', 'academic_session_id' => $session2->id]);
+        $this->assertTrue($course->setters->contains(User::withoutGlobalScope(CurrentAcademicSessionScope::class)->where('username', '=', 'abc1x')->firstOrFail()));
+        $this->assertDatabaseHas('users', ['username' => 'trs80y', 'academic_session_id' => $session2->id]);
+        $this->assertTrue($course->setters->contains(User::withoutGlobalScope(CurrentAcademicSessionScope::class)->where('username', '=', 'trs80y')->firstOrFail()));
+
+        $this->assertDatabaseHas('users', ['username' => 'bob1q', 'academic_session_id' => $session2->id]);
+        $this->assertTrue($course->moderators->contains(User::withoutGlobalScope(CurrentAcademicSessionScope::class)->where('username', '=', 'bob1q')->firstOrFail()));
+        $this->assertDatabaseHas('users', ['username' => 'lol9s', 'academic_session_id' => $session2->id]);
+        $this->assertTrue($course->moderators->contains(User::withoutGlobalScope(CurrentAcademicSessionScope::class)->where('username', '=', 'lol9s')->firstOrFail()));
+
+        \Mockery::close();
+    }
+
 
     /** @test */
     public function if_a_row_is_missing_key_data_an_error_is_recorded()
@@ -171,7 +250,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
             ->with('-errors', 'Invalid data on row 1 : Row is missing key data and is less than 4 columns')
             ->andReturn(true);
 
-        ImportCourseRow::dispatch(['ABC1234', 'Lasers'], 1);
+        ImportCourseRow::dispatch(['ABC1234', 'Lasers'], 1, AcademicSession::first()->id);
 
         $this->assertEquals(0, Course::count());
         \Mockery::close();
@@ -227,7 +306,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
             ['ENG5678', 'Helicopters', 'Bio', '2', 'cde1x,pop80y', 'Carol Exmouth, Poppy Flower', ' bob1q,trs80y', 'Bob Jones, Tina Smith', 'fran@example.com', 'Fran Smith', 'Y'],
         ];
 
-        ImportCourseRow::dispatch($data[1], 1);
+        ImportCourseRow::dispatch($data[1], 1, $admin->getCurrentAcademicSession()->id);
 
         $this->assertEquals(1, Course::count());
 
@@ -260,7 +339,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
         $this->fakeRedisErrors();
         ImportCourseDataBatch::dispatch([
             ['ENG1234', 'Lasers', 'Elec', '1', 'abc1x, trs80y', 'Jim Smith, Tina Smith', ' bob1q,lol9s,abc1x', 'Bob Jones, Lola McVitie, Anne Chalmers', 'someone@example.com', 'Some One', 'Y'],
-        ], $admin->id);
+        ], $admin->id, $admin->getCurrentAcademicSession()->id);
 
         Mail::assertQueued(CourseImportProcessComplete::class, 1);
         Mail::assertQueued(CourseImportProcessComplete::class, function ($mail) use ($admin) {
@@ -283,7 +362,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
         ImportCourseDataBatch::dispatch([
             ['ENG1234', 'Lasers', 'Elec', '1', 'abc1x', 'Jim Smith', ' bob1q', 'Bob Jones', 'someone@example.com', 'Some One', 'Y'],
             ['', 'Lasers', 'Elec', '1', 'abc1x', 'Jim Smith', ' bob1q', 'Bob Jones', 'someone@example.com', 'Some One', 'N'],
-        ], $admin->id);
+        ], $admin->id, $admin->getCurrentAcademicSession()->id);
 
         Mail::assertQueued(CourseImportProcessComplete::class, function ($mail) use ($admin) {
             return $mail->hasTo($admin);
@@ -305,7 +384,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
         ImportCourseDataBatch::dispatch([
             ['ENG1234', 'Lasers', 'Elec', '1', 'abc1x', 'Jim Smith', ' bob1q', 'Bob Jones', 'someone@example.com', 'Some One', 'Y'],
             ['', 'Lasers', 'Elec', '1', 'abc1x', 'Jim Smith', ' bob1q', 'Bob Jones', 'someone@example.com', 'Some One', 'N'],
-        ], $admin->id);
+        ], $admin->id, $admin->getCurrentAcademicSession()->id);
 
         Mail::assertQueued(CourseImportProcessComplete::class, function ($mail) use ($admin) {
             return $mail->hasTo($admin) &&

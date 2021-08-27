@@ -23,7 +23,7 @@ class CourseImportController extends Controller
         ]);
 
         $data = (new ExcelSheet)->import($request->file('sheet')->getPathname());
-        ImportCourseDataBatch::dispatch($data, $request->user()->id);
+        ImportCourseDataBatch::dispatch($data, $request->user()->id, $request->user()->getCurrentAcademicSession()->id);
 
         return redirect(route('course.index'))->with('success', 'Import started - you will get an email when completed');
     }

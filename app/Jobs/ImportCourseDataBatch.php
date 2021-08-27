@@ -24,15 +24,18 @@ class ImportCourseDataBatch implements ShouldQueue
 
     public int $userId;
 
+    public $academicSessionId;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(array $spreadsheetData, int $userId)
+    public function __construct(array $spreadsheetData, int $userId, int $academicSessionId)
     {
         $this->spreadsheetData = $spreadsheetData;
         $this->userId = $userId;
+        $this->academicSessionId = $academicSessionId;
     }
 
     /**
@@ -46,7 +49,7 @@ class ImportCourseDataBatch implements ShouldQueue
         Bus::batch([])
             ->add(
                 collect($this->spreadsheetData)
-                    ->map(fn ($row, $rowNumber) => new ImportCourseRow($row, $rowNumber + 1))
+                    ->map(fn ($row, $rowNumber) => new ImportCourseRow($row, $rowNumber + 1, $this->academicSessionId))
                     ->all()
             )
             ->allowFailures()

@@ -28,15 +28,18 @@ class ImportCourseRow implements ShouldQueue
 
     public $errorSetName;
 
+    public $academicSessionId;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(array $spreadsheetRow, int $rowNumber)
+    public function __construct(array $spreadsheetRow, int $rowNumber, int $academicSessionId)
     {
         $this->spreadsheetRow = $spreadsheetRow;
         $this->rowNumber = $rowNumber;
+        $this->academicSessionId = $academicSessionId;
     }
 
     /**
@@ -76,9 +79,7 @@ class ImportCourseRow implements ShouldQueue
             return;
         }
 
-        $currentSession = AcademicSession::getDefault();
-
-        $discipline = Discipline::firstOrCreate(['title' => $row['discipline'], 'academic_session_id' => $currentSession->id]);
+        $discipline = Discipline::firstOrCreate(['title' => $row['discipline'], 'academic_session_id' => $this->academicSessionId]);
         $course = Course::updateOrCreate(
             ['code' => $row['code']],
             [
@@ -86,7 +87,7 @@ class ImportCourseRow implements ShouldQueue
                 'semester' => $row['semester'],
                 'discipline_id' => $discipline->id,
                 'is_examined' => preg_match('/[yY]/', $row['is_examined']) === 1,
-                'academic_session_id' => $currentSession->id,
+                'academic_session_id' => $this->academicSessionId,
             ],
         );
 
@@ -102,7 +103,7 @@ class ImportCourseRow implements ShouldQueue
                     $this->addError('invalid GUID ' . $guid);
                     return;
                 }
-                $user = User::createFromLdap($ldapUser);
+                $user = User::createFromLdap($ldapUser, $this->academicSessionId);
             }
             $user->markAsSetter($course);
         });
@@ -119,7 +120,7 @@ class ImportCourseRow implements ShouldQueue
                     $this->addError('invalid GUID ' . $guid);
                     return;
                 }
-                $user = User::createFromLdap($ldapUser);
+                $user = User::createFromLdap($ldapUser, $this->academicSessionId);
             }
             $user->markAsModerator($course);
         });

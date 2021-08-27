@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 
 trait CanBeCreatedFromOutsideSources
 {
-    public static function createFromLdap(LdapUser $ldapUser)
+    public static function createFromLdap(LdapUser $ldapUser, $academicSessionId = null)
     {
         return static::create([
             'username' => $ldapUser->username,
@@ -16,7 +16,7 @@ trait CanBeCreatedFromOutsideSources
             'forenames' => $ldapUser->forenames,
             'is_staff' => true,
             'password' => bcrypt(Str::random(64)),
-            'academic_session_id' => AcademicSession::getDefault()->id,
+            'academic_session_id' => $academicSessionId ?? AcademicSession::getDefault()->id,
         ]);
     }
 }

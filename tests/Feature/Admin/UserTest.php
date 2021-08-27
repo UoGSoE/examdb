@@ -176,6 +176,7 @@ class UserTest extends TestCase
             'surname' => 'McTest',
             'forenames' => 'Test',
             'is_external' => false,
+            'academic_session_id' => AcademicSession::firstOrFail()->id,
         ]);
         // and check we recorded this in the activity/audit log
         tap(Activity::all()->last(), function ($log) use ($admin) {
@@ -225,6 +226,42 @@ class UserTest extends TestCase
                 $log->description
             );
         });
+    }
+
+    /** @test */
+    public function when_admins_create_a_user_it_uses_the_admins_current_academic_session()
+    {
+        $this->withoutExceptionHandling();
+        $session2 = AcademicSession::factory()->create(['session' => '1990/1991']);
+        $admin = create(User::class, ['is_admin' => true]);
+        login($admin);
+        session(['academic_session' => $session2->session]);
+
+        $response = $this->actingAs($admin)->postJson(route('user.store'), [
+            'username' => 'test1x',
+            'email' => 'test@example.com',
+            'surname' => 'McTest',
+            'forenames' => 'Test',
+        ]);
+
+        $response->assertStatus(201);
+        $response->assertJson([
+            'user' => [
+                'username' => 'test1x',
+                'email' => 'test@example.com',
+                'surname' => 'McTest',
+                'forenames' => 'Test',
+                'is_external' => false,
+            ],
+        ]);
+        $this->assertDatabaseHas('users', [
+            'username' => 'test1x',
+            'email' => 'test@example.com',
+            'surname' => 'McTest',
+            'forenames' => 'Test',
+            'is_external' => false,
+            'academic_session_id' => $session2->id,
+        ]);
     }
 
     /** @test */
