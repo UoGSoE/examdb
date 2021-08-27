@@ -1,0 +1,49 @@
+version: "3.7"
+x-deploy:
+  &default-deploy
+  replicas: 1
+  labels:
+    - "traefik.enable=false"
+  resources:
+    limits:
+      memory: 4096M
+  update_config:
+    parallelism: 1
+    failure_action: rollback
+    order: start-first
+
+services:
+  mysql:
+    image: mysql:5.7
+    deploy: *default-deploy
+    networks:
+      - default
+    volumes:
+      - mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: examdb
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: homestead
+      MYSQL_PASSWORD: secret
+
+  minio:
+    image: minio/minio:RELEASE.2019-10-12T01-39-57Z
+    deploy: *default-deploy
+    entrypoint: sh
+    command: -c 'mkdir -p /data/exampapers && /usr/bin/minio server /data'
+    environment:
+      MINIO_ACCESS_KEY: yourminiokey
+      MINIO_SECRET_KEY: yourminiosecret
+      MINIO_REGION: "us-east-1"
+      MINIO_BUCKET: "exampapers"
+      MINIO_ENDPOINT: http://localhost:9000
+    networks:
+      - default
+    volumes:
+      - minio:/data
+
+volumes:
+  mysql:
+    driver: "local"
+  minio:
+    driver: "local"
