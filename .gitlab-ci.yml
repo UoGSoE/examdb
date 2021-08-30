@@ -65,8 +65,7 @@ test:
   - php artisan migrate:fresh
   - cat .env
   - composer dump-autoload
-  # - php artisan test --parallel
-  - ./vendor/bin/phpunit --filter when_the_main_data_batch_job_is_dispatched_it_spawns_a_sub_job_for_each_row_in_the_spreadsheet_data
+  - php artisan test --parallel
   - egrep -r '[^a-zA-Z](dd\(|dump\()' app && exit 1
   - if [[ -f /root/.composer/vendor/bin/security-checker ]]; then php /root/.composer/vendor/bin/security-checker security:check ./composer.lock ; fi
   - if [[ -f /usr/local/bin/phpcs ]]; then php /usr/local/bin/phpcs --config-set ignore_warnings_on_exit 1 ; php /usr/local/bin/phpcs --standard=PSR2 app ; fi
