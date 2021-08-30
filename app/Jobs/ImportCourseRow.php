@@ -128,6 +128,6 @@ class ImportCourseRow implements ShouldQueue
 
     protected function addError(string $message)
     {
-        // Redis::sadd($this->errorSetName, "Invalid data on row {$this->rowNumber} : " . $message);
+        Redis::sadd($this->errorSetName, "Invalid data on row {$this->rowNumber} : " . $message);
     }
 }

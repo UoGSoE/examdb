@@ -54,9 +54,9 @@ class ImportCourseDataBatch implements ShouldQueue
             )
             ->allowFailures()
             ->finally(function ($batch) use ($user) {
-                // $errors = Redis::smembers($batch->id . '-errors');
-                // Redis::del($batch->id . '-errors');
-                // Mail::to($user)->queue(new CourseImportProcessComplete($errors));
+                $errors = Redis::smembers($batch->id . '-errors');
+                Redis::del($batch->id . '-errors');
+                Mail::to($user)->queue(new CourseImportProcessComplete($errors));
             })
             ->dispatch();
     }
