@@ -20,9 +20,9 @@ class ImportCourseDataBatch implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public array $spreadsheetData = [];
+    public $spreadsheetData = [];
 
-    public int $userId;
+    public $userId;
 
     public $academicSessionId;
 
