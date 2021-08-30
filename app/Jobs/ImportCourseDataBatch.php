@@ -46,7 +46,6 @@ class ImportCourseDataBatch implements ShouldQueue
     public function handle()
     {
         $user = User::find($this->userId);
-        var_dump($this->spreadsheetData);
         Bus::batch([])
             ->add(
                 collect($this->spreadsheetData)
