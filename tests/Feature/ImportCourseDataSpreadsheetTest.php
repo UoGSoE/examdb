@@ -87,9 +87,9 @@ class ImportCourseDataSpreadsheetTest extends TestCase
         $admin = User::factory()->admin()->create();
         Queue::fake();
         $data = [
-            ['Course Code', 'Course Name', 'Discipline', 'Semester', 'Setters', 'Moderators'],
-            ['ENG1234', 'Lasers', 'Elec', '1', 'abc1x, trs80y', ' bob1q,lol9s'],
-            ['ENG5678', 'Helicopters', 'Bio', '2', 'cde1x,pop80y', ' bob1q,trs80y'],
+            ['Course Code', 'Course Name', 'Discipline', 'Semester', 'Setters GUIDs', 'Setters Names', 'Moderators GUIDs', 'Moderators Names', 'Externals Emails', 'Externals Names', 'Examined?'],
+            ['ENG1234', 'Lasers', 'Elec', '1', 'abc1x, trs80y', 'Jim Smith, Tina Smith', ' bob1q,lol9s', 'Bob Jones, Lola McVitie', 'someone@example.com', 'Some One', 'N'],
+            ['ENG5678', 'Helicopters', 'Bio', '2', 'cde1x,pop80y', 'Carol Exmouth, Poppy Flower', ' bob1q,trs80y', 'Bob Jones, Tina Smith', 'fran@example.com', 'Fran Smith', 'Y'],
         ];
 
         ImportCourseDataBatch::dispatchNow($data, $admin->id, $admin->getCurrentAcademicSession()->id);
