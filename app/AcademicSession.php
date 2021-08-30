@@ -24,7 +24,7 @@ class AcademicSession extends Model
         }
 
         return static::create([
-            'session' => $year . '/' . $year + 1,
+            'session' => $year . '/' . ($year + 1),
             'is_default' => true,
         ]);
     }
