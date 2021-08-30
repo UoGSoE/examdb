@@ -15,7 +15,7 @@ class AcademicSession extends Model
         'is_default' => 'boolean',
     ];
 
-    public static function createFirstSession(): static
+    public static function createFirstSession(): AcademicSession
     {
         if (now()->month < 9) {
             $year = now()->year;
