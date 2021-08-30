@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-export IMAGE_NAME=uogsoe/examdb-test:0.1
+export IMAGE_NAME=uogsoe/examdb-test:0.2
 export TRAEFIK_HOSTNAME=foobarzy.net
 export DOTENV=.env.single-server
 
