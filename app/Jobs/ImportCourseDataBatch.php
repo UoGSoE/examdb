@@ -50,6 +50,7 @@ class ImportCourseDataBatch implements ShouldQueue
             ->add(
                 collect($this->spreadsheetData)
                     ->map(fn ($row, $rowNumber) => new ImportCourseRow($row, $rowNumber + 1, $this->academicSessionId))
+                    ->dump()
                     ->all()
             )
             ->allowFailures()
