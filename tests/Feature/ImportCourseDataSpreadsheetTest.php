@@ -24,6 +24,7 @@ use App\Mail\CourseImportProcessComplete;
 use App\Scopes\CurrentAcademicSessionScope;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 
 class ImportCourseDataSpreadsheetTest extends TestCase
 {
@@ -139,11 +140,31 @@ class ImportCourseDataSpreadsheetTest extends TestCase
             'telephonenumber' => ['12345'],
             ],
         ]));
+        \Ldap::shouldReceive('findUser')->with('cde1x')->andReturn(new LdapUser([
+            [
+            'uid' => ['cde1x'],
+            'mail' => ['cde1x@example.com'],
+            'sn' => ['fruit'],
+            'givenname' => ['sundae'],
+            'telephonenumber' => ['12345'],
+            ],
+        ]));
+        \Ldap::shouldReceive('findUser')->with('pop80y')->andReturn(new LdapUser([
+            [
+            'uid' => ['pop80y'],
+            'mail' => ['pop80y@example.com'],
+            'sn' => ['fruit'],
+            'givenname' => ['sundae'],
+            'telephonenumber' => ['12345'],
+            ],
+        ]));
+
 
         $data = [
             ['Course Code', 'Course Name', 'Discipline', 'Semester', 'Setters GUIDs', 'Setters Names', 'Moderators GUIDs', 'Moderators Names', 'Externals Emails', 'Externals Names', 'Examined?'],
             ['ENG1234', 'Lasers', 'Elec', '1', 'abc1x, trs80y', 'Jim Smith, Tina Smith', ' bob1q,lol9s', 'Bob Jones, Lola McVitie', 'someone@example.com', 'Some One', 'N'],
             ['ENG5678', 'Helicopters', 'Bio', '2', 'cde1x,pop80y', 'Carol Exmouth, Poppy Flower', ' bob1q,trs80y', 'Bob Jones, Tina Smith', 'fran@example.com', 'Fran Smith', 'Y'],
+            ['ENG5679', 'Rockets', 'Bio', '2', 'cde1x,pop80y', 'Carol Exmouth, Poppy Flower', ' bob1q,trs80y', 'Bob Jones, Tina Smith', 'fran@example.com', 'Fran Smith', 'Y'],
         ];
 
         ImportCourseRow::dispatch($data[1], 1, $admin->getCurrentAcademicSession()->id);
@@ -161,6 +182,24 @@ class ImportCourseDataSpreadsheetTest extends TestCase
         $this->assertTrue(Course::first()->moderators->contains(User::findByUsername('bob1q')));
         $this->assertDatabaseHas('users', ['username' => 'lol9s', 'academic_session_id' => $academicSession->id]);
         $this->assertTrue(Course::first()->moderators->contains(User::findByUsername('lol9s')));
+
+        // 2nd row of data
+        ImportCourseRow::dispatch($data[2], 1, $admin->getCurrentAcademicSession()->id);
+
+        $academicSession = AcademicSession::firstOrFail();
+        $this->assertDatabaseHas('courses', ['code' => 'ENG5678', 'title' => 'Helicopters', 'semester' => 2, 'is_examined' => true, 'academic_session_id' => $academicSession->id]);
+        $this->assertDatabaseHas('disciplines', ['title' => 'Bio', 'academic_session_id' => $academicSession->id]);
+
+        $this->assertDatabaseHas('users', ['username' => 'cde1x', 'academic_session_id' => $academicSession->id]);
+        $this->assertDatabaseHas('users', ['username' => 'pop80y', 'academic_session_id' => $academicSession->id]);
+
+        // 3rd row of data
+        ImportCourseRow::dispatch($data[3], 1, $admin->getCurrentAcademicSession()->id);
+
+        $academicSession = AcademicSession::firstOrFail();
+        $this->assertDatabaseHas('courses', ['code' => 'ENG5679', 'title' => 'Rockets', 'semester' => 2, 'is_examined' => true, 'academic_session_id' => $academicSession->id]);
+        $this->assertDatabaseHas('disciplines', ['title' => 'Bio', 'academic_session_id' => $academicSession->id]);
+        $this->assertDatabaseCount('disciplines', 2);
 
         \Mockery::close();
     }
@@ -238,6 +277,13 @@ class ImportCourseDataSpreadsheetTest extends TestCase
         $this->assertDatabaseHas('users', ['username' => 'lol9s', 'academic_session_id' => $session2->id]);
         $this->assertTrue($course->moderators->contains(User::withoutGlobalScope(CurrentAcademicSessionScope::class)->where('username', '=', 'lol9s')->firstOrFail()));
 
+        // import the row again to make sure we don't get duplicates
+        ImportCourseRow::dispatch($data[1], 1, $session2->id);
+
+        $this->assertDatabaseCount('courses', 1);
+        $this->assertDatabaseCount('disciplines', 1);
+        $this->assertDatabaseCount('users', 5); // four spreadsheet users, one original admin user
+
         \Mockery::close();
     }
 
@@ -303,7 +349,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
         $data = [
             ['Course Code', 'Course Name', 'Discipline', 'Semester', 'Setters', 'Moderators', 'Examined?'],
             ['ENG1234', 'Lasers', 'Elec', '1', 'abc1x, trs80y', 'Jim Smith, Tina Smith', ' bob1q,lol9s', 'Bob Jones, Lola McVitie', 'someone@example.com', 'Some One', 'N'],
-            ['ENG5678', 'Helicopters', 'Bio', '2', 'cde1x,pop80y', 'Carol Exmouth, Poppy Flower', ' bob1q,trs80y', 'Bob Jones, Tina Smith', 'fran@example.com', 'Fran Smith', 'Y'],
+            ['ENG5678', 'Helicopters', 'Elec', '2', 'cde1x,pop80y', 'Carol Exmouth, Poppy Flower', ' bob1q,trs80y', 'Bob Jones, Tina Smith', 'fran@example.com', 'Fran Smith', 'Y'],
         ];
 
         ImportCourseRow::dispatch($data[1], 1, $admin->getCurrentAcademicSession()->id);
