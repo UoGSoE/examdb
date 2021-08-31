@@ -2,16 +2,23 @@
 
 namespace Tests\Feature;
 
-use App\Course;
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Livewire\Livewire;
+use App\Course;
 use Tests\TestCase;
+use Livewire\Livewire;
+use App\AcademicSession;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class SemesterEditingTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        AcademicSession::createFirstSession();
+    }
 
     /** @test */
     public function admins_can_see_the_semester_edit_box_on_the_course_index_page()

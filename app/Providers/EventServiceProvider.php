@@ -35,9 +35,6 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\PaperUnapproved::class => [
             \App\Listeners\PaperWasUnapproved::class,
         ],
-        \App\Events\WlmImportComplete::class => [
-            \App\Listeners\NotifyUserWlmImportFinished::class,
-        ],
         'Lab404\Impersonate\Events\TakeImpersonation' => [
             \App\Listeners\ImpersonationStarted::class,
         ],

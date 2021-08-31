@@ -7,6 +7,7 @@ use App\Paper;
 use App\Course;
 use App\Discipline;
 use Tests\TestCase;
+use App\AcademicSession;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\PaperForRegistryUploaded;
@@ -17,6 +18,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class PaperForRegistryTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        AcademicSession::createFirstSession();
+    }
 
     /** @test */
     public function when_an_admin_uploads_the_paper_for_registy_an_email_is_sent_to_the_setters()

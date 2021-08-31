@@ -2,17 +2,24 @@
 
 namespace Tests\Feature;
 
-use App\Mail\ExternalLoginUrl;
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
+use App\AcademicSession;
+use App\Mail\ExternalLoginUrl;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Activitylog\Models\Activity;
-use Tests\TestCase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ExternalUsersLoginTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        AcademicSession::createFirstSession();
+    }
 
     /** @test */
     public function an_external_can_be_emailed_a_time_limited_signed_login_url()

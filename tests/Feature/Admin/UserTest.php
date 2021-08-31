@@ -2,19 +2,27 @@
 
 namespace Tests\Feature\Admin;
 
-use App\Course;
-use App\Paper;
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Paper;
+use App\Course;
+use Tests\TestCase;
+use App\AcademicSession;
+use App\Scopes\CurrentAcademicSessionScope;
+use Ohffs\Ldap\FakeLdapConnection;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
-use Ohffs\Ldap\FakeLdapConnection;
 use Spatie\Activitylog\Models\Activity;
-use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        AcademicSession::createFirstSession();
+    }
 
     /** @test */
     public function admins_can_see_a_list_of_all_users()
@@ -168,6 +176,7 @@ class UserTest extends TestCase
             'surname' => 'McTest',
             'forenames' => 'Test',
             'is_external' => false,
+            'academic_session_id' => AcademicSession::firstOrFail()->id,
         ]);
         // and check we recorded this in the activity/audit log
         tap(Activity::all()->last(), function ($log) use ($admin) {
@@ -217,6 +226,42 @@ class UserTest extends TestCase
                 $log->description
             );
         });
+    }
+
+    /** @test */
+    public function when_admins_create_a_user_it_uses_the_admins_current_academic_session()
+    {
+        $this->withoutExceptionHandling();
+        $session2 = AcademicSession::factory()->create(['session' => '1990/1991']);
+        $admin = create(User::class, ['is_admin' => true]);
+        login($admin);
+        session(['academic_session' => $session2->session]);
+
+        $response = $this->actingAs($admin)->postJson(route('user.store'), [
+            'username' => 'test1x',
+            'email' => 'test@example.com',
+            'surname' => 'McTest',
+            'forenames' => 'Test',
+        ]);
+
+        $response->assertStatus(201);
+        $response->assertJson([
+            'user' => [
+                'username' => 'test1x',
+                'email' => 'test@example.com',
+                'surname' => 'McTest',
+                'forenames' => 'Test',
+                'is_external' => false,
+            ],
+        ]);
+        $this->assertDatabaseHas('users', [
+            'username' => 'test1x',
+            'email' => 'test@example.com',
+            'surname' => 'McTest',
+            'forenames' => 'Test',
+            'is_external' => false,
+            'academic_session_id' => $session2->id,
+        ]);
     }
 
     /** @test */
@@ -429,6 +474,61 @@ class UserTest extends TestCase
             );
         });
     }
+
+    /** @test */
+    public function when_the_admin_status_is_toggled_it_is_updated_in_all_academic_sessions()
+    {
+        $this->withoutExceptionHandling();
+        $session1 = AcademicSession::factory()->create(['session' => '1990/1991']);
+        $session2 = AcademicSession::factory()->create(['session' => '1991/1992']);
+        $admin = User::factory()->admin()->create(['username' => 'fred']);
+        $adminV2 = User::factory()->admin()->create(['username' => 'fred', 'academic_session_id' => $session1->id]);
+        $adminV3 = User::factory()->admin()->create(['username' => 'fred', 'academic_session_id' => $session2->id]);
+        $user = User::factory()->create(['username' => 'ginger']);
+        $userV2 = User::factory()->create(['username' => 'ginger', 'academic_session_id' => $session1->id]);
+        $userV3 = User::factory()->create(['username' => 'ginger', 'academic_session_id' => $session2->id]);
+
+        $response = $this->actingAs($admin)->postJson(route('admin.toggle', $user->id));
+
+        $response->assertOk();
+        $response->assertJson([
+            'user' => [
+                'id' => $user->id,
+                'is_admin' => true,
+            ],
+        ]);
+        $this->assertTrue($user->fresh()->isAdmin());
+        User::withoutGlobalScope(CurrentAcademicSessionScope::class)
+            ->where('username', '=', 'ginger')
+            ->get()
+            ->each(fn ($user) => $this->assertTrue($user->isAdmin()));
+        // double-check that we don't clobber other users
+        User::withoutGlobalScope(CurrentAcademicSessionScope::class)
+            ->where('username', '=', 'fred')
+            ->get()
+            ->each(fn ($user) => $this->assertTrue($user->isAdmin()));
+
+        $response = $this->actingAs($admin)->postJson(route('admin.toggle', $user->id));
+
+        $response->assertOk();
+        $response->assertJson([
+            'user' => [
+                'id' => $user->id,
+                'is_admin' => false,
+            ],
+        ]);
+        $this->assertFalse($user->fresh()->isAdmin());
+        User::withoutGlobalScope(CurrentAcademicSessionScope::class)
+            ->where('username', '=', 'ginger')
+            ->get()
+            ->each(fn ($user) => $this->assertFalse($user->isAdmin()));
+        // double-check that we don't clobber other users
+        User::withoutGlobalScope(CurrentAcademicSessionScope::class)
+            ->where('username', '=', 'fred')
+            ->get()
+            ->each(fn ($user) => $this->assertTrue($user->isAdmin()));
+    }
+
 
     /** @test */
     public function regular_users_cant_toggle_admin_status_of_users()

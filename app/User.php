@@ -2,12 +2,14 @@
 
 namespace App;
 
+use App\AcademicSession;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Cache;
 use App\CanBeCreatedFromOutsideSources;
 use Spatie\Activitylog\Models\Activity;
 use Illuminate\Notifications\Notifiable;
 use Lab404\Impersonate\Models\Impersonate;
+use App\Scopes\CurrentAcademicSessionScope;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -34,6 +36,11 @@ class User extends Authenticatable
 
     protected $appends = ['full_name'];
 
+    protected static function booted()
+    {
+        static::addGlobalScope(new CurrentAcademicSessionScope);
+    }
+
     public function courses()
     {
         return $this->belongsToMany(Course::class)->withPivot('is_setter', 'is_moderator', 'is_external');
@@ -47,6 +54,11 @@ class User extends Authenticatable
     public function papers()
     {
         return $this->hasMany(Paper::class);
+    }
+
+    public function scopeForAcademicSession($query, AcademicSession $session)
+    {
+        return $query->where('academic_session_id', '=', $session->id);
     }
 
     public static function getStaffForVueSelect()
@@ -91,6 +103,14 @@ class User extends Authenticatable
             ->with('course')
             ->orderByDesc('created_at')
             ->get();
+    }
+
+    public function getCurrentAcademicSession()
+    {
+        if (session()->missing('academic_session')) {
+            return AcademicSession::getDefault();
+        }
+        return AcademicSession::findBySession(session('academic_session'));
     }
 
     public function markAsSetter(Course $course)
@@ -161,6 +181,13 @@ class User extends Authenticatable
     {
         $this->is_admin = ! $this->is_admin;
         $this->save();
+
+        // this reflects the current admin status of the user for all academic sessions
+        // so that people can be admins (or not) for previous/future sessions
+        self::withoutGlobalScope(CurrentAcademicSessionScope::class)
+            ->where('username', '=', $this->username)
+            ->update(['is_admin' => $this->is_admin]);
+
         activity()
             ->causedBy(request()->user())
             ->log(

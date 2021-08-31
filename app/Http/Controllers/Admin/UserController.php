@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\AcademicSession;
 use App\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -50,6 +51,8 @@ class UserController extends Controller
         // we don't use password so set to random
         // (saves dealing with any fallout from deleting the password field re.Eloquent etc)
         $data['password'] = bcrypt(Str::random(64));
+
+        $data['academic_session_id'] = $request->user()->getCurrentAcademicSession()->id;
 
         $user = User::create($data);
 

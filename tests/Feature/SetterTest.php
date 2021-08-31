@@ -2,21 +2,28 @@
 
 namespace Tests\Feature;
 
-use App\Course;
-use App\Mail\NotifyModeratorAboutApproval;
-use App\Mail\NotifyModeratorAboutUnapproval;
-use App\Paper;
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Paper;
+use App\Course;
+use Tests\TestCase;
+use App\AcademicSession;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
-use Tests\TestCase;
+use App\Mail\NotifyModeratorAboutApproval;
+use App\Mail\NotifyModeratorAboutUnapproval;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class SetterTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        AcademicSession::createFirstSession();
+    }
 
     /** @test */
     public function a_user_can_see_all_the_courses_they_are_a_setter_for()
@@ -60,27 +67,6 @@ class SetterTest extends TestCase
         $this->assertTrue($response->data('course')->papers->contains($mainPaper));
         $this->assertTrue($response->data('course')->papers->contains($resitPaper));
         $this->assertFalse($response->data('course')->papers->contains($randomPaper));
-    }
-
-    /** @test */
-    public function archived_papers_show_up_in_the_course_view()
-    {
-        $this->withoutExceptionHandling();
-        $staff = create(User::class);
-        $course1 = create(Course::class);
-        $staff->markAsSetter($course1);
-        $archivedPaper = create(Paper::class, ['course_id' => $course1->id]);
-        $archivedPaper->archive();
-        $archivedCommentPaper = create(Paper::class, ['course_id' => $course1->id, 'subcategory' => Paper::COMMENT_SUBCATEGORY]);
-        $archivedCommentPaper->archive();
-
-        $response = $this->actingAs($staff)->get(route('course.show', $course1->id));
-
-        $response->assertSuccessful();
-        $this->assertTrue($response->data('course')->is($course1));
-        // archived comments shouldn't show up in the list of archives
-        $this->assertCount(1, $response->data('archivedPapers'));
-        $this->assertTrue($response->data('archivedPapers')->contains($archivedPaper));
     }
 
     /** @test */

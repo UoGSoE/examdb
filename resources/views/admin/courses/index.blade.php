@@ -18,10 +18,13 @@
             </a>
         </span>
         <span class="level-item">
-            <remove-staff-button></remove-staff-button>
+            <a href="{{ route('course.import') }}" class="button">
+                <span class="icon"><i class="fas fa-file-upload"></i></span>
+                <span>Import Excel</span>
+            </a>
         </span>
         <span class="level-item">
-            <wlm-importer></wlm-importer>
+            <remove-staff-button></remove-staff-button>
         </span>
     </div>
 </div>

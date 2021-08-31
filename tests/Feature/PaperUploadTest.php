@@ -2,26 +2,33 @@
 
 namespace Tests\Feature;
 
+use App\User;
+use App\Paper;
 use App\Course;
 use App\Discipline;
-use App\Mail\ChecklistUploaded;
-use App\Mail\NotifySetterAboutExternalComments;
-use App\Mail\NotifySetterAboutModeratorComments;
-use App\Mail\NotifyTeachingOfficeExternalHasCommented;
+use Tests\TestCase;
+use App\AcademicSession;
 use App\Mail\PaperForRegistry;
-use App\Paper;
-use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Mail\ChecklistUploaded;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
-use Tests\TestCase;
+use Illuminate\Foundation\Testing\WithFaker;
+use App\Mail\NotifySetterAboutExternalComments;
+use App\Mail\NotifySetterAboutModeratorComments;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Mail\NotifyTeachingOfficeExternalHasCommented;
 
 class PaperUploadTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        AcademicSession::createFirstSession();
+    }
 
     /** @test */
     public function a_setter_can_upload_a_paper()

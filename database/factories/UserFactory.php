@@ -2,8 +2,9 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
+use App\AcademicSession;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,6 +43,7 @@ class UserFactory extends Factory
             'is_external' => false,
             'username' => Str::random(3).$this->faker->randomNumber(3).$this->faker->randomLetter,
             'remember_token' => Str::random(10),
+            'academic_session_id' => optional(AcademicSession::first())->id ?? AcademicSession::factory(),
         ];
     }
 

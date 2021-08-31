@@ -7,6 +7,7 @@ use App\Events\PaperUnapproved;
 use App\Mail\ExternalHasUpdatedTheChecklist;
 use App\Mail\ModeratorHasUpdatedTheChecklist;
 use App\Mail\SetterHasUpdatedTheChecklist;
+use App\Scopes\CurrentAcademicSessionScope;
 use App\Scopes\CurrentScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -39,6 +40,25 @@ class Course extends Model
         'registry_approved_main' => 'boolean',
         'registry_approved_resit' => 'boolean',
     ];
+
+    public $flagsToClearOnDuplication = [
+        'moderator_approved_main',
+        'moderator_approved_resit',
+        'external_approved_main',
+        'external_approved_resit',
+        'moderator_approved_assessment',
+        'external_approved_assessment',
+        'external_notified',
+        'registry_approved_main',
+        'registry_approved_resit',
+    ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new CurrentAcademicSessionScope);
+    }
 
     public function staff()
     {
@@ -108,8 +128,10 @@ class Course extends Model
 
     public function scopeForArea($query, $area)
     {
-        $codePrefix = ($area == 'uestc' ? 'UESTC' : 'ENG');
-        return $query->where('code', 'like', $codePrefix.'%');
+        if ($area == 'uestc') {
+            return $query->where('code', 'like', 'UESTC%');
+        }
+        return $query->where('code', 'not like', 'UESTC%');
     }
 
     public function scopeForDiscipline($query, $discipline)
@@ -524,40 +546,6 @@ class Course extends Model
         return static::withTrashed()->where('code', '=', $code)->first();
     }
 
-    /**
-     * Create a course based on import data from the WLM.
-     */
-    public static function fromWlmData(array $wlmCourse): self
-    {
-        // TODO mark courses which aren't current as deleted/disabled in this system
-        $code = $wlmCourse['Code'];
-        $title = $wlmCourse['Title'];
-        $disciplineTitle = trim($wlmCourse['Discipline']);
-        $discipline = Discipline::firstOrCreate(['title' => $disciplineTitle]);
-        $course = static::findByCode($code);
-        if (! $course) {
-            $course = new static(['code' => $code]);
-        }
-        $course->is_active = $course->getWlmStatus($wlmCourse);
-        $course->title = $title;
-        $course->discipline()->associate($discipline);
-        $course->save();
-
-        return $course;
-    }
-
-    protected function getWlmStatus($wlmCourse)
-    {
-        if (! array_key_exists('CurrentFlag', $wlmCourse)) {
-            return false;
-        }
-        if ($wlmCourse['CurrentFlag'] === 'Yes') {
-            return true;
-        }
-
-        return false;
-    }
-
     public function isUestc()
     {
         return preg_match('/^UESTC/i', $this->code) === 1;
@@ -621,7 +609,7 @@ class Course extends Model
     }
 
     /**
-     * @throws InvalidAgurmentException
+     * @throws InvalidArgumentException
      */
     public function createDuplicate(string $newCode): Course
     {
@@ -629,21 +617,10 @@ class Course extends Model
             throw new InvalidArgumentException("New course code of {$newCode} looks invalid...");
         }
 
-        $flagsToClear = [
-            'moderator_approved_main',
-            'moderator_approved_resit',
-            'external_approved_main',
-            'external_approved_resit',
-            'moderator_approved_assessment',
-            'external_approved_assessment',
-            'external_notified',
-            'registry_approved_main',
-            'registry_approved_resit',
-        ];
 
         $newCourse = $this->replicate();
         $newCourse->code = $newCode;
-        foreach ($flagsToClear as $flag) {
+        foreach ($this->flagsToClearOnDuplication as $flag) {
             $newCourse->$flag = false;
         }
         $newCourse->save();

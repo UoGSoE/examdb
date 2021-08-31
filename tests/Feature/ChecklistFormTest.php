@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\AcademicSession;
 use App\User;
 use App\Course;
 use Tests\TestCase;
@@ -20,6 +21,12 @@ use App\Http\Livewire\PaperChecklist as LivewirePaperChecklist;
 class ChecklistFormTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        AcademicSession::createFirstSession();
+    }
 
     /** @test */
     public function people_associated_with_a_course_can_see_the_form_to_create_a_checklist()

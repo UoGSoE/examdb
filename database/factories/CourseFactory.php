@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\AcademicSession;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CourseFactory extends Factory
@@ -31,6 +32,7 @@ class CourseFactory extends Factory
             'registry_approved_resit' => false,
             'semester' => 1,
             'is_examined' => true,
+            'academic_session_id' => optional(AcademicSession::first())->id ?? AcademicSession::factory(),
         ];
     }
 
