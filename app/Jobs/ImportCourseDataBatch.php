@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Redis;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Mail\CourseImportProcessComplete;
+use App\Scopes\CurrentAcademicSessionScope;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -45,7 +46,7 @@ class ImportCourseDataBatch implements ShouldQueue
      */
     public function handle()
     {
-        $user = User::find($this->userId);
+        $user = User::withoutGlobalScope(CurrentAcademicSessionScope::class)->find($this->userId);
         $b = Bus::batch([]);
         foreach ($this->spreadsheetData as $rowId => $row) {
             $b->add(new ImportCourseRow($row, $rowId + 1, $this->academicSessionId));
