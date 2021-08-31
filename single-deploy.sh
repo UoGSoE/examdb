@@ -8,6 +8,7 @@ export DOTENV=.env.single-server
 
 NOW=`date +%Y-%m-%d-%H-%M-%S`
 export DOTENV_NAME="examdb-prod-dotenv-${NOW}"
+
 echo "Deploying stack examdb with image ${IMAGE_NAME} and secret ${DOTENV_NAME}"
 echo "Hostname will be ${TRAEFIK_HOSTNAME}"
 
