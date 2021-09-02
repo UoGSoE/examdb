@@ -21,11 +21,19 @@ Note that the example scripts make some assumptions about your swarm setup.  In 
 
 By default it will run in 'demo mode' where it spins up a throw-away copy of mysql and minio inside docker.  Assuming you don't want that in production remove the `,single-server-stack-demo.yml` from the script `docker stack deploy...` line.
 
-Make particular note of the `APP_KEY` in the `.env.single-server` file.  This is used internally by the code - but is especially important as it is also used to encrypt the contents of all the exam paper uploads.  To generate a new random key you can do something like :
+**Note:** Make particular note of the `APP_KEY` in the `.env.single-server` file.  This is used internally by the code - but is especially important as it is also used to encrypt the contents of all the exam paper uploads.  To generate a new random key you can do something like :
 ```bash
 docker run --rm uogsoe/examdb-test:0.2 php artisan key:generate --show
 ```
 (with your own container name rather than the uogsoe one)
+
+To create an initial admin user so you can log in, try :
+```bash
+docker ps | grep app
+# that should show you something like
+# af98c4a77cb5   uogsoe/examdb-test:0.2   "docker-php-entrypoi…"   10 seconds ago
+docker exec af98c4a77cb5 php artisan examdb:createadmin admin admin@example.com Admin Smith
+```
 
 ## Running on a multi-node Swarm
 
