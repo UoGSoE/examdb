@@ -17,11 +17,7 @@ class AcademicSession extends Model
 
     public static function createFirstSession(): AcademicSession
     {
-        if (now()->month < 9) {
-            $year = now()->year;
-        } else {
-            $year = now()->year + 1;
-        }
+        $year = now()->year;
 
         return static::create([
             'session' => $year . '/' . ($year + 1),

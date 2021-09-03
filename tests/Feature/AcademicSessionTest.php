@@ -88,24 +88,6 @@ class AcademicSessionTest extends TestCase
     }
 
     /** @test */
-    public function if_it_is_after_august_and_a_new_academic_session_is_automatically_created_then_it_is_set_to_the_next_year()
-    {
-        AcademicSession::createFirstSession();
-        $user = User::factory()->create();
-
-        $this->travel(Carbon::createFromFormat('Y-m-d', '2020-09-01'));
-
-        $response = $this->actingAs($user)->get('/home');
-
-        $response->assertOk();
-        $newSession = AcademicSession::firstOrFail();
-        $this->assertEquals('2021/2022', $newSession->session);
-        $response->assertSessionHas('academic_session', '2021/2022');
-
-        $this->travelBack();
-    }
-
-    /** @test */
     public function admin_users_can_change_their_academic_session()
     {
         $this->withoutExceptionHandling();
