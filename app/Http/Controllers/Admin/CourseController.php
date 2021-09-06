@@ -41,7 +41,7 @@ class CourseController extends Controller
                 ->where('code', '=', $request->code)
                 ->where('academic_session_id', '=', $request->user()->getCurrentAcademicSession()->id)
                 ->first();
-        if ($existingCourse) {
+        if ($existingCourse && $existingCourse->id != $course->id) {
             $error = ValidationException::withMessages([
                 'code' => ['Course with this code already exists.'],
             ]);
