@@ -7,6 +7,8 @@ use App\Discipline;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
+use App\Scopes\CurrentAcademicSessionScope;
+use Illuminate\Validation\ValidationException;
 
 class CourseController extends Controller
 {
@@ -28,13 +30,23 @@ class CourseController extends Controller
     {
         $request->validate([
             'code' => [
-                'required',
-                Rule::unique('courses')->ignore($course->id),
+                'required'
             ],
             'title' => 'required',
             'discipline_id' => 'required|integer',
             'is_examined' => 'required|boolean',
         ]);
+
+        $existingCourse = Course::withoutGlobalScope(CurrentAcademicSessionScope::class)
+                ->where('code', '=', $request->code)
+                ->where('academic_session_id', '=', $request->user()->getCurrentAcademicSession()->id)
+                ->first();
+        if ($existingCourse) {
+            $error = ValidationException::withMessages([
+                'code' => ['Course with this code already exists.'],
+            ]);
+            throw $error;
+        }
 
         $course->update($request->only(['code', 'title', 'discipline_id', 'is_examined']));
 
