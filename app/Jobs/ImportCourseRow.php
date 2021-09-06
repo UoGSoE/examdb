@@ -6,6 +6,7 @@ use App\AcademicSession;
 use Exception;
 use App\Course;
 use App\Discipline;
+use App\Scopes\CurrentAcademicSessionScope;
 use App\User;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
@@ -79,24 +80,47 @@ class ImportCourseRow implements ShouldQueue
             return;
         }
 
-        $discipline = Discipline::firstOrCreate(['title' => $row['discipline'], 'academic_session_id' => $this->academicSessionId]);
-        $course = Course::updateOrCreate(
-            ['code' => $row['code']],
-            [
-                'title' => $row['title'],
-                'semester' => $row['semester'],
-                'discipline_id' => $discipline->id,
-                'is_examined' => preg_match('/[yY]/', $row['is_examined']) === 1,
-                'academic_session_id' => $this->academicSessionId,
-            ],
-        );
+        // $discipline = Discipline::firstOrCreate(['title' => $row['discipline'], 'academic_session_id' => $this->academicSessionId]);
+        $discipline = Discipline::withoutGlobalScope(CurrentAcademicSessionScope::class)
+            ->where('title', '=', $row['discipline'])
+            ->where('academic_session_id', '=', $this->academicSessionId)
+            ->first();
+        if (! $discipline) {
+            $discipline = Discipline::create(['title' => $row['discipline'], 'academic_session_id' => $this->academicSessionId]);
+        }
+
+        $course = Course::withoutGlobalScope(CurrentAcademicSessionScope::class)
+            ->where('code', '=', $row['code'])
+            ->where('academic_session_id', '=', $this->academicSessionId)
+            ->first();
+        if (! $course) {
+            $course = new Course(['code' => $row['code'], 'academic_session_id' => $this->academicSessionId]);
+        }
+        $course->title = $row['title'];
+        $course->discipline_id = $discipline->id;
+        $course->semester = $row['semester'];
+        $course->is_examined = preg_match('/[yY]/', $row['is_examined']) === 1;
+        $course->save();
+
+            // ['code' => $row['code']],
+            // [
+            //     'title' => $row['title'],
+            //     'semester' => $row['semester'],
+            //     'discipline_id' => $discipline->id,
+            //     'is_examined' => preg_match('/[yY]/', $row['is_examined']) === 1,
+            //     'academic_session_id' => $this->academicSessionId,
+            // ],
+        // );
 
         $course->setters()->sync([]);
 
         $setters = explode(',', $row['setters']);
         collect($setters)->each(function ($guid) use ($course) {
             $guid = trim(strtolower($guid));
-            $user = User::where('username', '=', $guid)->first();
+            $user = User::withoutGlobalScope(CurrentAcademicSessionScope::class)
+                ->where('username', '=', $guid)
+                ->where('academic_session_id', '=', $this->academicSessionId)
+                ->first();
             if (! $user) {
                 $ldapUser = \Ldap::findUser($guid);
                 if (! $ldapUser) {
@@ -113,7 +137,10 @@ class ImportCourseRow implements ShouldQueue
         $moderators = explode(',', $row['moderators']);
         collect($moderators)->each(function ($guid) use ($course) {
             $guid = trim(strtolower($guid));
-            $user = User::where('username', '=', $guid)->first();
+            $user = User::withoutGlobalScope(CurrentAcademicSessionScope::class)
+                ->where('username', '=', $guid)
+                ->where('academic_session_id', '=', $this->academicSessionId)
+                ->first();
             if (! $user) {
                 $ldapUser = \Ldap::findUser($guid);
                 if (! $ldapUser) {

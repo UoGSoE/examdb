@@ -8,6 +8,8 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
+use App\Scopes\CurrentAcademicSessionScope;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
@@ -35,8 +37,8 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'username' => 'required|string|unique:users,username',
-            'email' => 'required|email|unique:users,email',
+            'username' => 'required|string',
+            'email' => 'required|email',
             'surname' => 'required',
             'forenames' => 'required',
         ]);
@@ -53,6 +55,26 @@ class UserController extends Controller
         $data['password'] = bcrypt(Str::random(64));
 
         $data['academic_session_id'] = $request->user()->getCurrentAcademicSession()->id;
+
+        // now manually check for a duplicate _in this academic session_
+        $existingUsername = User::withoutGlobalScope(CurrentAcademicSessionScope::class)->where('username', '=', $data['username'])
+            ->where('academic_session_id', '=', $data['academic_session_id'])
+            ->first();
+        $existingEmail = User::withoutGlobalScope(CurrentAcademicSessionScope::class)->where('email', '=', $data['email'])
+            ->where('academic_session_id', '=', $data['academic_session_id'])
+            ->first();
+        if ($existingUsername) {
+            $error = ValidationException::withMessages([
+                'username' => ['That username already exists'],
+            ]);
+            throw $error;
+        }
+        if ($existingEmail) {
+            $error = ValidationException::withMessages([
+                'email' => ['That email is already taken'],
+            ]);
+            throw $error;
+        }
 
         $user = User::create($data);
 

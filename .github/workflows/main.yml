@@ -46,7 +46,7 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
           target: ci
           build-args: |
-            PHP_VERSION=7.4
+            PHP_VERSION=8.0
           tags: |
             uogsoe/${{ github.event.repository.name }}:qa-${{ github.sha }}
       - name: Run tests
@@ -69,6 +69,6 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           build-args: |
-            PHP_VERSION=7.4
+            PHP_VERSION=8.0
           tags: |
             uogsoe/${{ github.event.repository.name }}:prod-${{ github.sha }}

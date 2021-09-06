@@ -47,11 +47,20 @@ class ImportCourseDataBatch implements ShouldQueue
     public function handle()
     {
         $user = User::withoutGlobalScope(CurrentAcademicSessionScope::class)->find($this->userId);
-        $b = Bus::batch([]);
-        foreach ($this->spreadsheetData as $rowId => $row) {
-            $b->add(new ImportCourseRow($row, $rowId + 1, $this->academicSessionId));
-        }
-        $b->allowFailures()->finally(function ($batch) use ($user) {
+        $batch = Bus::batch([]);
+
+        // this works on php 7.4 but breaks on php 8.0 :-/
+        // foreach ($this->spreadsheetData as $rowId => $row) {
+        //     $batch->add(new ImportCourseRow($row, $rowId + 1, $this->academicSessionId));
+        // }
+
+        // this works on php 8.0 but breaks on php 7.4 :-/
+        $batch->add(
+            collect($this->spreadsheetData)
+                ->map(fn ($row, $rowNumber) => new ImportCourseRow($row, $rowNumber + 1, $this->academicSessionId))
+                ->all()
+        );
+        $batch->allowFailures()->finally(function ($batch) use ($user) {
             $errors = Redis::smembers($batch->id . '-errors');
             Redis::del($batch->id . '-errors');
             Mail::to($user)->queue(new CourseImportProcessComplete($errors));
