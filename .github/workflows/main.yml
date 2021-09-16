@@ -1,7 +1,9 @@
 name: build-images
 
 on:
-  # push:
+  push:
+    tags:
+      - 'v[1-9]+.'
   workflow_dispatch:
   release:
     types: [created]
