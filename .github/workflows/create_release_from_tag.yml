@@ -3,7 +3,7 @@ name: "generate release from versioned tag"
 on:
   push:
     tags:
-      - "v[1-9]+"
+      - "v*"
 
 jobs:
   tagged-release:
