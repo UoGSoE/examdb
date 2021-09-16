@@ -72,3 +72,27 @@ jobs:
             PHP_VERSION=8.0
           tags: |
             uogsoe/${{ github.event.repository.name }}:prod-${{ github.sha }}
+      -
+        name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.2.3
+        if: ${{ github.event_name == 'release' }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      -
+        name: Build and push release
+        if: ${{ github.event_name == 'release' }}
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64 #,linux/arm/v7,linux/arm64
+          push: true
+          target: prod
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+          build-args: |
+            PHP_VERSION=8.0
+          tags: |
+            docker.io/uogsoe/${{ github.event.repository.name }}:${{ steps.get_release.outputs.tag_name }}
