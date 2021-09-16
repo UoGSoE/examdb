@@ -3,6 +3,8 @@ name: build-images
 on:
   # push:
   workflow_dispatch:
+  release:
+    types: [created]
 
 jobs:
   build-and-test:
