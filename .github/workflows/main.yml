@@ -126,4 +126,4 @@ jobs:
           build-args: |
             PHP_VERSION=8.0
           tags: |
-            docker.io/uogsoe/${{ github.event.repository.name }}:${{ steps.get_version.outputs.tag_name }}
+            docker.io/uogsoe/${{ github.event.repository.name }}:${{ steps.get_version.outputs.VERSION }}
