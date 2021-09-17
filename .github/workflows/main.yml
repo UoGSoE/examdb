@@ -4,9 +4,12 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - "*"
-  release:
-    types: [created]
+      - "**"
+    branches:
+      - "**"
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build-and-test:
@@ -20,6 +23,11 @@ jobs:
         ports:
           - 33306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
+
     steps:
       -
         name: Checkout
@@ -30,12 +38,8 @@ jobs:
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-      -
-        name: Login to DockerHub
-        uses: docker/login-action@v1
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          driver-opts: network=host
       -
         name: Cache Docker layers
         uses: actions/cache@v2
@@ -45,7 +49,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
       -
-        name: Build and push QA
+        name: Build and push local test image
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -58,16 +62,35 @@ jobs:
           build-args: |
             PHP_VERSION=8.0
           tags: |
-            uogsoe/${{ github.event.repository.name }}:qa-${{ github.sha }}
+            localhost:5000/${{ github.event.repository.name }}:qa-${{ github.sha }}
       -
         name: Run tests
         uses: addnab/docker-run-action@v1
         with:
+          # username: ${{ secrets.DOCKERHUB_USERNAME }}
+          # password: ${{ secrets.DOCKERHUB_TOKEN }}
+          options: "--network host"
+          image: localhost:5000/${{ github.event.repository.name }}:qa-${{ github.sha }}
+          run: rm -fv .env && cp -v .env.github .env && php artisan config:clear && CI=1 APP_ENV=testing ./vendor/bin/phpunit -c phpunit.github.xml
+      -
+        name: Get tag
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF##*/}
+      -
+        name: Login to DockerHub
+        if: startsWith(steps.get_version.outputs.VERSION, 'v') || startsWith(steps.get_version.outputs.VERSION, 'qa') || github.ref == 'refs/heads/master'
+        uses: docker/login-action@v1
+        with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-          options: "--network host"
-          image: uogsoe/${{ github.event.repository.name }}:qa-${{ github.sha }}
-          run: rm -fv .env && cp -v .env.github .env && php artisan config:clear && CI=1 APP_ENV=testing ./vendor/bin/phpunit -c phpunit.github.xml
+      -
+        name: Retag and publish local QA image
+        if: startsWith(steps.get_version.outputs.VERSION, 'qa')
+        uses: akhilerm/tag-push-action@v1.1.0
+        with:
+          src: localhost:5000/${{ github.event.repository.name }}:qa-${{ github.sha }}
+          dst: |
+            docker.io/uogsoe/${{ github.event.repository.name }}:qa-${{ github.sha }}
       -
         name: Build and push prod
         if: github.ref == 'refs/heads/master'
@@ -84,33 +107,6 @@ jobs:
             PHP_VERSION=8.0
           tags: |
             uogsoe/${{ github.event.repository.name }}:prod-${{ github.sha }}
-      -
-        name: Get release
-        id: get_release
-        uses: bruceadams/get-release@v1.2.3
-        if: ${{ github.event_name == 'release' }}
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-      -
-        name: Build and push release
-        if: ${{ github.event_name == 'release' }}
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./Dockerfile
-          platforms: linux/amd64 #,linux/arm/v7,linux/arm64
-          push: true
-          target: prod
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
-          build-args: |
-            PHP_VERSION=8.0
-          tags: |
-            docker.io/uogsoe/${{ github.event.repository.name }}:${{ steps.get_release.outputs.tag_name }}
-      -
-        name: Get tag
-        id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF##*/}
       -
         name: Build and push versioned tag
         if: startsWith(steps.get_version.outputs.VERSION, 'v')
