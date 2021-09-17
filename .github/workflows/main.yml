@@ -3,6 +3,8 @@ name: build-images
 on:
   workflow_dispatch:
   push:
+    tags:
+      - "*"
   release:
     types: [created]
 
@@ -105,3 +107,23 @@ jobs:
             PHP_VERSION=8.0
           tags: |
             docker.io/uogsoe/${{ github.event.repository.name }}:${{ steps.get_release.outputs.tag_name }}
+      -
+        name: Get tag
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF##*/}
+      -
+        name: Build and push versioned tag
+        if: startsWith(steps.get_version.outputs.tag_name, 'v')
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64 #,linux/arm/v7,linux/arm64
+          push: true
+          target: prod
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+          build-args: |
+            PHP_VERSION=8.0
+          tags: |
+            docker.io/uogsoe/${{ github.event.repository.name }}:${{ steps.get_version.outputs.tag_name }}
