@@ -12,16 +12,18 @@ class CallForPapersMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $deadline;
+    public $deadlineGlasgow;
+    public $deadlineUestc;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Carbon $deadline)
+    public function __construct(Carbon $deadlineGlasgow, Carbon $deadlineUestc)
     {
-        $this->deadline = $deadline;
+        $this->deadlineGlasgow = $deadlineGlasgow;
+        $this->deadlineUestc = $deadlineUestc;
     }
 
     /**

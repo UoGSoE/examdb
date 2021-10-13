@@ -55,7 +55,9 @@ class TimedNotificationsTest extends TestCase
 
         $callForPapersDate = now()->subHour()->format('Y-m-d');
         $deadlineDate = now()->addWeeks(2)->format('Y-m-d');
+        $uestcDeadlineDate = now()->addWeeks(4)->format('Y-m-d');
         option(['glasgow_staff_submission_deadline' => $deadlineDate]);
+        option(['uestc_staff_submission_deadline' => $uestcDeadlineDate]);
         option(['date_receive_call_for_papers' => $callForPapersDate]);
         option(['start_semester_1' => now()->format('Y-m-d')]);
         option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
@@ -66,13 +68,27 @@ class TimedNotificationsTest extends TestCase
         $this->artisan('examdb:timed-notifications');
 
         Mail::assertQueued(CallForPapersMail::class, 2);
-        Mail::assertQueued(CallForPapersMail::class, function ($mail) use ($setter1, $deadlineDate) {
-            return $mail->hasTo($setter1->email) && $mail->deadline->format('Y-m-d') == $deadlineDate;
+        Mail::assertQueued(CallForPapersMail::class, function ($mail) use ($setter1, $deadlineDate, $uestcDeadlineDate) {
+            return $mail->hasTo($setter1->email) &&
+                $mail->deadlineGlasgow->format('Y-m-d') == $deadlineDate &&
+                $mail->deadlineUestc->format('Y-m-d') == $uestcDeadlineDate;
         });
         Mail::assertQueued(CallForPapersMail::class, function ($mail) use ($setter2) {
             return $mail->hasTo($setter2->email);
         });
         $this->assertNotNull(option('date_receive_call_for_papers_email_sent_semester_1'));
+    }
+
+    /** @test */
+    public function check_that_the_call_for_papers_email_shows_the_correct_dates()
+    {
+        $deadlineGlasgow = now()->addWeeks(2);
+        $deadlineUestc = now()->addWeeks(4);
+        $mailable = new CallForPapersMail($deadlineGlasgow, $deadlineUestc);
+
+        $mailable->assertSeeInHtml(
+            "the resit paper by {$deadlineGlasgow->format('d/m/Y')} for Glasgow and {$deadlineUestc->format('d/m/Y') } for UESTC"
+        );
     }
 
     /** @test */
@@ -92,6 +108,7 @@ class TimedNotificationsTest extends TestCase
 
         $deadlineDate = now()->addWeeks(2)->format('Y-m-d');
         option(['glasgow_staff_submission_deadline' => $deadlineDate]);
+        option(['uestc_staff_submission_deadline' => $deadlineDate]);
         option(['date_receive_call_for_papers' => now()->subDays(3)->format('Y-m-d')]);
         option(['start_semester_1' => now()->format('Y-m-d')]);
         option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
@@ -152,6 +169,7 @@ class TimedNotificationsTest extends TestCase
         option(['date_receive_call_for_papers' => now()->subDays(3)->format('Y-m-d')]);
         $deadlineDate = now()->addWeeks(2)->format('Y-m-d');
         option(['glasgow_staff_submission_deadline' => $deadlineDate]);
+        option(['uestc_staff_submission_deadline' => $deadlineDate]);
 
         $this->assertNull(option('date_receive_call_for_papers_email_sent_semester_1'));
 
@@ -176,6 +194,7 @@ class TimedNotificationsTest extends TestCase
 
         $deadlineDate = now()->addWeeks(2)->format('Y-m-d');
         option(['glasgow_staff_submission_deadline' => $deadlineDate]);
+        option(['uestc_staff_submission_deadline' => $deadlineDate]);
 
         option(['date_receive_call_for_papers' => now()->subHour()->format('Y-m-d')]);
 
