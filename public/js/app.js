@@ -13361,6 +13361,7 @@ __webpack_require__.r(__webpack_exports__);
       return 'Add ' + wording;
     },
     secondResit: function secondResit() {
+      console.log(this.category);
       return this.category == "resit2";
     }
   },
@@ -13373,9 +13374,12 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       if (this.secondResit) {
-        return ["Second Resit File"];
+        console.log('FFFFFFFFFFF');
+        this.dropdownOptions = ["Paper For Registry", "Solution For Archive"];
+        return;
       }
 
+      console.log('NOT 2nd Resit');
       console.log('here');
       axios.get(route('api.course.paper_options', this.course.code) + "?category=".concat(this.category, "&subcategory=").concat(this.buttontext.toLowerCase()), {
         'headers': {
