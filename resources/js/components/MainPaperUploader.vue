@@ -106,6 +106,7 @@ export default {
           return 'Add ' + wording;
       },
     secondResit() {
+        console.log(this.category);
       return this.category == "resit2";
     },
   },
@@ -116,8 +117,11 @@ export default {
       },
     getApplicableSubcategories() {
       if (this.secondResit) {
-        return ["Second Resit File"];
+          console.log('FFFFFFFFFFF');
+        this.dropdownOptions = ["Paper For Registry", "Solution For Archive"];
+        return;
       }
+      console.log('NOT 2nd Resit');
       console.log('here');
       axios.get(
           route('api.course.paper_options', this.course.code) + `?category=${this.category}&subcategory=${this.buttontext.toLowerCase()}`,
