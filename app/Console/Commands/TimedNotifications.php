@@ -146,7 +146,21 @@ class TimedNotifications extends Command
             return;
         }
         try {
-            $date = Carbon::parse(option($optionName));
+            $dateGlasgow = Carbon::parse(option($optionName));
+        } catch (Exception $e) {
+            $this->info("Could not parse $optionName");
+
+            return;
+        }
+
+        $optionName = "uestc_staff_submission_deadline";
+        if (! option($optionName)) {
+            $this->info('Skipping submission deadline email as no date set');
+
+            return;
+        }
+        try {
+            $dateUestc = Carbon::parse(option($optionName));
         } catch (Exception $e) {
             $this->info("Could not parse $optionName");
 
@@ -160,8 +174,8 @@ class TimedNotifications extends Command
                 return $course->setters->pluck('email');
             })->filter()->unique();
 
-        $emailAddresses->each(function ($email) use ($date) {
-            Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new CallForPapersMail($date));
+        $emailAddresses->each(function ($email) use ($dateGlasgow, $dateUestc) {
+            Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new CallForPapersMail($dateGlasgow, $dateUestc));
         });
 
         option(['date_receive_call_for_papers_email_sent_semester_' . $currentSemester => now()->format('Y-m-d')]);
