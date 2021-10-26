@@ -77,7 +77,7 @@ class LoginController extends Controller
         }
 
         if (config('ldap.authentication')) {
-            if (! \Ldap::authenticate($this->guid, $this->password)) {
+            if (! \Ldap::authenticate($request->username, $request->password)) {
                 $this->incrementLoginAttempts($request);
                 throw ValidationException::withMessages([
                     'authentication' => 'You have entered an invalid GUID or password',
