@@ -31,8 +31,10 @@ class CourseExportController extends Controller
             'Externals Emails',
             'Externals Names',
             'Examined?',
+            'Main/Setter',
             'Main/Moderator',
             'Main/External',
+            'Resit/Setter',
             'Resit/Moderator',
             'Resit/External',
         ];
@@ -49,8 +51,10 @@ class CourseExportController extends Controller
                 $course->externals->pluck('email')->implode(', '),
                 $course->externals->pluck('full_name')->implode(', '),
                 $course->isExamined() ? 'Y' : 'N',
+                $course->hasSetterChecklist('main') ? 'Y' : 'N',
                 $course->isApprovedByModerator('main') ? 'Y' : 'N',
                 $course->hasExternalChecklist('main') ? 'Y' : 'N',
+                $course->hasSetterChecklist('resit') ? 'Y' : 'N',
                 $course->isApprovedByModerator('resit') ? 'Y' : 'N',
                 $course->hasExternalChecklist('resit') ? 'Y' : 'N',
             ];
