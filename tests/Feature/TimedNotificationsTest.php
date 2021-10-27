@@ -220,6 +220,7 @@ class TimedNotificationsTest extends TestCase
         $course1 = create(Course::class, ['code' => 'ENG1234']);
         $course2 = create(Course::class, ['code' => 'ENG4567']);
         $course3 = create(Course::class, ['code' => 'UESTC1234']);
+        $course4 = create(Course::class, ['code' => 'ENG9999', 'is_examined' => false]);
         $setter1 = create(User::class);
         $setter1->markAsSetter($course1);
         $setter2 = create(User::class);
@@ -227,6 +228,8 @@ class TimedNotificationsTest extends TestCase
         $setter2->markAsSetter($course2);
         $setter3 = create(User::class);
         $setter3->markAsSetter($course3);
+        $setter4 = create(User::class);
+        $setter4->markAsSetter($course4);
         $moderator = create(User::class);
         $moderator->markAsModerator($course1);
         option(['start_semester_1' => now()->format('Y-m-d')]);
@@ -254,6 +257,7 @@ class TimedNotificationsTest extends TestCase
 
         $this->artisan('examdb:timed-notifications');
 
+        // note that no email is sent to setter4 as that course is not examined
         Mail::assertQueued(SubmissionDeadlinePassedMail::class, 2);
         Mail::assertQueued(SubmissionDeadlinePassedMail::class, function ($mail) use ($setter1, $course1, $course2) {
             return $mail->hasTo($setter1->email) &&

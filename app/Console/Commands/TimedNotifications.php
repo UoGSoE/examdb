@@ -351,7 +351,7 @@ class TimedNotifications extends Command
             return;
         }
 
-        $courses = Course::forArea($area)->with('papers')->get()->filter(function ($course) {
+        $courses = Course::forArea($area)->examined()->with('papers')->get()->filter(function ($course) {
             return ! $course->papers->contains(function ($paper) {
                 return $paper->subcategory == Paper::PAPER_FOR_REGISTRY;
             });
@@ -403,7 +403,7 @@ class TimedNotifications extends Command
 
     protected function getAllSetterEmails(string $area)
     {
-        return Course::forArea($area)->forSemester($this->semester)->with('setters')->get()->flatMap(function ($course) {
+        return Course::forArea($area)->forSemester($this->semester)->examined()->with('setters')->get()->flatMap(function ($course) {
             return $course->setters->pluck('email');
         })->filter()->unique();
     }
@@ -416,7 +416,7 @@ class TimedNotifications extends Command
         //
         $result = [];
 
-        $courses = Course::forArea($area)->forSemester($this->semester)->doesntHave('checklists')->with('setters')->get();
+        $courses = Course::forArea($area)->forSemester($this->semester)->examined()->doesntHave('checklists')->with('setters')->get();
         foreach ($courses as $course) {
             foreach ($course->setters as $setter) {
                 $result[$setter->email][] = $course->code;
@@ -433,6 +433,7 @@ class TimedNotifications extends Command
     {
         return Course::forArea($area)
             ->forSemester($this->semester)
+            ->examined()
             ->with('moderators')
             ->get()
             ->flatMap(function ($course) {
@@ -444,12 +445,12 @@ class TimedNotifications extends Command
 
     protected function getIncompletePaperworkModeratorEmails(string $area)
     {
-        $courses = Course::forArea($area)->forSemester($this->semester)->with('moderators')
-        ->where(function ($query) {
-            $query->where('moderator_approved_main', '!=', true)
-                ->orWhere('moderator_approved_resit', '!=', true);
-        })
-        ->get();
+        $courses = Course::forArea($area)->forSemester($this->semester)->examined()->with('moderators')
+            ->where(function ($query) {
+                $query->where('moderator_approved_main', '!=', true)
+                    ->orWhere('moderator_approved_resit', '!=', true);
+            })
+            ->get();
         $result = [];
         foreach ($courses as $course) {
             foreach ($course->moderators as $moderator) {
@@ -458,7 +459,7 @@ class TimedNotifications extends Command
         }
         return $result;
 
-        return Course::forArea($area)->forSemester($this->semester)->with('moderators')
+        return Course::forArea($area)->forSemester($this->semester)->examined()->with('moderators')
             ->where(function ($query) {
                 $query->where('moderator_approved_main', '!=', true)
                     ->orWhere('moderator_approved_resit', '!=', true);
