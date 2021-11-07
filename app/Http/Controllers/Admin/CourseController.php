@@ -14,7 +14,6 @@ class CourseController extends Controller
 {
     public function index()
     {
-
         return view('admin.courses.index');
     }
 
@@ -48,7 +47,7 @@ class CourseController extends Controller
             throw $error;
         }
 
-        $course->update($request->only(['code', 'title', 'discipline_id', 'is_examined']));
+        $course->update($request->only(['code', 'title', 'discipline_id', 'is_examined', 'semester']));
 
         return redirect(route('course.show', $course->id));
     }

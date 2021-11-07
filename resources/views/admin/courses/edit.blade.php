@@ -40,6 +40,16 @@
     @enderror
 
     <div class="field">
+        <label class="label" for="semester">Semester</label>
+        <div class="control">
+            <input class="input" id="semester" name="semester" type="number" value="{{ old('semester', $course->semester) }}" min="1" max="3" required>
+        </div>
+    </div>
+    @error('semester')
+        <p class="has-text-danger">{{ $message }}</p>
+    @enderror
+
+    <div class="field">
         <label class="label" for="is_examined">Is Examined?</label>
         <div class="control">
             <div class="select">
