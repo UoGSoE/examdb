@@ -34,6 +34,7 @@ class CourseController extends Controller
             'title' => 'required',
             'discipline_id' => 'required|integer',
             'is_examined' => 'required|boolean',
+            'semester' => 'required|integer|min:1|max:3',
         ]);
 
         $existingCourse = Course::withoutGlobalScope(CurrentAcademicSessionScope::class)
