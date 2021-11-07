@@ -125,7 +125,7 @@ class CourseTest extends TestCase
         $admin = User::factory()->admin()->create();
         $discipline1 = Discipline::factory()->create();
         $discipline2 = Discipline::factory()->create();
-        $course = Course::factory()->create(['discipline_id' => $discipline1->id]);
+        $course = Course::factory()->create(['discipline_id' => $discipline1->id, 'semester' => 1]);
 
         $response = $this->actingAs($admin)->get(route('course.edit', $course->id));
 
@@ -137,6 +137,7 @@ class CourseTest extends TestCase
             'title' => 'BLAH',
             'discipline_id' => $discipline2->id,
             'is_examined' => 0,
+            'semester' => '2',
         ]);
 
         $response->assertRedirect(route('course.show', $course->id));
@@ -145,6 +146,7 @@ class CourseTest extends TestCase
             $this->assertEquals('BLAH', $course->title);
             $this->assertTrue($course->discipline->is($discipline2));
             $this->assertFalse($course->isExamined());
+            $this->assertEquals('2', $course->semester);
         });
     }
 

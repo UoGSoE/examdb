@@ -42,7 +42,7 @@ class TestDataSeeder extends Seeder
         ]);
 
         collect(['Elec', 'BME', 'Civil', 'UESTC'])->map(function ($title) {
-            return Discipline::create(['title' => $title]);
+            return Discipline::factory()->create(['title' => $title]);
         });
         $courses = Course::factory()->count(10)->create();
         foreach ($courses as $course) {

@@ -14,7 +14,6 @@ class CourseController extends Controller
 {
     public function index()
     {
-
         return view('admin.courses.index');
     }
 
@@ -35,6 +34,7 @@ class CourseController extends Controller
             'title' => 'required',
             'discipline_id' => 'required|integer',
             'is_examined' => 'required|boolean',
+            'semester' => 'required|integer|min:1|max:3',
         ]);
 
         $existingCourse = Course::withoutGlobalScope(CurrentAcademicSessionScope::class)
@@ -48,7 +48,7 @@ class CourseController extends Controller
             throw $error;
         }
 
-        $course->update($request->only(['code', 'title', 'discipline_id', 'is_examined']));
+        $course->update($request->only(['code', 'title', 'discipline_id', 'is_examined', 'semester']));
 
         return redirect(route('course.show', $course->id));
     }
