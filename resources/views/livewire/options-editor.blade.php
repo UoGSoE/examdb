@@ -23,7 +23,7 @@
           @enderror
 
           @foreach ($defaultDateOptions as $option)
-          <label class="label">{{ $option['label'] }}</label>
+          <label class="label @if (str_contains($option['label'], 'UESTC')) has-text-info @endif">{{ $option['label'] }}</label>
           <div class="field has-addons">
               <div
                 class="control is-expanded"
