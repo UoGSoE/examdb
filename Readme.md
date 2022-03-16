@@ -2,6 +2,14 @@
 
 This is a system for allowing academics to upload, comment and moderate exam papers.  There is also a system of checklists they have to follow to indicate that the correct procedures have been followed and sign off on each stage of the paper.
 
+## Development
+
+The project is set up to work out of the box with [lando](https://lando.dev/).  Once you have installed lando you should be able to copy the `.env.example` file to `.env` then run
+```
+lando start
+lando mfs
+```
+That will spin up all the docker containers, let you know the URLs to use and migrate & seed the database.
 ## Running a quick demo
 
 If you have Docker installed you should be able to clone this project then just run :
