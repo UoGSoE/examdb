@@ -102,7 +102,7 @@ class AcademicSessionTest extends TestCase
         $response = $this->post(route('academicsession.set', ['session' => $session2->id]));
 
         $response->assertRedirect('/home');
-        $response->assertSessionHas('academic_session' , '1990/1991');
+        $response->assertSessionHas('academic_session', '1990/1991');
         $this->assertTrue(auth()->user()->is($adminV2));
 
         login($adminV2);
@@ -110,7 +110,7 @@ class AcademicSessionTest extends TestCase
         $response = $this->post(route('academicsession.set', ['session' => $defaultSession->id]));
 
         $response->assertRedirect('/home');
-        $response->assertSessionHas('academic_session' , $defaultSession->session);
+        $response->assertSessionHas('academic_session', $defaultSession->session);
         $this->assertTrue(auth()->user()->is($adminV1));
     }
 
@@ -124,7 +124,7 @@ class AcademicSessionTest extends TestCase
         $response = $this->actingAs($user)->post(route('academicsession.set', ['session' => $session2->id]));
 
         $response->assertStatus(403);
-        $response->assertSessionHas('academic_session' , '1990/1991'); // it defaults to the latest created_at one
+        $response->assertSessionHas('academic_session', '1990/1991'); // it defaults to the latest created_at one
     }
 
     /** @test */
@@ -369,4 +369,20 @@ class AcademicSessionTest extends TestCase
         $this->assertTrue($users->contains($user2));
     }
 
+    /** @test */
+    public function there_is_an_artisan_command_to_copy_a_user_from_the_current_session_into_a_previous_one()
+    {
+        $oldSession = AcademicSession::factory()->create(['session' => '1980/1981', 'is_default' => false]);
+        $newSession = AcademicSession::factory()->create(['session' => '1990/1991', 'is_default' => true]);
+        $admin = User::factory()->admin()->create(['academic_session_id' => $newSession->id]);
+
+        $this->assertCount(0, User::withoutGlobalScope(CurrentAcademicSessionScope::class)->forAcademicSession($oldSession)->get());
+
+        $this->artisan('examdb:copy-user-to-session', ['username' => $admin->username, 'session' => '1980/1981']);
+
+        $this->assertCount(1, User::withoutGlobalScope(CurrentAcademicSessionScope::class)->forAcademicSession($oldSession)->get());
+        $oldAdmin = User::withoutGlobalScope(CurrentAcademicSessionScope::class)->forAcademicSession($oldSession)->first();
+        $this->assertEquals($admin->username, $oldAdmin->username);
+        $this->assertEquals($admin->email, $oldAdmin->email);
+    }
 }
