@@ -5,6 +5,9 @@
 /public/css
 /public/fonts
 /storage/*.key
+/storage/minio_dev/exampapers/*
+!/storage/minio_dev/exampapers/.gitkeep
+/storage/minio_dev/.minio.sys
 /vendor
 /.idea
 /.vscode
