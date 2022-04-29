@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Course;
+use App\Models\Course;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Ohffs\SimpleSpout\ExcelSheet;

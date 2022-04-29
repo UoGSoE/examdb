@@ -2,8 +2,8 @@
 
 namespace App\Http\Livewire;
 
-use App\Course;
-use App\Discipline;
+use App\Models\Course;
+use App\Models\Discipline;
 use Livewire\Component;
 
 class CourseIndex extends Component

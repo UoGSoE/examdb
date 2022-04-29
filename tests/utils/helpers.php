@@ -12,7 +12,7 @@ function make($class, $attributes = [], $times = null)
 function login($user = null)
 {
     if (! $user) {
-        $user = \App\User::factory()->create();
+        $user = \App\Models\User::factory()->create();
     }
     auth()->login($user);
 

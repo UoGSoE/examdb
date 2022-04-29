@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Admin;
 
-use App\AcademicSession;
-use App\Course;
-use App\Paper;
+use App\Models\AcademicSession;
+use App\Models\Course;
+use App\Models\Paper;
 use App\Scopes\CurrentAcademicSessionScope;
-use App\User;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;

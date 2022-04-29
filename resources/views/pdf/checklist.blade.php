@@ -18,7 +18,7 @@
                 </div>
                     <div class="level-item">
                         <span class="has-text-weight-semibold">{{ $paper->user->full_name }}&nbsp;</span>
-                        @if ($paper->subcategory != \App\Paper::COMMENT_SUBCATEGORY) uploaded @else added @endif a
+                        @if ($paper->subcategory != \App\Models\Paper::COMMENT_SUBCATEGORY) uploaded @else added @endif a
                         <span class="has-text-weight-semibold">&nbsp;{{ $paper->subcategory }}</span>
                     </div>
             </div>

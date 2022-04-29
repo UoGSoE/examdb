@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Admin;
 
-use App\AcademicSession;
-use App\Course;
-use App\Discipline;
-use App\User;
+use App\Models\AcademicSession;
+use App\Models\Course;
+use App\Models\Discipline;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Livewire\Livewire;

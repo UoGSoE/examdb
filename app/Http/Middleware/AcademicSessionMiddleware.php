@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\AcademicSession;
+use App\Models\AcademicSession;
 use Closure;
 use Illuminate\Http\Request;
 

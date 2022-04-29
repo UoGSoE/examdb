@@ -1,8 +1,8 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
-use App\AcademicSession;
+use App\Models\AcademicSession;
 use App\CanBeCreatedFromOutsideSources;
 use App\Scopes\CurrentAcademicSessionScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

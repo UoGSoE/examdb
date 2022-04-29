@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Course;
-use App\User;
+use App\Models\Course;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SolutionFactory extends Factory

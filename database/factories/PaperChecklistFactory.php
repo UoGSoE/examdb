@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Course;
-use App\PaperChecklist;
-use App\User;
+use App\Models\Course;
+use App\Models\PaperChecklist;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PaperChecklistFactory extends Factory

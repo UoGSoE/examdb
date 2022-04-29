@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\AcademicSession;
-use App\Course;
+use App\Models\AcademicSession;
+use App\Models\Course;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
