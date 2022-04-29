@@ -28,7 +28,7 @@ use Tests\TestCase;
 
 class ImportCourseDataSpreadsheetTest extends TestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         AcademicSession::createFirstSession();
