@@ -23,8 +23,8 @@ class SolutionFactory extends Factory
     public function definition()
     {
         return [
-            'filename' => $this->faker->unique()->word.'.pdf',
-            'originalFilename' => $this->faker->unique()->word.'.pdf',
+            'filename' => $this->faker->unique()->word().'.pdf',
+            'originalFilename' => $this->faker->unique()->word().'.pdf',
             'mimetype' => 'application/pdf',
             'category' => 'main',
             'size' => $this->faker->randomNumber(5),

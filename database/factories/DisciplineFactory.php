@@ -23,7 +23,7 @@ class DisciplineFactory extends Factory
     public function definition()
     {
         return [
-            'title' => $this->faker->word,
+            'title' => $this->faker->word(),
             'academic_session_id' => optional(AcademicSession::first())->id ?? AcademicSession::factory(),
         ];
     }
