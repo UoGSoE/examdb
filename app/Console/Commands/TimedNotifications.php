@@ -108,7 +108,7 @@ class TimedNotifications extends Command
         }
 
         if (count($this->exceptions) > 0) {
-            $messages = collect($this->exceptions)->each(fn ($e) => $e->getMessage() . $e->getTraceAsString());
+            $messages = collect($this->exceptions)->each(fn ($e) => $e->getMessage().$e->getTraceAsString());
             throw new TimedNotificationException($messages);
         }
     }
@@ -134,12 +134,12 @@ class TimedNotifications extends Command
 
         $currentSemester = $this->getCurrentSemester();
 
-        if (option('date_receive_call_for_papers_email_sent_semester_' . $currentSemester)) {
+        if (option('date_receive_call_for_papers_email_sent_semester_'.$currentSemester)) {
             return;
         }
 
         // TODO we need to break apart the date_receive_call_for_papers option above for Glasgow and UESTC
-        $optionName = "glasgow_staff_submission_deadline";
+        $optionName = 'glasgow_staff_submission_deadline';
         if (! option($optionName)) {
             $this->info('Skipping submission deadline email as no date set');
 
@@ -153,7 +153,7 @@ class TimedNotifications extends Command
             return;
         }
 
-        $optionName = "uestc_staff_submission_deadline";
+        $optionName = 'uestc_staff_submission_deadline';
         if (! option($optionName)) {
             $this->info('Skipping submission deadline email as no date set');
 
@@ -178,7 +178,7 @@ class TimedNotifications extends Command
             Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new CallForPapersMail($dateGlasgow, $dateUestc));
         });
 
-        option(['date_receive_call_for_papers_email_sent_semester_' . $currentSemester => now()->format('Y-m-d')]);
+        option(['date_receive_call_for_papers_email_sent_semester_'.$currentSemester => now()->format('Y-m-d')]);
     }
 
     protected function getCurrentSemester(): int
@@ -293,7 +293,6 @@ class TimedNotifications extends Command
                 Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new ModerationDeadlinePassedMail($date, $courses));
             });
         }
-
 
         option(["{$optionName}_email_sent_{$subType}_semester_{$currentSemester}" => now()->format('Y-m-d')]);
     }
@@ -457,6 +456,7 @@ class TimedNotifications extends Command
                 $result[$moderator->email][] = $course->code;
             }
         }
+
         return $result;
 
         return Course::forArea($area)->forSemester($this->semester)->examined()->with('moderators')

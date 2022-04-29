@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Course;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Ohffs\SimpleSpout\ExcelSheet;
-use App\Http\Controllers\Controller;
 
 class CourseExportController extends Controller
 {
@@ -16,7 +16,7 @@ class CourseExportController extends Controller
             'moderators',
             'externals',
             'discipline',
-            'checklists'
+            'checklists',
         ])->orderBy('code')->get();
 
         $rows[] = [
@@ -42,7 +42,7 @@ class CourseExportController extends Controller
             $rows[] = [
                 $course->code,
                 $course->title,
-                optional($course->discipline)->title,
+                $course->discipline?->title,
                 $course->semester,
                 $course->setters->pluck('username')->implode(', '),
                 $course->setters->pluck('full_name')->implode(', '),
@@ -62,6 +62,6 @@ class CourseExportController extends Controller
 
         $filename = (new ExcelSheet)->generate($rows);
 
-        return response()->download($filename, "examdb_courses_" . now()->format('d_m_Y_H_i') . '.xlsx');
+        return response()->download($filename, 'examdb_courses_'.now()->format('d_m_Y_H_i').'.xlsx');
     }
 }

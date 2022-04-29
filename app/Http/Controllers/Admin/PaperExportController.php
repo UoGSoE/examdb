@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Course;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Ohffs\SimpleSpout\ExcelSheet;
-use App\Http\Controllers\Controller;
 
 class PaperExportController extends Controller
 {
@@ -16,7 +16,7 @@ class PaperExportController extends Controller
             'setters',
             'moderators',
             'checklists',
-            'discipline'
+            'discipline',
         ])->orderBy('code')->get();
 
         $rows[] = [
@@ -39,7 +39,7 @@ class PaperExportController extends Controller
                     $course->code,
                     $course->semester,
                     $course->title,
-                    optional($course->discipline)->title,
+                    $course->discipline?->title,
                     $course->hasSetterChecklist($category) ? 'Y' : 'N',
                     $course->hasModeratorChecklist($category) ? 'Y' : 'N',
                     $course->datePaperAdded($category, \App\Paper::PRE_INTERNALLY_MODERATED),
@@ -53,6 +53,6 @@ class PaperExportController extends Controller
 
         $filename = (new ExcelSheet)->generate($rows);
 
-        return response()->download($filename, "examdb_papers_" . now()->format('d_m_Y_H_i') . '.xlsx');
+        return response()->download($filename, 'examdb_papers_'.now()->format('d_m_Y_H_i').'.xlsx');
     }
 }

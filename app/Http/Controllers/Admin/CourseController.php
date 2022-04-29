@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Course;
 use App\Discipline;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use App\Scopes\CurrentAcademicSessionScope;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class CourseController extends Controller
@@ -29,7 +29,7 @@ class CourseController extends Controller
     {
         $request->validate([
             'code' => [
-                'required'
+                'required',
             ],
             'title' => 'required',
             'discipline_id' => 'required|integer',

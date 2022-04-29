@@ -15,7 +15,7 @@ class PaperForRegistryApprovalController extends Controller
 
         $course->approvePaperForRegistry($request->category);
 
-        activity()->causedBy($request->user)->performedOn($course)->log('Approved ' . $request->category . ' paper for registry (' . $course->code . ')');
+        activity()->causedBy($request->user)->performedOn($course)->log('Approved '.$request->category.' paper for registry ('.$course->code.')');
 
         return response()->json([
             'message' => 'approved',

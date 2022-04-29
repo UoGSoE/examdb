@@ -2,19 +2,19 @@
 
 namespace Tests\Feature\Admin;
 
-use App\User;
+use App\AcademicSession;
 use App\Course;
 use App\Discipline;
-use Tests\TestCase;
-use App\AcademicSession;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class PaperTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         AcademicSession::createFirstSession();
@@ -68,6 +68,6 @@ class PaperTest extends TestCase
         $response = $this->actingAs($admin)->get(route('admin.paper.export'));
 
         $header = $response->headers->get('content-disposition');
-        $this->assertEquals($header, "attachment; filename=examdb_papers_" . now()->format('d_m_Y_H_i') . ".xlsx");
+        $this->assertEquals($header, 'attachment; filename=examdb_papers_'.now()->format('d_m_Y_H_i').'.xlsx');
     }
 }

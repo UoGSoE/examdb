@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use App\AcademicSession;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,13 +20,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class UserFactory extends Factory
 {
     /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
-    protected $model = \App\User::class;
-
-    /**
      * Define the model's default state.
      *
      * @return array
@@ -34,14 +27,14 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'surname' => str_replace("'", '', $this->faker->lastName),
-            'forenames' => str_replace("'", '', $this->faker->firstName),
-            'email' => $this->faker->unique()->safeEmail,
+            'surname' => str_replace("'", '', $this->faker->lastName()),
+            'forenames' => str_replace("'", '', $this->faker->firstName()),
+            'email' => $this->faker->unique()->safeEmail(),
             'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', // secret
             'is_admin' => false,
             'is_staff' => true,
             'is_external' => false,
-            'username' => Str::random(3).$this->faker->randomNumber(3).$this->faker->randomLetter,
+            'username' => Str::random(3).$this->faker->randomNumber(3).$this->faker->randomLetter(),
             'remember_token' => Str::random(10),
             'academic_session_id' => optional(AcademicSession::first())->id ?? AcademicSession::factory(),
         ];
@@ -55,7 +48,7 @@ class UserFactory extends Factory
     public function external()
     {
         return $this->state(function () {
-            $email = $this->faker->unique()->safeEmail;
+            $email = $this->faker->unique()->safeEmail();
 
             return [
                 'username' => $email,

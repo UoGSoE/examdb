@@ -18,7 +18,9 @@ class PaperApproved
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $course;
+
     public $user;
+
     public $category;
 
     /**

@@ -25,7 +25,7 @@ class PaperController extends Controller
         $papers = Paper::withoutGlobalScope(CurrentAcademicSessionScope::class)
                     ->with([
                         'user' => fn ($query) => $query->withoutGlobalScope(CurrentAcademicSessionScope::class),
-                        'comments'
+                        'comments',
                     ])
                     ->whereIn('course_id', $allSessionCourses->pluck('id')->values())
                     ->orderByDesc('created_at')

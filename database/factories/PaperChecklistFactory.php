@@ -10,13 +10,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class PaperChecklistFactory extends Factory
 {
     /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
-    protected $model = PaperChecklist::class;
-
-    /**
      * Define the model's default state.
      *
      * @return array
@@ -24,6 +17,7 @@ class PaperChecklistFactory extends Factory
     public function definition()
     {
         $fields = make(Course::class)->getDefaultChecklistFields();
+
         return [
             'version' => PaperChecklist::CURRENT_VERSION,
             'user_id' => function () {

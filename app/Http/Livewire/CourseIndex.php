@@ -11,6 +11,7 @@ class CourseIndex extends Component
     public $disciplineFilter = null;
 
     public $includeTrashed = false;
+
     public $excludeNotExamined = false;
 
     public $searchTerm = '';

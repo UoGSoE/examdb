@@ -20,7 +20,6 @@ class DownloadChecklistsController extends Controller
             abort(401);
         }
 
-
         activity()->causedBy($user)->log('Downloaded paper checklists ZIP');
 
         $contents = Storage::disk('exampapers')->get('checklists/checklists_'.$user->id.'.zip');

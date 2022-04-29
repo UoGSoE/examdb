@@ -2,23 +2,23 @@
 
 namespace Tests\Feature\Admin;
 
-use App\User;
-use App\Paper;
-use App\Course;
-use Tests\TestCase;
 use App\AcademicSession;
+use App\Course;
+use App\Paper;
 use App\Scopes\CurrentAcademicSessionScope;
-use Ohffs\Ldap\FakeLdapConnection;
+use App\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
+use Ohffs\Ldap\FakeLdapConnection;
 use Spatie\Activitylog\Models\Activity;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class UserTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         AcademicSession::createFirstSession();
@@ -274,7 +274,7 @@ class UserTest extends TestCase
         $response = $this->actingAs($admin)->get(route('admin.user.edit', $user->id));
 
         $response->assertOk();
-        $response->assertSee("Edit User");
+        $response->assertSee('Edit User');
 
         $response = $this->actingAs($admin)->post(route('admin.user.edit', $user->id), [
             'surname' => 'New',
@@ -334,7 +334,7 @@ class UserTest extends TestCase
         $user = create(User::class, [
             'username' => 'jenny@example.com',
             'email' => 'jenny@example.com',
-            'is_external' => true
+            'is_external' => true,
         ]);
 
         $response = $this->actingAs($admin)->post(route('admin.user.edit', $user->id), [
@@ -528,7 +528,6 @@ class UserTest extends TestCase
             ->get()
             ->each(fn ($user) => $this->assertTrue($user->isAdmin()));
     }
-
 
     /** @test */
     public function regular_users_cant_toggle_admin_status_of_users()

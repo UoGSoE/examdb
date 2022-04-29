@@ -13,6 +13,7 @@ class ModerationDeadlinePassedMail extends Mailable
     use Queueable, SerializesModels;
 
     public $deadline;
+
     public $courses;
 
     /**

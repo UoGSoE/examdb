@@ -2,11 +2,11 @@
 
 namespace Tests;
 
-use Illuminate\Testing\Assert;
-use Illuminate\Testing\TestResponse;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Testing\Assert;
+use Illuminate\Testing\TestResponse;
 
 abstract class TestCase extends BaseTestCase
 {

@@ -83,7 +83,7 @@
                     @livewire('semester-edit-box', ['course' => $course], key($course->id))
                 </td>
                 <td>{{ $course->title }}</td>
-                <td>{{ optional($course->discipline)->title }}</td>
+                <td>{{ $course->discipline?->title }}</td>
                 <td>
                     <span class="icon {{ $course->hasSetterChecklist('main') ? 'has-text-info' : 'has-text-grey-light' }}" title="Setter has filled checklist?">
                         <i class="fas fa-user-tie"></i>

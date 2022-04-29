@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
 use App\Course;
 use App\Jobs\BulkExportChecklists;
 use App\PaperChecklist;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +46,7 @@ class ChecklistController extends Controller
     public function showForPdfPrinter(PaperChecklist $checklist)
     {
         auth()->login(User::first());
+
         return view('pdf.checklist', [
             'checklist' => $checklist,
             'course' => $checklist->course,

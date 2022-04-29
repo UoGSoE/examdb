@@ -10,13 +10,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class PaperFactory extends Factory
 {
     /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
-    protected $model = \App\Paper::class;
-
-    /**
      * Define the model's default state.
      *
      * @return array
@@ -24,8 +17,8 @@ class PaperFactory extends Factory
     public function definition()
     {
         return [
-            'filename' => $this->faker->unique()->word.'.pdf',
-            'original_filename' => $this->faker->unique()->word.'.pdf',
+            'filename' => $this->faker->unique()->word().'.pdf',
+            'original_filename' => $this->faker->unique()->word().'.pdf',
             'mimetype' => 'application/pdf',
             'category' => 'main',
             'subcategory' => 'Pre-Internally Moderated Paper',

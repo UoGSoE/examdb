@@ -2,18 +2,18 @@
 
 namespace Tests\Feature\Api;
 
-use App\Paper;
-use App\Course;
-use Tests\TestCase;
 use App\AcademicSession;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Course;
+use App\Paper;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class CoursePapersTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         AcademicSession::createFirstSession();

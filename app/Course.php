@@ -131,6 +131,7 @@ class Course extends Model
         if ($area == 'uestc') {
             return $query->where('code', 'like', 'UESTC%');
         }
+
         return $query->where('code', 'not like', 'UESTC%');
     }
 
@@ -180,7 +181,7 @@ class Course extends Model
 
         $checklist = $this->checklists()->create([
             'category' => $category,
-            'user_id' => optional(auth()->user())->id,
+            'user_id' => auth()->user()?->id,
             // we merge only the fields the user is allowed to update with any existing fields from a previous checklost
             'fields' => array_merge($previousFields, Arr::only($fields, $fieldsToUpdate)),
         ]);
@@ -279,25 +280,26 @@ class Course extends Model
             'passed_to_moderator' => '',
             'setter_comments_to_moderator' => '',
             'solution_setter_comments' => '',
-            'overall_quality_appropriate' => "1",
+            'overall_quality_appropriate' => '1',
             'why_innapropriate' => '',
-            'should_revise_questions' => "1",
+            'should_revise_questions' => '1',
             'recommended_revisions' => '',
             'moderator_comments' => '',
             'moderator_completed_at' => '',
-            'solution_marks_appropriate' => "1",
+            'solution_marks_appropriate' => '1',
             'moderator_solution_innapropriate_comments' => '',
-            'solutions_marks_adjusted' => "1",
+            'solutions_marks_adjusted' => '1',
             'solution_adjustment_comments' => '',
             'solution_moderator_comments' => '',
             'moderator_solutions_at' => '',
             'external_examiner_name' => '',
-            'external_agrees_with_moderator' => "0",
+            'external_agrees_with_moderator' => '0',
             'external_reason' => '',
             'external_comments' => '',
             'external_signed_at' => '',
         ];
     }
+
     public function hasSetterChecklist(string $category)
     {
         return $this->checklists
@@ -340,6 +342,7 @@ class Course extends Model
     {
         $papers = $this->mainPapers()->with(['user', 'comments'])->latest()->get();
         $checklists = $this->checklists()->where('category', '=', 'main')->latest()->get();
+
         return $this->combinePapersAndChecklists($papers, $checklists);
     }
 
@@ -347,6 +350,7 @@ class Course extends Model
     {
         $papers = $this->resitPapers()->with(['user', 'comments'])->latest()->get();
         $checklists = $this->checklists()->where('category', '=', 'resit')->latest()->get();
+
         return $this->combinePapersAndChecklists($papers, $checklists);
     }
 
@@ -354,6 +358,7 @@ class Course extends Model
     {
         $papers = $this->resit2Papers()->with(['user', 'comments'])->latest()->get();
         $checklists = $this->checklists()->where('category', '=', 'resit2')->latest()->get();
+
         return $this->combinePapersAndChecklists($papers, $checklists);
     }
 
@@ -371,6 +376,7 @@ class Course extends Model
                 'diff_for_humans' => $checklist->created_at->diffForHumans(),
             ]);
             $fake->load('user');
+
             return $fake;
         });
         foreach ($checklistsAsPapers as $fakePaper) {
@@ -594,7 +600,7 @@ class Course extends Model
 
     public function approvePaperForRegistry(string $category = 'main')
     {
-        $field = 'registry_approved_' . $category;
+        $field = 'registry_approved_'.$category;
 
         $this->update([
             $field => true,
@@ -603,7 +609,7 @@ class Course extends Model
 
     public function paperForRegistryIsApproved(string $category = 'main')
     {
-        $field = 'registry_approved_' . $category;
+        $field = 'registry_approved_'.$category;
 
         return $this->$field;
     }
@@ -611,12 +617,11 @@ class Course extends Model
     /**
      * @throws InvalidArgumentException
      */
-    public function createDuplicate(string $newCode): Course
+    public function createDuplicate(string $newCode): self
     {
         if (preg_match('/^[A-Z]+[0-9]+/', $newCode) !== 1) {
             throw new InvalidArgumentException("New course code of {$newCode} looks invalid...");
         }
-
 
         $newCourse = $this->replicate();
         $newCourse->code = $newCode;

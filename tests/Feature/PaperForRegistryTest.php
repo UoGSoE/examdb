@@ -2,24 +2,24 @@
 
 namespace Tests\Feature;
 
-use App\User;
-use App\Paper;
+use App\AcademicSession;
 use App\Course;
 use App\Discipline;
-use Tests\TestCase;
-use App\AcademicSession;
+use App\Mail\PaperForRegistryUploaded;
+use App\Paper;
+use App\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\PaperForRegistryUploaded;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class PaperForRegistryTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         AcademicSession::createFirstSession();

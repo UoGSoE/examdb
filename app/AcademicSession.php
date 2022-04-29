@@ -15,12 +15,12 @@ class AcademicSession extends Model
         'is_default' => 'boolean',
     ];
 
-    public static function createFirstSession(): AcademicSession
+    public static function createFirstSession(): self
     {
         $year = now()->year;
 
         return static::create([
-            'session' => $year . '/' . ($year + 1),
+            'session' => $year.'/'.($year + 1),
             'is_default' => true,
         ]);
     }
@@ -32,7 +32,7 @@ class AcademicSession extends Model
 
     public function setAsDefault()
     {
-        AcademicSession::all()->each(fn ($session) => $session->update(['is_default' => false]));
+        self::all()->each(fn ($session) => $session->update(['is_default' => false]));
         $this->update(['is_default' => true]);
     }
 

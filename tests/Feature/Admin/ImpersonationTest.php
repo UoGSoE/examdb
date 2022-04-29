@@ -2,17 +2,17 @@
 
 namespace Tests\Feature\Admin;
 
-use App\User;
-use Tests\TestCase;
 use App\AcademicSession;
-use Spatie\Activitylog\Models\Activity;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Activitylog\Models\Activity;
+use Tests\TestCase;
 
 class ImpersonationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         AcademicSession::createFirstSession();

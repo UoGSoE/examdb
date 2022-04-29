@@ -2,33 +2,33 @@
 
 namespace Tests\Feature;
 
-use Ldap;
-use App\User;
-use App\Course;
-use Tests\TestCase;
 use App\AcademicSession;
-use Ohffs\Ldap\LdapUser;
-use Tests\TenantTestCase;
-use Mockery\MockInterface;
-use App\Jobs\ImportCourseRow;
-use Ohffs\Ldap\LdapConnection;
-use Illuminate\Http\UploadedFile;
-use Ohffs\SimpleSpout\ExcelSheet;
-use Ohffs\Ldap\FakeLdapConnection;
+use App\Course;
 use App\Jobs\ImportCourseDataBatch;
+use App\Jobs\ImportCourseRow;
+use App\Mail\CourseImportProcessComplete;
+use App\Scopes\CurrentAcademicSessionScope;
+use App\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Redis;
+use Ldap;
+use Mockery\MockInterface;
+use Ohffs\Ldap\FakeLdapConnection;
+use Ohffs\Ldap\LdapConnection;
 use Ohffs\Ldap\LdapConnectionInterface;
-use App\Mail\CourseImportProcessComplete;
-use App\Scopes\CurrentAcademicSessionScope;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
+use Ohffs\Ldap\LdapUser;
+use Ohffs\SimpleSpout\ExcelSheet;
+use Tests\TenantTestCase;
+use Tests\TestCase;
 
 class ImportCourseDataSpreadsheetTest extends TestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         AcademicSession::createFirstSession();
@@ -106,59 +106,58 @@ class ImportCourseDataSpreadsheetTest extends TestCase
         $this->fakeLdapConnection();
         \Ldap::shouldReceive('findUser')->with('abc1x')->andReturn(new LdapUser([
             [
-            'uid' => ['abc1x'],
-            'mail' => ['abc@example.com'],
-            'sn' => ['smith'],
-            'givenname' => ['jenny'],
-            'telephonenumber' => ['12345'],
+                'uid' => ['abc1x'],
+                'mail' => ['abc@example.com'],
+                'sn' => ['smith'],
+                'givenname' => ['jenny'],
+                'telephonenumber' => ['12345'],
             ],
         ]));
         \Ldap::shouldReceive('findUser')->with('trs80y')->andReturn(new LdapUser([
             [
-            'uid' => ['trs80y'],
-            'mail' => ['trs@example.com'],
-            'sn' => ['blah'],
-            'givenname' => ['whatever'],
-            'telephonenumber' => ['12345'],
+                'uid' => ['trs80y'],
+                'mail' => ['trs@example.com'],
+                'sn' => ['blah'],
+                'givenname' => ['whatever'],
+                'telephonenumber' => ['12345'],
             ],
         ]));
         \Ldap::shouldReceive('findUser')->with('bob1q')->andReturn(new LdapUser([
             [
-            'uid' => ['bob1q'],
-            'mail' => ['bob@example.com'],
-            'sn' => ['blah blah'],
-            'givenname' => ['whatever whatever'],
-            'telephonenumber' => ['12345'],
+                'uid' => ['bob1q'],
+                'mail' => ['bob@example.com'],
+                'sn' => ['blah blah'],
+                'givenname' => ['whatever whatever'],
+                'telephonenumber' => ['12345'],
             ],
         ]));
         \Ldap::shouldReceive('findUser')->with('lol9s')->andReturn(new LdapUser([
             [
-            'uid' => ['lol9s'],
-            'mail' => ['lol@example.com'],
-            'sn' => ['fruit'],
-            'givenname' => ['sundae'],
-            'telephonenumber' => ['12345'],
+                'uid' => ['lol9s'],
+                'mail' => ['lol@example.com'],
+                'sn' => ['fruit'],
+                'givenname' => ['sundae'],
+                'telephonenumber' => ['12345'],
             ],
         ]));
         \Ldap::shouldReceive('findUser')->with('cde1x')->andReturn(new LdapUser([
             [
-            'uid' => ['cde1x'],
-            'mail' => ['cde1x@example.com'],
-            'sn' => ['fruit'],
-            'givenname' => ['sundae'],
-            'telephonenumber' => ['12345'],
+                'uid' => ['cde1x'],
+                'mail' => ['cde1x@example.com'],
+                'sn' => ['fruit'],
+                'givenname' => ['sundae'],
+                'telephonenumber' => ['12345'],
             ],
         ]));
         \Ldap::shouldReceive('findUser')->with('pop80y')->andReturn(new LdapUser([
             [
-            'uid' => ['pop80y'],
-            'mail' => ['pop80y@example.com'],
-            'sn' => ['fruit'],
-            'givenname' => ['sundae'],
-            'telephonenumber' => ['12345'],
+                'uid' => ['pop80y'],
+                'mail' => ['pop80y@example.com'],
+                'sn' => ['fruit'],
+                'givenname' => ['sundae'],
+                'telephonenumber' => ['12345'],
             ],
         ]));
-
 
         $data = [
             ['Course Code', 'Course Name', 'Discipline', 'Semester', 'Setters GUIDs', 'Setters Names', 'Moderators GUIDs', 'Moderators Names', 'Externals Emails', 'Externals Names', 'Examined?'],
@@ -214,38 +213,38 @@ class ImportCourseDataSpreadsheetTest extends TestCase
         $this->fakeLdapConnection();
         \Ldap::shouldReceive('findUser')->with('abc1x')->andReturn(new LdapUser([
             [
-            'uid' => ['abc1x'],
-            'mail' => ['abc@example.com'],
-            'sn' => ['smith'],
-            'givenname' => ['jenny'],
-            'telephonenumber' => ['12345'],
+                'uid' => ['abc1x'],
+                'mail' => ['abc@example.com'],
+                'sn' => ['smith'],
+                'givenname' => ['jenny'],
+                'telephonenumber' => ['12345'],
             ],
         ]));
         \Ldap::shouldReceive('findUser')->with('trs80y')->andReturn(new LdapUser([
             [
-            'uid' => ['trs80y'],
-            'mail' => ['trs@example.com'],
-            'sn' => ['blah'],
-            'givenname' => ['whatever'],
-            'telephonenumber' => ['12345'],
+                'uid' => ['trs80y'],
+                'mail' => ['trs@example.com'],
+                'sn' => ['blah'],
+                'givenname' => ['whatever'],
+                'telephonenumber' => ['12345'],
             ],
         ]));
         \Ldap::shouldReceive('findUser')->with('bob1q')->andReturn(new LdapUser([
             [
-            'uid' => ['bob1q'],
-            'mail' => ['bob@example.com'],
-            'sn' => ['blah blah'],
-            'givenname' => ['whatever whatever'],
-            'telephonenumber' => ['12345'],
+                'uid' => ['bob1q'],
+                'mail' => ['bob@example.com'],
+                'sn' => ['blah blah'],
+                'givenname' => ['whatever whatever'],
+                'telephonenumber' => ['12345'],
             ],
         ]));
         \Ldap::shouldReceive('findUser')->with('lol9s')->andReturn(new LdapUser([
             [
-            'uid' => ['lol9s'],
-            'mail' => ['lol@example.com'],
-            'sn' => ['fruit'],
-            'givenname' => ['sundae'],
-            'telephonenumber' => ['12345'],
+                'uid' => ['lol9s'],
+                'mail' => ['lol@example.com'],
+                'sn' => ['fruit'],
+                'givenname' => ['sundae'],
+                'telephonenumber' => ['12345'],
             ],
         ]));
 
@@ -287,7 +286,6 @@ class ImportCourseDataSpreadsheetTest extends TestCase
         \Mockery::close();
     }
 
-
     /** @test */
     public function if_a_row_is_missing_key_data_an_error_is_recorded()
     {
@@ -310,38 +308,38 @@ class ImportCourseDataSpreadsheetTest extends TestCase
         $this->fakeLdapConnection();
         \Ldap::shouldReceive('findUser')->with('abc1x')->andReturn(new LdapUser([
             [
-            'uid' => ['abc1x'],
-            'mail' => ['abc@example.com'],
-            'sn' => ['smith'],
-            'givenname' => ['jenny'],
-            'telephonenumber' => ['12345'],
+                'uid' => ['abc1x'],
+                'mail' => ['abc@example.com'],
+                'sn' => ['smith'],
+                'givenname' => ['jenny'],
+                'telephonenumber' => ['12345'],
             ],
         ]));
         \Ldap::shouldReceive('findUser')->with('trs80y')->andReturn(new LdapUser([
             [
-            'uid' => ['trs80y'],
-            'mail' => ['trs@example.com'],
-            'sn' => ['blah'],
-            'givenname' => ['whatever'],
-            'telephonenumber' => ['12345'],
+                'uid' => ['trs80y'],
+                'mail' => ['trs@example.com'],
+                'sn' => ['blah'],
+                'givenname' => ['whatever'],
+                'telephonenumber' => ['12345'],
             ],
         ]));
         \Ldap::shouldReceive('findUser')->with('bob1q')->andReturn(new LdapUser([
             [
-            'uid' => ['bob1q'],
-            'mail' => ['bob@example.com'],
-            'sn' => ['blah blah'],
-            'givenname' => ['whatever whatever'],
-            'telephonenumber' => ['12345'],
+                'uid' => ['bob1q'],
+                'mail' => ['bob@example.com'],
+                'sn' => ['blah blah'],
+                'givenname' => ['whatever whatever'],
+                'telephonenumber' => ['12345'],
             ],
         ]));
         \Ldap::shouldReceive('findUser')->with('lol9s')->andReturn(new LdapUser([
             [
-            'uid' => ['lol9s'],
-            'mail' => ['lol@example.com'],
-            'sn' => ['fruit'],
-            'givenname' => ['sundae'],
-            'telephonenumber' => ['12345'],
+                'uid' => ['lol9s'],
+                'mail' => ['lol@example.com'],
+                'sn' => ['fruit'],
+                'givenname' => ['sundae'],
+                'telephonenumber' => ['12345'],
             ],
         ]));
         $existingCourse = Course::factory()->create(['code' => 'ENG1234', 'title' => 'Fred', 'semester' => 3]);

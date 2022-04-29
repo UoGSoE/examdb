@@ -10,8 +10,11 @@ use Tests\Feature\LivewirePaperChecklistTest;
 class PaperChecklist extends Component
 {
     public $course;
+
     public $category;
+
     public $checklist;
+
     public $previousId = 'new';
 
     public function mount(Course $course, string $category = 'main', $checklist = null)
