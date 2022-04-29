@@ -7,8 +7,8 @@
  */
 
 require('./bootstrap');
-
-window.Vue = require('vue');
+import Vue from 'vue';
+window.Vue = Vue;
 
 
 /**
@@ -56,9 +56,8 @@ Sentry.init({
     dsn: process.env.MIX_SENTRY_DSN,
     integrations: [new Sentry.Integrations.Vue({ Vue })]
 })
+// import 'livewire-vue';
 
 const app = new Vue({
     el: '#app',
 });
-
-require('livewire-vue');

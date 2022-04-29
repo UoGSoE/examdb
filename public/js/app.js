@@ -14901,17 +14901,18 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-select/dist/vue-select.css */ "./node_modules/vue-select/dist/vue-select.css");
-/* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-select */ "./node_modules/vue-select/dist/vue-select.js");
-/* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_select__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var portal_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! portal-vue */ "./node_modules/portal-vue/dist/portal-vue.js");
-/* harmony import */ var portal_vue__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(portal_vue__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var alpinejs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/alpine.js");
-/* harmony import */ var alpinejs__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(alpinejs__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var pikaday__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! pikaday */ "./node_modules/pikaday/pikaday.js");
-/* harmony import */ var pikaday__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(pikaday__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var pikaday_css_pikaday_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! pikaday/css/pikaday.css */ "./node_modules/pikaday/css/pikaday.css");
-/* harmony import */ var _sentry_browser__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @sentry/browser */ "./node_modules/@sentry/browser/dist/index.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-select/dist/vue-select.css */ "./node_modules/vue-select/dist/vue-select.css");
+/* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue-select */ "./node_modules/vue-select/dist/vue-select.js");
+/* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vue_select__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var portal_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! portal-vue */ "./node_modules/portal-vue/dist/portal-vue.js");
+/* harmony import */ var portal_vue__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(portal_vue__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var alpinejs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/alpine.js");
+/* harmony import */ var alpinejs__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(alpinejs__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var pikaday__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! pikaday */ "./node_modules/pikaday/pikaday.js");
+/* harmony import */ var pikaday__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(pikaday__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var pikaday_css_pikaday_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! pikaday/css/pikaday.css */ "./node_modules/pikaday/css/pikaday.css");
+/* harmony import */ var _sentry_browser__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @sentry/browser */ "./node_modules/@sentry/browser/dist/index.js");
 /* provided dependency */ var process = __webpack_require__(/*! process/browser.js */ "./node_modules/process/browser.js");
 /* global require Vue */
 
@@ -14924,55 +14925,55 @@ __webpack_require__.r(__webpack_exports__);
  */
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
-window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+
+window.Vue = vue__WEBPACK_IMPORTED_MODULE_0__["default"];
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('login-form', (__webpack_require__(/*! ./components/LoginForm.vue */ "./resources/js/components/LoginForm.vue")["default"]));
-Vue.component('main-paper-uploader', (__webpack_require__(/*! ./components/MainPaperUploader.vue */ "./resources/js/components/MainPaperUploader.vue")["default"]));
-Vue.component('course-viewer', (__webpack_require__(/*! ./components/CourseViewer.vue */ "./resources/js/components/CourseViewer.vue")["default"]));
-Vue.component('paper-list', (__webpack_require__(/*! ./components/PaperList.vue */ "./resources/js/components/PaperList.vue")["default"]));
-Vue.component('paper-heading', (__webpack_require__(/*! ./components/PaperHeading.vue */ "./resources/js/components/PaperHeading.vue")["default"]));
-Vue.component('add-local-user', (__webpack_require__(/*! ./components/AddLocalUser.vue */ "./resources/js/components/AddLocalUser.vue")["default"]));
-Vue.component('add-external-user', (__webpack_require__(/*! ./components/AddExternalUser.vue */ "./resources/js/components/AddExternalUser.vue")["default"]));
-Vue.component('staff-course-editor', (__webpack_require__(/*! ./components/StaffCourseEditor.vue */ "./resources/js/components/StaffCourseEditor.vue")["default"]));
-Vue.component('user-list', (__webpack_require__(/*! ./components/UserList.vue */ "./resources/js/components/UserList.vue")["default"]));
-Vue.component('impersonate-button', (__webpack_require__(/*! ./components/ImpersonateButton.vue */ "./resources/js/components/ImpersonateButton.vue")["default"]));
-Vue.component('undelete-user-button', (__webpack_require__(/*! ./components/UndeleteUserButton.vue */ "./resources/js/components/UndeleteUserButton.vue")["default"]));
-Vue.component('delete-user-button', (__webpack_require__(/*! ./components/DeleteUserButton.vue */ "./resources/js/components/DeleteUserButton.vue")["default"]));
-Vue.component('anonymise-user-button', (__webpack_require__(/*! ./components/AnonymiseUserButton.vue */ "./resources/js/components/AnonymiseUserButton.vue")["default"]));
-Vue.component('remove-staff-button', (__webpack_require__(/*! ./components/RemoveStaffButton.vue */ "./resources/js/components/RemoveStaffButton.vue")["default"]));
-Vue.component('notify-externals-button', (__webpack_require__(/*! ./components/NotifyExternalsButton.vue */ "./resources/js/components/NotifyExternalsButton.vue")["default"]));
-Vue.component('admin-toggle-button', (__webpack_require__(/*! ./components/AdminToggleButton.vue */ "./resources/js/components/AdminToggleButton.vue")["default"]));
-Vue.component('options-editor', (__webpack_require__(/*! ./components/OptionsEditor.vue */ "./resources/js/components/OptionsEditor.vue")["default"]));
-Vue.component('discipline-contacts-editor', (__webpack_require__(/*! ./components/DisciplineContactsEditor.vue */ "./resources/js/components/DisciplineContactsEditor.vue")["default"]));
-Vue.component('notify-externals-form', (__webpack_require__(/*! ./components/NotifyExternalsForm.vue */ "./resources/js/components/NotifyExternalsForm.vue")["default"]));
-Vue.component('export-papers-registry-button', (__webpack_require__(/*! ./components/ExportPapersRegistryButton.vue */ "./resources/js/components/ExportPapersRegistryButton.vue")["default"]));
-Vue.component('export-checklists-button', (__webpack_require__(/*! ./components/ExportChecklistsButton.vue */ "./resources/js/components/ExportChecklistsButton.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('login-form', (__webpack_require__(/*! ./components/LoginForm.vue */ "./resources/js/components/LoginForm.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('main-paper-uploader', (__webpack_require__(/*! ./components/MainPaperUploader.vue */ "./resources/js/components/MainPaperUploader.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('course-viewer', (__webpack_require__(/*! ./components/CourseViewer.vue */ "./resources/js/components/CourseViewer.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('paper-list', (__webpack_require__(/*! ./components/PaperList.vue */ "./resources/js/components/PaperList.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('paper-heading', (__webpack_require__(/*! ./components/PaperHeading.vue */ "./resources/js/components/PaperHeading.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('add-local-user', (__webpack_require__(/*! ./components/AddLocalUser.vue */ "./resources/js/components/AddLocalUser.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('add-external-user', (__webpack_require__(/*! ./components/AddExternalUser.vue */ "./resources/js/components/AddExternalUser.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('staff-course-editor', (__webpack_require__(/*! ./components/StaffCourseEditor.vue */ "./resources/js/components/StaffCourseEditor.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('user-list', (__webpack_require__(/*! ./components/UserList.vue */ "./resources/js/components/UserList.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('impersonate-button', (__webpack_require__(/*! ./components/ImpersonateButton.vue */ "./resources/js/components/ImpersonateButton.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('undelete-user-button', (__webpack_require__(/*! ./components/UndeleteUserButton.vue */ "./resources/js/components/UndeleteUserButton.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('delete-user-button', (__webpack_require__(/*! ./components/DeleteUserButton.vue */ "./resources/js/components/DeleteUserButton.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('anonymise-user-button', (__webpack_require__(/*! ./components/AnonymiseUserButton.vue */ "./resources/js/components/AnonymiseUserButton.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('remove-staff-button', (__webpack_require__(/*! ./components/RemoveStaffButton.vue */ "./resources/js/components/RemoveStaffButton.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('notify-externals-button', (__webpack_require__(/*! ./components/NotifyExternalsButton.vue */ "./resources/js/components/NotifyExternalsButton.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('admin-toggle-button', (__webpack_require__(/*! ./components/AdminToggleButton.vue */ "./resources/js/components/AdminToggleButton.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('options-editor', (__webpack_require__(/*! ./components/OptionsEditor.vue */ "./resources/js/components/OptionsEditor.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('discipline-contacts-editor', (__webpack_require__(/*! ./components/DisciplineContactsEditor.vue */ "./resources/js/components/DisciplineContactsEditor.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('notify-externals-form', (__webpack_require__(/*! ./components/NotifyExternalsForm.vue */ "./resources/js/components/NotifyExternalsForm.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('export-papers-registry-button', (__webpack_require__(/*! ./components/ExportPapersRegistryButton.vue */ "./resources/js/components/ExportPapersRegistryButton.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('export-checklists-button', (__webpack_require__(/*! ./components/ExportChecklistsButton.vue */ "./resources/js/components/ExportChecklistsButton.vue")["default"]));
 
 
 
-Vue.use((portal_vue__WEBPACK_IMPORTED_MODULE_2___default()));
-Vue.component('v-select', (vue_select__WEBPACK_IMPORTED_MODULE_1___default()));
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].use((portal_vue__WEBPACK_IMPORTED_MODULE_3___default()));
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('v-select', (vue_select__WEBPACK_IMPORTED_MODULE_2___default()));
 
 
-window.Pikaday = (pikaday__WEBPACK_IMPORTED_MODULE_4___default());
+window.Pikaday = (pikaday__WEBPACK_IMPORTED_MODULE_5___default());
 
 
-_sentry_browser__WEBPACK_IMPORTED_MODULE_6__.init({
+_sentry_browser__WEBPACK_IMPORTED_MODULE_7__.init({
   dsn: process.env.MIX_SENTRY_DSN,
-  integrations: [new _sentry_browser__WEBPACK_IMPORTED_MODULE_6__.Integrations.Vue({
-    Vue: Vue
+  integrations: [new _sentry_browser__WEBPACK_IMPORTED_MODULE_7__.Integrations.Vue({
+    Vue: vue__WEBPACK_IMPORTED_MODULE_0__["default"]
   })]
-});
-var app = new Vue({
+}); // import 'livewire-vue';
+
+var app = new vue__WEBPACK_IMPORTED_MODULE_0__["default"]({
   el: '#app'
 });
-
-__webpack_require__(/*! livewire-vue */ "./node_modules/livewire-vue/dist/livewire-vue.js");
 
 /***/ }),
 
@@ -15691,22 +15692,6 @@ function toDate(argument) {
     return new Date(NaN);
   }
 }
-
-/***/ }),
-
-/***/ "./node_modules/livewire-vue/dist/livewire-vue.js":
-/*!********************************************************!*\
-  !*** ./node_modules/livewire-vue/dist/livewire-vue.js ***!
-  \********************************************************/
-/***/ ((module, exports, __webpack_require__) => {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;!function(e){ true?!(__WEBPACK_AMD_DEFINE_FACTORY__ = (e),
-		__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-		(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
-		__WEBPACK_AMD_DEFINE_FACTORY__),
-		__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)):0}((function(){"use strict";if(void 0===window.livewire)throw"Livewire Vue Plugin: window.livewire is undefined. Make sure @livewireScripts is placed above this script include";window.livewire.hook("message.received",(e,i)=>{if(!window.Vue)return;if(!e.response.effects.html)return;const n=document.createElement("div");n.innerHTML=e.response.effects.html,(new window.Vue).$mount(n.firstElementChild),e.response.effects.html=n.firstElementChild.outerHTML}),window.livewire.hook("element.initialized",e=>{e.__vue__&&(e.__livewire_ignore=!0)}),window.livewire.hook("interceptWireModelSetValue",(e,i)=>{if(!i.__vue__)return;const n=window.Vue.config.silent;window.Vue.config.silent=!0,i.__vue__.$props.value=e,window.Vue.config.silent=n}),window.livewire.hook("interceptWireModelAttachListener",(e,i,n,t)=>{if(!e.__vue__)return;const o=i.modifiers.includes("debounce"),r=i.modifiers.includes("lazy");e.__vue__.$on("input",t(o||!r,e=>{const t=i.value,o=e;n.set(t,o)},i.durationOr(150)))})}));
-//# sourceMappingURL=livewire-vue.js.map
-
 
 /***/ }),
 
