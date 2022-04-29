@@ -2,13 +2,13 @@
 
 namespace Tests\Feature\Api;
 
-use App\User;
-use App\Paper;
-use App\Course;
-use Tests\TestCase;
 use App\AcademicSession;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Course;
+use App\Paper;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class CourseTest extends TestCase
 {

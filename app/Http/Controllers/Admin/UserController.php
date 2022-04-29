@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\AcademicSession;
-use App\User;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use App\Scopes\CurrentAcademicSessionScope;
+use App\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller

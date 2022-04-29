@@ -2,14 +2,14 @@
 
 namespace Tests\Unit;
 
-use App\User;
-use App\Course;
-use Tests\TestCase;
 use App\AcademicSession;
+use App\Course;
+use App\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class CourseTest extends TestCase
 {

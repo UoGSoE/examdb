@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\User;
 use App\AcademicSession;
-use Illuminate\Support\Str;
+use App\User;
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 
 class CreateAdmin extends Command
 {

@@ -69,6 +69,7 @@ class PaperChecklist extends Model
         'setter_comments_to_moderator',
         'solution_setter_comments',
     ];
+
     const MODERATOR_FIELDS = [
         'overall_quality_appropriate',
         'why_innapropriate',
@@ -84,6 +85,7 @@ class PaperChecklist extends Model
         'moderator_solutions_at',
         'moderator_esignature',
     ];
+
     const EXTERNAL_FIELDS = [
         'external_examiner_name',
         'external_agrees_with_moderator',

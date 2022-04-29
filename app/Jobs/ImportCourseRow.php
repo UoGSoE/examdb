@@ -3,20 +3,20 @@
 namespace App\Jobs;
 
 use App\AcademicSession;
-use Exception;
 use App\Course;
 use App\Discipline;
 use App\Scopes\CurrentAcademicSessionScope;
 use App\User;
+use Exception;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 class ImportCourseRow implements ShouldQueue
@@ -52,10 +52,11 @@ class ImportCourseRow implements ShouldQueue
     {
         // optional() call is here purely for test code - when running the job directly in a test, there is no 'batch'.
         // See ImportCourseDataSpreadsheetTest::the_import_course_row_job_actually_creates_records_for_the_data for instance.
-        $this->errorSetName = optional($this->batch())->id . '-errors';
+        $this->errorSetName = optional($this->batch())->id.'-errors';
 
         if (count($this->spreadsheetRow) < 4) {
             $this->addError('Row is missing key data and is less than 4 columns');
+
             return;
         }
 
@@ -77,6 +78,7 @@ class ImportCourseRow implements ShouldQueue
         ]);
         if ($validator->fails()) {
             $this->addError(implode(',', $validator->messages()->all()));
+
             return;
         }
 
@@ -102,14 +104,14 @@ class ImportCourseRow implements ShouldQueue
         $course->is_examined = preg_match('/[yY]/', $row['is_examined']) === 1;
         $course->save();
 
-            // ['code' => $row['code']],
-            // [
-            //     'title' => $row['title'],
-            //     'semester' => $row['semester'],
-            //     'discipline_id' => $discipline->id,
-            //     'is_examined' => preg_match('/[yY]/', $row['is_examined']) === 1,
-            //     'academic_session_id' => $this->academicSessionId,
-            // ],
+        // ['code' => $row['code']],
+        // [
+        //     'title' => $row['title'],
+        //     'semester' => $row['semester'],
+        //     'discipline_id' => $discipline->id,
+        //     'is_examined' => preg_match('/[yY]/', $row['is_examined']) === 1,
+        //     'academic_session_id' => $this->academicSessionId,
+        // ],
         // );
 
         $course->setters()->sync([]);
@@ -124,7 +126,8 @@ class ImportCourseRow implements ShouldQueue
             if (! $user) {
                 $ldapUser = \Ldap::findUser($guid);
                 if (! $ldapUser) {
-                    $this->addError('invalid GUID ' . $guid);
+                    $this->addError('invalid GUID '.$guid);
+
                     return;
                 }
                 $user = User::createFromLdap($ldapUser, $this->academicSessionId);
@@ -144,7 +147,8 @@ class ImportCourseRow implements ShouldQueue
             if (! $user) {
                 $ldapUser = \Ldap::findUser($guid);
                 if (! $ldapUser) {
-                    $this->addError('invalid GUID ' . $guid);
+                    $this->addError('invalid GUID '.$guid);
+
                     return;
                 }
                 $user = User::createFromLdap($ldapUser, $this->academicSessionId);
@@ -155,6 +159,6 @@ class ImportCourseRow implements ShouldQueue
 
     protected function addError(string $message)
     {
-        Redis::sadd($this->errorSetName, "Invalid data on row {$this->rowNumber} : " . $message);
+        Redis::sadd($this->errorSetName, "Invalid data on row {$this->rowNumber} : ".$message);
     }
 }

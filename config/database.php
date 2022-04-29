@@ -108,7 +108,7 @@ return [
     |
      */
 
-   'redis' => [
+    'redis' => [
 
         'client' => env('REDIS_CLIENT', 'phpredis'),
 

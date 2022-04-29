@@ -13,6 +13,7 @@ class CallForPapersMail extends Mailable
     use Queueable, SerializesModels;
 
     public $deadlineGlasgow;
+
     public $deadlineUestc;
 
     /**

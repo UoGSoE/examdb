@@ -2,25 +2,25 @@
 
 namespace Tests\Feature;
 
-use App\User;
-use App\Paper;
-use App\Course;
-use Tests\TestCase;
-use App\PaperChecklist;
 use App\AcademicSession;
-use App\Mail\CallForPapersMail;
-use App\Mail\ModerationDeadlineMail;
-use App\Mail\PrintReadyDeadlineMail;
-use App\Mail\SubmissionDeadlineMail;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\NotifyExternalsReminderMail;
-use App\Mail\ModerationDeadlinePassedMail;
-use App\Mail\PrintReadyDeadlinePassedMail;
-use App\Mail\SubmissionDeadlinePassedMail;
-use App\Mail\ExternalModerationDeadlineMail;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Course;
 use App\Exceptions\TimedNotificationException;
+use App\Mail\CallForPapersMail;
+use App\Mail\ExternalModerationDeadlineMail;
+use App\Mail\ModerationDeadlineMail;
+use App\Mail\ModerationDeadlinePassedMail;
+use App\Mail\NotifyExternalsReminderMail;
+use App\Mail\PrintReadyDeadlineMail;
+use App\Mail\PrintReadyDeadlinePassedMail;
+use App\Mail\SubmissionDeadlineMail;
+use App\Mail\SubmissionDeadlinePassedMail;
+use App\Paper;
+use App\PaperChecklist;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Mail;
+use Tests\TestCase;
 
 class TimedNotificationsTest extends TestCase
 {
@@ -181,6 +181,7 @@ class TimedNotificationsTest extends TestCase
         });
         $this->assertNotNull(option('date_receive_call_for_papers_email_sent_semester_1'));
     }
+
     /** @test */
     public function emails_are_not_sent_twice_for_the_date_receive_call_for_papers_option_even_when_it_is_the_correct_day()
     {

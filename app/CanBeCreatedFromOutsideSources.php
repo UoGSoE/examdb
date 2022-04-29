@@ -2,8 +2,8 @@
 
 namespace App;
 
-use Ohffs\Ldap\LdapUser;
 use Illuminate\Support\Str;
+use Ohffs\Ldap\LdapUser;
 
 trait CanBeCreatedFromOutsideSources
 {

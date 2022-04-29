@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 class DropdownOptionsController extends Controller
 {
     protected $course;
+
     protected $papers;
 
     public function show(Course $course)

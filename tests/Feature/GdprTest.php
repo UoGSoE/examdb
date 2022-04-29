@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
-use App\User;
-use App\Paper;
-use Tests\TestCase;
 use App\AcademicSession;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Paper;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class GdprTest extends TestCase
 {
@@ -48,7 +48,7 @@ class GdprTest extends TestCase
                                 'comment' => 'hello there',
                             ],
                         ],
-                            ],
+                    ],
                     [
                         'category' => $paper2->category,
                         'subcategory' => $paper2->subcategory,

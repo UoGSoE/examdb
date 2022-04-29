@@ -2,14 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\User;
-use App\Paper;
+use App\AcademicSession;
 use App\Course;
 use App\Discipline;
-use Tests\TestCase;
-use App\AcademicSession;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Paper;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class DisciplineContactsTest extends TestCase
 {

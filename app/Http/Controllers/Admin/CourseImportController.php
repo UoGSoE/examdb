@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
-use Ohffs\SimpleSpout\ExcelSheet;
-use App\Jobs\ImportCourseDataBatch;
-use Illuminate\Support\Facades\Bus;
 use App\Http\Controllers\Controller;
+use App\Jobs\ImportCourseDataBatch;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Bus;
+use Ohffs\SimpleSpout\ExcelSheet;
 use Tests\Feature\ImportCourseDataSpreadsheetTest;
 
 class CourseImportController extends Controller

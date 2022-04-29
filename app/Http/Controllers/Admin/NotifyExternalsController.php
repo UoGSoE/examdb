@@ -24,7 +24,7 @@ class NotifyExternalsController extends Controller
     {
         $disciplines = Discipline::orderBy('title')->get()->pluck('title')->implode(',');
         $request->validate([
-            'area' => 'required|in:' . $disciplines,
+            'area' => 'required|in:'.$disciplines,
         ]);
 
         NotifyExternals::dispatch($request->area);

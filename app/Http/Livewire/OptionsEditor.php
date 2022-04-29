@@ -10,7 +10,9 @@ use Livewire\Component;
 class OptionsEditor extends Component
 {
     public $options;
+
     public $defaultDateOptions;
+
     public $wasSaved = true;
 
     public function mount()

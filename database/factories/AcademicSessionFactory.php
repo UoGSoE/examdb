@@ -22,7 +22,7 @@ class AcademicSessionFactory extends Factory
     public function definition()
     {
         return [
-            'session' => now()->year . '/' . (now()->year + 1),
+            'session' => now()->year.'/'.(now()->year + 1),
             'is_default' => false,
         ];
     }

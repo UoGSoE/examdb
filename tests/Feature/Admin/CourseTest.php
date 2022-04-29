@@ -2,14 +2,14 @@
 
 namespace Tests\Feature\Admin;
 
-use App\User;
+use App\AcademicSession;
 use App\Course;
 use App\Discipline;
-use Tests\TestCase;
-use Livewire\Livewire;
-use App\AcademicSession;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Livewire\Livewire;
+use Tests\TestCase;
 
 class CourseTest extends TestCase
 {
@@ -83,7 +83,7 @@ class CourseTest extends TestCase
         $response = $this->actingAs($admin)->get(route('admin.course.export'));
 
         $header = $response->headers->get('content-disposition');
-        $this->assertEquals($header, "attachment; filename=examdb_courses_" . now()->format('d_m_Y_H_i') . ".xlsx");
+        $this->assertEquals($header, 'attachment; filename=examdb_courses_'.now()->format('d_m_Y_H_i').'.xlsx');
     }
 
     /** @test */

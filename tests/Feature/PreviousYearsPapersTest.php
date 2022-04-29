@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use App\AcademicSession;
 use App\Course;
 use App\Paper;
 use App\User;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class PreviousYearsPapersTest extends TestCase
 {
@@ -62,5 +62,4 @@ class PreviousYearsPapersTest extends TestCase
 
         $response->assertForbidden();
     }
-
 }

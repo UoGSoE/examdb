@@ -2,12 +2,12 @@
 
 namespace App\Listeners;
 
-use App\Paper;
 use App\Course;
-use Illuminate\Support\Facades\Mail;
 use App\Mail\PaperForRegistryUploaded;
-use Illuminate\Queue\InteractsWithQueue;
+use App\Paper;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Mail;
 
 class NotifySettersPaperForRegistryUploaded
 {

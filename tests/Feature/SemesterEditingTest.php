@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\User;
-use App\Course;
-use Tests\TestCase;
-use Livewire\Livewire;
 use App\AcademicSession;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Course;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Livewire\Livewire;
+use Tests\TestCase;
 
 class SemesterEditingTest extends TestCase
 {

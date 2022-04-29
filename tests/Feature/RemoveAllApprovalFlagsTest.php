@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Course;
-use Tests\TestCase;
 use App\AcademicSession;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Course;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class RemoveAllApprovalFlagsTest extends TestCase
 {

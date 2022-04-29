@@ -2,23 +2,23 @@
 
 namespace Tests\Feature;
 
-use App\User;
-use App\Paper;
+use App\AcademicSession;
 use App\Course;
 use App\Discipline;
-use Tests\TestCase;
-use App\AcademicSession;
-use App\Mail\PaperForRegistry;
 use App\Mail\ChecklistUploaded;
+use App\Mail\NotifySetterAboutExternalComments;
+use App\Mail\NotifySetterAboutModeratorComments;
+use App\Mail\NotifyTeachingOfficeExternalHasCommented;
+use App\Mail\PaperForRegistry;
+use App\Paper;
+use App\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Mail\NotifySetterAboutExternalComments;
-use App\Mail\NotifySetterAboutModeratorComments;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Mail\NotifyTeachingOfficeExternalHasCommented;
+use Tests\TestCase;
 
 class PaperUploadTest extends TestCase
 {

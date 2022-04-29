@@ -19,7 +19,7 @@ class CurrentAcademicSessionScope implements Scope
             $currentSession = AcademicSession::getDefault();
         }
 
-        if (!$currentSession) {
+        if (! $currentSession) {
             abort(500, 'No academic session set');
         }
 
