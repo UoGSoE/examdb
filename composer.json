@@ -19,7 +19,7 @@
         "laravel/horizon": "^5.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.0",
-        "league/flysystem-aws-s3-v3": "^1.0",
+        "league/flysystem-aws-s3-v3": "^3.0",
         "livewire/livewire": "2.5.1",
         "ohffs/simple-laravel-ldap": "^1.3",
         "ohffs/simple-spout": "^1.0",
