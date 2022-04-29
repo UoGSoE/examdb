@@ -39,7 +39,7 @@ class PaperExportController extends Controller
                     $course->code,
                     $course->semester,
                     $course->title,
-                    optional($course->discipline)->title,
+                    $course->discipline?->title,
                     $course->hasSetterChecklist($category) ? 'Y' : 'N',
                     $course->hasModeratorChecklist($category) ? 'Y' : 'N',
                     $course->datePaperAdded($category, \App\Paper::PRE_INTERNALLY_MODERATED),

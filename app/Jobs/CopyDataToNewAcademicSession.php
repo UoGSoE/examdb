@@ -59,7 +59,7 @@ class CopyDataToNewAcademicSession implements ShouldQueue
                                         ->where('academic_session_id', '=', $this->targetSession->id)
                                         ->first();
                 }
-                $newCourse = $this->replicateForNewSession($course, ['discipline_id' => optional($newDiscipline)->id]);
+                $newCourse = $this->replicateForNewSession($course, ['discipline_id' => $newDiscipline?->id]);
                 foreach ($newCourse->flagsToClearOnDuplication as $flag) {
                     $newCourse->$flag = false;
                 }

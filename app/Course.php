@@ -181,7 +181,7 @@ class Course extends Model
 
         $checklist = $this->checklists()->create([
             'category' => $category,
-            'user_id' => optional(auth()->user())->id,
+            'user_id' => auth()->user()?->id,
             // we merge only the fields the user is allowed to update with any existing fields from a previous checklost
             'fields' => array_merge($previousFields, Arr::only($fields, $fieldsToUpdate)),
         ]);

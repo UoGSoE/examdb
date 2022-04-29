@@ -42,7 +42,7 @@ class CourseExportController extends Controller
             $rows[] = [
                 $course->code,
                 $course->title,
-                optional($course->discipline)->title,
+                $course->discipline?->title,
                 $course->semester,
                 $course->setters->pluck('username')->implode(', '),
                 $course->setters->pluck('full_name')->implode(', '),

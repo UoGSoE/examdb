@@ -52,7 +52,7 @@ class ImportCourseRow implements ShouldQueue
     {
         // optional() call is here purely for test code - when running the job directly in a test, there is no 'batch'.
         // See ImportCourseDataSpreadsheetTest::the_import_course_row_job_actually_creates_records_for_the_data for instance.
-        $this->errorSetName = optional($this->batch())->id.'-errors';
+        $this->errorSetName = $this->batch()?->id.'-errors';
 
         if (count($this->spreadsheetRow) < 4) {
             $this->addError('Row is missing key data and is less than 4 columns');
