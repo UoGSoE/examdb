@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Course;
+use App\Models\Course;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Ohffs\SimpleSpout\ExcelSheet;
@@ -42,11 +42,11 @@ class PaperExportController extends Controller
                     $course->discipline?->title,
                     $course->hasSetterChecklist($category) ? 'Y' : 'N',
                     $course->hasModeratorChecklist($category) ? 'Y' : 'N',
-                    $course->datePaperAdded($category, \App\Paper::PRE_INTERNALLY_MODERATED),
-                    $course->datePaperAdded($category, \App\Paper::MODERATOR_COMMENTS),
-                    $course->datePaperAdded($category, \App\Paper::POST_INTERNALLY_MODERATED),
-                    $course->datePaperAdded($category, \App\Paper::EXTERNAL_COMMENTS),
-                    $course->datePaperAdded($category, \App\Paper::PAPER_FOR_REGISTRY),
+                    $course->datePaperAdded($category, \App\Models\Paper::PRE_INTERNALLY_MODERATED),
+                    $course->datePaperAdded($category, \App\Models\Paper::MODERATOR_COMMENTS),
+                    $course->datePaperAdded($category, \App\Models\Paper::POST_INTERNALLY_MODERATED),
+                    $course->datePaperAdded($category, \App\Models\Paper::EXTERNAL_COMMENTS),
+                    $course->datePaperAdded($category, \App\Models\Paper::PAPER_FOR_REGISTRY),
                 ];
             }
         }

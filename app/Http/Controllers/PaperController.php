@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Course;
+use App\Models\Course;
 use App\Events\PaperAdded;
-use App\Paper;
+use App\Models\Paper;
 use App\Scopes\CurrentAcademicSessionScope;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;

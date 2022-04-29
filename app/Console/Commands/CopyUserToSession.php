@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\AcademicSession;
-use App\User;
+use App\Models\AcademicSession;
+use App\Models\User;
 use Illuminate\Console\Command;
 
 class CopyUserToSession extends Command

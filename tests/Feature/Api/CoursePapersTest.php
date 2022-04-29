@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Api;
 
-use App\AcademicSession;
-use App\Course;
-use App\Paper;
+use App\Models\AcademicSession;
+use App\Models\Course;
+use App\Models\Paper;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;

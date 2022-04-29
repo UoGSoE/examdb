@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire;
 
-use App\Course;
+use App\Models\Course;
 use Livewire\Component;
 
 class SemesterEditBox extends Component

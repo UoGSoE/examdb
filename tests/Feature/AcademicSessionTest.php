@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\AcademicSession;
-use App\Course;
-use App\Discipline;
+use App\Models\AcademicSession;
+use App\Models\Course;
+use App\Models\Discipline;
 use App\Jobs\CopyDataToNewAcademicSession;
 use App\Mail\DataWasCopiedToNewSession;
 use App\Scopes\CurrentAcademicSessionScope;
-use App\User;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;

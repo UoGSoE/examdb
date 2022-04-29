@@ -2,11 +2,11 @@
 
 namespace App\Console\Commands;
 
-use App\AcademicSession;
-use App\Course;
-use App\Discipline;
+use App\Models\AcademicSession;
+use App\Models\Course;
+use App\Models\Discipline;
 use App\Scopes\CurrentAcademicSessionScope;
-use App\User;
+use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 

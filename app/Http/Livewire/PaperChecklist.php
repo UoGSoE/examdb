@@ -2,8 +2,8 @@
 
 namespace App\Http\Livewire;
 
-use App\Course;
-use App\PaperChecklist as Checklist;
+use App\Models\Course;
+use App\Models\PaperChecklist as Checklist;
 use Livewire\Component;
 use Tests\Feature\LivewirePaperChecklistTest;
 

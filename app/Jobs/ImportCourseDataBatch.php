@@ -5,7 +5,7 @@ namespace App\Jobs;
 use App\Jobs\ImportCourseRow;
 use App\Mail\CourseImportProcessComplete;
 use App\Scopes\CurrentAcademicSessionScope;
-use App\User;
+use App\Models\User;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\AcademicSession;
+use App\Models\AcademicSession;
 use App\Http\Controllers\Controller;
 use App\Jobs\CopyDataToNewAcademicSession;
 use App\Scopes\CurrentAcademicSessionScope;
@@ -21,7 +21,7 @@ class AcademicSessionController extends Controller
         // 'version' of their user which in turn clears the session so we need to set it again
         session(['academic_session' => $session->session]);
         auth()->login(
-            \App\User::where('username', '=', $username)->first()
+            \App\Models\User::where('username', '=', $username)->first()
         );
         session(['academic_session' => $session->session]);
 

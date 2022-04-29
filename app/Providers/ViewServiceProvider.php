@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\AcademicSession;
+use App\Models\AcademicSession;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 

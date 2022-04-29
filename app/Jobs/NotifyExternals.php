@@ -2,8 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Course;
-use App\Discipline;
+use App\Models\Course;
+use App\Models\Discipline;
 use App\Mail\ExternalHasPapersToLookAt;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;

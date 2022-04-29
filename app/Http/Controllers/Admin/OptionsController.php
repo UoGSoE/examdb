@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Discipline;
+use App\Models\Discipline;
 use App\Http\Controllers\Controller;
 use Appstract\Options\Option;
 use Carbon\Carbon;

@@ -2,16 +2,16 @@
 
 namespace Tests\Feature;
 
-use App\AcademicSession;
-use App\Course;
-use App\Discipline;
+use App\Models\AcademicSession;
+use App\Models\Course;
+use App\Models\Discipline;
 use App\Mail\ChecklistUploaded;
 use App\Mail\NotifySetterAboutExternalComments;
 use App\Mail\NotifySetterAboutModeratorComments;
 use App\Mail\NotifyTeachingOfficeExternalHasCommented;
 use App\Mail\PaperForRegistry;
-use App\Paper;
-use App\User;
+use App\Models\Paper;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;

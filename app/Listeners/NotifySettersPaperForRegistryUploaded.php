@@ -2,9 +2,9 @@
 
 namespace App\Listeners;
 
-use App\Course;
+use App\Models\Course;
 use App\Mail\PaperForRegistryUploaded;
-use App\Paper;
+use App\Models\Paper;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;

@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Course;
+use App\Models\Course;
 use Illuminate\Console\Command;
 use InvalidArgumentException;
 

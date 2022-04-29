@@ -2,10 +2,10 @@
 
 namespace App\Jobs;
 
-use App\Course;
+use App\Models\Course;
 use App\Exporters\ChecklistExporter;
 use App\Mail\ChecklistsReadyToDownload;
-use App\User;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
