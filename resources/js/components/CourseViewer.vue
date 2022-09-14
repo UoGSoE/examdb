@@ -153,6 +153,9 @@ export default {
       return this.externalsNotified ? "Notified!" : "Notify Externals" + suffix;
     },
     canUploadPapers() {
+      if (window.is_admin == true) {
+        return true;
+      }
       let inSetters = this.course.setters.find(
         setter => setter.id == this.user.id
       );

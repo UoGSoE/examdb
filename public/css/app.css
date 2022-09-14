@@ -15585,11 +15585,12 @@ readers do not read off random characters that represent icons */
   position: fixed;
   top: 80px;
   right: 20px;
+  left: 20px;
   z-index: 10;
   opacity: 0;
   background-color: white;
-  -webkit-animation: fade-in-out-success 4s;
-          animation: fade-in-out-success 4s;
+  -webkit-animation: fade-in-out-success 8s;
+          animation: fade-in-out-success 8s;
 }
 
 @-webkit-keyframes fade-in-out-success {
