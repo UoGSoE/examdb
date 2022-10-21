@@ -43,7 +43,7 @@ class PaperChecklist extends Model
 {
     use HasFactory;
 
-    const CURRENT_VERSION = 1;
+    public const CURRENT_VERSION = 1;
 
     protected $guarded = [];
 
@@ -54,7 +54,7 @@ class PaperChecklist extends Model
         'fields' => 'array',
     ];
 
-    const SETTER_FIELDS = [
+    public const SECTION_A_FIELDS = [
         'course_code',
         'course_title',
         'year',
@@ -64,13 +64,55 @@ class PaperChecklist extends Model
         'assessment_title',
         'assignment_weighting',
         'number_markers',
+        'number_questions',
+        'moderators',
+        'passed_to_moderator',
+    ];
+    public const SECTION_B_FIELDS = [
+        'overall_quality_appropriate',
+        'why_innapropriate',
+        'should_revise_questions',
+        'recommended_revisions',
+        'moderator_comments',
+        'moderator_completed_at',
+        'setter_comments_to_moderator',
+    ];
+    public const SECTION_C_FIELDS = [
+        'solution_marks_appropriate',
+        'moderator_solution_innapropriate_comments',
+        'solutions_marks_adjusted',
+        'solution_adjustment_comments',
+        'solution_moderator_comments',
+        'moderator_solutions_at',
+        'moderator_esignature',
+        'solution_setter_comments',
+    ];
+    public const SECTION_D_FIELDS = [
+        'external_examiner_name',
+        'external_agrees_with_moderator',
+        'external_reason',
+        'external_comments',
+        'external_signed_at',
+        'external_esignature',
+    ];
+    public const SETTER_FIELDS = [
+        'course_code',
+        'course_title',
+        'year',
+        'scqf_level',
+        'course_credits',
+        'setter_reviews',
+        'assessment_title',
+        'assignment_weighting',
+        'number_markers',
+        'number_questions',
         'moderators',
         'passed_to_moderator',
         'setter_comments_to_moderator',
         'solution_setter_comments',
     ];
 
-    const MODERATOR_FIELDS = [
+    public const MODERATOR_FIELDS = [
         'overall_quality_appropriate',
         'why_innapropriate',
         'should_revise_questions',
@@ -86,7 +128,7 @@ class PaperChecklist extends Model
         'moderator_esignature',
     ];
 
-    const EXTERNAL_FIELDS = [
+    public const EXTERNAL_FIELDS = [
         'external_examiner_name',
         'external_agrees_with_moderator',
         'external_reason',
@@ -99,7 +141,7 @@ class PaperChecklist extends Model
     {
         parent::boot();
 
-        static::addGlobalScope(new CurrentScope);
+        static::addGlobalScope(new CurrentScope());
     }
 
     public function course()

@@ -19,6 +19,7 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\NotifyTechingOfficePaperForRegistryUploaded::class,
             \App\Listeners\NotifySettersPaperForRegistryUploaded::class,
             \App\Listeners\LogThatPaperWasAdded::class,
+            \App\Listeners\NotifySetterThatPrintReadyPaperUploaded::class,
         ],
         \App\Events\ChecklistUpdated::class => [
             \App\Listeners\NotifyStaffThatChecklistUpdated::class,

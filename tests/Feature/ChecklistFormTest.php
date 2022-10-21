@@ -69,15 +69,118 @@ class ChecklistFormTest extends TestCase
 
         $this->actingAs($user);
         Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
-            ->call('save')
-            ->assertHasNoErrors();
+            ->assertDontSee('The date passed to moderator field is required')
+            ->set('checklist.fields.passed_to_moderator', '')
+            ->call('save', 'A')
+            ->assertHasErrors(['date_passed_to_moderator'])
+            ->assertSee('The date passed to moderator field is required')
+            ->set('checklist.fields.passed_to_moderator', now()->format('d/m/Y'))
+            ->call('save', 'A')
+            ->assertHasNoErrors()
+            ->assertDontSee('The date passed to moderator field is required');
 
-        tap(PaperChecklist::first(), function ($checklist) use ($course, $user) {
+        tap(PaperChecklist::firstOrFail(), function ($checklist) use ($course, $user) {
             $this->assertEquals($checklist->version, PaperChecklist::CURRENT_VERSION);
             $this->assertTrue($checklist->course->is($course));
             $this->assertTrue($checklist->user->is($user));
             $this->assertEquals('main', $checklist->category);
+            $this->assertEquals(now()->format('d/m/Y'), $checklist->fields['passed_to_moderator']);
+            $this->assertEquals('1', $checklist->fields['number_questions']);
+            $this->assertEquals($user->full_name, $checklist->fields['question_setter_0']);
         });
+    }
+
+    /** @test */
+    public function people_associated_with_a_course_can_create_a_new_checklist_with_a_specific_number_of_questions()
+    {
+        $this->withoutExceptionHandling();
+        $user = create(User::class);
+        $otherUser = create(User::class);
+        $course = create(Course::class);
+        $user->markAsSetter($course);
+        $otherUser->markAsSetter($course);
+
+        $this->actingAs($user);
+        Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
+            ->assertDontSee('The date passed to moderator field is required')
+            ->set('checklist.fields.passed_to_moderator', '')
+            ->call('save', 'A')
+            ->assertHasErrors(['date_passed_to_moderator'])
+            ->assertSee('The date passed to moderator field is required')
+            ->set('checklist.fields.passed_to_moderator', now()->format('d/m/Y'))
+            ->set('checklist.fields.number_questions', 3)
+            ->set('checklist.fields.question_setter_1', $otherUser->full_name)
+            ->call('save', 'A')
+            ->assertHasNoErrors()
+            ->assertDontSee('The date passed to moderator field is required');
+
+        tap(PaperChecklist::firstOrFail(), function ($checklist) use ($course, $user, $otherUser) {
+            $this->assertEquals($checklist->version, PaperChecklist::CURRENT_VERSION);
+            $this->assertTrue($checklist->course->is($course));
+            $this->assertTrue($checklist->user->is($user));
+            $this->assertEquals('main', $checklist->category);
+            $this->assertEquals(now()->format('d/m/Y'), $checklist->fields['passed_to_moderator']);
+            $this->assertEquals('3', $checklist->fields['number_questions']);
+            $this->assertEquals($user->full_name, $checklist->fields['question_setter_0']);
+            $this->assertEquals($otherUser->full_name, $checklist->fields['question_setter_1']);
+            $this->assertEquals($user->full_name, $checklist->fields['question_setter_2']);
+        });
+    }
+
+    /** @test */
+    public function when_the_setter_puts_in_the_number_of_questions_on_a_paper_they_see_extra_fields_for_who_is_setting_them()
+    {
+        $this->withoutExceptionHandling();
+        $user = create(User::class);
+        $course = create(Course::class);
+        $user->markAsSetter($course);
+
+        $this->actingAs($user);
+        Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
+            ->assertSee('question_setter_0') // checklists default to 1 question so there is always a first question setter field
+            ->assertDontSee('question_setter_1')
+            ->assertDontSee('question_setter_2')
+            ->set('checklist.fields.number_questions', 3)
+            ->assertSee('question_setter_0')
+            ->assertSee('question_setter_1')
+            ->assertSee('question_setter_2')
+            ;
+    }
+
+    /** @test */
+    public function various_date_fields_are_required_depending_who_the_person_is_filling_in_the_checklist()
+    {
+        $this->withoutExceptionHandling();
+        Mail::fake();
+        $setter = create(User::class);
+        $moderator = create(User::class);
+        $external = create(User::class);
+        $course = create(Course::class);
+        $setter->markAsSetter($course);
+        $moderator->markAsModerator($course);
+        $external->markAsExternal($course);
+
+        Livewire::actingAs($setter)->test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
+            ->assertDontSee('The date passed to moderator field is required')
+            ->set('checklist.fields.passed_to_moderator', '')
+            ->call('save', 'A')
+            ->assertHasErrors(['date_passed_to_moderator'])
+            ->assertSee('The date passed to moderator field is required')
+            ->set('checklist.fields.passed_to_moderator', now()->format('d/m/Y'))
+            ->call('save', 'A')
+            ->assertHasNoErrors()
+            ->assertDontSee('The date passed to moderator field is required');
+
+        Livewire::actingAs($moderator)->test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
+            ->assertDontSee('The date passed to moderator field is required')
+            ->set('checklist.fields.passed_to_moderator', '')
+            ->call('save', 'A')
+            ->assertHasErrors(['date_passed_to_moderator'])
+            ->assertSee('The date passed to moderator field is required')
+            ->set('checklist.fields.passed_to_moderator', now()->format('d/m/Y'))
+            ->call('save', 'A')
+            ->assertHasNoErrors()
+            ->assertDontSee('The date passed to moderator field is required');
     }
 
     /** @test */

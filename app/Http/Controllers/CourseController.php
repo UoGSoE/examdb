@@ -21,6 +21,9 @@ class CourseController extends Controller
         $course->append('is_uestc');
         $course->append('has_main_paper_for_registry');
         $course->append('has_resit_paper_for_registry');
+        $course->has_main_checklist = $course->hasPreviousChecklists('main') || $course->hasPreviousChecklists('assessment');
+        $course->has_resit_checklist = $course->hasPreviousChecklists('resit');
+        $course->has_resit2_checklist = $course->hasPreviousChecklists('resit2');
 
         return view('course.show', [
             'course' => $course,

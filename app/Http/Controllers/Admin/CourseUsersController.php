@@ -17,14 +17,7 @@ class CourseUsersController extends Controller
             'externals' => 'present|array',
         ]);
 
-        $course->setters()->detach();
-        User::findMany($request->setters)->each->markAsSetter($course);
-
-        $course->moderators()->detach();
-        User::findMany($request->moderators)->each->markAsModerator($course);
-
-        $course->externals()->detach();
-        User::findMany($request->externals)->each->markAsExternal($course);
+        $course->updateStaff($request->setters, $request->moderators, $request->externals);
 
         return response()->json([
             'message' => 'Updated',

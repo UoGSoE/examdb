@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Course;
 use App\Http\Controllers\Controller;
+use App\Models\Paper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -38,6 +39,9 @@ class DropdownOptionsController extends Controller
         }
         if (Auth::user()->isExternalFor($course)) {
             $options = ['External Examiner Comments'];
+        }
+        if (Auth::user()->is_admin) {
+            $options = array_merge($options, [Paper::ADMIN_PRINT_READY_VERSION]);
         }
 
         $subcategory = ucfirst(request('subcategory'));

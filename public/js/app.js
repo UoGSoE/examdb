@@ -13276,6 +13276,10 @@ __webpack_require__.r(__webpack_exports__);
     canUploadPapers: function canUploadPapers() {
       var _this = this;
 
+      if (this.user.is_admin == true) {
+        return true;
+      }
+
       var inSetters = this.course.setters.find(function (setter) {
         return setter.id == _this.user.id;
       });
@@ -14378,6 +14382,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ["course", "subcategories", "category", "canUpload"],
@@ -14404,6 +14412,9 @@ __webpack_require__.r(__webpack_exports__);
     },
     secondResit: function secondResit() {
       return this.category == "resit2";
+    },
+    hasChecklist: function hasChecklist() {
+      return this.course["has_".concat(this.category, "_checklist")];
     }
   },
   data: function data() {
@@ -43642,210 +43653,226 @@ var render = function () {
       ]),
     ]),
     _vm._v(" "),
-    _c("div", { staticClass: "level" }, [
-      _c("div", { staticClass: "level-left" }, [
-        _vm.is_local && _vm.canUpload
-          ? _c(
-              "span",
-              { staticClass: "level-item" },
-              [
-                _c("main-paper-uploader", {
-                  attrs: {
-                    course: _vm.course,
-                    category: _vm.category,
-                    buttontext: "Main",
-                    subcategories: _vm.subcategories["main"],
-                  },
-                  on: { added: _vm.paperAdded },
-                }),
-              ],
-              1
-            )
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.is_local && _vm.canUpload
-          ? _c(
-              "span",
-              { staticClass: "level-item" },
-              [
-                _c("main-paper-uploader", {
-                  attrs: {
-                    course: _vm.course,
-                    category: _vm.category,
-                    buttontext: "Solution",
-                    subcategories: _vm.subcategories["solution"],
-                  },
-                  on: { added: _vm.paperAdded },
-                }),
-              ],
-              1
-            )
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.course.has_main_paper_for_registry
-          ? _c("span", { staticClass: "level-item" }, [
-              _c(
-                "button",
-                {
-                  staticClass: "button",
-                  class: {
-                    "has-background-success":
-                      _vm.course["registry_approved_" + _vm.category],
-                  },
-                  on: {
-                    click: function ($event) {
-                      $event.preventDefault()
-                      return _vm.approvePaperForRegistry(_vm.category)
-                    },
-                  },
-                },
-                [
-                  _vm._v(
-                    "\n              Approve Paper for Registry\n          "
-                  ),
-                ]
-              ),
-            ])
-          : _vm._e(),
-      ]),
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "level" }, [
-      _c("div", { staticClass: "level-left" }, [
-        _vm.is_local && _vm.canUpload
-          ? _c(
-              "span",
-              { staticClass: "level-item" },
-              [
-                _c("main-paper-uploader", {
-                  attrs: {
-                    course: _vm.course,
-                    category: _vm.category,
-                    buttontext: "Assessment > 30% (> 25% UESTC)",
-                    subcategories: _vm.subcategories["assessment"],
-                  },
-                  on: { added: _vm.paperAdded },
-                }),
-              ],
-              1
-            )
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.is_local && _vm.canUpload
-          ? _c(
-              "span",
-              { staticClass: "level-item" },
-              [
-                _c("comment-box", {
-                  attrs: { course: _vm.course, category: _vm.category },
-                  on: { added: _vm.paperAdded },
-                }),
-              ],
-              1
-            )
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.is_external && _vm.canUpload
-          ? _c(
-              "span",
-              { staticClass: "level-item" },
-              [
-                _c(
-                  "main-paper-uploader",
-                  {
-                    attrs: {
-                      course: _vm.course,
-                      category: _vm.category,
-                      subcategories: _vm.subcategories["external"],
-                      buttontext: "Main",
-                    },
-                    on: { added: _vm.paperAdded },
-                  },
-                  [
-                    _c("template", { slot: "button-content" }, [
-                      _c("span", { staticClass: "icon has-text-success" }, [
-                        _c("i", { staticClass: "far fa-check-circle" }),
-                      ]),
-                      _vm._v(" "),
-                      _c("span", [_vm._v("Add Main Comments")]),
-                    ]),
-                  ],
-                  2
-                ),
-              ],
-              1
-            )
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.is_external && _vm.canUpload
-          ? _c(
-              "span",
-              { staticClass: "level-item" },
-              [
-                _c(
-                  "main-paper-uploader",
-                  {
-                    attrs: {
-                      course: _vm.course,
-                      category: _vm.category,
-                      subcategories: _vm.subcategories["external"],
-                      buttontext: "Solution",
-                    },
-                    on: { added: _vm.paperAdded },
-                  },
-                  [
-                    _c("template", { slot: "button-content" }, [
-                      _c("span", { staticClass: "icon has-text-success" }, [
-                        _c("i", { staticClass: "far fa-check-circle" }),
-                      ]),
-                      _vm._v(" "),
-                      _c("span", [_vm._v("Add Solution Comments")]),
-                    ]),
-                  ],
-                  2
-                ),
-              ],
-              1
-            )
-          : _vm._e(),
-      ]),
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "level" }, [
-      _c("div", { staticClass: "level-left" }, [
-        _vm.is_external && _vm.canUpload
-          ? _c(
-              "span",
-              { staticClass: "level-item" },
-              [
-                _c(
-                  "main-paper-uploader",
-                  {
-                    attrs: {
-                      course: _vm.course,
-                      category: _vm.category,
-                      subcategories: _vm.subcategories["external"],
-                      buttontext: "Assessment",
-                    },
-                    on: { added: _vm.paperAdded },
-                  },
-                  [
-                    _c("template", { slot: "button-content" }, [
-                      _c("span", { staticClass: "icon has-text-success" }, [
-                        _c("i", { staticClass: "far fa-check-circle" }),
-                      ]),
-                      _vm._v(" "),
-                      _c("span", [_vm._v("Add Assessment Comments")]),
-                    ]),
-                  ],
-                  2
-                ),
-              ],
-              1
-            )
-          : _vm._e(),
-      ]),
-    ]),
+    !_vm.hasChecklist
+      ? _c("div", { staticClass: "notification" }, [
+          _vm._v(
+            "\n      You need to complete the checklist before you can upload the "
+          ),
+          _c("span", { domProps: { textContent: _vm._s(_vm.category) } }),
+          _vm._v(" paper.\n  "),
+        ])
+      : _c("div", [
+          _c("div", { staticClass: "level" }, [
+            _c("div", { staticClass: "level-left" }, [
+              _vm.is_local && _vm.canUpload
+                ? _c(
+                    "span",
+                    { staticClass: "level-item" },
+                    [
+                      _c("main-paper-uploader", {
+                        attrs: {
+                          course: _vm.course,
+                          category: _vm.category,
+                          buttontext: "Main",
+                          subcategories: _vm.subcategories["main"],
+                        },
+                        on: { added: _vm.paperAdded },
+                      }),
+                    ],
+                    1
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.is_local && _vm.canUpload
+                ? _c(
+                    "span",
+                    { staticClass: "level-item" },
+                    [
+                      _c("main-paper-uploader", {
+                        attrs: {
+                          course: _vm.course,
+                          category: _vm.category,
+                          buttontext: "Solution",
+                          subcategories: _vm.subcategories["solution"],
+                        },
+                        on: { added: _vm.paperAdded },
+                      }),
+                    ],
+                    1
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.course.has_main_paper_for_registry
+                ? _c("span", { staticClass: "level-item" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "button",
+                        class: {
+                          "has-background-success":
+                            _vm.course["registry_approved_" + _vm.category],
+                        },
+                        on: {
+                          click: function ($event) {
+                            $event.preventDefault()
+                            return _vm.approvePaperForRegistry(_vm.category)
+                          },
+                        },
+                      },
+                      [
+                        _vm._v(
+                          "\n                      Approve Paper for Registry\n                  "
+                        ),
+                      ]
+                    ),
+                  ])
+                : _vm._e(),
+            ]),
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "level" }, [
+            _c("div", { staticClass: "level-left" }, [
+              _vm.is_local && _vm.canUpload
+                ? _c(
+                    "span",
+                    { staticClass: "level-item" },
+                    [
+                      _c("main-paper-uploader", {
+                        attrs: {
+                          course: _vm.course,
+                          category: _vm.category,
+                          buttontext: "Assessment > 30% (> 25% UESTC)",
+                          subcategories: _vm.subcategories["assessment"],
+                        },
+                        on: { added: _vm.paperAdded },
+                      }),
+                    ],
+                    1
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.is_local && _vm.canUpload
+                ? _c(
+                    "span",
+                    { staticClass: "level-item" },
+                    [
+                      _c("comment-box", {
+                        attrs: { course: _vm.course, category: _vm.category },
+                        on: { added: _vm.paperAdded },
+                      }),
+                    ],
+                    1
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.is_external && _vm.canUpload
+                ? _c(
+                    "span",
+                    { staticClass: "level-item" },
+                    [
+                      _c(
+                        "main-paper-uploader",
+                        {
+                          attrs: {
+                            course: _vm.course,
+                            category: _vm.category,
+                            subcategories: _vm.subcategories["external"],
+                            buttontext: "Main",
+                          },
+                          on: { added: _vm.paperAdded },
+                        },
+                        [
+                          _c("template", { slot: "button-content" }, [
+                            _c(
+                              "span",
+                              { staticClass: "icon has-text-success" },
+                              [_c("i", { staticClass: "far fa-check-circle" })]
+                            ),
+                            _vm._v(" "),
+                            _c("span", [_vm._v("Add Main Comments")]),
+                          ]),
+                        ],
+                        2
+                      ),
+                    ],
+                    1
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.is_external && _vm.canUpload
+                ? _c(
+                    "span",
+                    { staticClass: "level-item" },
+                    [
+                      _c(
+                        "main-paper-uploader",
+                        {
+                          attrs: {
+                            course: _vm.course,
+                            category: _vm.category,
+                            subcategories: _vm.subcategories["external"],
+                            buttontext: "Solution",
+                          },
+                          on: { added: _vm.paperAdded },
+                        },
+                        [
+                          _c("template", { slot: "button-content" }, [
+                            _c(
+                              "span",
+                              { staticClass: "icon has-text-success" },
+                              [_c("i", { staticClass: "far fa-check-circle" })]
+                            ),
+                            _vm._v(" "),
+                            _c("span", [_vm._v("Add Solution Comments")]),
+                          ]),
+                        ],
+                        2
+                      ),
+                    ],
+                    1
+                  )
+                : _vm._e(),
+            ]),
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "level" }, [
+            _c("div", { staticClass: "level-left" }, [
+              _vm.is_external && _vm.canUpload
+                ? _c(
+                    "span",
+                    { staticClass: "level-item" },
+                    [
+                      _c(
+                        "main-paper-uploader",
+                        {
+                          attrs: {
+                            course: _vm.course,
+                            category: _vm.category,
+                            subcategories: _vm.subcategories["external"],
+                            buttontext: "Assessment",
+                          },
+                          on: { added: _vm.paperAdded },
+                        },
+                        [
+                          _c("template", { slot: "button-content" }, [
+                            _c(
+                              "span",
+                              { staticClass: "icon has-text-success" },
+                              [_c("i", { staticClass: "far fa-check-circle" })]
+                            ),
+                            _vm._v(" "),
+                            _c("span", [_vm._v("Add Assessment Comments")]),
+                          ]),
+                        ],
+                        2
+                      ),
+                    ],
+                    1
+                  )
+                : _vm._e(),
+            ]),
+          ]),
+        ]),
   ])
 }
 var staticRenderFns = [

@@ -103,11 +103,47 @@
                 <input class="input" type="text" wire:model="checklist.fields.number_markers">
             </p>
         </div>
-
-
     </div>
 </div>
 
+@if (array_key_exists('number_questions', $checklist['fields']))
+    <div class="columns">
+        <div class="column">
+            <div class="field">
+                <label for="" class="label">No. of questions</label>
+                <p class="control is-expanded">
+                    <input class="input" type="number" wire:model="checklist.fields.number_questions" min="1" max="100">
+                </p>
+                @error('number_questions') <p class="help is-danger">{{ $message }}</p> @enderror
+            </div>
+        </div>
+
+        <div class="column">
+            @if ($checklist['fields']['number_questions'] ?? 0 > 0)
+                @foreach (collect(range(1, $checklist['fields']['number_questions'] ?? 1))->chunk(2) as $chunkedCounts)
+                    <div class="columns">
+                        @foreach ($chunkedCounts as $questionCount)
+                            <div class="column" wire:key="setter-column-q{{ $questionCount }}">
+                                <div class="field">
+                                    <label class="label">Setter Q{{ $questionCount }}</label>
+                                    <div class="control">
+                                        <div class="select">
+                                            <select wire:model="checklist.fields.question_setter_{{ $questionCount - 1 }}"  wire:key="setter-select-q{{ $questionCount }}">
+                                                @foreach ($setters as $setter)
+                                                    <option value="{{ $setter->full_name }}">{{ $setter->full_name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endforeach
+            @endif
+        </div>
+    </div>
+@endif
 <div class="columns">
     <div class="column">
 
@@ -129,13 +165,16 @@
                 <input class="input" x-ref="passed_to_moderator" type="text" wire:model.lazy="checklist.fields.passed_to_moderator">
             </p>
         <span class="help">(Note: setting/changing this will email the @choice('moderator|moderators', $course->moderators))</span>
+        @error('date_passed_to_moderator')
+            <span id="date-passed-to-moderator-error" class="help has-text-danger has-text-weight-bold">{{ $message }}</span>
+        @enderror
         </div>
     </div>
 </div>
 @if (auth()->user()->isSetterFor($course) && !isset($checklist['id']))
 <div class="field">
     <div class="control">
-        <button wire:click.prevent="save" class="button">Save</button>
+        <button wire:click.prevent="save('A')" class="button">Save Section A</button>
     </div>
 </div>
 @endif
@@ -227,6 +266,14 @@
             <textarea class="textarea" @if (! auth()->user()->isSetterFor($course) or ($course->isApprovedByModerator($checklist['category']))) disabled @endif wire:model="checklist.fields.setter_comments_to_moderator" id=""></textarea>
         </p>
     </div>
+
+    @if ((auth()->user()->isModeratorFor($course) || auth()->user()->isSetterFor($course)) && !isset($checklist['id']))
+        <div class="field">
+            <div class="control">
+                <button wire:click.prevent="save('B')" class="button">Save Section B</button>
+            </div>
+        </div>
+    @endif
 
     {{--
     @if ((auth()->user()->isModeratorFor($course) or auth()->user()->isSetterFor($course)) && !isset($checklist['id']))
@@ -321,14 +368,22 @@
         </p>
     </div>
 
-    @if ((auth()->user()->isModeratorFor($course) or auth()->user()->isSetterFor($course)) && !isset($checklist['id']))
+    @if ((auth()->user()->isModeratorFor($course) || auth()->user()->isSetterFor($course)) && !isset($checklist['id']))
+        <div class="field">
+            <div class="control">
+                <button wire:click.prevent="save('C')" class="button">Save Section C</button>
+            </div>
+        </div>
+    @endif
+
+{{--     @if ((auth()->user()->isModeratorFor($course) or auth()->user()->isSetterFor($course)) && !isset($checklist['id']))
     <div class="field">
         <div class="control">
             <button  wire:click.prevent="save" class="button">Save</button>
         </div>
     </div>
     @endif
-
+--}}
     <hr>
 
 </fieldset>
@@ -396,11 +451,11 @@
     </div>
 
     @if (auth()->user()->isExternalFor($course) && !isset($checklist['id']))
-    <div class="field">
-        <div class="control">
-            <button wire:click.prevent="save" class="button">Save</button>
+        <div class="field">
+            <div class="control">
+                <button wire:click.prevent="save('D')" class="button">Save</button>
+            </div>
         </div>
-    </div>
     @endif
 </fieldset>
 </form>

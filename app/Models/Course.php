@@ -57,7 +57,7 @@ class Course extends Model
     {
         parent::boot();
 
-        static::addGlobalScope(new CurrentAcademicSessionScope);
+        static::addGlobalScope(new CurrentAcademicSessionScope());
     }
 
     public function staff()
@@ -150,6 +150,30 @@ class Course extends Model
         return $query->where('is_examined', '=', true);
     }
 
+    protected function getChecklistFieldsToUpdate(string $sectionName, array $fields, array $fieldsToUpdate): array
+    {
+        if ($sectionName == 'A') {
+            $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::SECTION_A_FIELDS);
+            $fields['number_questions'] = $fields['number_questions'] ?? 1;
+            foreach (range(1, $fields['number_questions']) as $questionNumber) {
+                if (array_key_exists('question_setter_' . ($questionNumber - 1), $fields)) {
+                    $fieldsToUpdate[] = 'question_setter_' . ($questionNumber - 1);
+                }
+            }
+        }
+        if ($sectionName == 'B') {
+            $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::SECTION_B_FIELDS);
+        }
+        if ($sectionName == 'C') {
+            $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::SECTION_C_FIELDS);
+        }
+        if ($sectionName == 'D') {
+            $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::SECTION_D_FIELDS);
+        }
+
+        return $fieldsToUpdate;
+    }
+
     /**
      * This is horrific
      * TODO : make it not horrific.
@@ -167,10 +191,25 @@ class Course extends Model
             $previousFields = $this->getDefaultChecklistFields();
         }
 
+        /**
+         * TODO
+         * Each section of the form is now a seperate 'save action' (save('B') etc) so the way we
+         * work out which fields is based on the section, not the type of person.
+         * *BUT* we need to check the moderator parts and figure out which are 'dirty' because the setter
+         * can fill out parts of those sections as thei response to the comments.
+         * That probably also affects the notifications which are sent out as a result of the save.
+         */
         // figure out which fields on the form the user is allowed to update
+        $fieldsToUpdate = $this->getChecklistFieldsToUpdate('B', $fields, $previousFields);
         $fieldsToUpdate = [];
         if (auth()->check() && auth()->user()->isSetterFor($this)) {
             $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::SETTER_FIELDS);
+            $fields['number_questions'] = $fields['number_questions'] ?? 1;
+            foreach (range(1, $fields['number_questions']) as $questionNumber) {
+                if (array_key_exists('question_setter_' . ($questionNumber - 1), $fields)) {
+                    $fieldsToUpdate[] = 'question_setter_' . ($questionNumber - 1);
+                }
+            }
         }
         if (auth()->check() && auth()->user()->isModeratorFor($this)) {
             $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::MODERATOR_FIELDS);
@@ -217,6 +256,7 @@ class Course extends Model
         $flashMessage = 'Checklist Saved';
 
         if (auth()->check() && auth()->user()->isSetterFor($this) && $checklist->shouldNotifyModerator()) {
+            // TODO : should $this be $this->code ? o_O
             $area = str_contains($this, 'ENG') ? 'glasgow' : 'uestc';
             $optionName = "{$area}_internal_moderation_deadline";
             $deadline = '';
@@ -277,6 +317,8 @@ class Course extends Model
             'assessment_title' => '',
             'assignment_weighting' => '',
             'number_markers' => '',
+            'number_questions' => '1',
+            'question_setter_0' => auth()->check() ? auth()->user()->full_name : '',
             'passed_to_moderator' => '',
             'setter_comments_to_moderator' => '',
             'solution_setter_comments' => '',
@@ -298,6 +340,20 @@ class Course extends Model
             'external_comments' => '',
             'external_signed_at' => '',
         ];
+    }
+
+    public function updateStaff(array $setterIds, array $moderatorIds, array $externalIds)
+    {
+        $uniqueIds = array_unique(array_merge($setterIds, $moderatorIds, $externalIds));
+        $pivotData = [];
+        foreach ($uniqueIds as $id) {
+            $pivotData[$id] = [
+                'is_setter' => in_array($id, $setterIds),
+                'is_moderator' => in_array($id, $moderatorIds),
+                'is_external' => in_array($id, $externalIds),
+            ];
+        }
+        $this->staff()->sync($pivotData);
     }
 
     public function hasSetterChecklist(string $category)
@@ -510,7 +566,7 @@ class Course extends Model
         });
     }
 
-    public function getUserApprovedMainAttribute(? User $user): bool
+    public function getUserApprovedMainAttribute(?User $user): bool
     {
         if (! $user) {
             $user = auth()->user();
@@ -519,7 +575,7 @@ class Course extends Model
         return $this->isApprovedBy($user, 'main');
     }
 
-    public function getUserApprovedResitAttribute(? User $user): bool
+    public function getUserApprovedResitAttribute(?User $user): bool
     {
         if (! $user) {
             $user = auth()->user();
