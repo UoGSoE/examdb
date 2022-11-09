@@ -10,7 +10,7 @@
     "require": {
         "php": "^7.3|^8.0",
         "appstract/laravel-options": "^5.3",
-        "barryvdh/laravel-dompdf": "^1.0",
+        "barryvdh/laravel-dompdf": "^2.0",
         "barryvdh/laravel-snappy": "^1.0",
         "guzzlehttp/guzzle": "^7.2",
         "lab404/laravel-impersonate": "^1.7.3",

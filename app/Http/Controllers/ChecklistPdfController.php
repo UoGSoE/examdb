@@ -11,7 +11,7 @@ class ChecklistPdfController extends Controller
     {
         $this->authorize('show', $checklist->course);
 
-        $pdf = \PDF::loadView('course.checklist.show', [
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('course.checklist.show', [
             'checklist' => $checklist,
             'course' => $checklist->course,
             'category' => $checklist->category,
