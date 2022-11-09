@@ -232,9 +232,6 @@ class Course extends Model
         // if (auth()->check() && auth()->user()->isExternalFor($this)) {
         //     $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::EXTERNAL_FIELDS);
         // }
-        // if ($section == 'C') {
-        //     dump($fieldsToUpdate);
-        // }
 
         $checklist = $this->checklists()->create([
             'category' => $category,
