@@ -47,17 +47,36 @@ class PaperChecklist extends Component
 
     public function save(?string $sectionName = null)
     {
+        Validator::make(['section' => $sectionName], [
+            'section' => ['string', 'in:A,B,C,D'],
+        ])->validate();
+
         if ($sectionName == 'A') {
             Validator::make(
-                [ 'date_passed_to_moderator' => $this->checklist['fields']['passed_to_moderator'] ],
+                [ 'date_passed_to_moderator' => $this->checklist['fields']['passed_to_moderator'] ?? null ],
                 [ 'date_passed_to_moderator' => 'required|date_format:d/m/Y' ]
             )->validate();
         }
         if ($sectionName == 'B') {
+            if (! ($this->checklist['fields']['overall_quality_appropriate'] ?? false)) {
+                Validator::make(
+                    [ 'comments' => $this->checklist['fields']['why_innapropriate'] ?? null ],
+                    [ 'comments' => 'required' ]
+                )->validate();
+            }
         }
         if ($sectionName == 'C') {
+            if (! ($this->checklist['fields']['solution_marks_appropriate'] ?? false)) {
+                Validator::make(
+                    [ 'solution_comments' => $this->checklist['fields']['moderator_solution_innapropriate_comments'] ?? null ],
+                    [ 'solution_comments' => 'required' ]
+                )->validate();
+            }
         }
-        $this->course->addChecklist($this->checklist['fields'], $this->category);
+        if ($sectionName == 'D') {
+        }
+
+        $this->course->addChecklist($this->checklist['fields'], $this->category, $sectionName);
 
         return redirect()->to(route('course.show', $this->course->id));
     }

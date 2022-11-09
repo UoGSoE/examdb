@@ -75,6 +75,7 @@ class PaperChecklist extends Model
         'recommended_revisions',
         'moderator_comments',
         'moderator_completed_at',
+        'moderator_esignature',
         'setter_comments_to_moderator',
     ];
     public const SECTION_C_FIELDS = [

@@ -31,6 +31,7 @@ Route::middleware('auth', 'academicsession')->group(function () {
 
     Route::get('/paper/{id}', [\App\Http\Controllers\PaperController::class, 'show'])->name('paper.show');
     Route::delete('/paper/{paper}', [\App\Http\Controllers\PaperController::class, 'destroy'])->name('paper.delete');
+    Route::post('/paper/{paper}/print-ready-approval', [\App\Http\Controllers\PrintReadyPaperApprovalController::class, 'update'])->name('paper.approve_print_ready');
 
     Route::middleware('admin')->prefix('/admin')->group(function () {
         Route::post('/academicsession/{session}/set', [\App\Http\Controllers\Admin\AcademicSessionController::class, 'set'])->name('academicsession.set');

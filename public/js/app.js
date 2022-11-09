@@ -13249,6 +13249,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ["course", "papers", "subcategories", "user", "staff", "externals"],
   data: function data() {
@@ -13316,6 +13317,18 @@ __webpack_require__.r(__webpack_exports__);
         console.error(error);
       });
     },
+    approvePrintReady: function approvePrintReady(paper, choice, comment) {
+      var _this3 = this;
+
+      axios.post(route('paper.approve_print_ready', paper.id), {
+        'is_approved': choice,
+        'comment': comment
+      }).then(function (response) {
+        _this3.thePapers = response.data.papers;
+      })["catch"](function (error) {
+        console.error(error);
+      });
+    },
     getDownloadRoute: function getDownloadRoute(paper) {
       return route("paper.show", paper.id);
     },
@@ -13333,10 +13346,10 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     notifyExternals: function notifyExternals() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.post(route("admin.notify.externals_course", this.course.id)).then(function (res) {
-        _this3.externalsNotified = true;
+        _this4.externalsNotified = true;
       })["catch"](function (err) {
         console.error(err);
       });
@@ -14561,6 +14574,46 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -14570,8 +14623,24 @@ __webpack_require__.r(__webpack_exports__);
       showModal: false,
       paperToDelete: null,
       user_id: window.user_id,
-      user_admin: window.user_admin
+      user_admin: window.user_admin,
+      approvePaperChoice: false,
+      approvePaperComment: '',
+      firstPrintReadyId: this.papers.find(function (paper) {
+        return paper.subcategory.includes('Admin - print ready version');
+      }) ? this.papers.find(function (paper) {
+        return paper.subcategory.includes('Admin - print ready version');
+      }).id : null
     };
+  },
+  computed: {
+    isSetter: function isSetter() {
+      var _this = this;
+
+      return this.course.setters.find(function (setter) {
+        return setter.id == _this.user_id;
+      });
+    }
   },
   methods: {
     getUserName: function getUserName(paper) {
@@ -14584,6 +14653,14 @@ __webpack_require__.r(__webpack_exports__);
       this.$emit("paper-removed", this.paperToDelete);
       this.showModal = false;
       this.paperToDelete = null;
+    },
+    approvePrintReady: function approvePrintReady(paper) {
+      if (this.approvePaperChoice == false && !this.approvePaperComment) {
+        alert('Please provide a comment if you are not approving the print-ready paper.');
+        return;
+      }
+
+      this.$emit("approve-print-ready", paper, this.approvePaperChoice, this.approvePaperComment);
     },
     getDownloadRoute: function getDownloadRoute(paper) {
       if (paper.subcategory == 'comment' || paper.subcategory == 'Updated Checklist') {
@@ -42230,7 +42307,10 @@ var render = function () {
               papers: _vm.thePapers.main,
               category: "main",
             },
-            on: { "paper-removed": _vm.paperRemoved },
+            on: {
+              "paper-removed": _vm.paperRemoved,
+              "approve-print-ready": _vm.approvePrintReady,
+            },
           }),
         ],
         1
@@ -44019,6 +44099,179 @@ var render = function () {
                             _vm._s(paper.comments[0].comment) +
                             "\n            "
                         ),
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  paper.subcategory.includes("Admin - print ready version") &&
+                  paper.id == _vm.firstPrintReadyId
+                    ? _c("span", [
+                        paper.print_ready_approved
+                          ? _c("span", [
+                              _c("br"),
+                              _vm._v(" "),
+                              _c(
+                                "article",
+                                { staticClass: "message is-success" },
+                                [
+                                  _c("div", { staticClass: "message-body" }, [
+                                    _c(
+                                      "span",
+                                      { staticClass: "has-text-weight-bold" },
+                                      [_vm._v("Approved.")]
+                                    ),
+                                    _vm._v(
+                                      " " +
+                                        _vm._s(paper.print_ready_comment) +
+                                        "\n                          "
+                                    ),
+                                  ]),
+                                ]
+                              ),
+                            ])
+                          : !paper.print_ready_approved &&
+                            paper.print_ready_comment
+                          ? _c("span", [
+                              _c("br"),
+                              _vm._v(" "),
+                              _c(
+                                "article",
+                                { staticClass: "message is-danger" },
+                                [
+                                  _c("div", { staticClass: "message-body" }, [
+                                    _c(
+                                      "span",
+                                      { staticClass: "has-text-weight-bold" },
+                                      [_vm._v("Rejected :")]
+                                    ),
+                                    _vm._v(
+                                      " " +
+                                        _vm._s(paper.print_ready_comment) +
+                                        "\n                          "
+                                    ),
+                                  ]),
+                                ]
+                              ),
+                            ])
+                          : _vm.isSetter
+                          ? _c("span", [
+                              _c("hr"),
+                              _vm._v(" "),
+                              _c("label", { staticClass: "label" }, [
+                                _vm._v("Approve the print-ready paper?"),
+                              ]),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "field has-addons" }, [
+                                _c("p", { staticClass: "control" }, [
+                                  _c("span", { staticClass: "select" }, [
+                                    _c(
+                                      "select",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.approvePaperChoice,
+                                            expression: "approvePaperChoice",
+                                          },
+                                        ],
+                                        on: {
+                                          change: function ($event) {
+                                            var $$selectedVal =
+                                              Array.prototype.filter
+                                                .call(
+                                                  $event.target.options,
+                                                  function (o) {
+                                                    return o.selected
+                                                  }
+                                                )
+                                                .map(function (o) {
+                                                  var val =
+                                                    "_value" in o
+                                                      ? o._value
+                                                      : o.value
+                                                  return val
+                                                })
+                                            _vm.approvePaperChoice = $event
+                                              .target.multiple
+                                              ? $$selectedVal
+                                              : $$selectedVal[0]
+                                          },
+                                        },
+                                      },
+                                      [
+                                        _c(
+                                          "option",
+                                          { domProps: { value: true } },
+                                          [_vm._v("Yes")]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "option",
+                                          { domProps: { value: false } },
+                                          [_vm._v("No")]
+                                        ),
+                                      ]
+                                    ),
+                                  ]),
+                                ]),
+                                _vm._v(" "),
+                                _c(
+                                  "p",
+                                  { staticClass: "control is-expanded" },
+                                  [
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.approvePaperComment,
+                                          expression: "approvePaperComment",
+                                        },
+                                      ],
+                                      staticClass: "input",
+                                      attrs: {
+                                        type: "text",
+                                        placeholder: "Comments?",
+                                        maxlength: "200",
+                                      },
+                                      domProps: {
+                                        value: _vm.approvePaperComment,
+                                      },
+                                      on: {
+                                        input: function ($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.approvePaperComment =
+                                            $event.target.value
+                                        },
+                                      },
+                                    }),
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c("p", { staticClass: "control" }, [
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass: "button is-info",
+                                      on: {
+                                        click: function ($event) {
+                                          $event.preventDefault()
+                                          return _vm.approvePrintReady(paper)
+                                        },
+                                      },
+                                    },
+                                    [
+                                      _vm._v(
+                                        "\n                                  Submit\n                              "
+                                      ),
+                                    ]
+                                  ),
+                                ]),
+                              ]),
+                            ])
+                          : _vm._e(),
                       ])
                     : _vm._e(),
                 ]),

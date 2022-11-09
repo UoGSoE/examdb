@@ -312,7 +312,37 @@ class ChecklistFormTest extends TestCase
         $this->actingAs($setter);
         Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
             ->set('checklist.fields.passed_to_moderator', now()->format('d/m/Y'))
-            ->call('save');
+            ->call('save', 'A');
+
+        Mail::assertQueued(SetterHasUpdatedTheChecklist::class, 2);
+        Mail::assertQueued(SetterHasUpdatedTheChecklist::class, function ($mail) use ($moderator1) {
+            return $mail->hasTo($moderator1) && $mail->deadline == now()->format('d/m/Y');
+        });
+        Mail::assertQueued(SetterHasUpdatedTheChecklist::class, function ($mail) use ($moderator2) {
+            return $mail->hasTo($moderator2);
+        });
+    }
+
+    /** @test */
+    public function if_a_setter_who_is_also_a_moderator_updates_the_checklist_passed_to_moderator_an_email_is_sent_to_the_moderators_except_the_setter()
+    {
+        $this->withoutExceptionHandling();
+        Mail::fake();
+        $setter = create(User::class);
+        $moderator1 = create(User::class);
+        $moderator2 = create(User::class);
+        $moderator3 = create(User::class);
+        $course = create(Course::class);
+        $setter->markAsSetter($course);
+        $setter->markAsModerator($course);
+        $moderator1->markAsModerator($course);
+        $moderator2->markAsModerator($course);
+        option(['glasgow_internal_moderation_deadline' => now()->format('Y-m-d')]);
+
+        $this->actingAs($setter);
+        Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
+            ->set('checklist.fields.passed_to_moderator', now()->format('d/m/Y'))
+            ->call('save', 'A');
 
         Mail::assertQueued(SetterHasUpdatedTheChecklist::class, 2);
         Mail::assertQueued(SetterHasUpdatedTheChecklist::class, function ($mail) use ($moderator1) {
@@ -339,7 +369,73 @@ class ChecklistFormTest extends TestCase
 
         $this->actingAs($moderator);
         Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
-            ->call('save');
+            ->set('checklist.fields.overall_quality_appropriate', '1')
+            ->call('save', 'B');
+
+        Mail::assertQueued(ModeratorHasUpdatedTheChecklist::class, 2);
+        Mail::assertQueued(ModeratorHasUpdatedTheChecklist::class, function ($mail) use ($setter1) {
+            $mail->build();
+
+            return $mail->hasTo($setter1);
+        });
+        Mail::assertQueued(ModeratorHasUpdatedTheChecklist::class, function ($mail) use ($setter2) {
+            return $mail->hasTo($setter2);
+        });
+    }
+
+    /** @test */
+    public function when_a_moderator_updates_the_checklist_and_says_its_not_acceptable_they_must_provide_a_reason()
+    {
+        $this->withoutExceptionHandling();
+        Mail::fake();
+        $setter1 = create(User::class);
+        $setter2 = create(User::class);
+        $setter3 = create(User::class);
+        $moderator = create(User::class);
+        $course = create(Course::class);
+        $setter1->markAsSetter($course);
+        $setter2->markAsSetter($course);
+        $moderator->markAsModerator($course);
+
+        $this->actingAs($moderator);
+        Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
+            ->set('checklist.fields.overall_quality_appropriate', '0')
+            ->call('save', 'B')
+            ->assertHasErrors(['comments' => 'required'])
+            ->assertSee('The comments field is required.');
+
+
+        Mail::assertNothingQueued();
+
+        Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
+            ->set('checklist.fields.solution_marks_appropriate', '0')
+            ->call('save', 'C')
+            ->assertHasErrors(['solution_comments' => 'required'])
+            ->assertSee('The solution comments field is required.');
+
+
+        Mail::assertNothingQueued();
+    }
+
+    /** @test */
+    public function when_a_moderator_who_is_also_a_setter_updates_the_checklist_an_email_is_sent_to_the_setters_except_the_moderator()
+    {
+        $this->withoutExceptionHandling();
+        Mail::fake();
+        $setter1 = create(User::class);
+        $setter2 = create(User::class);
+        $setter3 = create(User::class);
+        $moderator = create(User::class);
+        $course = create(Course::class);
+        $setter1->markAsSetter($course);
+        $setter2->markAsSetter($course);
+        $moderator->markAsModerator($course);
+        $moderator->markAsSetter($course);
+
+        $this->actingAs($moderator);
+        Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
+            ->set('checklist.fields.overall_quality_appropriate', '1')
+            ->call('save', 'B');
 
         Mail::assertQueued(ModeratorHasUpdatedTheChecklist::class, 2);
         Mail::assertQueued(ModeratorHasUpdatedTheChecklist::class, function ($mail) use ($setter1) {
@@ -371,7 +467,7 @@ class ChecklistFormTest extends TestCase
         $this->actingAs($external);
 
         Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
-            ->call('save');
+            ->call('save', 'D');
 
         Mail::assertQueued(ExternalHasUpdatedTheChecklist::class, 2);
         Mail::assertQueued(ExternalHasUpdatedTheChecklist::class, function ($mail) use ($setter1) {
@@ -396,20 +492,22 @@ class ChecklistFormTest extends TestCase
         $moderator->markAsModerator($course);
         login($moderator);
         $checklist = make(PaperChecklist::class);
-        $course->addChecklist($checklist->fields, 'main');
+        $course->addChecklist($checklist->fields, 'main', 'B');
 
         $this->assertFalse($course->isApprovedByModerator('main'));
 
         $checklist->fields = array_merge(
             $checklist->fields,
             [
-                'overall_quality_appropriate' => true,
-                'should_revise_questions' => false,
-                'solution_marks_appropriate' => true,
-                'solutions_marks_adjusted' => false,
+                'overall_quality_appropriate' => "1",
+                'should_revise_questions' => "0",
+                'solution_marks_appropriate' => "1",
+                'solutions_marks_adjusted' => "0",
             ]
         );
-        $course->addChecklist($checklist->fields, 'main');
+
+        $course->addChecklist($checklist->fields, 'main', 'B');
+        $course->addChecklist($checklist->fields, 'main', 'C');
 
         $this->assertTrue($course->fresh()->isApprovedByModerator('main'));
     }
@@ -425,22 +523,26 @@ class ChecklistFormTest extends TestCase
         $setter->markAsSetter($course);
         $moderator->markAsModerator($course);
         login($moderator);
-        $checklist = make(PaperChecklist::class);
-        $course->addChecklist($checklist->fields, 'main');
-
+        $checklist = $course->getNewChecklist('main');
+        $course->addChecklist($checklist->fields, 'main', 'B');
         $this->assertFalse($course->isApprovedByModerator('main'));
 
+        $checklist = $course->getNewChecklist('main');
         $checklist->fields = array_merge(
             $checklist->fields,
             [
-                'overall_quality_appropriate' => false,
-                'should_revise_questions' => true,
-                'solution_marks_appropriate' => false,
-                'solutions_marks_adjusted' => true,
+                'overall_quality_appropriate' => "1",
+                'should_revise_questions' => "1",
             ]
         );
 
-        $course->addChecklist($checklist->fields, 'main');
+        $course->fresh()->addChecklist($checklist->fields, 'main', 'B');
+
+        $fields = $checklist->fields;
+        $fields['solution_marks_appropriate'] = "0";
+        $fields['solutions_marks_adjusted'] = "1";
+
+        $course->addChecklist($checklist->fields, 'main', 'B');
 
         $this->assertFalse($course->isApprovedByModerator('main'));
     }
@@ -459,7 +561,7 @@ class ChecklistFormTest extends TestCase
         $external->markAsExternal($course);
         login($external);
         $checklist = make(PaperChecklist::class);
-        $course->addChecklist($checklist->fields, 'main');
+        $course->addChecklist($checklist->fields, 'main', 'A');
 
         $this->assertFalse($course->isApprovedByExternal('main'));
 
@@ -470,7 +572,7 @@ class ChecklistFormTest extends TestCase
             ]
         );
 
-        $course->addChecklist($checklist->fields, 'main');
+        $course->addChecklist($checklist->fields, 'main', 'D');
 
         $this->assertTrue($course->isApprovedByExternal('main'));
     }
@@ -488,7 +590,7 @@ class ChecklistFormTest extends TestCase
         $moderator->markAsModerator($course);
         $external->markAsExternal($course);
         $checklist = make(PaperChecklist::class);
-        $course->addChecklist($checklist->fields, 'main');
+        $course->addChecklist($checklist->fields, 'main', 'A');
 
         $this->assertFalse($course->isApprovedByExternal('main'));
 
@@ -499,7 +601,7 @@ class ChecklistFormTest extends TestCase
             ]
         );
 
-        $course->addChecklist($checklist->fields, 'main');
+        $course->addChecklist($checklist->fields, 'main', 'D');
 
         $this->assertFalse($course->isApprovedByExternal('main'));
     }
@@ -514,7 +616,8 @@ class ChecklistFormTest extends TestCase
 
         $this->actingAs($user);
         Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'assessment'])
-            ->call('save')
+            ->set('checklist.fields.passed_to_moderator', now()->format('d/m/Y'))
+            ->call('save', 'A')
             ->assertHasNoErrors();
 
         tap(PaperChecklist::first(), function ($checklist) use ($course, $user) {
@@ -550,9 +653,10 @@ class ChecklistFormTest extends TestCase
         $this->actingAs($setter);
         Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
             ->set('checklist.fields.course_title', 'New course title')
+            ->set('checklist.fields.passed_to_moderator', now()->format('d/m/Y'))
             ->set('checklist.fields.moderator_comments', 'Mwah-ha-haaaa')
             ->set('checklist.fields.external_comments', 'The setter is pure amazing btw')
-            ->call('save')
+            ->call('save', 'A')
             ->assertHasNoErrors();
 
         tap(PaperChecklist::all()->last(), function ($checklist) {
@@ -560,6 +664,8 @@ class ChecklistFormTest extends TestCase
             $this->assertEquals('ENG2001', $checklist->fields['course_code']);
             // this should be changed as we did ->set it in livewire
             $this->assertEquals('New course title', $checklist->fields['course_title']);
+            // this should be changed as we did ->set it in livewire
+            $this->assertEquals(now()->format('d/m/Y'), $checklist->fields['passed_to_moderator']);
             // this should be unchanged as although we set it, we are not the moderator
             $this->assertEquals('Blah de blah', $checklist->fields['moderator_comments']);
             // this should be unchanged as although we set it, we are not the external
@@ -569,9 +675,10 @@ class ChecklistFormTest extends TestCase
         $this->actingAs($moderator);
         Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
             ->set('checklist.fields.course_title', 'Some other title')
+            ->set('checklist.fields.overall_quality_appropriate', "1")
             ->set('checklist.fields.moderator_comments', 'Cool story, bro')
             ->set('checklist.fields.external_comments', 'The external totes agrees with me')
-            ->call('save')
+            ->call('save', 'B')
             ->assertHasNoErrors();
 
         tap(PaperChecklist::all()->last(), function ($checklist) {
@@ -590,7 +697,7 @@ class ChecklistFormTest extends TestCase
             ->set('checklist.fields.course_title', 'Some other title')
             ->set('checklist.fields.moderator_comments', 'Cool story, bro')
             ->set('checklist.fields.external_comments', 'Dont like the font')
-            ->call('save')
+            ->call('save', 'D')
             ->assertHasNoErrors();
 
         tap(PaperChecklist::all()->last(), function ($checklist) {
@@ -613,16 +720,17 @@ class ChecklistFormTest extends TestCase
         $this->actingAs($moderator);
         Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
             ->set('checklist.fields.course_title', 'Whatevs')
+            ->set('checklist.fields.overall_quality_appropriate', '1')
             ->set('checklist.fields.moderator_comments', 'Spanners!')
             ->set('checklist.fields.external_comments', 'Brrr')
-            ->call('save')
+            ->call('save', 'B')
             ->assertHasNoErrors();
 
         tap(PaperChecklist::all()->last(), function ($checklist) {
             // this should be unchanged as we didn't ->set it in livewire
             $this->assertEquals('ENG2001', $checklist->fields['course_code']);
             // this should be changed as we set it in livewire and we are a setter
-            $this->assertEquals('Whatevs', $checklist->fields['course_title']);
+            $this->assertEquals('New course title', $checklist->fields['course_title']);
             // this should be changed as we set it in livewire and we are also a moderator
             $this->assertEquals('Spanners!', $checklist->fields['moderator_comments']);
             // this should be unchanged as although we set it, we are not the external

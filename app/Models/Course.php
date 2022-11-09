@@ -154,6 +154,11 @@ class Course extends Model
     {
         if ($sectionName == 'A') {
             $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::SECTION_A_FIELDS);
+            // foreach (PaperChecklist::SECTION__FIELDS as $field) {
+            //     if (!array_key_exists($field, $fieldsToUpdate)) {
+            //         $fieldsToUpdate[$field] = "";
+            //     }
+            // }
             $fields['number_questions'] = $fields['number_questions'] ?? 1;
             foreach (range(1, $fields['number_questions']) as $questionNumber) {
                 if (array_key_exists('question_setter_' . ($questionNumber - 1), $fields)) {
@@ -163,12 +168,27 @@ class Course extends Model
         }
         if ($sectionName == 'B') {
             $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::SECTION_B_FIELDS);
+            // foreach (PaperChecklist::SECTION_B_FIELDS as $field) {
+            //     if (!array_key_exists($field, $fieldsToUpdate)) {
+            //         $fieldsToUpdate[$field] = "";
+            //     }
+            // }
         }
         if ($sectionName == 'C') {
             $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::SECTION_C_FIELDS);
+            // foreach (PaperChecklist::SECTION_C_FIELDS as $field) {
+            //     if (!array_key_exists($field, $fieldsToUpdate)) {
+            //         $fieldsToUpdate[$field] = "";
+            //     }
+            // }
         }
         if ($sectionName == 'D') {
             $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::SECTION_D_FIELDS);
+            // foreach (PaperChecklist::SECTION_D_FIELDS as $field) {
+            //     if (!array_key_exists($field, $fieldsToUpdate)) {
+            //         $fieldsToUpdate[$field] = "";
+            //     }
+            // }
         }
 
         return $fieldsToUpdate;
@@ -178,10 +198,14 @@ class Course extends Model
      * This is horrific
      * TODO : make it not horrific.
      */
-    public function addChecklist(array $fields, string $category): PaperChecklist
+    public function addChecklist(array $fields, string $category, string $section): PaperChecklist
     {
         if (! in_array($category, ['main', 'resit', 'assessment'])) {
             abort(422, 'Invalid category '.$category);
+        }
+
+        if (! in_array($section, ['A', 'B', 'C', 'D'])) {
+            abort(422, 'Invalid section '.$section);
         }
 
         // if there was an existing checklist we get it's fields so we can merge them in with the new values
@@ -191,32 +215,26 @@ class Course extends Model
             $previousFields = $this->getDefaultChecklistFields();
         }
 
-        /**
-         * TODO
-         * Each section of the form is now a seperate 'save action' (save('B') etc) so the way we
-         * work out which fields is based on the section, not the type of person.
-         * *BUT* we need to check the moderator parts and figure out which are 'dirty' because the setter
-         * can fill out parts of those sections as thei response to the comments.
-         * That probably also affects the notifications which are sent out as a result of the save.
-         */
-        // figure out which fields on the form the user is allowed to update
-        $fieldsToUpdate = $this->getChecklistFieldsToUpdate('B', $fields, $previousFields);
-        $fieldsToUpdate = [];
-        if (auth()->check() && auth()->user()->isSetterFor($this)) {
-            $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::SETTER_FIELDS);
-            $fields['number_questions'] = $fields['number_questions'] ?? 1;
-            foreach (range(1, $fields['number_questions']) as $questionNumber) {
-                if (array_key_exists('question_setter_' . ($questionNumber - 1), $fields)) {
-                    $fieldsToUpdate[] = 'question_setter_' . ($questionNumber - 1);
-                }
-            }
-        }
-        if (auth()->check() && auth()->user()->isModeratorFor($this)) {
-            $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::MODERATOR_FIELDS);
-        }
-        if (auth()->check() && auth()->user()->isExternalFor($this)) {
-            $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::EXTERNAL_FIELDS);
-        }
+        $fieldsToUpdate = $this->getChecklistFieldsToUpdate($section, $fields, $previousFields);
+        // $fieldsToUpdate = [];
+        // if (auth()->check() && auth()->user()->isSetterFor($this)) {
+        //     $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::SETTER_FIELDS);
+        //     $fields['number_questions'] = $fields['number_questions'] ?? 1;
+        //     foreach (range(1, $fields['number_questions']) as $questionNumber) {
+        //         if (array_key_exists('question_setter_' . ($questionNumber - 1), $fields)) {
+        //             $fieldsToUpdate[] = 'question_setter_' . ($questionNumber - 1);
+        //         }
+        //     }
+        // }
+        // if (auth()->check() && auth()->user()->isModeratorFor($this)) {
+        //     $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::MODERATOR_FIELDS);
+        // }
+        // if (auth()->check() && auth()->user()->isExternalFor($this)) {
+        //     $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::EXTERNAL_FIELDS);
+        // }
+        // if ($section == 'C') {
+        //     dump($fieldsToUpdate);
+        // }
 
         $checklist = $this->checklists()->create([
             'category' => $category,
@@ -226,7 +244,7 @@ class Course extends Model
         ]);
 
         // figure out if the moderator has fully approved the paper
-        if (auth()->check() && auth()->user()->isModeratorFor($this)) {
+        if (auth()->check() && ($section === 'B' || $section === 'C') && auth()->user()->isModeratorFor($this)) {
             $fieldName = "moderator_approved_{$category}";
             $this->$fieldName = (bool) (
                 Arr::get($fields, 'overall_quality_appropriate', false)
@@ -238,8 +256,20 @@ class Course extends Model
                 ! Arr::get($fields, 'solutions_marks_adjusted', false)
             );
         }
+        // if (auth()->check() && auth()->user()->isModeratorFor($this)) {
+        //     $fieldName = "moderator_approved_{$category}";
+        //     $this->$fieldName = (bool) (
+        //         Arr::get($fields, 'overall_quality_appropriate', false)
+        //         &&
+        //         ! Arr::get($fields, 'should_revise_questions', false)
+        //         &&
+        //         Arr::get($fields, 'solution_marks_appropriate', false)
+        //         &&
+        //         ! Arr::get($fields, 'solutions_marks_adjusted', false)
+        //     );
+        // }
 
-        if (auth()->check() && auth()->user()->isExternalFor($this)) {
+        if (auth()->check() && $section === 'D' && auth()->user()->isExternalFor($this)) {
             // figure out if the external has approved the paper
             $fieldName = "external_approved_{$category}";
             $this->$fieldName = (bool) Arr::get($fields, 'external_agrees_with_moderator', false);
@@ -250,29 +280,41 @@ class Course extends Model
         activity()
             ->causedBy(request()->user())
             ->log(
-                "Added a {$category} checklist for {$this->code}"
+                "Added a {$category} checklist for {$this->code} section {$section}"
             );
 
         $flashMessage = 'Checklist Saved';
 
         if (auth()->check() && auth()->user()->isSetterFor($this) && $checklist->shouldNotifyModerator()) {
-            // TODO : should $this be $this->code ? o_O
-            $area = str_contains($this, 'ENG') ? 'glasgow' : 'uestc';
-            $optionName = "{$area}_internal_moderation_deadline";
-            $deadline = '';
-            if (option($optionName)) {
-                $deadline = Carbon::createFromFormat('Y-m-d', option($optionName))->format('d/m/Y');
+            // we should notify the moderator if the section is A _or_ if
+            // the section is B or C and the setter has changed the comments field
+            $shouldSentNotification = match ($section) {
+                'A' => true,
+                'B' => ($checklist->fields['setter_comments_to_moderator'] ?? '') != ($previousFields['setter_comments_to_moderator'] ?? ''),
+                'C' => ($checklist->fields['solution_setter_comments'] ?? '') != ($previousFields['solution_setter_comments'] ?? ''),
+                default => false,
+            };
+
+            $flashMessage = 'Checklist Saved';
+
+            if ($shouldSentNotification) {
+                $area = str_contains($this->code, 'ENG') ? 'glasgow' : 'uestc';
+                $optionName = "{$area}_internal_moderation_deadline";
+                $deadline = '';
+                if (option($optionName)) {
+                    $deadline = Carbon::createFromFormat('Y-m-d', option($optionName))->format('d/m/Y');
+                }
+
+                $this->moderators->pluck('email')->reject(fn ($email) => $email == auth()->user()->email)->each(function ($email) use ($deadline) {
+                    Mail::to($email)->queue(new SetterHasUpdatedTheChecklist($this, $deadline));
+                });
+
+                $flashMessage = $flashMessage . ' - moderators notified';
             }
-
-            $this->moderators->pluck('email')->each(function ($email) use ($deadline) {
-                Mail::to($email)->queue(new SetterHasUpdatedTheChecklist($this, $deadline));
-            });
-
-            $flashMessage = 'Checklist Saved - moderators notified';
         }
 
-        if (auth()->check() && auth()->user()->isModeratorFor($this)) {
-            $this->setters->pluck('email')->each(function ($email) {
+        if (auth()->check() && auth()->user()->isModeratorFor($this) && ($section === 'B' || $section === 'C')) {
+            $this->setters->pluck('email')->reject(fn ($email) => $email == auth()->user()->email)->each(function ($email) {
                 Mail::to($email)->queue(new ModeratorHasUpdatedTheChecklist($this));
             });
             $flashMessage = 'Checklist Saved - setters notified';
@@ -322,13 +364,13 @@ class Course extends Model
             'passed_to_moderator' => '',
             'setter_comments_to_moderator' => '',
             'solution_setter_comments' => '',
-            'overall_quality_appropriate' => '1',
+            'overall_quality_appropriate' => '0',
             'why_innapropriate' => '',
             'should_revise_questions' => '1',
             'recommended_revisions' => '',
             'moderator_comments' => '',
             'moderator_completed_at' => '',
-            'solution_marks_appropriate' => '1',
+            'solution_marks_appropriate' => '0',
             'moderator_solution_innapropriate_comments' => '',
             'solutions_marks_adjusted' => '1',
             'solution_adjustment_comments' => '',

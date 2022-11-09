@@ -189,22 +189,27 @@
     </legend>
 
     <div class="field">
-        <label for="" class="label">Is the overall quality of the assessment task appropriate?</label>
+        <label for="" class="label">I agree that this assessment task can now be sent to the External Examiner</label>
         <p class="control is-expanded">
             <div class="select is-fullwidth">
                 <select wire:model="checklist.fields.overall_quality_appropriate" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
-                    <option value="1">Yes</option>
                     <option value="0">No</option>
+                    <option value="1">Yes</option>
                 </select>
             </div>
         </p>
     </div>
 
     <div class="field">
-        <label class="label">If you have answered ‘No’, please indicate why. For example, if you disagreed with the setter’s judgement on any aspect of the assessment task. Please provide evidence and any other details:</label>
+        <label class="label">
+            If you have answered 'No', please indicate why. For example, if you disagreed with the
+            setter's judgement on any aspect of the assessment task or recommend any revisions to questions.
+            Please provide details: (MANDATORY)<br />
+        </label>
         <p class="control is-expanded">
             <textarea class="textarea"  @if (! auth()->user()->isModeratorFor($course)) disabled @endif wire:model="checklist.fields.why_innapropriate" id=""></textarea>
         </p>
+        @error('comments') <p class="help is-danger">{{ $message }}</p> @enderror
     </div>
 
     <div class="field">
@@ -215,8 +220,8 @@
         <p class="control is-expanded">
             <div class="select is-fullwidth">
                 <select wire:model="checklist.fields.should_revise_questions" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
-                    <option value="1">Yes</option>
                     <option value="0">No</option>
+                    <option value="1">Yes</option>
                 </select>
             </div>
         </p>
@@ -294,22 +299,27 @@
     </legend>
 
     <div class="field">
-        <label for="" class="label">Do you agree that the marks awarded are appropriate?</label>
+        <label for="" class="label">I agree that this assessment task can now be sent to the External Examiner</label>
         <p class="control is-expanded">
             <div class="select is-fullwidth">
                 <select wire:model="checklist.fields.solution_marks_appropriate" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
-                    <option value="1">Yes</option>
                     <option value="0">No</option>
+                    <option value="1">Yes</option>
                 </select>
             </div>
         </p>
     </div>
 
     <div class="field">
-        <label class="label">If you have answered ‘No’, please indicate why. For example, if you disagreed with the setter’s judgement on any aspect of the marks. Please provide evidence and any other details:</label>
+        <label class="label">
+            If you have answered 'No', please indicate why. For example, if you disagreed with the
+            setter's judgement on any aspect of the assessment task or recommend any revisions to questions.
+            Please provide details: (MANDATORY)
+        </label>
         <p class="control is-expanded">
             <textarea class="textarea" @if (! auth()->user()->isModeratorFor($course)) disabled @endif wire:model="checklist.fields.moderator_solution_innapropriate_comments" id=""></textarea>
         </p>
+        @error('solution_comments') <p class="help is-danger">{{ $message }}</p> @enderror
     </div>
 
     <div class="field">
