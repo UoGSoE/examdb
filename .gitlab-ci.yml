@@ -76,10 +76,10 @@ dotenv-check:
   script:
     - echo "Checking PROD_DOTENV for keys not in .env.example"
     - echo "$PROD_DOTENV" > .env
-    - diff --new-line-format='' --unchanged-line-format='' <(sort .env | egrep -v '^#' | sed -e 's/=.*//') <(sort .env.example | egrep -v '^#' | sed -e 's/=.*//')
+    - diff --new-line-format='' --unchanged-line-format='' <(sort .env | grep -vE '^\s*$' | egrep -v '^#' | sed -e 's/=.*//') <(sort .env.example | grep -vE '^\s*$' | egrep -v '^#' | sed -e 's/=.*//')
     - echo "Checking QA_DOTENV for keys not in .env.example"
     - echo "$QA_DOTENV" > .env
-    - diff --new-line-format='' --unchanged-line-format='' <(sort .env | egrep -v '^#' | sed -e 's/=.*//') <(sort .env.example | egrep -v '^#' | sed -e 's/=.*//')
+    - diff --new-line-format='' --unchanged-line-format='' <(sort .env | grep -vE '^\s*$' | egrep -v '^#' | sed -e 's/=.*//') <(sort .env.example | grep -vE '^\s*$' | egrep -v '^#' | sed -e 's/=.*//')
 
 build-qa-tagged:
   stage: build-qa
