@@ -86,7 +86,7 @@ build-qa-tagged:
   image: docker:stable
   script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-  - DOCKER_BUILDKIT=1 docker build --build-arg PHP_VERSION=${PHP_VERSION} --target=ci -t $QA_IMAGE_NAME .
+  - DOCKER_BUILDKIT=1 docker build --build-arg PHP_VERSION=8.1 --target=ci -t $QA_IMAGE_NAME .
   - docker push $QA_IMAGE_NAME
 
 build-prod-tagged:
