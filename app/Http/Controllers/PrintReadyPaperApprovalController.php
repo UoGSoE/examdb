@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Paper;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 
 class PrintReadyPaperApprovalController extends Controller
@@ -27,6 +28,12 @@ class PrintReadyPaperApprovalController extends Controller
             'print_ready_approved' => $request->is_approved,
             'print_ready_comment' => $request->comment,
         ]);
+
+        if ($request->is_approved) {
+            Mail::to($paper->getDisciplineContact())->queue(new \App\Mail\PrintReadyPaperApprovedMail($paper->course));
+        } else {
+            Mail::to($paper->getDisciplineContact())->queue(new \App\Mail\PrintReadyPaperRejectedMail($paper->course, $request->comment ?? ''));
+        }
 
         return response()->json([
             'papers' => collect([

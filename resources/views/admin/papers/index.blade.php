@@ -44,9 +44,7 @@
             <th>Discipline</th>
             <th>Check Lists</th>
             <th>Pre Internally moderated</th>
-            <th>Moderator Comments</th>
             <th>Post Internally moderated</th>
-            <th>External Examiner Comments</th>
             <th>Final Paper for Registry</th>
         </tr>
     </thead>
@@ -74,16 +72,23 @@
                 {{ $course->datePaperAdded($category, \App\Models\Paper::PRE_INTERNALLY_MODERATED) }}
             </td>
             <td>
-                {{ $course->datePaperAdded($category, \App\Models\Paper::MODERATOR_COMMENTS) }}
-            </td>
-            <td>
                 {{ $course->datePaperAdded($category, \App\Models\Paper::POST_INTERNALLY_MODERATED) }}
             </td>
             <td>
-                {{ $course->datePaperAdded($category, \App\Models\Paper::EXTERNAL_COMMENTS) }}
-            </td>
-            <td>
                 {{ $course->datePaperAdded($category, \App\Models\Paper::PAPER_FOR_REGISTRY) }}
+            </td>
+            <td id="print-ready-date">
+                {{ $course->datePaperAdded($category, \App\Models\Paper::ADMIN_PRINT_READY_VERSION) }}
+            </td>
+            <td id="print-ready-status">
+            @if ($course->printReadyPaperRejected($category))
+                <span class="has-text-danger" title="Rejected">
+                    Rejected:
+                </span>
+                {{ $course->printReadyPaperRejectedMessage($category) }}
+            @else
+                {{ $course->printReadyPaperApproved($category) ? 'Yes' : 'No' }}
+            @endif
             </td>
         </tr>
         @endforeach

@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('activitylog:clean')->daily();
         $schedule->command('examdb:timed-notifications')->dailyAt('03:00');
+        $schedule->command('examdb:send-print-ready-reminder-emails')->dailyAt('07:00');
     }
 
     /**

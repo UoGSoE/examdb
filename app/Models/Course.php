@@ -106,6 +106,13 @@ class Course extends Model
         return $this->papers()->main();
     }
 
+    public function latestPrintReadyPaper()
+    {
+        return $this->hasOne(Paper::class)->ofMany([
+            'created_at' => 'max'
+        ], fn ($query) => $query->where('subcategory', 'like', '%'. Paper::ADMIN_PRINT_READY_VERSION . '%'));
+    }
+
     public function resitPapers()
     {
         return $this->papers()->resit();
@@ -691,6 +698,54 @@ class Course extends Model
     public function getHasResitPaperForRegistryAttribute()
     {
         return $this->resitPapers->contains(fn ($paper) => Str::startsWith($paper->subcategory, Paper::PAPER_FOR_REGISTRY));
+    }
+
+    public function printReadyPaperApproved(string $category): bool|null
+    {
+        $paper = $this->papers
+            ->where('category', $category)
+            ->filter(fn ($paper) => Str::startsWith($paper->subcategory, Paper::ADMIN_PRINT_READY_VERSION))
+            ->sortBy('created_at')
+            ->last();
+
+        if (! $paper) {
+            return null;
+        }
+
+        return $paper->getRawOriginal('print_ready_approved');
+    }
+
+    public function printReadyPaperRejected(string $category): bool
+    {
+        // the print_ready_approved column is a nullable boolean
+        // if it's null, the academic hasn't approved or rejected the paper
+        // otherwise it's a 0/1 false/true value
+        $paper = $this->papers
+            ->where('category', $category)
+            ->filter(fn ($paper) => Str::startsWith($paper->subcategory, Paper::ADMIN_PRINT_READY_VERSION))
+            ->sortBy('created_at')
+            ->last();
+
+        if (! $paper) {
+            return false;
+        }
+
+        return $paper->getRawOriginal('print_ready_approved') === 0;
+    }
+
+    public function printReadyPaperRejectedMessage(string $category): string
+    {
+        $paper = $this->papers
+            ->where('category', $category)
+            ->filter(fn ($paper) => Str::startsWith($paper->subcategory, Paper::ADMIN_PRINT_READY_VERSION))
+            ->sortBy('created_at')
+            ->last();
+
+        if (! $paper) {
+            return '';
+        }
+
+        return (string) $paper->print_ready_comment;
     }
 
     public function approvePaperForRegistry(string $category = 'main')

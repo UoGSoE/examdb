@@ -29,6 +29,7 @@ class PaperFactory extends Factory
             'course_id' => function () {
                 return create(Course::class)->id;
             },
+            'print_ready_reminder_sent' => null,
         ];
     }
 

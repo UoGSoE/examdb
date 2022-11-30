@@ -70,4 +70,53 @@ class PaperTest extends TestCase
         $header = $response->headers->get('content-disposition');
         $this->assertEquals($header, 'attachment; filename=examdb_papers_'.now()->format('d_m_Y_H_i').'.xlsx');
     }
+
+    /** @test */
+    public function admins_can_see_all_the_correct_information_about_the_print_ready_paper_status()
+    {
+        $this->withoutExceptionHandling();
+        $admin = create(User::class, ['is_admin' => true]);
+        $course1 = create(Course::class);
+        $course2 = create(Course::class);
+        $printReadyPaper = create(
+            \App\Models\Paper::class,
+            [
+            'course_id' => $course1->id,
+            'subcategory' => \App\Models\Paper::ADMIN_PRINT_READY_VERSION,
+            'category' => 'main']
+        );
+
+        $response = $this->actingAs($admin)->get(route('paper.index'));
+
+        $response->assertOk();
+        $response->assertSee('Exam Paper List');
+        $response->assertSee($course1->code);
+        $response->assertSee($course2->code);
+        $response->assertSee($printReadyPaper->created_at->format('d/m/Y'));
+        $response->assertSee('No');
+
+        $printReadyPaper->update(['print_ready_approved' => true]);
+
+        $response = $this->actingAs($admin)->get(route('paper.index'));
+
+        $response->assertOk();
+        $response->assertSee('Exam Paper List');
+        $response->assertSee($course1->code);
+        $response->assertSee($course2->code);
+        $response->assertSee($printReadyPaper->created_at->format('d/m/Y'));
+        $response->assertSee('Yes');
+
+        $printReadyPaper->update(['print_ready_approved' => false]);
+        $printReadyPaper->update(['print_ready_comment' => 'Big typo on page 3']);
+
+        $response = $this->actingAs($admin)->get(route('paper.index'));
+
+        $response->assertOk();
+        $response->assertSee('Exam Paper List');
+        $response->assertSee($course1->code);
+        $response->assertSee($course2->code);
+        $response->assertSee($printReadyPaper->created_at->format('d/m/Y'));
+        $response->assertSee('Rejected');
+        $response->assertSee('Big typo on page 3');
+    }
 }

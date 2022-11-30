@@ -13,8 +13,9 @@ return new class () extends Migration {
     public function up()
     {
         Schema::table('papers', function (Blueprint $table) {
-            $table->boolean('print_ready_approved')->default(false);
+            $table->boolean('print_ready_approved')->nullable();
             $table->string('print_ready_comment')->nullable();
+            $table->dateTime('print_ready_reminder_sent')->nullable();
         });
     }
 
@@ -26,7 +27,9 @@ return new class () extends Migration {
     public function down()
     {
         Schema::table('papers', function (Blueprint $table) {
-            //
+            $table->dropColumn('print_ready_approved');
+            $table->dropColumn('print_ready_comment');
+            $table->dropColumn('print_ready_reminder_sent');
         });
     }
 };
