@@ -11,6 +11,7 @@ use App\Mail\ModeratorHasUpdatedTheChecklist;
 use App\Mail\SetterHasUpdatedTheChecklist;
 use App\Models\PaperChecklist;
 use App\Models\User;
+use Database\Factories\PaperChecklistFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Cache;
@@ -736,5 +737,33 @@ class ChecklistFormTest extends TestCase
             // this should be unchanged as although we set it, we are not the external
             $this->assertEquals('Dont like the font', $checklist->fields['external_comments']);
         });
+    }
+
+    /** @test */
+    public function a_paper_is_approved_by_the_moderator_by_just_setting_one_field_for_the_paper_and_solutions()
+    {
+        // this is just to test that post Nov 2022, we can approve a paper by just setting one checklist field
+        // for the paper and one field for the solutions.  before then we needed to set two fields to
+        // say the paper was ok *and* that it didn't need any questions revised.
+        // so the 'should_revise_questions' and 'solution_marks_appropriate' fields now default to the 'approved' state
+        // and they are hidden on the checklist template and the logic all still works.
+
+        $checklist = PaperChecklist::factory()->create();
+        $checklist->user->markAsModerator($checklist->course);
+        login($checklist->user);
+
+        $this->assertFalse($checklist->course->fresh()->isApprovedByModerator('main'));
+
+        $fields = $checklist->fields;
+
+        $fields['overall_quality_appropriate'] = '1';
+        $checklist->course->addChecklist($fields, 'main', 'B');
+
+        $this->assertFalse($checklist->course->fresh()->isApprovedByModerator('main'));
+
+        $fields['solution_marks_appropriate'] = '1';
+        $checklist->course->addChecklist($fields, 'main', 'C');
+
+        $this->assertTrue($checklist->course->fresh()->isApprovedByModerator('main'));
     }
 }

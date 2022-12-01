@@ -14655,7 +14655,7 @@ __webpack_require__.r(__webpack_exports__);
       this.paperToDelete = null;
     },
     approvePrintReady: function approvePrintReady(paper) {
-      if (this.approvePaperChoice == false && !this.approvePaperComment) {
+      if (this.approvePaperChoice == 'N' && !this.approvePaperComment) {
         alert('Please provide a comment if you are not approving the print-ready paper.');
         return;
       }
@@ -44105,7 +44105,7 @@ var render = function () {
                   paper.subcategory.includes("Admin - print ready version") &&
                   paper.id == _vm.firstPrintReadyId
                     ? _c("span", [
-                        paper.print_ready_approved
+                        paper.print_ready_approved == "Y"
                           ? _c("span", [
                               _c("br"),
                               _vm._v(" "),
@@ -44128,7 +44128,7 @@ var render = function () {
                                 ]
                               ),
                             ])
-                          : !paper.print_ready_approved &&
+                          : paper.print_ready_approved == "N" &&
                             paper.print_ready_comment
                           ? _c("span", [
                               _c("br"),
@@ -44201,13 +44201,13 @@ var render = function () {
                                       [
                                         _c(
                                           "option",
-                                          { domProps: { value: true } },
+                                          { attrs: { value: "Y" } },
                                           [_vm._v("Yes")]
                                         ),
                                         _vm._v(" "),
                                         _c(
                                           "option",
-                                          { domProps: { value: false } },
+                                          { attrs: { value: "N" } },
                                           [_vm._v("No")]
                                         ),
                                       ]

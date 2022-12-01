@@ -212,27 +212,29 @@
         @error('comments') <p class="help is-danger">{{ $message }}</p> @enderror
     </div>
 
-    <div class="field">
-        <label for="" class="label">
-            Do you recommend that any of the questions should be revised?  By ANSWERING YES the paper will
-            be returned to the setter to make adjustments.  By ANSWERING NO you are happy with the paper to move to the next stage.
-        </label>
-        <p class="control is-expanded">
-            <div class="select is-fullwidth">
-                <select wire:model="checklist.fields.should_revise_questions" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
-                    <option value="0">No</option>
-                    <option value="1">Yes</option>
-                </select>
-            </div>
-        </p>
-    </div>
+    @if ($shouldShowOldModeratorQuestion)
+        <div class="field">
+            <label for="" class="label">
+                Do you recommend that any of the questions should be revised?  By ANSWERING YES the paper will
+                be returned to the setter to make adjustments.  By ANSWERING NO you are happy with the paper to move to the next stage.
+            </label>
+            <p class="control is-expanded">
+                <div class="select is-fullwidth">
+                    <select wire:model="checklist.fields.should_revise_questions" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+            </p>
+        </div>
 
-    <div class="field">
-        <label class="label">Please indicate the recommended revisions:</label>
-        <p class="control is-expanded">
-            <textarea class="textarea" @if (! auth()->user()->isModeratorFor($course)) disabled @endif wire:model="checklist.fields.recommended_revisions" id=""></textarea>
-        </p>
-    </div>
+        <div class="field">
+            <label class="label">Please indicate the recommended revisions:</label>
+            <p class="control is-expanded">
+                <textarea class="textarea" @if (! auth()->user()->isModeratorFor($course)) disabled @endif wire:model="checklist.fields.recommended_revisions" id=""></textarea>
+            </p>
+        </div>
+    @endif
 
     <div class="field">
         <label class="label">Any other comments:</label>
@@ -322,24 +324,26 @@
         @error('solution_comments') <p class="help is-danger">{{ $message }}</p> @enderror
     </div>
 
-    <div class="field">
-        <label for="" class="label">Do you recommend that marks should be adjusted?</label>
-        <p class="control is-expanded">
-            <div class="select is-fullwidth">
-                <select @if (! auth()->user()->isModeratorFor($course)) disabled @endif wire:model="checklist.fields.solutions_marks_adjusted">
-                    <option value="1">Yes</option>
-                    <option value="0">No</option>
-                </select>
-            </div>
-        </p>
-    </div>
+    @if ($shouldShowOldModeratorQuestion)
+        <div class="field">
+            <label for="" class="label">Do you recommend that marks should be adjusted?</label>
+            <p class="control is-expanded">
+                <div class="select is-fullwidth">
+                    <select @if (! auth()->user()->isModeratorFor($course)) disabled @endif wire:model="checklist.fields.solutions_marks_adjusted">
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+            </p>
+        </div>
 
-    <div class="field">
-        <label class="label">Please indicate the recommended adjustment:</label>
-        <p class="control is-expanded">
-            <textarea @if (! auth()->user()->isModeratorFor($course)) disabled @endif class="textarea" wire:model="checklist.fields.solution_adjustment_comments" id=""></textarea>
-        </p>
-    </div>
+        <div class="field">
+            <label class="label">Please indicate the recommended adjustment:</label>
+            <p class="control is-expanded">
+                <textarea @if (! auth()->user()->isModeratorFor($course)) disabled @endif class="textarea" wire:model="checklist.fields.solution_adjustment_comments" id=""></textarea>
+            </p>
+        </div>
+    @endif
 
     <div class="field">
         <label class="label">Any further comments</label>

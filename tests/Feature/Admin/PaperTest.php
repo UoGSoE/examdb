@@ -95,7 +95,7 @@ class PaperTest extends TestCase
         $response->assertSee($printReadyPaper->created_at->format('d/m/Y'));
         $response->assertSee('No');
 
-        $printReadyPaper->update(['print_ready_approved' => true]);
+        $printReadyPaper->update(['print_ready_approved' => 'Y']);
 
         $response = $this->actingAs($admin)->get(route('paper.index'));
 
@@ -106,7 +106,7 @@ class PaperTest extends TestCase
         $response->assertSee($printReadyPaper->created_at->format('d/m/Y'));
         $response->assertSee('Yes');
 
-        $printReadyPaper->update(['print_ready_approved' => false]);
+        $printReadyPaper->update(['print_ready_approved' => 'N']);
         $printReadyPaper->update(['print_ready_comment' => 'Big typo on page 3']);
 
         $response = $this->actingAs($admin)->get(route('paper.index'));

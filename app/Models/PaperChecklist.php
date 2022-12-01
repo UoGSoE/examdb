@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use App\Scopes\CurrentScope;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /*
  <select name="previous_id" id="previous_id" wire:model="previousId">
@@ -224,5 +225,10 @@ class PaperChecklist extends Model
         }
 
         return (bool) $this->fields['passed_to_moderator'];
+    }
+
+    public function shouldShowOldModeratorQuestion(): bool
+    {
+        return (bool) $this->created_at?->isBefore(Carbon::createFromFormat('Y-m-d', '2022-08-01'));
     }
 }

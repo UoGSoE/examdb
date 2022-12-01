@@ -39,7 +39,7 @@
                 {{ paper.comments[0].comment }}
               </span>
               <span v-if="paper.subcategory.includes('Admin - print ready version') && paper.id == firstPrintReadyId">
-                    <span v-if="paper.print_ready_approved">
+                    <span v-if="paper.print_ready_approved == 'Y'">
                         <br />
                         <article class="message is-success">
                             <div class="message-body">
@@ -47,7 +47,7 @@
                             </div>
                         </article>
                     </span>
-                    <span v-else-if="(!paper.print_ready_approved) && paper.print_ready_comment">
+                    <span v-else-if="(paper.print_ready_approved == 'N') && paper.print_ready_comment">
                         <br />
                         <article class="message is-danger">
                             <div class="message-body">
@@ -62,8 +62,8 @@
                             <p class="control">
                                 <span class="select">
                                     <select v-model="approvePaperChoice">
-                                        <option :value="true">Yes</option>
-                                        <option :value="false">No</option>
+                                        <option value="Y">Yes</option>
+                                        <option value="N">No</option>
                                     </select>
                                 </span>
                             </p>
@@ -152,7 +152,7 @@ export default {
       this.paperToDelete = null;
     },
     approvePrintReady(paper) {
-        if (this.approvePaperChoice == false && !this.approvePaperComment) {
+        if (this.approvePaperChoice == 'N' && !this.approvePaperComment) {
             alert('Please provide a comment if you are not approving the print-ready paper.');
             return;
         }

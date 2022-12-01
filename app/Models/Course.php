@@ -370,13 +370,13 @@ class Course extends Model
             'solution_setter_comments' => '',
             'overall_quality_appropriate' => '0',
             'why_innapropriate' => '',
-            'should_revise_questions' => '1',
+            'should_revise_questions' => '0',
             'recommended_revisions' => '',
             'moderator_comments' => '',
             'moderator_completed_at' => '',
             'solution_marks_appropriate' => '0',
             'moderator_solution_innapropriate_comments' => '',
-            'solutions_marks_adjusted' => '1',
+            'solutions_marks_adjusted' => '0',
             'solution_adjustment_comments' => '',
             'solution_moderator_comments' => '',
             'moderator_solutions_at' => '',
@@ -700,26 +700,8 @@ class Course extends Model
         return $this->resitPapers->contains(fn ($paper) => Str::startsWith($paper->subcategory, Paper::PAPER_FOR_REGISTRY));
     }
 
-    public function printReadyPaperApproved(string $category): bool|null
+    public function printReadyPaperApproved(string $category): bool
     {
-        $paper = $this->papers
-            ->where('category', $category)
-            ->filter(fn ($paper) => Str::startsWith($paper->subcategory, Paper::ADMIN_PRINT_READY_VERSION))
-            ->sortBy('created_at')
-            ->last();
-
-        if (! $paper) {
-            return null;
-        }
-
-        return $paper->getRawOriginal('print_ready_approved');
-    }
-
-    public function printReadyPaperRejected(string $category): bool
-    {
-        // the print_ready_approved column is a nullable boolean
-        // if it's null, the academic hasn't approved or rejected the paper
-        // otherwise it's a 0/1 false/true value
         $paper = $this->papers
             ->where('category', $category)
             ->filter(fn ($paper) => Str::startsWith($paper->subcategory, Paper::ADMIN_PRINT_READY_VERSION))
@@ -730,7 +712,25 @@ class Course extends Model
             return false;
         }
 
-        return $paper->getRawOriginal('print_ready_approved') === 0;
+        return $paper->print_ready_approved === 'Y';
+    }
+
+    public function printReadyPaperRejected(string $category): bool
+    {
+        // the print_ready_approved column is a nullable boolean
+        // if it's null, the academic hasn't approved or rejected the paper
+        // otherwise it's a Y/N value
+        $paper = $this->papers
+            ->where('category', $category)
+            ->filter(fn ($paper) => Str::startsWith($paper->subcategory, Paper::ADMIN_PRINT_READY_VERSION))
+            ->sortBy('id')
+            ->last();
+
+        if (! $paper) {
+            return false;
+        }
+
+        return $paper->print_ready_approved === 'N';
     }
 
     public function printReadyPaperRejectedMessage(string $category): string

@@ -13,10 +13,10 @@ class PrintReadyPaperApprovalController extends Controller
     public function update(Paper $paper, Request $request)
     {
         $request->validate([
-            'is_approved' => 'required|boolean',
+            'is_approved' => 'required|in:Y,N',
             'comment' => [
                 'max:200',
-                Rule::requiredIf($request->is_approved === false),
+                Rule::requiredIf($request->is_approved === 'N'),
             ],
         ]);
 
@@ -29,17 +29,19 @@ class PrintReadyPaperApprovalController extends Controller
             'print_ready_comment' => $request->comment,
         ]);
 
-        if ($request->is_approved) {
+        if ($request->is_approved === 'Y') {
             Mail::to($paper->getDisciplineContact())->queue(new \App\Mail\PrintReadyPaperApprovedMail($paper->course));
+            activity()->causedBy($request->user())->performedOn($paper->course)->log('Approved print ready paper');
         } else {
             Mail::to($paper->getDisciplineContact())->queue(new \App\Mail\PrintReadyPaperRejectedMail($paper->course, $request->comment ?? ''));
+            activity()->causedBy($request->user())->performedOn($paper->course)->log('Rejected print ready paper saying : ' . $request->comment);
         }
 
         return response()->json([
             'papers' => collect([
-                'main' => $paper->course->mainPapers()->with(['user', 'comments'])->latest()->get(),
-                'resit' => $paper->course->resitPapers()->with(['user', 'comments'])->latest()->get(),
-                'resit2' => $paper->course->resit2Papers()->with(['user', 'comments'])->latest()->get(),
+                'main' => $paper->course->getMainPapers(),
+                'resit' => $paper->course->getResitPapers(),
+                'resit2' => $paper->course->getResit2Papers(),
             ]),
         ]);
     }

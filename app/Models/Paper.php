@@ -39,7 +39,6 @@ class Paper extends Model
         'approved_setter' => 'boolean',
         'archived_at' => 'datetime',
         'is_hidden' => 'boolean',
-        'print_ready_approved' => 'boolean',
     ];
 
     protected $appends = ['icon', 'formatted_date', 'diff_for_humans', 'formatted_size'];

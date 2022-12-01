@@ -7,7 +7,7 @@ You have Print Ready Papers to review for the following courses :
 * {{ $code }}
 @endforeach
 
-<x-mail::button url="/">
+<x-mail::button url="{{ route('home') }}">
 Visit the ExamDB
 </x-mail::button>
 

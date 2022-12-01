@@ -20,6 +20,8 @@ class PaperChecklist extends Component
 
     public $setters = [];
 
+    public $shouldShowOldModeratorQuestion = false;
+
     public function mount(Course $course, string $category = 'main', $checklist = null)
     {
         $this->course = $course;
@@ -30,6 +32,7 @@ class PaperChecklist extends Component
         $checklist->load('course');
         $checklist->course->append('year');
         $this->checklist = $checklist->toArray();
+        $this->shouldShowOldModeratorQuestion = $checklist->shouldShowOldModeratorQuestion();
         $this->previousId = $checklist->id ?? 'new';
         // get the list of setters - if the current user is a setter, they should be popped at the top of the list
         // so that they are the first/default setter name in the drop-downs for who sets which question

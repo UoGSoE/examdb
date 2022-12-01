@@ -60,7 +60,7 @@ class PrintReadyApprovalTest extends TestCase
         $coursePaper = $course->addPaper('main', Paper::ADMIN_PRINT_READY_VERSION, $paper);
 
         $response = $this->actingAs($setter)->post(route('paper.approve_print_ready', $coursePaper->id), [
-            'is_approved' => true,
+            'is_approved' => 'Y',
             'comment' => 'This is a comment',
         ]);
 
@@ -69,7 +69,7 @@ class PrintReadyApprovalTest extends TestCase
             'papers' => [
                 'main' => [
                     [
-                        'print_ready_approved' => true,
+                        'print_ready_approved' => 'Y',
                         'print_ready_comment' => 'This is a comment',
                     ],
                 ],
@@ -96,7 +96,7 @@ class PrintReadyApprovalTest extends TestCase
         $coursePaper = $course->addPaper('main', Paper::ADMIN_PRINT_READY_VERSION, $paper);
 
         $response = $this->actingAs($setter)->post(route('paper.approve_print_ready', $coursePaper->id), [
-            'is_approved' => false,
+            'is_approved' => 'N',
             'comment' => 'This is another comment',
         ]);
 
@@ -105,7 +105,7 @@ class PrintReadyApprovalTest extends TestCase
             'papers' => [
                 'main' => [
                     [
-                        'print_ready_approved' => false,
+                        'print_ready_approved' => 'N',
                         'print_ready_comment' => 'This is another comment',
                     ],
                 ],
@@ -133,7 +133,7 @@ class PrintReadyApprovalTest extends TestCase
         $coursePaper = $course->addPaper('main', Paper::ADMIN_PRINT_READY_VERSION, $paper);
 
         $response = $this->actingAs($setter)->postJson(route('paper.approve_print_ready', $coursePaper->id), [
-            'is_approved' => false,
+            'is_approved' => 'N',
             'comment' => '',
         ]);
 
@@ -155,7 +155,7 @@ class PrintReadyApprovalTest extends TestCase
         $coursePaper = $course->addPaper('main', Paper::ADMIN_PRINT_READY_VERSION, $paper);
 
         $response = $this->actingAs($setter)->postJson(route('paper.approve_print_ready', $coursePaper->id), [
-            'is_approved' => true,
+            'is_approved' => 'Y',
             'comment' => '',
         ]);
 
@@ -164,7 +164,7 @@ class PrintReadyApprovalTest extends TestCase
             'papers' => [
                 'main' => [
                     [
-                        'print_ready_approved' => true,
+                        'print_ready_approved' => 'Y',
                         'print_ready_comment' => '',
                     ],
                 ],
@@ -190,7 +190,7 @@ class PrintReadyApprovalTest extends TestCase
         $coursePaper = $course->addPaper('main', Paper::ADMIN_PRINT_READY_VERSION, $paper);
 
         $response = $this->actingAs($moderator)->post(route('paper.approve_print_ready', $coursePaper->id), [
-            'is_approved' => true,
+            'is_approved' => 'Y',
             'comment' => 'This is a comment',
         ]);
 
@@ -198,7 +198,7 @@ class PrintReadyApprovalTest extends TestCase
         $this->assertNull($coursePaper->fresh()->print_ready_approved);
 
         $response = $this->actingAs($external)->post(route('paper.approve_print_ready', $coursePaper->id), [
-            'is_approved' => true,
+            'is_approved' => 'N',
             'comment' => 'This is a comment',
         ]);
 
@@ -237,6 +237,12 @@ class PrintReadyApprovalTest extends TestCase
             'created_at' => now()->subHours(49),
             'print_ready_reminder_sent' => now()->subHours(1)->format('Y-m-d H:i:s'),
         ]);
+        $paperAlreadyMarked = Paper::factory()->create([
+            'subcategory' => Paper::ADMIN_PRINT_READY_VERSION,
+            'course_id' => $course3->id,
+            'created_at' => now()->subHours(49),
+            'print_ready_approved' => 'Y',
+        ]);
 
         $this->artisan('examdb:send-print-ready-reminder-emails');
 
@@ -249,6 +255,7 @@ class PrintReadyApprovalTest extends TestCase
         $this->assertNull($newPaper->fresh()->print_ready_reminder_sent);
         $this->assertNotNull($oldPaper->fresh()->print_ready_reminder_sent);
         $this->assertNotNull($oldPaperAlreadyRemindedAbout->fresh()->print_ready_reminder_sent);
+        $this->assertNull($paperAlreadyMarked->fresh()->print_ready_reminder_sent);
     }
 
     /** @test */

@@ -46,6 +46,8 @@
             <th>Pre Internally moderated</th>
             <th>Post Internally moderated</th>
             <th>Final Paper for Registry</th>
+            <th>Print Ready Paper</th>
+            <th>Print Ready Approved</th>
         </tr>
     </thead>
     <tbody>
@@ -81,14 +83,14 @@
                 {{ $course->datePaperAdded($category, \App\Models\Paper::ADMIN_PRINT_READY_VERSION) }}
             </td>
             <td id="print-ready-status">
-            @if ($course->printReadyPaperRejected($category))
-                <span class="has-text-danger" title="Rejected">
-                    Rejected:
-                </span>
-                {{ $course->printReadyPaperRejectedMessage($category) }}
-            @else
-                {{ $course->printReadyPaperApproved($category) ? 'Yes' : 'No' }}
-            @endif
+                @if ($course->printReadyPaperRejected($category))
+                    <span class="tag is-danger" title="Rejected">
+                        Rejected
+                    </span>
+                    {{ $course->printReadyPaperRejectedMessage($category) }}
+                @else
+                    {{ $course->printReadyPaperApproved($category) ? 'Yes' : 'No' }}
+                @endif
             </td>
         </tr>
         @endforeach

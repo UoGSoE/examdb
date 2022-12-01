@@ -13,7 +13,7 @@ return new class () extends Migration {
     public function up()
     {
         Schema::table('papers', function (Blueprint $table) {
-            $table->boolean('print_ready_approved')->nullable();
+            $table->char('print_ready_approved')->nullable()->default(null);
             $table->string('print_ready_comment')->nullable();
             $table->dateTime('print_ready_reminder_sent')->nullable();
         });
