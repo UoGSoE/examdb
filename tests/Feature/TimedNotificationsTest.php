@@ -279,7 +279,7 @@ class TimedNotificationsTest extends TestCase
         Mail::fake();
         $course1 = create(Course::class, ['code' => 'ENG1234']);
         $course2 = create(Course::class, ['code' => 'ENG4567']);
-        $course3 = create(Course::class, ['code' => 'UESTC1234']);
+        $course3 = create(Course::class, ['code' => 'UESTC1234/UESTCHN1234']);
         $setter1 = create(User::class);
         $setter1->markAsSetter($course1);
         $setter1->markAsSetter($course2);
