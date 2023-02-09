@@ -171,6 +171,9 @@ class Course extends Model
                 if (array_key_exists('question_setter_' . ($questionNumber - 1), $fields)) {
                     $fieldsToUpdate[] = 'question_setter_' . ($questionNumber - 1);
                 }
+                if (array_key_exists('question_datasheet_' . ($questionNumber - 1), $fields)) {
+                    $fieldsToUpdate[] = 'question_datasheet_' . ($questionNumber - 1);
+                }
             }
         }
         if ($sectionName == 'B') {
@@ -365,6 +368,7 @@ class Course extends Model
             'number_markers' => '',
             'number_questions' => '1',
             'question_setter_0' => auth()->check() ? auth()->user()->full_name : '',
+            'question_datasheet_0' => '',
             'passed_to_moderator' => '',
             'setter_comments_to_moderator' => '',
             'solution_setter_comments' => '',
@@ -641,12 +645,30 @@ class Course extends Model
             ->where('category', $category)
             ->filter(fn ($paper) => Str::startsWith($paper->subcategory, $subcategory))
             ->sortBy('created_at')
-            ->last();
+            ->first();
         if (! $paper) {
             return '';
         }
 
         return $paper->created_at->format('d/m/Y');
+    }
+
+    public function dateModeratorFilledChecklist(string $category): string
+    {
+        $firstFilledChecklist = $this->checklists->where('category', '=', $category)->first(
+            fn ($checklist) => $checklist->fields['moderator_completed_at']
+        );
+
+        return $firstFilledChecklist?->fields['moderator_completed_at'] ?? '';
+    }
+
+    public function dateExternalFilledChecklist(string $category): string
+    {
+        $firstFilledChecklist = $this->checklists->where('category', '=', $category)->first(
+            fn ($checklist) => $checklist->fields['external_signed_at']
+        );
+
+        return $firstFilledChecklist?->fields['external_signed_at'] ?? '';
     }
 
     public static function findByCode($code)

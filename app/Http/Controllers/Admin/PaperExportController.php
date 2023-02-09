@@ -22,6 +22,7 @@ class PaperExportController extends Controller
         $rows[] = [
             'Code',
             'Semester',
+            'Category',
             'Title',
             'Discipline',
             'Setter Checklist',
@@ -31,22 +32,34 @@ class PaperExportController extends Controller
             'Post-internally Moderated',
             'External Comments',
             'Paper for Registry',
+            'Print Ready Paper',
+            'Print Ready Approved?',
         ];
 
         foreach ($courses as $course) {
             foreach (['main', 'resit'] as $category) {
+                $printReadyColumnText = '';
+                if ($course->printReadyPaperRejected($category)) {
+                    $printReadyColumnText = 'Rejected : '.$course->printReadyPaperRejectedMessage($category);
+                } else {
+                    $printReadyColumnText = $course->printReadyPaperApproved($category) ? 'Yes' : 'No';
+                }
+
                 $rows[] = [
                     $course->code,
                     $course->semester,
+                    $category,
                     $course->title,
                     $course->discipline?->title,
                     $course->hasSetterChecklist($category) ? 'Y' : 'N',
                     $course->hasModeratorChecklist($category) ? 'Y' : 'N',
                     $course->datePaperAdded($category, \App\Models\Paper::PRE_INTERNALLY_MODERATED),
-                    $course->datePaperAdded($category, \App\Models\Paper::MODERATOR_COMMENTS),
+                    $course->dateModeratorFilledChecklist($category),
                     $course->datePaperAdded($category, \App\Models\Paper::POST_INTERNALLY_MODERATED),
-                    $course->datePaperAdded($category, \App\Models\Paper::EXTERNAL_COMMENTS),
+                    $course->dateExternalFilledChecklist($category),
                     $course->datePaperAdded($category, \App\Models\Paper::PAPER_FOR_REGISTRY),
+                    $course->datePaperAdded($category, \App\Models\Paper::ADMIN_PRINT_READY_VERSION),
+                    $printReadyColumnText,
                 ];
             }
         }

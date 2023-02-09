@@ -8,6 +8,7 @@ use App\Models\Discipline;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class PaperTest extends TestCase
@@ -49,12 +50,20 @@ class PaperTest extends TestCase
         $course1 = create(Course::class, ['discipline_id' => $discipline1->id]);
         $course2 = create(Course::class, ['discipline_id' => $discipline2->id]);
 
-        $response = $this->actingAs($admin)->get(route('paper.index', ['discipline' => $discipline2->id]));
+        $response = $this->actingAs($admin)->get(route('paper.index'));
 
         $response->assertOk();
-        $response->assertSee('Exam Paper List');
-        $response->assertDontSee($course1->code);
-        $response->assertSee($course2->code);
+        $response->assertSeeLivewire('paper-report');
+
+        Livewire::actingAs($admin)->test('paper-report')
+            ->assertSee($course1->code)
+            ->assertSee($course2->code)
+            ->set('disciplineFilter', $discipline1->id)
+            ->assertSee($course1->code)
+            ->assertDontSee($course2->code)
+            ->set('disciplineFilter', $discipline2->id)
+            ->assertDontSee($course1->code)
+            ->assertSee($course2->code);
     }
 
     /** @test */

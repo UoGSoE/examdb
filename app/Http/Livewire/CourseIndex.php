@@ -9,7 +9,7 @@ use Livewire\Component;
 class CourseIndex extends Component
 {
     public $disciplineFilter = null;
-
+    public $semesterFilter = null;
     public $includeTrashed = false;
 
     public $excludeNotExamined = false;
@@ -33,6 +33,7 @@ class CourseIndex extends Component
             ->when(strlen($this->searchTerm) > 2, fn ($query) => $query->where(
                 fn ($query) => $query->where('code', 'like', '%'.$this->searchTerm.'%')->orWhere('title', 'like', '%'.$this->searchTerm.'%')
             ))
+            ->when($this->semesterFilter, fn ($query) => $query->where('semester', '=', $this->semesterFilter))
             ->orderBy('code')
             ->get();
     }

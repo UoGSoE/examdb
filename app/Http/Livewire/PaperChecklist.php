@@ -110,6 +110,9 @@ class PaperChecklist extends Component
             if (! array_key_exists('question_setter_' . ($i - 1), $this->checklist['fields'])) {
                 $this->checklist['fields']['question_setter_' . ($i - 1)] = auth()->user()->full_name;
             }
+            if (! array_key_exists('question_datasheet_' . ($i - 1), $this->checklist['fields'])) {
+                $this->checklist['fields']['question_datasheet_' . ($i - 1)] = '';
+            }
         }
     }
 }

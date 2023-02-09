@@ -124,14 +124,23 @@
                     <div class="columns">
                         @foreach ($chunkedCounts as $questionCount)
                             <div class="column" wire:key="setter-column-q{{ $questionCount }}">
-                                <div class="field">
-                                    <label class="label">Setter Q{{ $questionCount }}</label>
+                                <label class="label">Setter Q{{ $questionCount }} | Datasheet required?</label>
+                                <div class="field has-addons">
                                     <div class="control">
                                         <div class="select">
                                             <select wire:model="checklist.fields.question_setter_{{ $questionCount - 1 }}"  wire:key="setter-select-q{{ $questionCount }}">
                                                 @foreach ($setters as $setter)
                                                     <option value="{{ $setter->full_name }}">{{ $setter->full_name }}</option>
                                                 @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="control">
+                                        <div class="select">
+                                            <select wire:model="checklist.fields.question_datasheet_{{ $questionCount - 1 }}"  wire:key="setter-select-ds{{ $questionCount }}">
+                                                <option value="">Choose...</option>
+                                                <option value="yes">Yes</option>
+                                                <option value="no">No</option>
                                             </select>
                                         </div>
                                     </div>
