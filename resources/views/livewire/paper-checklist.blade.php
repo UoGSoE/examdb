@@ -100,9 +100,10 @@
         <div class="field">
             <label for="" class="label">No. of markers</label>
             <p class="control is-expanded">
-                <input class="input" type="text" wire:model="checklist.fields.number_markers">
+                <input class="input" type="number" wire:model="checklist.fields.number_markers" min="1">
             </p>
         </div>
+        @error('number_markers') <p class="help has-text-danger has-text-weight-bold">{{ $message }}</p> @enderror
     </div>
 </div>
 
@@ -114,7 +115,7 @@
                 <p class="control is-expanded">
                     <input class="input" type="number" wire:model="checklist.fields.number_questions" min="1" max="100">
                 </p>
-                @error('number_questions') <p class="help is-danger">{{ $message }}</p> @enderror
+                @error('number_questions') <p class="help has-text-danger has-text-weight-bold">{{ $message }}</p> @enderror
             </div>
         </div>
 

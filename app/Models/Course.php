@@ -365,7 +365,7 @@ class Course extends Model
             'setter_reviews' => '',
             'assessment_title' => '',
             'assignment_weighting' => '',
-            'number_markers' => '',
+            'number_markers' => '1',
             'number_questions' => '1',
             'question_setter_0' => auth()->check() ? auth()->user()->full_name : '',
             'question_datasheet_0' => '',

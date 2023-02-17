@@ -654,6 +654,7 @@ class ChecklistFormTest extends TestCase
         $this->actingAs($setter);
         Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
             ->set('checklist.fields.course_title', 'New course title')
+            ->set('checklist.fields.number_markers', 3)
             ->set('checklist.fields.passed_to_moderator', now()->format('d/m/Y'))
             ->set('checklist.fields.moderator_comments', 'Mwah-ha-haaaa')
             ->set('checklist.fields.external_comments', 'The setter is pure amazing btw')
@@ -671,6 +672,7 @@ class ChecklistFormTest extends TestCase
             $this->assertEquals('Blah de blah', $checklist->fields['moderator_comments']);
             // this should be unchanged as although we set it, we are not the external
             $this->assertEquals('Tum te tum', $checklist->fields['external_comments']);
+            $this->assertEquals('3', $checklist->fields['number_markers']);
         });
 
         $this->actingAs($moderator);

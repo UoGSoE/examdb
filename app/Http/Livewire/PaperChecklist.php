@@ -56,8 +56,14 @@ class PaperChecklist extends Component
 
         if ($sectionName == 'A') {
             Validator::make(
-                [ 'date_passed_to_moderator' => $this->checklist['fields']['passed_to_moderator'] ?? null ],
-                [ 'date_passed_to_moderator' => 'required|date_format:d/m/Y' ]
+                [
+                    'date_passed_to_moderator' => $this->checklist['fields']['passed_to_moderator'] ?? null,
+                    'number_markers' => $this->checklist['fields']['number_markers'] ?? null,
+                ],
+                [
+                    'date_passed_to_moderator' => 'required|date_format:d/m/Y',
+                    'number_markers' => 'required|integer|min:1',
+                ]
             )->validate();
         }
         if ($sectionName == 'B') {
