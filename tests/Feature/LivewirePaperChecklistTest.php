@@ -59,7 +59,7 @@ class LivewirePaperChecklistTest extends TestCase
             ->assertSet('checklist.fields.question_setter_1', $user->full_name)
             ->assertSet('checklist.fields.question_datasheet_0', '')
             ->assertSet('checklist.fields.question_datasheet_1', '', strict: true)
-            ;
+        ;
     }
 
     /** @test */
@@ -86,7 +86,7 @@ class LivewirePaperChecklistTest extends TestCase
             ->set('checklist.fields.passed_to_moderator', now()->format('d/m/Y'))
             ->call('save', 'A')
             ->assertHasNoErrors()
-            ;
+        ;
 
         tap($paper->course->checklists->first(), function ($checklist) use ($user) {
             $this->assertEquals($user->full_name, $checklist->fields['question_setter_0']);
@@ -95,5 +95,4 @@ class LivewirePaperChecklistTest extends TestCase
             $this->assertEquals('no', $checklist->fields['question_datasheet_1']);
         });
     }
-
 }

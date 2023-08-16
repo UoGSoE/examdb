@@ -255,13 +255,13 @@
 
     <div class="columns">
         <div class="column">
-
             <div class="field">
                 <label for="" class="label">Moderators Name</label>
                 <p class="control">
                     <input class="input" type="text" wire:model="checklist.fields.moderator_esignature" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
                 </p>
             </div>
+            @error('moderator_name') <p id="moderator-name-error" class="help is-danger">{{ $message }}</p> @enderror
         </div>
         <div class="column">
             <div class="field">
@@ -274,6 +274,7 @@
                     <input class="input" @if (! auth()->user()->isModeratorFor($course)) disabled @endif x-ref="moderator_completed_at" type="text" wire:model.lazy="checklist.fields.moderator_completed_at">
                 </p>
             </div>
+            @error('moderator_date') <p id="moderator-date-error" class="help is-danger">{{ $message }}</p> @enderror
         </div>
     </div>
 

@@ -67,6 +67,14 @@ class PaperChecklist extends Component
             )->validate();
         }
         if ($sectionName == 'B') {
+            Validator::make([
+                'moderator_name' => $this->checklist['fields']['moderator_esignature'] ?? null,
+                'moderator_date' => $this->checklist['fields']['moderator_completed_at'] ?? null,
+            ], [
+                'moderator_name' => 'required|string',
+                'moderator_date' => 'required|date_format:d/m/Y',
+            ])->validate();
+
             if (! ($this->checklist['fields']['overall_quality_appropriate'] ?? false)) {
                 Validator::make(
                     [ 'comments' => $this->checklist['fields']['why_innapropriate'] ?? null ],
