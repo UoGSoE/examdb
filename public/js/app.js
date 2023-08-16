@@ -13798,6 +13798,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ["course", "category", "subcategories", 'buttontext'],
@@ -13811,7 +13814,8 @@ __webpack_require__.r(__webpack_exports__);
       error: false,
       failed: false,
       errorMessage: '',
-      dropdownOptions: []
+      dropdownOptions: [],
+      fileName: ''
     };
   },
   computed: {
@@ -13838,6 +13842,13 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    handleFileChange: function handleFileChange(event) {
+      var files = event.target.files;
+
+      if (files.length > 0) {
+        this.fileName = files[0].name;
+      }
+    },
     openDropdown: function openDropdown() {
       this.show = !this.show;
       this.getApplicableSubcategories();
@@ -42942,12 +42953,13 @@ var render = function () {
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "control" }, [
-                  _c("div", { staticClass: "file" }, [
+                  _c("div", { staticClass: "file has-name" }, [
                     _c("label", { staticClass: "file-label" }, [
                       _c("input", {
                         ref: "paper",
                         staticClass: "file-input",
                         attrs: { type: "file", name: "resume" },
+                        on: { change: _vm.handleFileChange },
                       }),
                       _vm._v(" "),
                       _c("span", { staticClass: "file-cta" }, [
@@ -42959,6 +42971,14 @@ var render = function () {
                           _vm._v("Choose a file…"),
                         ]),
                       ]),
+                      _vm._v(" "),
+                      _c("span", { staticClass: "file-name" }, [
+                        _vm._v(
+                          "\n                  " +
+                            _vm._s(_vm.fileName) +
+                            "\n                "
+                        ),
+                      ]),
                     ]),
                   ]),
                 ]),
@@ -42967,31 +42987,33 @@ var render = function () {
               _c("p", { staticClass: "help" }, [_vm._v("Max file size: 20MB")]),
               _c("br"),
               _vm._v(" "),
-              _c("div", { staticClass: "field" }, [
-                _c("div", { staticClass: "control" }, [
-                  _c("textarea", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.comment,
-                        expression: "comment",
-                      },
-                    ],
-                    staticClass: "textarea",
-                    attrs: { placeholder: "Optional Comments..." },
-                    domProps: { value: _vm.comment },
-                    on: {
-                      input: function ($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.comment = $event.target.value
-                      },
-                    },
-                  }),
-                ]),
-              ]),
+              _vm.fileName
+                ? _c("div", { staticClass: "field" }, [
+                    _c("div", { staticClass: "control" }, [
+                      _c("textarea", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.comment,
+                            expression: "comment",
+                          },
+                        ],
+                        staticClass: "textarea",
+                        attrs: { placeholder: "Optional Comments..." },
+                        domProps: { value: _vm.comment },
+                        on: {
+                          input: function ($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.comment = $event.target.value
+                          },
+                        },
+                      }),
+                    ]),
+                  ])
+                : _vm._e(),
               _vm._v(" "),
               _c("div", { staticClass: "field" }, [
                 _c("div", { staticClass: "control" }, [
