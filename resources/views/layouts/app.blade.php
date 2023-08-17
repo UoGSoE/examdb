@@ -47,14 +47,14 @@
                 </portal-target>
             </div>
 
-            @impersonating
-            <div class="box impersonation-box shadow-lg">
-                <form method="GET" action="{{ route('impersonate.leave') }}">
-                    @csrf
-                    <button class="button is-outlined">Stop impersonating</button>
-                </form>
-            </div>
-            @endImpersonating
+            @if (auth()->check() && app('impersonate')->isImpersonating())
+                <div class="box impersonation-box shadow-lg">
+                    <form method="GET" action="{{ route('impersonate.leave') }}">
+                        @csrf
+                        <button class="button is-outlined">Stop impersonating</button>
+                    </form>
+                </div>
+            @endif
 
         </section>
 
