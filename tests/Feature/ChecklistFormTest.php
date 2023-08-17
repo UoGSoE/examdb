@@ -145,7 +145,7 @@ class ChecklistFormTest extends TestCase
             ->assertSee('question_setter_0')
             ->assertSee('question_setter_1')
             ->assertSee('question_setter_2')
-            ;
+        ;
     }
 
     /** @test */
@@ -371,6 +371,8 @@ class ChecklistFormTest extends TestCase
         $this->actingAs($moderator);
         Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
             ->set('checklist.fields.overall_quality_appropriate', '1')
+            ->set('checklist.fields.moderator_esignature', $moderator->full_name)
+            ->set('checklist.fields.moderator_completed_at', now()->format('d/m/Y'))
             ->call('save', 'B');
 
         Mail::assertQueued(ModeratorHasUpdatedTheChecklist::class, 2);
@@ -401,6 +403,8 @@ class ChecklistFormTest extends TestCase
         $this->actingAs($moderator);
         Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
             ->set('checklist.fields.overall_quality_appropriate', '0')
+            ->set('checklist.fields.moderator_esignature', $moderator->full_name)
+            ->set('checklist.fields.moderator_completed_at', now()->format('d/m/Y'))
             ->call('save', 'B')
             ->assertHasErrors(['comments' => 'required'])
             ->assertSee('The comments field is required.');
@@ -436,6 +440,8 @@ class ChecklistFormTest extends TestCase
         $this->actingAs($moderator);
         Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
             ->set('checklist.fields.overall_quality_appropriate', '1')
+            ->set('checklist.fields.moderator_esignature', $moderator->full_name)
+            ->set('checklist.fields.moderator_completed_at', now()->format('d/m/Y'))
             ->call('save', 'B');
 
         Mail::assertQueued(ModeratorHasUpdatedTheChecklist::class, 2);
@@ -633,6 +639,7 @@ class ChecklistFormTest extends TestCase
     public function when_a_checklist_is_submitted_only_the_fields_appropriate_to_the_users_role_are_changed()
     {
         $this->withoutExceptionHandling();
+        Mail::fake();
         $setter = create(User::class);
         $moderator = create(User::class);
         $external = create(User::class);
@@ -681,6 +688,8 @@ class ChecklistFormTest extends TestCase
             ->set('checklist.fields.overall_quality_appropriate', "1")
             ->set('checklist.fields.moderator_comments', 'Cool story, bro')
             ->set('checklist.fields.external_comments', 'The external totes agrees with me')
+            ->set('checklist.fields.moderator_esignature', $moderator->full_name)
+            ->set('checklist.fields.moderator_completed_at', now()->format('d/m/Y'))
             ->call('save', 'B')
             ->assertHasNoErrors();
 
@@ -726,6 +735,8 @@ class ChecklistFormTest extends TestCase
             ->set('checklist.fields.overall_quality_appropriate', '1')
             ->set('checklist.fields.moderator_comments', 'Spanners!')
             ->set('checklist.fields.external_comments', 'Brrr')
+            ->set('checklist.fields.moderator_esignature', $moderator->full_name)
+            ->set('checklist.fields.moderator_completed_at', now()->format('d/m/Y'))
             ->call('save', 'B')
             ->assertHasNoErrors();
 
