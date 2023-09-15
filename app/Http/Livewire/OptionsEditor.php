@@ -11,6 +11,12 @@ class OptionsEditor extends Component
 {
     public $options;
 
+    public $daysToWord = [
+        1 => 'first',
+        2 => 'second',
+        3 => 'third',
+    ];
+
     public $defaultDateOptions;
 
     public $wasSaved = true;
@@ -26,6 +32,14 @@ class OptionsEditor extends Component
         $defaultDateOptionKeys = collect($this->defaultDateOptions)->map(function ($option) {
             return $option['name'];
         });
+
+        // create the new options if they don't exist, otherwise set them to their current value
+        foreach (range(1, 3) as $i) {
+            $fieldName = 'glasgow_staff_submission_deadline_reminder_'.$i;
+            option([$fieldName = option($fieldName, 0)]);
+            $fieldName = 'uestc_staff_submission_deadline_reminder_'.$i;
+            option([$fieldName = option($fieldName, 0)]);
+        }
 
         return Option::all()->flatMap(function ($option) use ($defaultDateOptionKeys) {
             if ($defaultDateOptionKeys->contains($option['key'])) {
@@ -65,6 +79,12 @@ class OptionsEditor extends Component
             'options.start_semester_1' => 'required|date_format:d/m/Y',
             'options.start_semester_2' => 'required|date_format:d/m/Y',
             'options.start_semester_3' => 'required|date_format:d/m/Y',
+            'options.glasgow_staff_submission_deadline_reminder_1' => 'required|integer',
+            'options.glasgow_staff_submission_deadline_reminder_2' => 'required|integer',
+            'options.glasgow_staff_submission_deadline_reminder_3' => 'required|integer',
+            'options.uestc_staff_submission_deadline_reminder_1' => 'required|integer',
+            'options.uestc_staff_submission_deadline_reminder_2' => 'required|integer',
+            'options.uestc_staff_submission_deadline_reminder_3' => 'required|integer',
         ]);
 
         $dateFields = collect($this->defaultDateOptions)->map(function ($option) {
@@ -85,6 +105,12 @@ class OptionsEditor extends Component
             'options.uestc_print_ready_deadline',
             'options.teaching_office_contact_glasgow',
             'options.teaching_office_contact_uestc',
+            'options.glasgow_staff_submission_deadline_reminder_1',
+            'options.glasgow_staff_submission_deadline_reminder_2',
+            'options.glasgow_staff_submission_deadline_reminder_3',
+            'options.uestc_staff_submission_deadline_reminder_1',
+            'options.uestc_staff_submission_deadline_reminder_2',
+            'options.uestc_staff_submission_deadline_reminder_3',
             'start_semester_1',
             'start_semester_2',
             'start_semester_3',

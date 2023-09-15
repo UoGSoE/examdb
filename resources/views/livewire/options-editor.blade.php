@@ -1,6 +1,5 @@
   <div>
       <h2 class="title is-2">Options</h2>
-
       <form method="POST">
           <div class="field">
               <label class="label">Glasgow General Teaching Office Email</label>
@@ -36,6 +35,30 @@
           @error('options.' . $option['name'])
           <p class="has-text-danger">{{ $message }}</p>
           @enderror
+          @endforeach
+
+          @foreach(range(1, 3) as $i)
+            <div class="field">
+                <label for="" class="label">Send {{ $daysToWord[$i] }} reminder this many days before Glasgow submission deadline</label>
+                <div class="control">
+                    <input class="input" type="number" wire:model.lazy="options.glasgow_staff_submission_deadline_reminder_{{ $i }}">
+                </div>
+            </div>
+            @error('options.glasgow_staff_submission_deadline_reminder_' . $i)
+            <p class="has-text-danger">{{ $message }}</p>
+            @enderror
+          @endforeach
+
+          @foreach(range(1, 3) as $i)
+            <div class="field">
+                <label for="" class="label">Send {{ $daysToWord[$i] }} reminder this many days before UESTC submission deadline</label>
+                <div class="control">
+                    <input class="input" type="number" wire:model.lazy="options.uestc_staff_submission_deadline_reminder_{{ $i }}">
+                </div>
+            </div>
+            @error('options.uestc_staff_submission_deadline_reminder_' . $i)
+                <p class="has-text-danger">{{ $message }}</p>
+            @enderror
           @endforeach
 
           <div class="field">

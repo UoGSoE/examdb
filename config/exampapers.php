@@ -48,19 +48,19 @@ return [
             'name' => 'date_receive_call_for_papers',
         ],
         [
-            'label' => 'Deadline for Glasgow staff to submit exam materials to Management Database (staff are emailed 1 week before and again 1 day after the deadline if paperwork isn\'t complete)',
+            'label' => 'Deadline for Glasgow staff to submit exam materials to Management Database',
             'name' => 'glasgow_staff_submission_deadline',
         ],
         [
-            'label' => 'Deadline for UESTC staff to submit exam materials to Management Database (staff are emailed 1 week before and again 1 day after deadline if paperwork isn\'t complete)',
+            'label' => 'Deadline for UESTC staff to submit exam materials to Management Database',
             'name' => 'uestc_staff_submission_deadline',
         ],
         [
-            'label' => 'Deadline for Internal moderation to be completed for UoG courses (staff are emailed 3 days before and again 1 day after the deadline if paperwork isn\'t complete)',
+            'label' => 'Deadline for Internal moderation to be completed for UoG courses',
             'name' => 'glasgow_internal_moderation_deadline',
         ],
         [
-            'label' => 'Deadline for Internal moderation to be completed for UESTC courses (staff are emailed 3 days before and again 1 day after the deadline if paperwork isn\'t complete)',
+            'label' => 'Deadline for Internal moderation to be completed for UESTC courses',
             'name' => 'uestc_internal_moderation_deadline',
         ],
         [

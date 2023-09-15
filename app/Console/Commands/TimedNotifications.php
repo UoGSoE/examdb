@@ -218,21 +218,17 @@ class TimedNotifications extends Command
             return;
         }
 
-        if ($date->dayOfYear != now()->subDay()->dayOfYear && $date->dayOfYear != now()->addWeek()->dayOfYear) {
+        if (! ($this->isASubmissionReminderDay($date, $area) || $this->isADeadlinePassedDay($date, $area))) {
             return;
         }
 
-        if ($date->clone()->subWeek()->dayOfYear == now()->dayOfYear) {
+        if ($this->isASubmissionReminderDay($date, $area)) {
             $subType = 'upcoming';
         } else {
             $subType = 'reminder';
         }
 
         $currentSemester = $this->getCurrentSemester();
-
-        if (option("{$optionName}_email_sent_{$subType}_semester_{$currentSemester}")) {
-            return;
-        }
 
         $emailAddresses = collect([]);
         if ($subType == 'upcoming') {
@@ -242,6 +238,7 @@ class TimedNotifications extends Command
             });
         } else {
             $emailAddresses = $this->getIncompletePaperworkSetterEmails($area);
+
             collect($emailAddresses)->each(function ($courses, $email) use ($date) {
                 Mail::to($email)->later(now()->addSeconds(rand(1, 200)), new SubmissionDeadlinePassedMail($date, $courses));
             });
@@ -250,9 +247,38 @@ class TimedNotifications extends Command
         option(["{$optionName}_email_sent_{$subType}_semester_{$currentSemester}" => now()->format('Y-m-d')]);
     }
 
+    protected function isASubmissionReminderDay($submissionDeadlineDate, $area): bool
+    {
+        $shouldSend = false;
+        foreach (range(1, 3) as $optionNumber) {
+            $reminderDays = option("{$area}_staff_submission_deadline_reminder_{$optionNumber}");
+            if (! $reminderDays) {
+                continue;
+            }
+            if ($submissionDeadlineDate->clone()->subDays($reminderDays)->isToday()) {
+                $shouldSend = true;
+            }
+        }
+
+        return $shouldSend;
+    }
+
+    protected function isADeadlinePassedDay($submissionDeadlineDate, $area): bool
+    {
+        $reminderDays = option("{$area}_staff_submission_deadline_overdue_reminder");
+
+        if (! $reminderDays) {
+            return false;
+        }
+
+        return $submissionDeadlineDate->clone()->addDays($reminderDays)->isToday();
+    }
+
+
     protected function handleModerationDeadline(string $area)
     {
         $optionName = "{$area}_internal_moderation_deadline";
+
         if (! option($optionName)) {
             $this->info('Skipping moderation deadline email as no date set');
 
@@ -266,21 +292,17 @@ class TimedNotifications extends Command
             return;
         }
 
-        if ($date->dayOfYear != now()->subDay()->dayOfYear && $date->dayOfYear != now()->addDays(3)->dayOfYear) {
+        if (! ($this->isASubmissionReminderDay($date, $area) || $this->isADeadlinePassedDay($date, $area))) {
             return;
         }
 
-        if ($date->clone()->subDays(3)->dayOfYear == now()->dayOfYear) {
+        if ($this->isASubmissionReminderDay($date, $area)) {
             $subType = 'upcoming';
         } else {
             $subType = 'reminder';
         }
 
         $currentSemester = $this->getCurrentSemester();
-        if (option("{$optionName}_email_sent_{$subType}_semester_{$currentSemester}")) {
-            return;
-        }
-
         if ($subType == 'upcoming') {
             $mailableName = ModerationDeadlineMail::class;
             $emailAddresses = $this->getAllModeratorEmails($area);
@@ -322,7 +344,7 @@ class TimedNotifications extends Command
         }
 
         Mail::to(option("teaching_office_contact_{$area}"))
-            ->later(now()->addSeconds(rand(1, 200)), new NotifyExternalsReminderMail);
+            ->later(now()->addSeconds(rand(1, 200)), new NotifyExternalsReminderMail());
 
         option(["{$optionName}_email_sent" => now()->format('Y-m-d')]);
     }
@@ -395,7 +417,7 @@ class TimedNotifications extends Command
         }
 
         Mail::to(option("teaching_office_contact_{$area}"))
-            ->later(now()->addSeconds(rand(1, 200)), new ExternalModerationDeadlineMail);
+            ->later(now()->addSeconds(rand(1, 200)), new ExternalModerationDeadlineMail());
 
         option(["{$optionName}_email_sent" => now()->format('Y-m-d')]);
     }

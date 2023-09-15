@@ -215,7 +215,7 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function emails_are_sent_for_the_glasgow_staff_submission_deadline_option_when_it_is_the_week_before_and_day_after()
+    public function emails_are_sent_for_the_glasgow_staff_submission_deadline_option_when_the_date_matches_a_reminder_date()
     {
         Mail::fake();
         $course1 = create(Course::class, ['code' => 'ENG1234']);
@@ -233,13 +233,18 @@ class TimedNotificationsTest extends TestCase
         $setter4->markAsSetter($course4);
         $moderator = create(User::class);
         $moderator->markAsModerator($course1);
-        option(['start_semester_1' => now()->format('Y-m-d')]);
-        option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
-        option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
+        option(['start_semester_1' => now()->subDays(10)->format('Y-m-d')]);
+        option(['start_semester_2' => now()->addWeeks(4)->format('Y-m-d')]);
+        option(['start_semester_3' => now()->addMonths(4)->format('Y-m-d')]);
 
-        option(['glasgow_staff_submission_deadline' => now()->addWeek()->format('Y-m-d')]);
+        $fakeDeadline = now()->addWeek();
+        option(['glasgow_staff_submission_deadline' => $fakeDeadline->format('Y-m-d')]);
+        option(['glasgow_staff_submission_deadline_reminder_1' => 5]);
+        option(['glasgow_staff_submission_deadline_reminder_2' => 3]);
+        option(['glasgow_staff_submission_deadline_reminder_3' => 1]);
+        option(['glasgow_staff_submission_deadline_overdue_reminder' => 1]);
 
-        $this->assertNull(option('glasgow_staff_submission_deadline_email_sent'));
+        $this->travelTo($fakeDeadline->clone()->subDays(5));
 
         $this->artisan('examdb:timed-notifications');
 
@@ -250,14 +255,37 @@ class TimedNotificationsTest extends TestCase
         Mail::assertQueued(SubmissionDeadlineMail::class, function ($mail) use ($setter2) {
             return $mail->hasTo($setter2->email);
         });
-        $this->assertNull(option('glasgow_staff_submission_deadline_email_sent'));
-
-        option(['glasgow_staff_submission_deadline' => now()->subDay()->format('Y-m-d')]);
 
         Mail::fake();
 
+        $this->travelTo($fakeDeadline->clone()->subDays(3));
+
+        $this->artisan('examdb:timed-notifications');
+        Mail::assertQueued(SubmissionDeadlineMail::class, 2);
+        Mail::assertQueued(SubmissionDeadlineMail::class, function ($mail) use ($setter1) {
+            return $mail->hasTo($setter1->email);
+        });
+        Mail::assertQueued(SubmissionDeadlineMail::class, function ($mail) use ($setter2) {
+            return $mail->hasTo($setter2->email);
+        });
+
+        Mail::fake();
+
+        $this->travelTo($fakeDeadline->clone()->subDays(1));
+
         $this->artisan('examdb:timed-notifications');
 
+        Mail::assertQueued(SubmissionDeadlineMail::class, 2);
+        Mail::assertQueued(SubmissionDeadlineMail::class, function ($mail) use ($setter1) {
+            return $mail->hasTo($setter1->email);
+        });
+        Mail::assertQueued(SubmissionDeadlineMail::class, function ($mail) use ($setter2) {
+            return $mail->hasTo($setter2->email);
+        });
+
+        $this->travelTo($fakeDeadline->clone()->addDays(1));
+
+        $this->artisan('examdb:timed-notifications');
         // note that no email is sent to setter4 as that course is not examined
         Mail::assertQueued(SubmissionDeadlinePassedMail::class, 2);
         Mail::assertQueued(SubmissionDeadlinePassedMail::class, function ($mail) use ($setter1, $course1, $course2) {
@@ -290,13 +318,20 @@ class TimedNotificationsTest extends TestCase
         $setter3->markAsSetter($course3);
         $moderator = create(User::class);
         $moderator->markAsModerator($course1);
-        option(['start_semester_1' => now()->format('Y-m-d')]);
-        option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
+        option(['start_semester_1' => now()->subDays(10)->format('Y-m-d')]);
+        option(['start_semester_2' => now()->addWeeks(2)->format('Y-m-d')]);
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
 
         option(['uestc_staff_submission_deadline' => now()->addWeek()->format('Y-m-d')]);
 
-        $this->assertNull(option('uestc_staff_submission_deadline_email_sent_upcoming_semester_1'));
+        $fakeDeadline = now()->addWeek();
+        option(['uestc_staff_submission_deadline' => $fakeDeadline->format('Y-m-d')]);
+        option(['uestc_staff_submission_deadline_reminder_1' => 5]);
+        option(['uestc_staff_submission_deadline_reminder_2' => 3]);
+        option(['uestc_staff_submission_deadline_reminder_3' => 1]);
+        option(['uestc_staff_submission_deadline_overdue_reminder' => 1]);
+
+        $this->travelTo($fakeDeadline->clone()->subDays(5));
 
         $this->artisan('examdb:timed-notifications');
 
@@ -304,30 +339,46 @@ class TimedNotificationsTest extends TestCase
         Mail::assertQueued(SubmissionDeadlineMail::class, function ($mail) use ($setter3) {
             return $mail->hasTo($setter3->email);
         });
-        $this->assertNotNull(option('uestc_staff_submission_deadline_email_sent_upcoming_semester_1'));
-
-        option(['uestc_staff_submission_deadline' => now()->subDay()->format('Y-m-d')]);
 
         Mail::fake();
 
-        $this->assertNull(option('uestc_staff_submission_deadline_email_sent_reminder_semester_1'));
+        $this->travelTo($fakeDeadline->clone()->subDays(3));
+
+        $this->artisan('examdb:timed-notifications');
+        Mail::assertQueued(SubmissionDeadlineMail::class, 1);
+        Mail::assertQueued(SubmissionDeadlineMail::class, function ($mail) use ($setter3) {
+            return $mail->hasTo($setter3->email);
+        });
+
+        Mail::fake();
+
+        $this->travelTo($fakeDeadline->clone()->subDays(1));
 
         $this->artisan('examdb:timed-notifications');
 
-        Mail::assertQueued(SubmissionDeadlinePassedMail::class, 1);
-        Mail::assertQueued(SubmissionDeadlinePassedMail::class, function ($mail) use ($setter3) {
+        Mail::assertQueued(SubmissionDeadlineMail::class, 1);
+        Mail::assertQueued(SubmissionDeadlineMail::class, function ($mail) use ($setter3) {
             return $mail->hasTo($setter3->email);
         });
-        $this->assertNotNull(option('uestc_staff_submission_deadline_email_sent_reminder_semester_1'));
+
+        $this->travelTo($fakeDeadline->clone()->addDays(1));
+
+        $this->artisan('examdb:timed-notifications');
+        // note that no email is sent to setter4 as that course is not examined
+        Mail::assertQueued(SubmissionDeadlinePassedMail::class, 1);
+        Mail::assertQueued(SubmissionDeadlinePassedMail::class, function ($mail) use ($setter3, $course3) {
+            return $mail->hasTo($setter3->email) &&
+                   $mail->courses->contains($course3->code);
+        });
     }
 
     /** @test */
-    public function emails_are_not_sent_for_any_staff_submission_deadline_option_when_it_is_not_the_day_before_or_day_after()
+    public function emails_are_not_sent_for_any_staff_submission_deadline_option_when_it_is_not_a_reminder_day()
     {
         Mail::fake();
         $course1 = create(Course::class, ['code' => 'ENG1234']);
         $course2 = create(Course::class, ['code' => 'ENG4567']);
-        $course3 = create(Course::class, ['code' => 'UESTC1234']);
+        $course3 = create(Course::class, ['code' => 'UESTC1234/UESTCHN1234']);
         $setter1 = create(User::class);
         $setter1->markAsSetter($course1);
         $setter1->markAsSetter($course2);
@@ -338,47 +389,84 @@ class TimedNotificationsTest extends TestCase
         $setter3->markAsSetter($course3);
         $moderator = create(User::class);
         $moderator->markAsModerator($course1);
-        option(['start_semester_1' => now()->format('Y-m-d')]);
-        option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
+        option(['start_semester_1' => now()->subDays(10)->format('Y-m-d')]);
+        option(['start_semester_2' => now()->addWeeks(2)->format('Y-m-d')]);
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
 
-        option(['glasgow_staff_submission_deadline' => now()->addDays(10)->format('Y-m-d')]);
-        option(['uestc_staff_submission_deadline' => now()->addDays(20)->format('Y-m-d')]);
+        option(['uestc_staff_submission_deadline' => now()->addWeek()->format('Y-m-d')]);
 
-        $this->assertNull(option('glasgow_staff_submission_deadline_email_sent'));
-        $this->assertNull(option('uestc_staff_submission_deadline_email_sent'));
+        $fakeDeadline = now()->addWeek();
+        option(['uestc_staff_submission_deadline' => $fakeDeadline->format('Y-m-d')]);
+        option(['uestc_staff_submission_deadline_reminder_1' => 5]);
+        option(['uestc_staff_submission_deadline_reminder_2' => 3]);
+        option(['uestc_staff_submission_deadline_reminder_3' => 1]);
+        option(['uestc_staff_submission_deadline_overdue_reminder' => 1]);
+
+        $this->travelTo($fakeDeadline->clone()->subDays(6));
 
         $this->artisan('examdb:timed-notifications');
 
         Mail::assertNothingQueued();
-        $this->assertNull(option('glasgow_staff_submission_deadline_email_sent'));
-        $this->assertNull(option('uestc_staff_submission_deadline_email_sent'));
+
+        Mail::fake();
+
+        $this->travelTo($fakeDeadline->clone()->addDays(2));
+
+        $this->artisan('examdb:timed-notifications');
+
+        Mail::assertNothingQueued();
     }
 
     /** @test */
     public function emails_are_not_sent_for_any_staff_submission_deadline_option_when_it_is_day_after_but_paperwork_is_complete()
     {
         Mail::fake();
-        $course1 = create(Course::class, [
-            'code' => 'ENG1234',
-        ]);
+        $course1 = create(Course::class, ['code' => 'ENG1234']);
         $course1->checklists()->save(make(PaperChecklist::class, ['course_id' => $course1->id]));
+        $course2 = create(Course::class, ['code' => 'ENG4567']);
+        $course3 = create(Course::class, ['code' => 'UESTC1234/UESTCHN1234']);
         $setter1 = create(User::class);
         $setter1->markAsSetter($course1);
+        $setter2 = create(User::class);
+        $setter2->markAsSetter($course2);
+        $setter3 = create(User::class);
+        $setter3->markAsSetter($course3);
         $moderator = create(User::class);
         $moderator->markAsModerator($course1);
-        option(['start_semester_1' => now()->format('Y-m-d')]);
-        option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
+        option(['start_semester_1' => now()->subDays(10)->format('Y-m-d')]);
+        option(['start_semester_2' => now()->addWeeks(2)->format('Y-m-d')]);
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
 
-        option(['glasgow_staff_submission_deadline' => now()->subDays(1)->format('Y-m-d')]);
+        option(['glasgow_staff_submission_deadline' => now()->addWeek()->format('Y-m-d')]);
+        option(['uestc_staff_submission_deadline' => now()->addWeek()->format('Y-m-d')]);
 
-        $this->assertNull(option('glasgow_staff_submission_deadline_email_sent_reminder_semester_1'));
+        $fakeDeadline = now()->addWeek();
+
+        option(['glasgow_staff_submission_deadline' => $fakeDeadline->format('Y-m-d')]);
+        option(['glasgow_staff_submission_deadline_reminder_1' => 5]);
+        option(['glasgow_staff_submission_deadline_reminder_2' => 3]);
+        option(['glasgow_staff_submission_deadline_reminder_3' => 1]);
+        option(['glasgow_staff_submission_deadline_overdue_reminder' => 1]);
+
+        option(['uestc_staff_submission_deadline' => $fakeDeadline->format('Y-m-d')]);
+        option(['uestc_staff_submission_deadline_reminder_1' => 5]);
+        option(['uestc_staff_submission_deadline_reminder_2' => 3]);
+        option(['uestc_staff_submission_deadline_reminder_3' => 1]);
+        option(['uestc_staff_submission_deadline_overdue_reminder' => 1]);
+
+        $this->travelTo($fakeDeadline->clone()->addDays(1));
 
         $this->artisan('examdb:timed-notifications');
 
-        Mail::assertNothingQueued();
-        $this->assertNotNull(option('glasgow_staff_submission_deadline_email_sent_reminder_semester_1'));
+        Mail::assertQueued(SubmissionDeadlinePassedMail::class, 2);
+        Mail::assertQueued(SubmissionDeadlinePassedMail::class, function ($mail) use ($setter3, $course3) {
+            return $mail->hasTo($setter3->email) &&
+                   $mail->courses->contains($course3->code);
+        });
+        Mail::assertQueued(SubmissionDeadlinePassedMail::class, function ($mail) use ($setter2, $course2) {
+            return $mail->hasTo($setter2->email) &&
+                   $mail->courses->contains($course2->code);
+        });
     }
 
     /** @test */
@@ -398,8 +486,12 @@ class TimedNotificationsTest extends TestCase
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
 
         option(['glasgow_staff_submission_deadline' => now()->addWeek()->format('Y-m-d')]);
+        option(['glasgow_staff_submission_deadline_reminder_1' => 7]);
+        option(['glasgow_staff_submission_deadline_reminder_2' => 3]);
+        option(['glasgow_staff_submission_deadline_reminder_3' => 1]);
+        option(['glasgow_staff_submission_deadline_overdue_reminder' => 1]);
 
-        $this->assertNull(option('glasgow_staff_submission_deadline_email_sent_upcoming_semester_1'));
+        // $this->assertNull(option('glasgow_staff_submission_deadline_email_sent_upcoming_semester_1'));
 
         $this->artisan('examdb:timed-notifications');
 
@@ -407,7 +499,7 @@ class TimedNotificationsTest extends TestCase
         Mail::assertQueued(SubmissionDeadlineMail::class, function ($mail) use ($setter1) {
             return $mail->hasTo($setter1);
         });
-        $this->assertNotNull(option('glasgow_staff_submission_deadline_email_sent_upcoming_semester_1'));
+        // $this->assertNotNull(option('glasgow_staff_submission_deadline_email_sent_upcoming_semester_1'));
 
         Mail::fake();
 
@@ -424,30 +516,36 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function emails_are_sent_to_glasgow_staff_about_glasgow_internal_moderation_deadline_three_days_before_and_one_day_after_deadline()
+    public function emails_are_sent_to_glasgow_staff_about_glasgow_internal_moderation_deadline_when_it_is_a_reminder_day()
     {
         Mail::fake();
         $course1 = create(Course::class, ['code' => 'ENG1234']);
         $course2 = create(Course::class, ['code' => 'ENG4567']);
         $course3 = create(Course::class, ['code' => 'UESTC1234']);
+        $course4 = create(Course::class, ['code' => 'ENG9999', 'is_examined' => false]);
         $setter1 = create(User::class);
         $setter1->markAsSetter($course1);
-        $setter1->markAsSetter($course2);
         $setter2 = create(User::class);
         $setter2->markAsSetter($course1);
         $setter2->markAsSetter($course2);
         $setter3 = create(User::class);
         $setter3->markAsSetter($course3);
+        $setter4 = create(User::class);
+        $setter4->markAsSetter($course4);
         $moderator = create(User::class);
         $moderator->markAsModerator($course1);
-        // make it semester 1 'now'
-        option(['start_semester_1' => now()->format('Y-m-d')]);
-        option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
-        option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
+        option(['start_semester_1' => now()->subDays(10)->format('Y-m-d')]);
+        option(['start_semester_2' => now()->addWeeks(4)->format('Y-m-d')]);
+        option(['start_semester_3' => now()->addMonths(4)->format('Y-m-d')]);
 
-        option(['glasgow_internal_moderation_deadline' => now()->addDays(3)->format('Y-m-d')]);
+        $fakeDeadline = now()->addWeek();
+        option(['glasgow_internal_moderation_deadline' => $fakeDeadline->format('Y-m-d')]);
+        option(['glasgow_staff_submission_deadline_reminder_1' => 5]);
+        option(['glasgow_staff_submission_deadline_reminder_2' => 3]);
+        option(['glasgow_staff_submission_deadline_reminder_3' => 1]);
+        option(['glasgow_staff_submission_deadline_overdue_reminder' => 1]);
 
-        $this->assertNull(option('glasgow_internal_moderation_deadline_email_sent_upcoming_semester_1'));
+        $this->travelTo($fakeDeadline->clone()->subDays(5));
 
         $this->artisan('examdb:timed-notifications');
 
@@ -455,32 +553,46 @@ class TimedNotificationsTest extends TestCase
         Mail::assertQueued(ModerationDeadlineMail::class, function ($mail) use ($moderator) {
             return $mail->hasTo($moderator->email);
         });
-        $this->assertNotNull(option('glasgow_internal_moderation_deadline_email_sent_upcoming_semester_1'));
-
-        option(['glasgow_internal_moderation_deadline' => now()->subDay()->format('Y-m-d')]);
 
         Mail::fake();
 
-        $this->assertNull(option('glasgow_internal_moderation_deadline_email_sent_reminder_semester_1'));
+        $this->travelTo($fakeDeadline->clone()->subDays(3));
+
+        $this->artisan('examdb:timed-notifications');
+        Mail::assertQueued(ModerationDeadlineMail::class, 1);
+        Mail::assertQueued(ModerationDeadlineMail::class, function ($mail) use ($moderator) {
+            return $mail->hasTo($moderator->email);
+        });
+
+        Mail::fake();
+
+        $this->travelTo($fakeDeadline->clone()->subDays(1));
 
         $this->artisan('examdb:timed-notifications');
 
+        Mail::assertQueued(ModerationDeadlineMail::class, 1);
+        Mail::assertQueued(ModerationDeadlineMail::class, function ($mail) use ($moderator) {
+            return $mail->hasTo($moderator->email);
+        });
+
+        $this->travelTo($fakeDeadline->clone()->addDays(1));
+
+        $this->artisan('examdb:timed-notifications');
+        // note that no email is sent to setter4 as that course is not examined
         Mail::assertQueued(ModerationDeadlinePassedMail::class, 1);
         Mail::assertQueued(ModerationDeadlinePassedMail::class, function ($mail) use ($moderator, $course1) {
             return $mail->hasTo($moderator->email) &&
-                   $mail->courses->count() === 1 &&
                    $mail->courses->contains($course1->code);
         });
-        $this->assertNotNull(option('glasgow_internal_moderation_deadline_email_sent_reminder_semester_1'));
     }
 
     /** @test */
-    public function emails_are_not_sent_for_any_staff_moderation_deadline_option_when_it_is_not_the_day_before_or_day_after()
+    public function emails_are_not_sent_for_any_staff_moderation_deadline_option_when_it_is_not_a_reminder_day()
     {
         Mail::fake();
         $course1 = create(Course::class, ['code' => 'ENG1234']);
         $course2 = create(Course::class, ['code' => 'ENG4567']);
-        $course3 = create(Course::class, ['code' => 'UESTC1234']);
+        $course3 = create(Course::class, ['code' => 'UESTC1234/UESTCHN1234']);
         $setter1 = create(User::class);
         $setter1->markAsSetter($course1);
         $setter1->markAsSetter($course2);
@@ -491,21 +603,30 @@ class TimedNotificationsTest extends TestCase
         $setter3->markAsSetter($course3);
         $moderator = create(User::class);
         $moderator->markAsModerator($course1);
-        option(['start_semester_1' => now()->format('Y-m-d')]);
-        option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
+        option(['start_semester_1' => now()->subDays(10)->format('Y-m-d')]);
+        option(['start_semester_2' => now()->addWeeks(2)->format('Y-m-d')]);
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
 
-        option(['glasgow_internal_moderation_deadline' => now()->addDays(10)->format('Y-m-d')]);
-        option(['uesct_internal_moderation_deadline' => now()->addDays(20)->format('Y-m-d')]);
+        $fakeDeadline = now()->addWeek();
+        option(['glasgow_internal_moderation_deadline' => $fakeDeadline->format('Y-m-d')]);
+        option(['glasgow_staff_submission_deadline_reminder_1' => 5]);
+        option(['glasgow_staff_submission_deadline_reminder_2' => 3]);
+        option(['glasgow_staff_submission_deadline_reminder_3' => 1]);
+        option(['glasgow_staff_submission_deadline_overdue_reminder' => 1]);
 
-        $this->assertNull(option('glasgow_internal_moderation_deadline_email_sent'));
-        $this->assertNull(option('uestc_internal_moderation_deadline_email_sent'));
+        $this->travelTo($fakeDeadline->clone()->subDays(6));
 
         $this->artisan('examdb:timed-notifications');
 
         Mail::assertNothingQueued();
-        $this->assertNull(option('glasgow_internal_moderation_deadline_email_sent'));
-        $this->assertNull(option('uestc_internal_moderation_deadline_email_sent'));
+
+        Mail::fake();
+
+        $this->travelTo($fakeDeadline->clone()->addDays(2));
+
+        $this->artisan('examdb:timed-notifications');
+
+        Mail::assertNothingQueued();
     }
 
     /** @test */
@@ -517,77 +638,71 @@ class TimedNotificationsTest extends TestCase
             'moderator_approved_main' => true,
             'moderator_approved_resit' => true,
         ]);
+
         $setter1 = create(User::class);
         $setter1->markAsSetter($course1);
         $moderator = create(User::class);
         $moderator->markAsModerator($course1);
-        option(['start_semester_1' => now()->format('Y-m-d')]);
-        option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
+        option(['start_semester_1' => now()->subDays(10)->format('Y-m-d')]);
+        option(['start_semester_2' => now()->addWeeks(3)->format('Y-m-d')]);
         option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
 
-        option(['glasgow_internal_moderation_deadline' => now()->subDays(1)->format('Y-m-d')]);
-        option(['uestc_internal_moderation_deadline' => now()->subDays(1)->format('Y-m-d')]);
+        $fakeDeadline = now()->addWeek();
+        option(['glasgow_internal_moderation_deadline' => $fakeDeadline->format('Y-m-d')]);
+        option(['uestc_internal_moderation_deadline' => $fakeDeadline->format('Y-m-d')]);
+        option(['glasgow_staff_submission_deadline_reminder_1' => 5]);
+        option(['glasgow_staff_submission_deadline_reminder_2' => 3]);
+        option(['glasgow_staff_submission_deadline_reminder_3' => 1]);
+        option(['glasgow_staff_submission_deadline_overdue_reminder' => 1]);
 
-        $this->assertNull(option('glasgow_internal_moderation_deadline_email_sent_reminder_semester_1'));
-        $this->assertNull(option('uestc_internal_moderation_deadline_email_sent_reminder_semester_1'));
+        $this->travelTo($fakeDeadline->clone()->addDays(1));
 
         $this->artisan('examdb:timed-notifications');
 
         Mail::assertNothingQueued();
-        $this->assertNotNull(option('glasgow_internal_moderation_deadline_email_sent_reminder_semester_1'));
-        $this->assertNotNull(option('uestc_internal_moderation_deadline_email_sent_reminder_semester_1'));
     }
 
     /** @test */
     public function staff_moderation_emails_are_only_sent_about_the_current_semester()
     {
         Mail::fake();
-        $course1 = create(Course::class, ['semester' => 1]);
+        $course1 = create(Course::class, ['code' => 'ENG1234', 'semester' => 1]);
+        $course2 = create(Course::class, ['code' => 'ENG4567', 'semester' => 2]);
+        $course3 = create(Course::class, ['code' => 'UESTC1234', 'semester' => 3]);
+        $course4 = create(Course::class, ['code' => 'ENG9999', 'is_examined' => false]);
         $setter1 = create(User::class);
         $setter1->markAsSetter($course1);
-        $moderator1 = create(User::class);
-        $moderator1->markAsModerator($course1);
-        $course2 = create(Course::class, ['semester' => 2]);
         $setter2 = create(User::class);
+        $setter2->markAsSetter($course1);
         $setter2->markAsSetter($course2);
+        $setter3 = create(User::class);
+        $setter3->markAsSetter($course3);
+        $setter4 = create(User::class);
+        $setter4->markAsSetter($course4);
+        $moderator = create(User::class);
+        $moderator->markAsModerator($course1);
         $moderator2 = create(User::class);
         $moderator2->markAsModerator($course2);
-        // make it semester 1 'now'
-        option(['start_semester_1' => now()->format('Y-m-d')]);
-        option(['start_semester_2' => now()->addWeek()->format('Y-m-d')]);
-        option(['start_semester_3' => now()->addMonth()->format('Y-m-d')]);
 
-        option(['glasgow_internal_moderation_deadline' => now()->addDays(3)->format('Y-m-d')]);
-        option(['uestc_internal_moderation_deadline' => now()->addDays(3)->format('Y-m-d')]);
+        option(['start_semester_1' => now()->subDays(10)->format('Y-m-d')]);
+        option(['start_semester_2' => now()->addWeeks(4)->format('Y-m-d')]);
+        option(['start_semester_3' => now()->addMonths(4)->format('Y-m-d')]);
 
-        $this->assertNull(option('glasgow_internal_moderation_deadline_email_sent_upcoming_semester_1'));
-        $this->assertNull(option('uestc_internal_moderation_deadline_email_sent_upcoming_semester_1'));
+        $fakeDeadline = now()->addWeek();
+        option(['glasgow_internal_moderation_deadline' => $fakeDeadline->format('Y-m-d')]);
+        option(['glasgow_staff_submission_deadline_reminder_1' => 5]);
+        option(['glasgow_staff_submission_deadline_reminder_2' => 3]);
+        option(['glasgow_staff_submission_deadline_reminder_3' => 1]);
+        option(['glasgow_staff_submission_deadline_overdue_reminder' => 1]);
+
+        $this->travelTo($fakeDeadline->clone()->subDays(5));
 
         $this->artisan('examdb:timed-notifications');
 
         Mail::assertQueued(ModerationDeadlineMail::class, 1);
-        Mail::assertQueued(ModerationDeadlineMail::class, function ($mail) use ($moderator1) {
-            return $mail->hasTo($moderator1->email);
+        Mail::assertQueued(ModerationDeadlineMail::class, function ($mail) use ($moderator) {
+            return $mail->hasTo($moderator->email);
         });
-        $this->assertNotNull(option('glasgow_internal_moderation_deadline_email_sent_upcoming_semester_1'));
-        $this->assertNotNull(option('uestc_internal_moderation_deadline_email_sent_upcoming_semester_1'));
-
-        Mail::fake();
-
-        option(['glasgow_internal_moderation_deadline' => now()->subDays(1)->format('Y-m-d')]);
-        option(['uestc_internal_moderation_deadline' => now()->subDays(1)->format('Y-m-d')]);
-
-        $this->assertNull(option('glasgow_internal_moderation_deadline_email_sent_reminder_semester_1'));
-        $this->assertNull(option('uestc_internal_moderation_deadline_email_sent_reminder_semester_1'));
-
-        $this->artisan('examdb:timed-notifications');
-
-        Mail::assertQueued(ModerationDeadlinePassedMail::class, 1);
-        Mail::assertQueued(ModerationDeadlinePassedMail::class, function ($mail) use ($moderator1) {
-            return $mail->hasTo($moderator1->email);
-        });
-        $this->assertNotNull(option('glasgow_internal_moderation_deadline_email_sent_reminder_semester_1'));
-        $this->assertNotNull(option('uestc_internal_moderation_deadline_email_sent_reminder_semester_1'));
     }
 
     /** @test */

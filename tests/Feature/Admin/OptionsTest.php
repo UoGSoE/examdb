@@ -68,12 +68,19 @@ class OptionsTest extends TestCase
             ->set('options.start_semester_1', now()->format('d/m/Y'))
             ->set('options.start_semester_2', now()->format('d/m/Y'))
             ->set('options.start_semester_3', now()->format('d/m/Y'))
+            ->set('options.glasgow_staff_submission_deadline_reminder_1', 1)
+            ->set('options.glasgow_staff_submission_deadline_reminder_2', 2)
+            ->set('options.glasgow_staff_submission_deadline_reminder_3', 3)
+            ->set('options.uestc_staff_submission_deadline_reminder_1', 1)
+            ->set('options.uestc_staff_submission_deadline_reminder_2', 2)
+            ->set('options.uestc_staff_submission_deadline_reminder_3', 3)
             ->call('save')
             ->assertHasNoErrors();
 
         $this->assertEquals(now()->format('Y-m-d'), option('date_receive_call_for_papers'));
         $this->assertEquals('jane@example.com', option('teaching_office_contact_glasgow'));
         $this->assertEquals('jenny@example.com', option('teaching_office_contact_uestc'));
+        $this->assertEquals(3, option('glasgow_staff_submission_deadline_reminder_3'));
     }
 
     /** @test */
@@ -131,6 +138,12 @@ class OptionsTest extends TestCase
             ->set('options.start_semester_1', now()->format('d/m/Y'))
             ->set('options.start_semester_2', now()->format('d/m/Y'))
             ->set('options.start_semester_3', now()->format('d/m/Y'))
+            ->set('options.glasgow_staff_submission_deadline_reminder_1', 1)
+            ->set('options.glasgow_staff_submission_deadline_reminder_2', 2)
+            ->set('options.glasgow_staff_submission_deadline_reminder_3', 3)
+            ->set('options.uestc_staff_submission_deadline_reminder_1', 1)
+            ->set('options.uestc_staff_submission_deadline_reminder_2', 2)
+            ->set('options.uestc_staff_submission_deadline_reminder_3', 3)
             ->call('save')
             ->assertHasNoErrors();
 
