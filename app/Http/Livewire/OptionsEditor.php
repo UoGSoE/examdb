@@ -40,6 +40,8 @@ class OptionsEditor extends Component
             $fieldName = 'uestc_staff_submission_deadline_reminder_'.$i;
             option([$fieldName = option($fieldName, 0)]);
         }
+        option(['glasgow_staff_submission_deadline_overdue_reminder', option('glasgow_staff_submission_deadline_overdue_reminder', 0)]);
+        option(['uestc_staff_submission_deadline_overdue_reminder', option('uestc_staff_submission_deadline_overdue_reminder', 0)]);
 
         return Option::all()->flatMap(function ($option) use ($defaultDateOptionKeys) {
             if ($defaultDateOptionKeys->contains($option['key'])) {
@@ -85,6 +87,8 @@ class OptionsEditor extends Component
             'options.uestc_staff_submission_deadline_reminder_1' => 'required|integer',
             'options.uestc_staff_submission_deadline_reminder_2' => 'required|integer',
             'options.uestc_staff_submission_deadline_reminder_3' => 'required|integer',
+            'options.glasgow_staff_submission_deadline_overdue_reminder' => 'required|integer',
+            'options.uestc_staff_submission_deadline_overdue_reminder' => 'required|integer',
         ]);
 
         $dateFields = collect($this->defaultDateOptions)->map(function ($option) {
@@ -111,6 +115,8 @@ class OptionsEditor extends Component
             'options.uestc_staff_submission_deadline_reminder_1',
             'options.uestc_staff_submission_deadline_reminder_2',
             'options.uestc_staff_submission_deadline_reminder_3',
+            'options.glasgow_staff_submission_deadline_overdue_reminder',
+            'options.uestc_staff_submission_deadline_overdue_reminder',
             'start_semester_1',
             'start_semester_2',
             'start_semester_3',

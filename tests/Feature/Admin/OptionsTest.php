@@ -71,9 +71,11 @@ class OptionsTest extends TestCase
             ->set('options.glasgow_staff_submission_deadline_reminder_1', 1)
             ->set('options.glasgow_staff_submission_deadline_reminder_2', 2)
             ->set('options.glasgow_staff_submission_deadline_reminder_3', 3)
+            ->set('options.glasgow_staff_submission_deadline_overdue_reminder', 1)
             ->set('options.uestc_staff_submission_deadline_reminder_1', 1)
             ->set('options.uestc_staff_submission_deadline_reminder_2', 2)
             ->set('options.uestc_staff_submission_deadline_reminder_3', 3)
+            ->set('options.uestc_staff_submission_deadline_overdue_reminder', 1)
             ->call('save')
             ->assertHasNoErrors();
 
@@ -81,6 +83,7 @@ class OptionsTest extends TestCase
         $this->assertEquals('jane@example.com', option('teaching_office_contact_glasgow'));
         $this->assertEquals('jenny@example.com', option('teaching_office_contact_uestc'));
         $this->assertEquals(3, option('glasgow_staff_submission_deadline_reminder_3'));
+        $this->assertEquals(1, option('glasgow_staff_submission_deadline_overdue_reminder'));
     }
 
     /** @test */
@@ -144,6 +147,8 @@ class OptionsTest extends TestCase
             ->set('options.uestc_staff_submission_deadline_reminder_1', 1)
             ->set('options.uestc_staff_submission_deadline_reminder_2', 2)
             ->set('options.uestc_staff_submission_deadline_reminder_3', 3)
+            ->set('options.glasgow_staff_submission_deadline_overdue_reminder', 1)
+            ->set('options.uestc_staff_submission_deadline_overdue_reminder', 1)
             ->call('save')
             ->assertHasNoErrors();
 
