@@ -36,12 +36,12 @@ class OptionsEditor extends Component
         // create the new options if they don't exist, otherwise set them to their current value
         foreach (range(1, 3) as $i) {
             $fieldName = 'glasgow_staff_submission_deadline_reminder_'.$i;
-            option([$fieldName = option($fieldName, 0)]);
+            option([$fieldName => option($fieldName, 0)]);
             $fieldName = 'uestc_staff_submission_deadline_reminder_'.$i;
-            option([$fieldName = option($fieldName, 0)]);
+            option([$fieldName => option($fieldName, 0)]);
         }
-        option(['glasgow_staff_submission_deadline_overdue_reminder', option('glasgow_staff_submission_deadline_overdue_reminder', 0)]);
-        option(['uestc_staff_submission_deadline_overdue_reminder', option('uestc_staff_submission_deadline_overdue_reminder', 0)]);
+        option(['glasgow_staff_submission_deadline_overdue_reminder' => option('glasgow_staff_submission_deadline_overdue_reminder', 0)]);
+        option(['uestc_staff_submission_deadline_overdue_reminder' => option('uestc_staff_submission_deadline_overdue_reminder', 0)]);
 
         return Option::all()->flatMap(function ($option) use ($defaultDateOptionKeys) {
             if ($defaultDateOptionKeys->contains($option['key'])) {
