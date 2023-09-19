@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\AcademicSession;
-use Illuminate\Http\Request;
+use App\Models\AcademicSession;
 use App\Http\Controllers\Controller;
 use App\Jobs\CopyDataToNewAcademicSession;
 use App\Scopes\CurrentAcademicSessionScope;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
 class AcademicSessionController extends Controller
@@ -21,11 +21,11 @@ class AcademicSessionController extends Controller
         // 'version' of their user which in turn clears the session so we need to set it again
         session(['academic_session' => $session->session]);
         auth()->login(
-            \App\User::where('username', '=', $username)->first()
+            \App\Models\User::where('username', '=', $username)->first()
         );
         session(['academic_session' => $session->session]);
 
-        return redirect('/home')->with('success', 'Session changed to ' . $session->session);
+        return redirect('/home')->with('success', 'Session changed to '.$session->session);
     }
 
     public function edit()
@@ -37,7 +37,7 @@ class AcademicSessionController extends Controller
 
     public function store(Request $request)
     {
-        $session = $request->new_session_year_1 . '/' . $request->new_session_year_2;
+        $session = $request->new_session_year_1.'/'.$request->new_session_year_2;
         $request->merge(['session_name' => $session]);
         $request->validate([
             'new_session_year_1' => 'required|integer|min:2010|max:2050',
@@ -51,16 +51,16 @@ class AcademicSessionController extends Controller
 
         Cache::forget('navbarAcademicSessions');
 
-        activity()->causedBy($request->user())->log('Created a new academic session ' . $session);
+        activity()->causedBy($request->user())->log('Created a new academic session '.$session);
 
-        return redirect('/home')->with('success', 'Session ' . $newSession->session . ' created.  You will get an email once all the data is copied.');
+        return redirect('/home')->with('success', 'Session '.$newSession->session.' created.  You will get an email once all the data is copied.');
     }
 
     public function setDefault(AcademicSession $session, Request $request)
     {
         $session->setAsDefault();
 
-        activity()->causedBy($request->user())->log('Changed the default academic session to ' . $session->session);
+        activity()->causedBy($request->user())->log('Changed the default academic session to '.$session->session);
 
         return redirect()->back();
     }

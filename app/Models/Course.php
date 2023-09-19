@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Events\PaperApproved;
 use App\Events\PaperUnapproved;
@@ -57,7 +57,7 @@ class Course extends Model
     {
         parent::boot();
 
-        static::addGlobalScope(new CurrentAcademicSessionScope);
+        static::addGlobalScope(new CurrentAcademicSessionScope());
     }
 
     public function staff()
@@ -106,6 +106,13 @@ class Course extends Model
         return $this->papers()->main();
     }
 
+    public function latestPrintReadyPaper()
+    {
+        return $this->hasOne(Paper::class)->ofMany([
+            'created_at' => 'max'
+        ], fn ($query) => $query->where('subcategory', 'like', '%'. Paper::ADMIN_PRINT_READY_VERSION . '%'));
+    }
+
     public function resitPapers()
     {
         return $this->papers()->resit();
@@ -131,6 +138,7 @@ class Course extends Model
         if ($area == 'uestc') {
             return $query->where('code', 'like', 'UESTC%');
         }
+
         return $query->where('code', 'not like', 'UESTC%');
     }
 
@@ -149,14 +157,65 @@ class Course extends Model
         return $query->where('is_examined', '=', true);
     }
 
+    protected function getChecklistFieldsToUpdate(string $sectionName, array $fields, array $fieldsToUpdate): array
+    {
+        if ($sectionName == 'A') {
+            $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::SECTION_A_FIELDS);
+            // foreach (PaperChecklist::SECTION__FIELDS as $field) {
+            //     if (!array_key_exists($field, $fieldsToUpdate)) {
+            //         $fieldsToUpdate[$field] = "";
+            //     }
+            // }
+            $fields['number_questions'] = $fields['number_questions'] ?? 1;
+            foreach (range(1, $fields['number_questions']) as $questionNumber) {
+                if (array_key_exists('question_setter_' . ($questionNumber - 1), $fields)) {
+                    $fieldsToUpdate[] = 'question_setter_' . ($questionNumber - 1);
+                }
+                if (array_key_exists('question_datasheet_' . ($questionNumber - 1), $fields)) {
+                    $fieldsToUpdate[] = 'question_datasheet_' . ($questionNumber - 1);
+                }
+            }
+        }
+        if ($sectionName == 'B') {
+            $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::SECTION_B_FIELDS);
+            // foreach (PaperChecklist::SECTION_B_FIELDS as $field) {
+            //     if (!array_key_exists($field, $fieldsToUpdate)) {
+            //         $fieldsToUpdate[$field] = "";
+            //     }
+            // }
+        }
+        if ($sectionName == 'C') {
+            $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::SECTION_C_FIELDS);
+            // foreach (PaperChecklist::SECTION_C_FIELDS as $field) {
+            //     if (!array_key_exists($field, $fieldsToUpdate)) {
+            //         $fieldsToUpdate[$field] = "";
+            //     }
+            // }
+        }
+        if ($sectionName == 'D') {
+            $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::SECTION_D_FIELDS);
+            // foreach (PaperChecklist::SECTION_D_FIELDS as $field) {
+            //     if (!array_key_exists($field, $fieldsToUpdate)) {
+            //         $fieldsToUpdate[$field] = "";
+            //     }
+            // }
+        }
+
+        return $fieldsToUpdate;
+    }
+
     /**
      * This is horrific
      * TODO : make it not horrific.
      */
-    public function addChecklist(array $fields, string $category): PaperChecklist
+    public function addChecklist(array $fields, string $category, string $section): PaperChecklist
     {
         if (! in_array($category, ['main', 'resit', 'assessment'])) {
             abort(422, 'Invalid category '.$category);
+        }
+
+        if (! in_array($section, ['A', 'B', 'C', 'D'])) {
+            abort(422, 'Invalid section '.$section);
         }
 
         // if there was an existing checklist we get it's fields so we can merge them in with the new values
@@ -166,27 +225,33 @@ class Course extends Model
             $previousFields = $this->getDefaultChecklistFields();
         }
 
-        // figure out which fields on the form the user is allowed to update
-        $fieldsToUpdate = [];
-        if (auth()->check() && auth()->user()->isSetterFor($this)) {
-            $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::SETTER_FIELDS);
-        }
-        if (auth()->check() && auth()->user()->isModeratorFor($this)) {
-            $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::MODERATOR_FIELDS);
-        }
-        if (auth()->check() && auth()->user()->isExternalFor($this)) {
-            $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::EXTERNAL_FIELDS);
-        }
+        $fieldsToUpdate = $this->getChecklistFieldsToUpdate($section, $fields, $previousFields);
+        // $fieldsToUpdate = [];
+        // if (auth()->check() && auth()->user()->isSetterFor($this)) {
+        //     $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::SETTER_FIELDS);
+        //     $fields['number_questions'] = $fields['number_questions'] ?? 1;
+        //     foreach (range(1, $fields['number_questions']) as $questionNumber) {
+        //         if (array_key_exists('question_setter_' . ($questionNumber - 1), $fields)) {
+        //             $fieldsToUpdate[] = 'question_setter_' . ($questionNumber - 1);
+        //         }
+        //     }
+        // }
+        // if (auth()->check() && auth()->user()->isModeratorFor($this)) {
+        //     $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::MODERATOR_FIELDS);
+        // }
+        // if (auth()->check() && auth()->user()->isExternalFor($this)) {
+        //     $fieldsToUpdate = array_merge($fieldsToUpdate, PaperChecklist::EXTERNAL_FIELDS);
+        // }
 
         $checklist = $this->checklists()->create([
             'category' => $category,
-            'user_id' => optional(auth()->user())->id,
+            'user_id' => auth()->user()?->id,
             // we merge only the fields the user is allowed to update with any existing fields from a previous checklost
             'fields' => array_merge($previousFields, Arr::only($fields, $fieldsToUpdate)),
         ]);
 
         // figure out if the moderator has fully approved the paper
-        if (auth()->check() && auth()->user()->isModeratorFor($this)) {
+        if (auth()->check() && ($section === 'B' || $section === 'C') && auth()->user()->isModeratorFor($this)) {
             $fieldName = "moderator_approved_{$category}";
             $this->$fieldName = (bool) (
                 Arr::get($fields, 'overall_quality_appropriate', false)
@@ -198,8 +263,20 @@ class Course extends Model
                 ! Arr::get($fields, 'solutions_marks_adjusted', false)
             );
         }
+        // if (auth()->check() && auth()->user()->isModeratorFor($this)) {
+        //     $fieldName = "moderator_approved_{$category}";
+        //     $this->$fieldName = (bool) (
+        //         Arr::get($fields, 'overall_quality_appropriate', false)
+        //         &&
+        //         ! Arr::get($fields, 'should_revise_questions', false)
+        //         &&
+        //         Arr::get($fields, 'solution_marks_appropriate', false)
+        //         &&
+        //         ! Arr::get($fields, 'solutions_marks_adjusted', false)
+        //     );
+        // }
 
-        if (auth()->check() && auth()->user()->isExternalFor($this)) {
+        if (auth()->check() && $section === 'D' && auth()->user()->isExternalFor($this)) {
             // figure out if the external has approved the paper
             $fieldName = "external_approved_{$category}";
             $this->$fieldName = (bool) Arr::get($fields, 'external_agrees_with_moderator', false);
@@ -210,28 +287,41 @@ class Course extends Model
         activity()
             ->causedBy(request()->user())
             ->log(
-                "Added a {$category} checklist for {$this->code}"
+                "Added a {$category} checklist for {$this->code} section {$section}"
             );
 
         $flashMessage = 'Checklist Saved';
 
         if (auth()->check() && auth()->user()->isSetterFor($this) && $checklist->shouldNotifyModerator()) {
-            $area = str_contains($this, 'ENG') ? 'glasgow' : 'uestc';
-            $optionName = "{$area}_internal_moderation_deadline";
-            $deadline = '';
-            if (option($optionName)) {
-                $deadline = Carbon::createFromFormat('Y-m-d', option($optionName))->format('d/m/Y');
+            // we should notify the moderator if the section is A _or_ if
+            // the section is B or C and the setter has changed the comments field
+            $shouldSentNotification = match ($section) {
+                'A' => true,
+                'B' => ($checklist->fields['setter_comments_to_moderator'] ?? '') != ($previousFields['setter_comments_to_moderator'] ?? ''),
+                'C' => ($checklist->fields['solution_setter_comments'] ?? '') != ($previousFields['solution_setter_comments'] ?? ''),
+                default => false,
+            };
+
+            $flashMessage = 'Checklist Saved';
+
+            if ($shouldSentNotification) {
+                $area = str_contains($this->code, 'ENG') ? 'glasgow' : 'uestc';
+                $optionName = "{$area}_internal_moderation_deadline";
+                $deadline = '';
+                if (option($optionName)) {
+                    $deadline = Carbon::createFromFormat('Y-m-d', option($optionName))->format('d/m/Y');
+                }
+
+                $this->moderators->pluck('email')->reject(fn ($email) => $email == auth()->user()->email)->each(function ($email) use ($deadline) {
+                    Mail::to($email)->queue(new SetterHasUpdatedTheChecklist($this, $deadline));
+                });
+
+                $flashMessage = $flashMessage . ' - moderators notified';
             }
-
-            $this->moderators->pluck('email')->each(function ($email) use ($deadline) {
-                Mail::to($email)->queue(new SetterHasUpdatedTheChecklist($this, $deadline));
-            });
-
-            $flashMessage = 'Checklist Saved - moderators notified';
         }
 
-        if (auth()->check() && auth()->user()->isModeratorFor($this)) {
-            $this->setters->pluck('email')->each(function ($email) {
+        if (auth()->check() && auth()->user()->isModeratorFor($this) && ($section === 'B' || $section === 'C')) {
+            $this->setters->pluck('email')->reject(fn ($email) => $email == auth()->user()->email)->each(function ($email) {
                 Mail::to($email)->queue(new ModeratorHasUpdatedTheChecklist($this));
             });
             $flashMessage = 'Checklist Saved - setters notified';
@@ -275,29 +365,47 @@ class Course extends Model
             'setter_reviews' => '',
             'assessment_title' => '',
             'assignment_weighting' => '',
-            'number_markers' => '',
+            'number_markers' => '1',
+            'number_questions' => '1',
+            'question_setter_0' => auth()->check() ? auth()->user()->full_name : '',
+            'question_datasheet_0' => '',
             'passed_to_moderator' => '',
             'setter_comments_to_moderator' => '',
             'solution_setter_comments' => '',
-            'overall_quality_appropriate' => "1",
+            'overall_quality_appropriate' => '0',
             'why_innapropriate' => '',
-            'should_revise_questions' => "1",
+            'should_revise_questions' => '0',
             'recommended_revisions' => '',
             'moderator_comments' => '',
             'moderator_completed_at' => '',
-            'solution_marks_appropriate' => "1",
+            'solution_marks_appropriate' => '0',
             'moderator_solution_innapropriate_comments' => '',
-            'solutions_marks_adjusted' => "1",
+            'solutions_marks_adjusted' => '0',
             'solution_adjustment_comments' => '',
             'solution_moderator_comments' => '',
             'moderator_solutions_at' => '',
             'external_examiner_name' => '',
-            'external_agrees_with_moderator' => "0",
+            'external_agrees_with_moderator' => '0',
             'external_reason' => '',
             'external_comments' => '',
             'external_signed_at' => '',
         ];
     }
+
+    public function updateStaff(array $setterIds, array $moderatorIds, array $externalIds)
+    {
+        $uniqueIds = array_unique(array_merge($setterIds, $moderatorIds, $externalIds));
+        $pivotData = [];
+        foreach ($uniqueIds as $id) {
+            $pivotData[$id] = [
+                'is_setter' => in_array($id, $setterIds),
+                'is_moderator' => in_array($id, $moderatorIds),
+                'is_external' => in_array($id, $externalIds),
+            ];
+        }
+        $this->staff()->sync($pivotData);
+    }
+
     public function hasSetterChecklist(string $category)
     {
         return $this->checklists
@@ -340,6 +448,7 @@ class Course extends Model
     {
         $papers = $this->mainPapers()->with(['user', 'comments'])->latest()->get();
         $checklists = $this->checklists()->where('category', '=', 'main')->latest()->get();
+
         return $this->combinePapersAndChecklists($papers, $checklists);
     }
 
@@ -347,6 +456,7 @@ class Course extends Model
     {
         $papers = $this->resitPapers()->with(['user', 'comments'])->latest()->get();
         $checklists = $this->checklists()->where('category', '=', 'resit')->latest()->get();
+
         return $this->combinePapersAndChecklists($papers, $checklists);
     }
 
@@ -354,6 +464,7 @@ class Course extends Model
     {
         $papers = $this->resit2Papers()->with(['user', 'comments'])->latest()->get();
         $checklists = $this->checklists()->where('category', '=', 'resit2')->latest()->get();
+
         return $this->combinePapersAndChecklists($papers, $checklists);
     }
 
@@ -371,6 +482,7 @@ class Course extends Model
                 'diff_for_humans' => $checklist->created_at->diffForHumans(),
             ]);
             $fake->load('user');
+
             return $fake;
         });
         foreach ($checklistsAsPapers as $fakePaper) {
@@ -504,7 +616,7 @@ class Course extends Model
         });
     }
 
-    public function getUserApprovedMainAttribute(? User $user): bool
+    public function getUserApprovedMainAttribute(?User $user): bool
     {
         if (! $user) {
             $user = auth()->user();
@@ -513,7 +625,7 @@ class Course extends Model
         return $this->isApprovedBy($user, 'main');
     }
 
-    public function getUserApprovedResitAttribute(? User $user): bool
+    public function getUserApprovedResitAttribute(?User $user): bool
     {
         if (! $user) {
             $user = auth()->user();
@@ -533,12 +645,30 @@ class Course extends Model
             ->where('category', $category)
             ->filter(fn ($paper) => Str::startsWith($paper->subcategory, $subcategory))
             ->sortBy('created_at')
-            ->last();
+            ->first();
         if (! $paper) {
             return '';
         }
 
         return $paper->created_at->format('d/m/Y');
+    }
+
+    public function dateModeratorFilledChecklist(string $category): string
+    {
+        $firstFilledChecklist = $this->checklists->where('category', '=', $category)->first(
+            fn ($checklist) => $checklist->fields['moderator_completed_at']
+        );
+
+        return $firstFilledChecklist?->fields['moderator_completed_at'] ?? '';
+    }
+
+    public function dateExternalFilledChecklist(string $category): string
+    {
+        $firstFilledChecklist = $this->checklists->where('category', '=', $category)->first(
+            fn ($checklist) => $checklist->fields['external_signed_at']
+        );
+
+        return $firstFilledChecklist?->fields['external_signed_at'] ?? '';
     }
 
     public static function findByCode($code)
@@ -592,9 +722,57 @@ class Course extends Model
         return $this->resitPapers->contains(fn ($paper) => Str::startsWith($paper->subcategory, Paper::PAPER_FOR_REGISTRY));
     }
 
+    public function printReadyPaperApproved(string $category): bool
+    {
+        $paper = $this->papers
+            ->where('category', $category)
+            ->filter(fn ($paper) => Str::startsWith($paper->subcategory, Paper::ADMIN_PRINT_READY_VERSION))
+            ->sortBy('created_at')
+            ->last();
+
+        if (! $paper) {
+            return false;
+        }
+
+        return $paper->print_ready_approved === 'Y';
+    }
+
+    public function printReadyPaperRejected(string $category): bool
+    {
+        // the print_ready_approved column is a nullable boolean
+        // if it's null, the academic hasn't approved or rejected the paper
+        // otherwise it's a Y/N value
+        $paper = $this->papers
+            ->where('category', $category)
+            ->filter(fn ($paper) => Str::startsWith($paper->subcategory, Paper::ADMIN_PRINT_READY_VERSION))
+            ->sortBy('id')
+            ->last();
+
+        if (! $paper) {
+            return false;
+        }
+
+        return $paper->print_ready_approved === 'N';
+    }
+
+    public function printReadyPaperRejectedMessage(string $category): string
+    {
+        $paper = $this->papers
+            ->where('category', $category)
+            ->filter(fn ($paper) => Str::startsWith($paper->subcategory, Paper::ADMIN_PRINT_READY_VERSION))
+            ->sortBy('created_at')
+            ->last();
+
+        if (! $paper) {
+            return '';
+        }
+
+        return (string) $paper->print_ready_comment;
+    }
+
     public function approvePaperForRegistry(string $category = 'main')
     {
-        $field = 'registry_approved_' . $category;
+        $field = 'registry_approved_'.$category;
 
         $this->update([
             $field => true,
@@ -603,7 +781,7 @@ class Course extends Model
 
     public function paperForRegistryIsApproved(string $category = 'main')
     {
-        $field = 'registry_approved_' . $category;
+        $field = 'registry_approved_'.$category;
 
         return $this->$field;
     }
@@ -611,12 +789,11 @@ class Course extends Model
     /**
      * @throws InvalidArgumentException
      */
-    public function createDuplicate(string $newCode): Course
+    public function createDuplicate(string $newCode): self
     {
         if (preg_match('/^[A-Z]+[0-9]+/', $newCode) !== 1) {
             throw new InvalidArgumentException("New course code of {$newCode} looks invalid...");
         }
-
 
         $newCourse = $this->replicate();
         $newCourse->code = $newCode;

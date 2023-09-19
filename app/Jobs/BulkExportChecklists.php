@@ -2,21 +2,21 @@
 
 namespace App\Jobs;
 
-use App\User;
-use App\Course;
-use ZipArchive;
-use Illuminate\Bus\Queueable;
-use Illuminate\Support\Facades\URL;
+use App\Models\Course;
 use App\Exporters\ChecklistExporter;
+use App\Mail\ChecklistsReadyToDownload;
+use App\Models\User;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Queue\SerializesModels;
-use App\Mail\ChecklistsReadyToDownload;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\URL;
+use ZipArchive;
 
 class BulkExportChecklists implements ShouldQueue
 {

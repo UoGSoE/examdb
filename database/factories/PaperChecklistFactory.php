@@ -2,20 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Course;
-use App\PaperChecklist;
-use App\User;
+use App\Models\Course;
+use App\Models\PaperChecklist;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PaperChecklistFactory extends Factory
 {
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
-    protected $model = PaperChecklist::class;
-
     /**
      * Define the model's default state.
      *
@@ -24,6 +17,7 @@ class PaperChecklistFactory extends Factory
     public function definition()
     {
         $fields = make(Course::class)->getDefaultChecklistFields();
+
         return [
             'version' => PaperChecklist::CURRENT_VERSION,
             'user_id' => function () {

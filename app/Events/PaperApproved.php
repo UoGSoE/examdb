@@ -2,9 +2,9 @@
 
 namespace App\Events;
 
-use App\Course;
-use App\Paper;
-use App\User;
+use App\Models\Course;
+use App\Models\Paper;
+use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -18,7 +18,9 @@ class PaperApproved
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $course;
+
     public $user;
+
     public $category;
 
     /**

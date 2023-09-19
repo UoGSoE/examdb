@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\AcademicSession;
+use App\Models\AcademicSession;
 use App\Http\Controllers\Controller;
-use App\User;
+use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -58,18 +58,18 @@ class LoginController extends Controller
 
         $request->validate([
             'username' => 'required',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
         if ($this->looksLikeStudentAccount($request->username)) {
-            info('Attempt to log in using a student account : ' . $request->username);
+            info('Attempt to log in using a student account : '.$request->username);
             $this->incrementLoginAttempts($request);
             abort(Response::HTTP_FORBIDDEN);
         }
 
         $user = User::where('username', '=', $request->username)->first();
         if (! $user) {
-            info('User does not exist in the default session : ' . $request->username);
+            info('User does not exist in the default session : '.$request->username);
             $this->incrementLoginAttempts($request);
             throw ValidationException::withMessages([
                 'authentication' => 'You have entered an invalid GUID or password',
@@ -97,6 +97,7 @@ class LoginController extends Controller
         if ($user && $user->is_staff) {
             return false;
         }
+
         return preg_match('/^[0-9].+/', $username) === 1;
     }
 }

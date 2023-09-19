@@ -2,20 +2,20 @@
 
 namespace Tests\Feature;
 
-use App\User;
-use App\Course;
+use App\Models\AcademicSession;
+use App\Models\Course;
+use App\Models\Discipline;
+use App\Jobs\CopyDataToNewAcademicSession;
+use App\Mail\DataWasCopiedToNewSession;
+use App\Scopes\CurrentAcademicSessionScope;
+use App\Models\User;
 use Carbon\Carbon;
-use App\Discipline;
-use Tests\TestCase;
-use App\AcademicSession;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
-use App\Mail\DataWasCopiedToNewSession;
-use App\Jobs\CopyDataToNewAcademicSession;
-use App\Scopes\CurrentAcademicSessionScope;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Cache;
+use Tests\TestCase;
 
 class AcademicSessionTest extends TestCase
 {
@@ -324,7 +324,7 @@ class AcademicSessionTest extends TestCase
         $discipline1 = Discipline::factory()->create(['academic_session_id' => null]);
         $discipline2 = Discipline::factory()->create(['academic_session_id' => null]);
 
-        $this->artisan('examdb:retrofit-academic-session ' . $session->session);
+        $this->artisan('examdb:retrofit-academic-session '.$session->session);
 
         $this->assertEquals($session->id, $course1->fresh()->academic_session_id);
         $this->assertEquals($session->id, $course2->fresh()->academic_session_id);

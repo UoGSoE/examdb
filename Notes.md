@@ -1,5 +1,10 @@
 # ExamDB
 
+[changes/september-2022] ~/Documents/code/examdb: # datasheet checkbox next to each question on checklist
+[changes/september-2022] ~/Documents/code/examdb: # courses page - add a semester filter
+[changes/september-2022] ~/Documents/code/examdb: # papers page - add filter for  for main and resit and semester
+[changes/september-2022] ~/Documents/code/examdb: # datasheet checkbox - actiually dop down with default empty and mandatory yes/no
+
 REgular staff can login and see courses they are moderator/setter/external-examiner
 
 Regular staff can upload and view main exaim or resit exam + solution files for both
@@ -41,4 +46,3 @@ Upload file dropdown options :
             <option value="Response To External Examiner (Solutions)">Response To External Examiner (Solutions)</option>
             <option value="Solutions For Archive">Solutions For Archive</option>
         </optgroup>
-    

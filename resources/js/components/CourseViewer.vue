@@ -84,6 +84,7 @@
           :papers="thePapers.main"
           category="main"
           @paper-removed="paperRemoved"
+          @approve-print-ready="approvePrintReady"
         ></paper-list>
       </div>
       <!-- /main-papers -->
@@ -153,6 +154,9 @@ export default {
       return this.externalsNotified ? "Notified!" : "Notify Externals" + suffix;
     },
     canUploadPapers() {
+      if (this.user.is_admin == true) {
+        return true;
+      }
       let inSetters = this.course.setters.find(
         setter => setter.id == this.user.id
       );
@@ -197,6 +201,18 @@ export default {
         .catch(error => {
           console.error(error);
         });
+    },
+    approvePrintReady(paper, choice, comment) {
+        axios.post(route('paper.approve_print_ready', paper.id), {
+            'is_approved': choice,
+            'comment': comment
+        })
+            .then(response => {
+                this.thePapers = response.data.papers;
+            })
+            .catch(error => {
+                console.error(error);
+            });
     },
     getDownloadRoute(paper) {
       return route("paper.show", paper.id);

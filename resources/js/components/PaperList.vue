@@ -38,6 +38,46 @@
                 </span>
                 {{ paper.comments[0].comment }}
               </span>
+              <span v-if="paper.subcategory.includes('Admin - print ready version') && paper.id == firstPrintReadyId">
+                    <span v-if="paper.print_ready_approved == 'Y'">
+                        <br />
+                        <article class="message is-success">
+                            <div class="message-body">
+                                <span class="has-text-weight-bold">Approved.</span> {{ paper.print_ready_comment }}
+                            </div>
+                        </article>
+                    </span>
+                    <span v-else-if="(paper.print_ready_approved == 'N') && paper.print_ready_comment">
+                        <br />
+                        <article class="message is-danger">
+                            <div class="message-body">
+                                <span class="has-text-weight-bold">Rejected :</span> {{ paper.print_ready_comment }}
+                            </div>
+                        </article>
+                    </span>
+                    <span v-else-if="isSetter">
+                        <hr />
+                        <label class="label">Approve the print-ready paper?</label>
+                        <div class="field has-addons">
+                            <p class="control">
+                                <span class="select">
+                                    <select v-model="approvePaperChoice">
+                                        <option value="Y">Yes</option>
+                                        <option value="N">No</option>
+                                    </select>
+                                </span>
+                            </p>
+                            <p class="control is-expanded">
+                                <input v-model="approvePaperComment" class="input" type="text" placeholder="Comments?" maxlength="200">
+                            </p>
+                            <p class="control">
+                                <button @click.prevent="approvePrintReady(paper)" class="button is-info">
+                                    Submit
+                                </button>
+                            </p>
+                        </div>
+                    </span>
+              </span>
             </p>
           </div>
         </div>
@@ -86,8 +126,18 @@ export default {
       showModal: false,
       paperToDelete: null,
       user_id: window.user_id,
-      user_admin: window.user_admin
+      user_admin: window.user_admin,
+      approvePaperChoice: false,
+      approvePaperComment: '',
+      firstPrintReadyId: this.papers.find(paper => paper.subcategory.includes('Admin - print ready version')) ? this.papers.find(paper => paper.subcategory.includes('Admin - print ready version')).id : null
     };
+  },
+  computed: {
+    isSetter() {
+      return this.course.setters.find(
+        setter => setter.id == this.user_id
+      );
+    }
   },
   methods: {
     getUserName(paper) {
@@ -100,6 +150,13 @@ export default {
       this.$emit("paper-removed", this.paperToDelete);
       this.showModal = false;
       this.paperToDelete = null;
+    },
+    approvePrintReady(paper) {
+        if (this.approvePaperChoice == 'N' && !this.approvePaperComment) {
+            alert('Please provide a comment if you are not approving the print-ready paper.');
+            return;
+        }
+      this.$emit("approve-print-ready", paper, this.approvePaperChoice, this.approvePaperComment);
     },
     getDownloadRoute(paper) {
       if (paper.subcategory == 'comment' || paper.subcategory == 'Updated Checklist') {

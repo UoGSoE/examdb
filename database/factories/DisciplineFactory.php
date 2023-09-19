@@ -2,19 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Discipline;
-use App\AcademicSession;
+use App\Models\AcademicSession;
+use App\Models\Discipline;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class DisciplineFactory extends Factory
 {
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
-    protected $model = Discipline::class;
-
     /**
      * Define the model's default state.
      *
@@ -23,7 +16,7 @@ class DisciplineFactory extends Factory
     public function definition()
     {
         return [
-            'title' => $this->faker->word,
+            'title' => $this->faker->word(),
             'academic_session_id' => optional(AcademicSession::first())->id ?? AcademicSession::factory(),
         ];
     }

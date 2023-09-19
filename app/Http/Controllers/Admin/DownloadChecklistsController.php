@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\User;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
@@ -19,7 +19,6 @@ class DownloadChecklistsController extends Controller
         if (Gate::denies('download_registry', $user)) {
             abort(401);
         }
-
 
         activity()->causedBy($user)->log('Downloaded paper checklists ZIP');
 

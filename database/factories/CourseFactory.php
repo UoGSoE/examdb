@@ -2,18 +2,11 @@
 
 namespace Database\Factories;
 
-use App\AcademicSession;
+use App\Models\AcademicSession;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CourseFactory extends Factory
 {
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
-    protected $model = \App\Course::class;
-
     /**
      * Define the model's default state.
      *

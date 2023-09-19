@@ -2,7 +2,7 @@
 
 namespace App\Scopes;
 
-use App\AcademicSession;
+use App\Models\AcademicSession;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
@@ -19,7 +19,7 @@ class CurrentAcademicSessionScope implements Scope
             $currentSession = AcademicSession::getDefault();
         }
 
-        if (!$currentSession) {
+        if (! $currentSession) {
             abort(500, 'No academic session set');
         }
 

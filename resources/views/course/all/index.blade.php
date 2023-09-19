@@ -28,7 +28,7 @@
                     <span class="icon">
                         <i class="fas fa-quote-left has-text-grey-light"></i>
                     </span>
-                    {{ optional($paper->comments->first())->comment }}
+                    {{ $paper->comments->first()?->comment }}
                     @endif
                 </td>
             </tr>

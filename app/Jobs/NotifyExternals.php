@@ -2,16 +2,16 @@
 
 namespace App\Jobs;
 
-use App\Course;
-use Carbon\Carbon;
-use App\Discipline;
-use Illuminate\Bus\Queueable;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Queue\SerializesModels;
+use App\Models\Course;
+use App\Models\Discipline;
 use App\Mail\ExternalHasPapersToLookAt;
-use Illuminate\Queue\InteractsWithQueue;
+use Carbon\Carbon;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Mail;
 
 class NotifyExternals implements ShouldQueue
 {

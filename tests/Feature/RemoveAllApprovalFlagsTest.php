@@ -2,17 +2,17 @@
 
 namespace Tests\Feature;
 
-use App\Course;
-use Tests\TestCase;
-use App\AcademicSession;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Models\AcademicSession;
+use App\Models\Course;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class RemoveAllApprovalFlagsTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         AcademicSession::createFirstSession();

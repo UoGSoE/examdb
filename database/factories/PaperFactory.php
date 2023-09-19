@@ -2,20 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Course;
-use App\Paper;
-use App\User;
+use App\Models\Course;
+use App\Models\Paper;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PaperFactory extends Factory
 {
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
-    protected $model = \App\Paper::class;
-
     /**
      * Define the model's default state.
      *
@@ -24,8 +17,8 @@ class PaperFactory extends Factory
     public function definition()
     {
         return [
-            'filename' => $this->faker->unique()->word.'.pdf',
-            'original_filename' => $this->faker->unique()->word.'.pdf',
+            'filename' => $this->faker->unique()->word().'.pdf',
+            'original_filename' => $this->faker->unique()->word().'.pdf',
             'mimetype' => 'application/pdf',
             'category' => 'main',
             'subcategory' => 'Pre-Internally Moderated Paper',
@@ -36,6 +29,7 @@ class PaperFactory extends Factory
             'course_id' => function () {
                 return create(Course::class)->id;
             },
+            'print_ready_reminder_sent' => null,
         ];
     }
 

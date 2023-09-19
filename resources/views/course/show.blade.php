@@ -9,6 +9,7 @@
 @push('scripts')
 <script>
   window.is_moderator = @json(Auth::check() && Auth::user()->isModeratorFor($course));
+  window.is_admin = @json(Auth::check() && Auth::user()->isAdmin());
   window.api_key = '{{ config('exampapers.api_key') }}';
 </script>
 @endpush

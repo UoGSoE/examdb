@@ -2,18 +2,11 @@
 
 namespace Database\Factories;
 
-use App\AcademicSession;
+use App\Models\AcademicSession;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AcademicSessionFactory extends Factory
 {
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
-    protected $model = AcademicSession::class;
-
     /**
      * Define the model's default state.
      *
@@ -22,7 +15,7 @@ class AcademicSessionFactory extends Factory
     public function definition()
     {
         return [
-            'session' => now()->year . '/' . (now()->year + 1),
+            'session' => now()->year.'/'.(now()->year + 1),
             'is_default' => false,
         ];
     }

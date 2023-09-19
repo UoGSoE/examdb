@@ -2,26 +2,26 @@
 
 namespace Tests\Feature\Admin;
 
-use App\User;
-use App\Course;
-use App\Discipline;
-use Tests\TestCase;
-use App\AcademicSession;
+use App\Models\AcademicSession;
+use App\Models\Course;
+use App\Models\Discipline;
 use App\Jobs\NotifyExternals;
+use App\Mail\ExternalHasPapersToLookAt;
+use App\Mail\NotifyExternalSpecificCourse;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\ExternalHasPapersToLookAt;
 use Illuminate\Support\Facades\Storage;
-use App\Mail\NotifyExternalSpecificCourse;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class NotifyExternalsTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         AcademicSession::createFirstSession();

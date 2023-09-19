@@ -2,20 +2,20 @@
 
 namespace App\Jobs;
 
-use App\User;
 use App\Jobs\ImportCourseRow;
+use App\Mail\CourseImportProcessComplete;
+use App\Scopes\CurrentAcademicSessionScope;
+use App\Models\User;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redis;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
-use App\Mail\CourseImportProcessComplete;
-use App\Scopes\CurrentAcademicSessionScope;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 
 class ImportCourseDataBatch implements ShouldQueue
 {
@@ -61,8 +61,8 @@ class ImportCourseDataBatch implements ShouldQueue
                 ->all()
         );
         $batch->allowFailures()->finally(function ($batch) use ($user) {
-            $errors = Redis::smembers($batch->id . '-errors');
-            Redis::del($batch->id . '-errors');
+            $errors = Redis::smembers($batch->id.'-errors');
+            Redis::del($batch->id.'-errors');
             Mail::to($user)->queue(new CourseImportProcessComplete($errors));
         })->dispatch();
     }

@@ -2,12 +2,12 @@
 
 namespace App\Exporters;
 
-use App\User;
-use App\Paper;
-use Illuminate\Support\Str;
 use App\Jobs\RemoveRegistryZip;
-use Illuminate\Support\Facades\URL;
+use App\Models\Paper;
+use App\Models\User;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 
 class PaperExporter
 {
@@ -25,17 +25,17 @@ class PaperExporter
 
     public function export(): string
     {
-        $papers = Paper::where('subcategory', 'like', $this->subcategory . '%')->get();
+        $papers = Paper::where('subcategory', 'like', $this->subcategory.'%')->get();
 
         $localZipname = tempnam(sys_get_temp_dir(), '/'.config('exampapers.registry_temp_file_prefix'));
         $zip = new \ZipArchive();
         $zip->open($localZipname, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
         $papers->each(function ($paper) use ($zip) {
-            $localFilename = sys_get_temp_dir() . '/' . Str::random(64);
+            $localFilename = sys_get_temp_dir().'/'.Str::random(64);
             file_put_contents($localFilename, decrypt(Storage::disk('exampapers')->get($paper->filename)));
             $paperFilename = $paper->course->code.'_'.ucfirst($paper->category).'_'.$paper->original_filename;
             if (in_array($paperFilename, $this->allFilenames)) {
-                $paperFilename = $paper->course->code . '_' . ucfirst($paper->category) . '_' . rand(1, 9) . '_' . $paper->original_filename;
+                $paperFilename = $paper->course->code.'_'.ucfirst($paper->category).'_'.rand(1, 9).'_'.$paper->original_filename;
             }
             $this->allFilenames[] = $paperFilename;
             $zip->addFile($localFilename, '/papers/'.$paperFilename);

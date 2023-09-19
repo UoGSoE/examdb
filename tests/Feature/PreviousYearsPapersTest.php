@@ -2,19 +2,19 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use App\AcademicSession;
-use App\Course;
-use App\Paper;
-use App\User;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Models\AcademicSession;
+use App\Models\Course;
+use App\Models\Paper;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class PreviousYearsPapersTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         AcademicSession::createFirstSession();
@@ -62,5 +62,4 @@ class PreviousYearsPapersTest extends TestCase
 
         $response->assertForbidden();
     }
-
 }

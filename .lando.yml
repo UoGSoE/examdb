@@ -2,9 +2,14 @@ name: examdb
 recipe: laravel
 config:
   webroot: public
-  php: '8.0'
+  php: '8.1'
   cache: redis
 services:
+  appserver:
+    scanner:
+      okCodes:
+        401
+        200
   mail:
     type: mailhog
     portforward: true

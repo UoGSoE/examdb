@@ -1,18 +1,18 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
-use App\AcademicSession;
-use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\Cache;
+use App\Models\AcademicSession;
 use App\CanBeCreatedFromOutsideSources;
-use Spatie\Activitylog\Models\Activity;
-use Illuminate\Notifications\Notifiable;
-use Lab404\Impersonate\Models\Impersonate;
 use App\Scopes\CurrentAcademicSessionScope;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\URL;
+use Lab404\Impersonate\Models\Impersonate;
+use Spatie\Activitylog\Models\Activity;
 
 class User extends Authenticatable
 {
@@ -110,6 +110,7 @@ class User extends Authenticatable
         if (session()->missing('academic_session')) {
             return AcademicSession::getDefault();
         }
+
         return AcademicSession::findBySession(session('academic_session'));
     }
 
@@ -142,7 +143,8 @@ class User extends Authenticatable
 
     public function isSetterFor(Course $course): bool
     {
-        $cacheKey = $this->id . '_is_setter_for_' . $course->code;
+        $cacheKey = $this->id.'_is_setter_for_'.$course->code;
+
         return Cache::remember(
             $cacheKey,
             5,
@@ -150,12 +152,14 @@ class User extends Authenticatable
             ->wherePivot('is_setter', true)
             ->count() > 0
         );
+
         return $this->$cacheKey;
     }
 
     public function isModeratorFor(Course $course): bool
     {
-        $cacheKey = $this->id . '_is_moderator_for_' . $course->code;
+        $cacheKey = $this->id.'_is_moderator_for_'.$course->code;
+
         return Cache::remember(
             $cacheKey,
             5,
@@ -167,7 +171,8 @@ class User extends Authenticatable
 
     public function isExternalFor(Course $course): bool
     {
-        $cacheKey = $this->id . '_is_external_for_' . $course->code;
+        $cacheKey = $this->id.'_is_external_for_'.$course->code;
+
         return Cache::remember(
             $cacheKey,
             5,

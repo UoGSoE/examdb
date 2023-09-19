@@ -47,24 +47,24 @@
                 </portal-target>
             </div>
 
-            @impersonating
-            <div class="box impersonation-box shadow-lg">
-                <form method="GET" action="{{ route('impersonate.leave') }}">
-                    @csrf
-                    <button class="button is-outlined">Stop impersonating</button>
-                </form>
-            </div>
-            @endImpersonating
+            @if (auth()->check() && app('impersonate')->isImpersonating())
+                <div class="box impersonation-box shadow-lg">
+                    <form method="GET" action="{{ route('impersonate.leave') }}">
+                        @csrf
+                        <button class="button is-outlined">Stop impersonating</button>
+                    </form>
+                </div>
+            @endif
 
         </section>
 
         <div id="footer" class="footer">
             <div class="content has-text-centered">
                 University of Glasgow, School of Engineering Exam Database<br />
-                You can leave feedback about the new system using
+                {{-- You can leave feedback about the new system using
                 <a target="_blank" rel="noopener noreferrer" href="https://gla-my.sharepoint.com/:x:/r/personal/suzanne_robertson_glasgow_ac_uk/_layouts/15/guestaccess.aspx?e=4%3Ap1ogVo&at=9&CID=0b5ea03f-5873-772c-15c4-4cdd7b45401b&share=ERlE3RkeyM5Ps23YODTxXRgBPF5bsWJ793dFQ78j0FHrWg">
                     this Office365 spreadsheet.
-                </a>
+                </a> --}}
             </div>
         </div>
 

@@ -18,14 +18,17 @@
               </div>
             </div>
             <div class="control">
-              <div class="file">
+              <div class="file has-name">
                 <label class="file-label">
-                  <input class="file-input" type="file" name="resume" ref="paper" />
+                  <input class="file-input" type="file" name="resume" ref="paper" @change="handleFileChange" />
                   <span class="file-cta">
                     <span class="file-icon">
                       <i class="fas fa-upload" />
                     </span>
                     <span class="file-label">Choose a file…</span>
+                  </span>
+                  <span class="file-name">
+                    {{ fileName }}
                   </span>
                 </label>
               </div>
@@ -33,7 +36,7 @@
           </div>
           <p class="help">Max file size: 20MB</p><br>
 
-          <div class="field">
+          <div v-if="fileName" class="field">
             <div class="control">
               <textarea v-model="comment" class="textarea" placeholder="Optional Comments..."></textarea>
             </div>
@@ -89,6 +92,7 @@ export default {
       failed: false,
       errorMessage: '',
       dropdownOptions: [],
+      fileName: 'No file selected',
     };
   },
   computed: {
@@ -111,6 +115,12 @@ export default {
     },
   },
   methods: {
+    handleFileChange(event) {
+      const files = event.target.files;
+      if (files.length > 0) {
+        this.fileName = files[0].name;
+      }
+    },
       openDropdown() {
         this.show = !this.show;
         this.getApplicableSubcategories();

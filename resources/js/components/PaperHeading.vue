@@ -36,114 +36,118 @@
         </div>
       </div>
     </div>
-    <div class="level">
-      <div class="level-left">
-        <span class="level-item" v-if="is_local && canUpload">
-          <main-paper-uploader
-            :course="course"
-            :category="category"
-            buttontext="Main"
-            :subcategories="subcategories['main']"
-            @added="paperAdded"
-          >
-          </main-paper-uploader>
-        </span>
-
-        <span class="level-item" v-if="is_local && canUpload">
-          <main-paper-uploader
-            :course="course"
-            :category="category"
-            buttontext="Solution"
-            :subcategories="subcategories['solution']"
-            @added="paperAdded"
-          >
-          </main-paper-uploader>
-        </span>
-
-        <span v-if="course.has_main_paper_for_registry" class="level-item">
-            <button class="button" :class="{'has-background-success': course[`registry_approved_${category}`]}" @click.prevent="approvePaperForRegistry(category)">
-                Approve Paper for Registry
-            </button>
-        </span>
-      </div>
+    <div v-if="! hasChecklist" class="notification">
+        You need to complete the checklist before you can upload the <span v-text="category"></span> paper.
     </div>
-    <div class="level">
-      <div class="level-left">
-        <span class="level-item" v-if="is_local && canUpload">
-          <main-paper-uploader
-            :course="course"
-            :category="category"
-            buttontext="Assessment > 30% (> 25% UESTC)"
-            :subcategories="subcategories['assessment']"
-            @added="paperAdded"
-          >
-          </main-paper-uploader>
-        </span>
-
-        <span class="level-item" v-if="is_local && canUpload">
-          <comment-box
-            :course="course"
-            :category="category"
-            @added="paperAdded"
-          >
-          </comment-box>
-        </span>
-
-        <span class="level-item" v-if="is_external && canUpload">
-          <main-paper-uploader
-            :course="course"
-            :category="category"
-            :subcategories="subcategories['external']"
-            buttontext="Main"
-            @added="paperAdded"
-          >
-            <template slot="button-content">
-              <span class="icon has-text-success">
-                <i class="far fa-check-circle"></i>
-              </span>
-              <span>Add Main Comments</span>
-            </template>
-          </main-paper-uploader>
-        </span>
-
-        <span class="level-item" v-if="is_external && canUpload">
-          <main-paper-uploader
-            :course="course"
-            :category="category"
-            :subcategories="subcategories['external']"
-            buttontext="Solution"
-            @added="paperAdded"
-          >
-            <template slot="button-content">
-              <span class="icon has-text-success">
-                <i class="far fa-check-circle"></i>
-              </span>
-              <span>Add Solution Comments</span>
-            </template>
-          </main-paper-uploader>
-        </span>
-      </div>
-    </div>
-      <div class="level">
-        <div class="level-left">
-          <span class="level-item" v-if="is_external && canUpload">
-            <main-paper-uploader
-              :course="course"
-              :category="category"
-              :subcategories="subcategories['external']"
-              buttontext="Assessment"
-              @added="paperAdded"
-            >
-              <template slot="button-content">
-                <span class="icon has-text-success">
-                  <i class="far fa-check-circle"></i>
+    <div v-else>
+        <div class="level">
+            <div class="level-left">
+                <span class="level-item" v-if="is_local && canUpload">
+                <main-paper-uploader
+                    :course="course"
+                    :category="category"
+                    buttontext="Main"
+                    :subcategories="subcategories['main']"
+                    @added="paperAdded"
+                >
+                </main-paper-uploader>
                 </span>
-                <span>Add Assessment Comments</span>
-              </template>
-            </main-paper-uploader>
-          </span>
+
+                <span class="level-item" v-if="is_local && canUpload">
+                <main-paper-uploader
+                    :course="course"
+                    :category="category"
+                    buttontext="Solution"
+                    :subcategories="subcategories['solution']"
+                    @added="paperAdded"
+                >
+                </main-paper-uploader>
+                </span>
+
+                <span v-if="course.has_main_paper_for_registry" class="level-item">
+                    <button class="button" :class="{'has-background-success': course[`registry_approved_${category}`]}" @click.prevent="approvePaperForRegistry(category)">
+                        Approve Paper for Registry
+                    </button>
+                </span>
+            </div>
         </div>
-      </div>
+        <div class="level">
+            <div class="level-left">
+                <span class="level-item" v-if="is_local && canUpload">
+                <main-paper-uploader
+                    :course="course"
+                    :category="category"
+                    buttontext="Assessment > 30% (> 25% UESTC)"
+                    :subcategories="subcategories['assessment']"
+                    @added="paperAdded"
+                >
+                </main-paper-uploader>
+                </span>
+
+                <span class="level-item" v-if="is_local && canUpload">
+                <comment-box
+                    :course="course"
+                    :category="category"
+                    @added="paperAdded"
+                >
+                </comment-box>
+                </span>
+
+                <span class="level-item" v-if="is_external && canUpload">
+                <main-paper-uploader
+                    :course="course"
+                    :category="category"
+                    :subcategories="subcategories['external']"
+                    buttontext="Main"
+                    @added="paperAdded"
+                >
+                    <template slot="button-content">
+                    <span class="icon has-text-success">
+                        <i class="far fa-check-circle"></i>
+                    </span>
+                    <span>Add Main Comments</span>
+                    </template>
+                </main-paper-uploader>
+                </span>
+
+                <span class="level-item" v-if="is_external && canUpload">
+                <main-paper-uploader
+                    :course="course"
+                    :category="category"
+                    :subcategories="subcategories['external']"
+                    buttontext="Solution"
+                    @added="paperAdded"
+                >
+                    <template slot="button-content">
+                    <span class="icon has-text-success">
+                        <i class="far fa-check-circle"></i>
+                    </span>
+                    <span>Add Solution Comments</span>
+                    </template>
+                </main-paper-uploader>
+                </span>
+            </div>
+        </div>
+        <div class="level">
+            <div class="level-left">
+                <span class="level-item" v-if="is_external && canUpload">
+                    <main-paper-uploader
+                    :course="course"
+                    :category="category"
+                    :subcategories="subcategories['external']"
+                    buttontext="Assessment"
+                    @added="paperAdded"
+                    >
+                    <template slot="button-content">
+                        <span class="icon has-text-success">
+                        <i class="far fa-check-circle"></i>
+                        </span>
+                        <span>Add Assessment Comments</span>
+                    </template>
+                    </main-paper-uploader>
+                </span>
+            </div>
+        </div>
     </div>
     <!-- /main-papers-heading -->
   </div>
@@ -175,6 +179,9 @@ export default {
     secondResit() {
       return this.category == "resit2";
     },
+    hasChecklist() {
+        return this.course[`has_${this.category}_checklist`];
+    }
   },
   data() {
     return {

@@ -2,29 +2,29 @@
 
 namespace Tests\Feature;
 
-use App\User;
-use App\Course;
-use Tests\TestCase;
-use App\PaperChecklist;
-use App\AcademicSession;
-use App\Jobs\RemoveChecklistZip;
-use App\Jobs\BulkExportChecklists;
-use Illuminate\Support\Facades\Bus;
+use App\Models\AcademicSession;
+use App\Models\Course;
 use App\Exporters\ChecklistExporter;
+use App\Jobs\BulkExportChecklists;
+use App\Jobs\RemoveChecklistZip;
+use App\Mail\ChecklistsReadyToDownload;
+use App\Models\PaperChecklist;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
-use App\Mail\ChecklistsReadyToDownload;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 // fake the HTTP calls to the pdf printer api
 class ChecklistBulkDownloadTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         AcademicSession::createFirstSession();
@@ -82,7 +82,7 @@ class ChecklistBulkDownloadTest extends TestCase
         Storage::disk('exampapers')->assertExists('checklists/checklists_'.$admin->id.'.zip');
 
         // this is just to assert that we didn't leave any temp files around - too lazy to write a specific test for it :-/
-        $this->assertCount(0, Storage::disk('local')->files('checklists/' . $admin->id));
+        $this->assertCount(0, Storage::disk('local')->files('checklists/'.$admin->id));
     }
 
     /** @test */

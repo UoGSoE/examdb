@@ -44,10 +44,11 @@ $fa-font-path: '~@fortawesome/fontawesome-free/webfonts';
   position:fixed;
   top: 80px;
   right: 20px;
+  left: 20px;
   z-index: 10;
   opacity: 0;
   background-color: hsl(0, 0%, 100%);
-  animation: fade-in-out-success 4s;
+  animation: fade-in-out-success 8s;
 }
 
 @keyframes fade-in-out-success {

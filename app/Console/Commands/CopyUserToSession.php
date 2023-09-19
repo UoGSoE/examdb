@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\User;
-use App\AcademicSession;
+use App\Models\AcademicSession;
+use App\Models\User;
 use Illuminate\Console\Command;
 
 class CopyUserToSession extends Command
@@ -49,7 +49,8 @@ class CopyUserToSession extends Command
         $existingCopy = User::withoutGlobalScope(CurrentAcademicSessionScope::class)->forAcademicSession($session)->where('username', '=', $user->username)->first();
 
         if ($existingCopy) {
-            $this->error('User ' . $user->username . ' already exists in '.$session->session);
+            $this->error('User '.$user->username.' already exists in '.$session->session);
+
             return Command::FAILURE;
         }
 

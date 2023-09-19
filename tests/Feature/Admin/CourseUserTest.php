@@ -2,18 +2,18 @@
 
 namespace Tests\Feature\Admin;
 
-use App\User;
-use App\Course;
-use Tests\TestCase;
-use App\AcademicSession;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Models\AcademicSession;
+use App\Models\Course;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class CourseUserTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         AcademicSession::createFirstSession();
@@ -36,10 +36,12 @@ class CourseUserTest extends TestCase
             'setters' => [
                 $setter1->id,
                 $setter2->id,
+                $moderator2->id,
             ],
             'moderators' => [
                 $moderator1->id,
                 $moderator2->id,
+                $setter1->id,
             ],
             'externals' => [
                 $external1->id,
@@ -49,15 +51,99 @@ class CourseUserTest extends TestCase
 
         $response->assertOk();
         $course = $course->fresh();
-        $this->assertCount(2, $course->setters);
+        $this->assertCount(3, $course->setters);
         $this->assertTrue($course->setters->contains($setter1));
         $this->assertTrue($course->setters->contains($setter2));
-        $this->assertCount(2, $course->moderators);
+        $this->assertTrue($course->setters->contains($moderator2));
+        $this->assertCount(3, $course->moderators);
         $this->assertTrue($course->moderators->contains($moderator1));
         $this->assertTrue($course->moderators->contains($moderator2));
+        $this->assertTrue($course->moderators->contains($setter1));
         $this->assertCount(2, $course->externals);
         $this->assertTrue($course->externals->contains($external1));
         $this->assertTrue($course->externals->contains($external2));
+    }
+
+    /** @test */
+    public function someone_can_be_marked_as_a_setter_and_subsequently_be_added_as_a_moderator()
+    {
+        $this->withoutExceptionHandling();
+        $admin = create(User::class, ['is_admin' => true]);
+        $course = create(Course::class);
+        $setter1 = create(User::class);
+        $setter2 = create(User::class);
+        $moderator1 = create(User::class);
+        $moderator2 = create(User::class);
+        $setter1->markAsSetter($course);
+        $setter2->markAsSetter($course);
+
+        $response = $this->actingAs($admin)->postJson(route('course.users.update', $course), [
+            'setters' => [
+                $setter1->id,
+                $setter2->id,
+            ],
+            'moderators' => [
+                $moderator1->id,
+                $moderator2->id,
+                $setter1->id,
+            ],
+            'externals' => [
+            ],
+        ]);
+
+        $response->assertOk();
+        $course = $course->fresh();
+        $this->assertCount(2, $course->setters);
+        $this->assertTrue($course->setters->contains($setter1));
+        $this->assertTrue($course->setters->contains($setter2));
+        $this->assertCount(3, $course->moderators);
+        $this->assertTrue($course->moderators->contains($moderator1));
+        $this->assertTrue($course->moderators->contains($moderator2));
+        $this->assertTrue($course->moderators->contains($setter1));
+        $this->assertCount(0, $course->externals);
+    }
+
+    /** @test */
+    public function someone_can_be_marked_as_a_moderator_and_subsequently_be_added_as_a_setter()
+    {
+        $this->withoutExceptionHandling();
+        $admin = create(User::class, ['is_admin' => true]);
+        $course = create(Course::class);
+        $setter1 = create(User::class);
+        $setter2 = create(User::class);
+        $moderator1 = create(User::class);
+        $moderator2 = create(User::class);
+        $setter1->markAsSetter($course);
+        $setter2->markAsSetter($course);
+        $moderator1->markAsModerator($course);
+        $moderator2->markAsModerator($course);
+
+        $response = $this->actingAs($admin)->postJson(route('course.users.update', $course), [
+            'setters' => [
+                $setter1->id,
+                $setter2->id,
+                $moderator1->id,
+            ],
+            'moderators' => [
+                $moderator1->id,
+                $moderator2->id,
+                $setter1->id,
+            ],
+            'externals' => [
+            ],
+        ]);
+
+        $response->assertOk();
+        $course = $course->fresh();
+        $this->assertCount(3, $course->setters);
+        $this->assertTrue($course->setters->contains($setter1));
+        $this->assertTrue($course->setters->contains($setter2));
+        $this->assertTrue($course->setters->contains($moderator1));
+        $this->assertCount(3, $course->moderators);
+        $this->assertTrue($course->moderators->contains($moderator1));
+        $this->assertTrue($course->moderators->contains($moderator2));
+        $this->assertTrue($course->moderators->contains($setter1));
+        $this->assertCount(0, $course->externals);
     }
 
     /** @test */

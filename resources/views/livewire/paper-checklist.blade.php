@@ -100,14 +100,60 @@
         <div class="field">
             <label for="" class="label">No. of markers</label>
             <p class="control is-expanded">
-                <input class="input" type="text" wire:model="checklist.fields.number_markers">
+                <input class="input" type="number" wire:model="checklist.fields.number_markers" min="1">
             </p>
         </div>
-
-
+        @error('number_markers') <p class="help has-text-danger has-text-weight-bold">{{ $message }}</p> @enderror
     </div>
 </div>
 
+@if (array_key_exists('number_questions', $checklist['fields']))
+    <div class="columns">
+        <div class="column">
+            <div class="field">
+                <label for="" class="label">No. of questions</label>
+                <p class="control is-expanded">
+                    <input class="input" type="number" wire:model="checklist.fields.number_questions" min="1" max="100">
+                </p>
+                @error('number_questions') <p class="help has-text-danger has-text-weight-bold">{{ $message }}</p> @enderror
+            </div>
+        </div>
+
+        <div class="column">
+            @if ($checklist['fields']['number_questions'] ?? 0 > 0)
+                @foreach (collect(range(1, $checklist['fields']['number_questions'] ?? 1))->chunk(2) as $chunkedCounts)
+                    <div class="columns">
+                        @foreach ($chunkedCounts as $questionCount)
+                            <div class="column" wire:key="setter-column-q{{ $questionCount }}">
+                                <label class="label">Setter Q{{ $questionCount }} | Datasheet required?</label>
+                                <div class="field has-addons">
+                                    <div class="control">
+                                        <div class="select">
+                                            <select wire:model="checklist.fields.question_setter_{{ $questionCount - 1 }}"  wire:key="setter-select-q{{ $questionCount }}">
+                                                @foreach ($setters as $setter)
+                                                    <option value="{{ $setter->full_name }}">{{ $setter->full_name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="control">
+                                        <div class="select">
+                                            <select wire:model="checklist.fields.question_datasheet_{{ $questionCount - 1 }}"  wire:key="setter-select-ds{{ $questionCount }}">
+                                                <option value="">Choose...</option>
+                                                <option value="yes">Yes</option>
+                                                <option value="no">No</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endforeach
+            @endif
+        </div>
+    </div>
+@endif
 <div class="columns">
     <div class="column">
 
@@ -129,13 +175,16 @@
                 <input class="input" x-ref="passed_to_moderator" type="text" wire:model.lazy="checklist.fields.passed_to_moderator">
             </p>
         <span class="help">(Note: setting/changing this will email the @choice('moderator|moderators', $course->moderators))</span>
+        @error('date_passed_to_moderator')
+            <span id="date-passed-to-moderator-error" class="help has-text-danger has-text-weight-bold">{{ $message }}</span>
+        @enderror
         </div>
     </div>
 </div>
 @if (auth()->user()->isSetterFor($course) && !isset($checklist['id']))
 <div class="field">
     <div class="control">
-        <button wire:click.prevent="save" class="button">Save</button>
+        <button wire:click.prevent="save('A')" class="button">Save Section A</button>
     </div>
 </div>
 @endif
@@ -150,45 +199,52 @@
     </legend>
 
     <div class="field">
-        <label for="" class="label">Is the overall quality of the assessment task appropriate?</label>
+        <label for="" class="label">I agree that this assessment task can now be sent to the External Examiner</label>
         <p class="control is-expanded">
             <div class="select is-fullwidth">
                 <select wire:model="checklist.fields.overall_quality_appropriate" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
-                    <option value="1">Yes</option>
                     <option value="0">No</option>
+                    <option value="1">Yes</option>
                 </select>
             </div>
         </p>
     </div>
 
     <div class="field">
-        <label class="label">If you have answered ‘No’, please indicate why. For example, if you disagreed with the setter’s judgement on any aspect of the assessment task. Please provide evidence and any other details:</label>
+        <label class="label">
+            If you have answered 'No', please indicate why. For example, if you disagreed with the
+            setter's judgement on any aspect of the assessment task or recommend any revisions to questions.
+            Please provide details: (MANDATORY)<br />
+        </label>
         <p class="control is-expanded">
             <textarea class="textarea"  @if (! auth()->user()->isModeratorFor($course)) disabled @endif wire:model="checklist.fields.why_innapropriate" id=""></textarea>
         </p>
+        @error('comments') <p class="help is-danger">{{ $message }}</p> @enderror
     </div>
 
-    <div class="field">
-        <label for="" class="label">
-            Do you recommend that any of the questions should be revised?  By ANSWERING YES the paper will
-            be returned to the setter to make adjustments.  By ANSWERING NO you are happy with the paper to move to the next stage.
-        </label>
-        <p class="control is-expanded">
-            <div class="select is-fullwidth">
-                <select wire:model="checklist.fields.should_revise_questions" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
-                    <option value="1">Yes</option>
-                    <option value="0">No</option>
-                </select>
-            </div>
-        </p>
-    </div>
+    @if ($shouldShowOldModeratorQuestion)
+        <div class="field">
+            <label for="" class="label">
+                Do you recommend that any of the questions should be revised?  By ANSWERING YES the paper will
+                be returned to the setter to make adjustments.  By ANSWERING NO you are happy with the paper to move to the next stage.
+            </label>
+            <p class="control is-expanded">
+                <div class="select is-fullwidth">
+                    <select wire:model="checklist.fields.should_revise_questions" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+            </p>
+        </div>
 
-    <div class="field">
-        <label class="label">Please indicate the recommended revisions:</label>
-        <p class="control is-expanded">
-            <textarea class="textarea" @if (! auth()->user()->isModeratorFor($course)) disabled @endif wire:model="checklist.fields.recommended_revisions" id=""></textarea>
-        </p>
-    </div>
+        <div class="field">
+            <label class="label">Please indicate the recommended revisions:</label>
+            <p class="control is-expanded">
+                <textarea class="textarea" @if (! auth()->user()->isModeratorFor($course)) disabled @endif wire:model="checklist.fields.recommended_revisions" id=""></textarea>
+            </p>
+        </div>
+    @endif
 
     <div class="field">
         <label class="label">Any other comments:</label>
@@ -199,13 +255,13 @@
 
     <div class="columns">
         <div class="column">
-
             <div class="field">
                 <label for="" class="label">Moderators Name</label>
                 <p class="control">
                     <input class="input" type="text" wire:model="checklist.fields.moderator_esignature" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
                 </p>
             </div>
+            @error('moderator_name') <p id="moderator-name-error" class="help is-danger">{{ $message }}</p> @enderror
         </div>
         <div class="column">
             <div class="field">
@@ -218,6 +274,7 @@
                     <input class="input" @if (! auth()->user()->isModeratorFor($course)) disabled @endif x-ref="moderator_completed_at" type="text" wire:model.lazy="checklist.fields.moderator_completed_at">
                 </p>
             </div>
+            @error('moderator_date') <p id="moderator-date-error" class="help is-danger">{{ $message }}</p> @enderror
         </div>
     </div>
 
@@ -227,6 +284,14 @@
             <textarea class="textarea" @if (! auth()->user()->isSetterFor($course) or ($course->isApprovedByModerator($checklist['category']))) disabled @endif wire:model="checklist.fields.setter_comments_to_moderator" id=""></textarea>
         </p>
     </div>
+
+    @if ((auth()->user()->isModeratorFor($course) || auth()->user()->isSetterFor($course)) && !isset($checklist['id']))
+        <div class="field">
+            <div class="control">
+                <button wire:click.prevent="save('B')" class="button">Save Section B</button>
+            </div>
+        </div>
+    @endif
 
     {{--
     @if ((auth()->user()->isModeratorFor($course) or auth()->user()->isSetterFor($course)) && !isset($checklist['id']))
@@ -247,42 +312,49 @@
     </legend>
 
     <div class="field">
-        <label for="" class="label">Do you agree that the marks awarded are appropriate?</label>
+        <label for="" class="label">I agree that this assessment task can now be sent to the External Examiner</label>
         <p class="control is-expanded">
             <div class="select is-fullwidth">
                 <select wire:model="checklist.fields.solution_marks_appropriate" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
-                    <option value="1">Yes</option>
                     <option value="0">No</option>
+                    <option value="1">Yes</option>
                 </select>
             </div>
         </p>
     </div>
 
     <div class="field">
-        <label class="label">If you have answered ‘No’, please indicate why. For example, if you disagreed with the setter’s judgement on any aspect of the marks. Please provide evidence and any other details:</label>
+        <label class="label">
+            If you have answered 'No', please indicate why. For example, if you disagreed with the
+            setter's judgement on any aspect of the assessment task or recommend any revisions to questions.
+            Please provide details: (MANDATORY)
+        </label>
         <p class="control is-expanded">
             <textarea class="textarea" @if (! auth()->user()->isModeratorFor($course)) disabled @endif wire:model="checklist.fields.moderator_solution_innapropriate_comments" id=""></textarea>
         </p>
+        @error('solution_comments') <p class="help is-danger">{{ $message }}</p> @enderror
     </div>
 
-    <div class="field">
-        <label for="" class="label">Do you recommend that marks should be adjusted?</label>
-        <p class="control is-expanded">
-            <div class="select is-fullwidth">
-                <select @if (! auth()->user()->isModeratorFor($course)) disabled @endif wire:model="checklist.fields.solutions_marks_adjusted">
-                    <option value="1">Yes</option>
-                    <option value="0">No</option>
-                </select>
-            </div>
-        </p>
-    </div>
+    @if ($shouldShowOldModeratorQuestion)
+        <div class="field">
+            <label for="" class="label">Do you recommend that marks should be adjusted?</label>
+            <p class="control is-expanded">
+                <div class="select is-fullwidth">
+                    <select @if (! auth()->user()->isModeratorFor($course)) disabled @endif wire:model="checklist.fields.solutions_marks_adjusted">
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+            </p>
+        </div>
 
-    <div class="field">
-        <label class="label">Please indicate the recommended adjustment:</label>
-        <p class="control is-expanded">
-            <textarea @if (! auth()->user()->isModeratorFor($course)) disabled @endif class="textarea" wire:model="checklist.fields.solution_adjustment_comments" id=""></textarea>
-        </p>
-    </div>
+        <div class="field">
+            <label class="label">Please indicate the recommended adjustment:</label>
+            <p class="control is-expanded">
+                <textarea @if (! auth()->user()->isModeratorFor($course)) disabled @endif class="textarea" wire:model="checklist.fields.solution_adjustment_comments" id=""></textarea>
+            </p>
+        </div>
+    @endif
 
     <div class="field">
         <label class="label">Any further comments</label>
@@ -321,14 +393,22 @@
         </p>
     </div>
 
-    @if ((auth()->user()->isModeratorFor($course) or auth()->user()->isSetterFor($course)) && !isset($checklist['id']))
+    @if ((auth()->user()->isModeratorFor($course) || auth()->user()->isSetterFor($course)) && !isset($checklist['id']))
+        <div class="field">
+            <div class="control">
+                <button wire:click.prevent="save('C')" class="button">Save Section C</button>
+            </div>
+        </div>
+    @endif
+
+{{--     @if ((auth()->user()->isModeratorFor($course) or auth()->user()->isSetterFor($course)) && !isset($checklist['id']))
     <div class="field">
         <div class="control">
             <button  wire:click.prevent="save" class="button">Save</button>
         </div>
     </div>
     @endif
-
+--}}
     <hr>
 
 </fieldset>
@@ -396,11 +476,11 @@
     </div>
 
     @if (auth()->user()->isExternalFor($course) && !isset($checklist['id']))
-    <div class="field">
-        <div class="control">
-            <button wire:click.prevent="save" class="button">Save</button>
+        <div class="field">
+            <div class="control">
+                <button wire:click.prevent="save('D')" class="button">Save</button>
+            </div>
         </div>
-    </div>
     @endif
 </fieldset>
 </form>

@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Course;
+use App\Models\Course;
 use Illuminate\Console\Command;
 use InvalidArgumentException;
 
@@ -45,6 +45,7 @@ class DuplicateCourse extends Command
         $course = Course::findByCode($existingCode);
         if (! $course) {
             $this->error("Could not find course {$existingCode}");
+
             return 1;
         }
 
@@ -52,10 +53,12 @@ class DuplicateCourse extends Command
             $newCourse = $course->createDuplicate($newCode);
         } catch (InvalidArgumentException $e) {
             $this->error($e->getMessage());
+
             return 1;
         }
 
         $this->info("New course {$newCode} created with ID {$newCourse->id}.");
+
         return 0;
     }
 }

@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Course;
-use App\User;
+use App\Models\Course;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SolutionFactory extends Factory
@@ -23,8 +23,8 @@ class SolutionFactory extends Factory
     public function definition()
     {
         return [
-            'filename' => $this->faker->unique()->word.'.pdf',
-            'originalFilename' => $this->faker->unique()->word.'.pdf',
+            'filename' => $this->faker->unique()->word().'.pdf',
+            'originalFilename' => $this->faker->unique()->word().'.pdf',
             'mimetype' => 'application/pdf',
             'category' => 'main',
             'size' => $this->faker->randomNumber(5),

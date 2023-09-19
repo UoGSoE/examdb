@@ -2,13 +2,13 @@
 
 namespace App\Console\Commands;
 
-use App\User;
-use App\Course;
-use App\Discipline;
-use App\AcademicSession;
+use App\Models\AcademicSession;
+use App\Models\Course;
+use App\Models\Discipline;
+use App\Scopes\CurrentAcademicSessionScope;
+use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use App\Scopes\CurrentAcademicSessionScope;
 
 class RetrofitAcademicSession extends Command
 {

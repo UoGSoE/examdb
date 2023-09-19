@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Scopes\CurrentScope;
 use App\Scopes\NotHiddenScope;
@@ -11,15 +11,25 @@ class Paper extends Model
 {
     use HasFactory;
 
-    const PAPER_FOR_REGISTRY = 'Paper For Registry';
-    const EXTERNAL_COMMENTS = 'External Examiner Comments';
-    const EXTERNAL_SOLUTION_COMMENTS = 'External Examiner Solution Comments';
-    const PRE_INTERNALLY_MODERATED = 'Pre-Internally Moderated Paper';
-    const POST_INTERNALLY_MODERATED = 'Post-Internally Moderated Paper';
-    const MODERATOR_COMMENTS = 'Moderator Comments';
-    const SECOND_RESIT_CATEGORY = 'resit2';
-    const VALID_CATEGORIES = ['main', 'resit', 'resit2', 'assessment'];
-    const COMMENT_SUBCATEGORY = 'comment';
+    public const PAPER_FOR_REGISTRY = 'Paper For Registry';
+
+    public const EXTERNAL_COMMENTS = 'External Examiner Comments';
+
+    public const EXTERNAL_SOLUTION_COMMENTS = 'External Examiner Solution Comments';
+
+    public const PRE_INTERNALLY_MODERATED = 'Pre-Internally Moderated Paper';
+
+    public const POST_INTERNALLY_MODERATED = 'Post-Internally Moderated Paper';
+
+    public const MODERATOR_COMMENTS = 'Moderator Comments';
+
+    public const ADMIN_PRINT_READY_VERSION = 'Admin - print ready version';
+
+    public const SECOND_RESIT_CATEGORY = 'resit2';
+
+    public const VALID_CATEGORIES = ['main', 'resit', 'resit2', 'assessment'];
+
+    public const COMMENT_SUBCATEGORY = 'comment';
 
     protected $guarded = [];
 
@@ -28,7 +38,7 @@ class Paper extends Model
     protected $casts = [
         'approved_setter' => 'boolean',
         'archived_at' => 'datetime',
-        'is_hidden' => 'boolean'
+        'is_hidden' => 'boolean',
     ];
 
     protected $appends = ['icon', 'formatted_date', 'diff_for_humans', 'formatted_size'];
@@ -37,8 +47,8 @@ class Paper extends Model
     {
         parent::boot();
 
-        static::addGlobalScope(new CurrentScope);
-        static::addGlobalScope(new NotHiddenScope);
+        static::addGlobalScope(new CurrentScope());
+        static::addGlobalScope(new NotHiddenScope());
     }
 
     public function user()

@@ -2,19 +2,20 @@
 
 namespace Tests\Feature;
 
-use App\User;
-use App\Paper;
-use App\Course;
-use App\Discipline;
 use Tests\TestCase;
-use App\AcademicSession;
+use App\Models\User;
+use App\Models\Paper;
+use App\Models\Course;
+use App\Models\Discipline;
 use App\Mail\PaperForRegistry;
 use App\Mail\ChecklistUploaded;
+use App\Models\AcademicSession;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
 use Illuminate\Foundation\Testing\WithFaker;
+use App\Mail\NotifySetterAboutPrintReadyPaper;
 use App\Mail\NotifySetterAboutExternalComments;
 use App\Mail\NotifySetterAboutModeratorComments;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -24,7 +25,7 @@ class PaperUploadTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         AcademicSession::createFirstSession();
@@ -277,5 +278,38 @@ class PaperUploadTest extends TestCase
 
         $response->assertSuccessful();
         $this->assertCount(1, $course->fresh()->papers);
+    }
+
+    /** @test */
+    public function if_an_admin_uploads_the_print_ready_paper_an_email_is_sent_to_the_setters_to_let_them_know()
+    {
+        Mail::fake();
+        Storage::fake('exampapers');
+
+        $discipline = create(Discipline::class, ['contact' => 'someone@example.com']);
+        $course = create(Course::class, ['code' => 'ENG1234', 'discipline_id' => $discipline->id]);
+        $setter1 = User::factory()->create();
+        $setter2 = User::factory()->create();
+        $setter3 = User::factory()->create();
+        $admin = User::factory()->admin()->create();
+        $setter1->markAsSetter($course);
+        $setter2->markAsSetter($course);
+
+        $response = $this->actingAs($admin)->postJson(route('course.paper.store', $course->id), [
+            'paper' => UploadedFile::fake()->create('main_paper_1.pdf', 1),
+            'category' => 'main',
+            'subcategory' => Paper::ADMIN_PRINT_READY_VERSION,
+            'comment' => 'Whatever',
+        ]);
+
+        $response->assertSuccessful();
+        $this->assertCount(1, $course->fresh()->papers);
+        Mail::assertQueued(NotifySetterAboutPrintReadyPaper::class, 2);
+        Mail::assertQueued(NotifySetterAboutPrintReadyPaper::class, function ($mail) use ($setter1, $course) {
+            return $mail->hasTo($setter1->email) && $mail->course->is($course);
+        });
+        Mail::assertQueued(NotifySetterAboutPrintReadyPaper::class, function ($mail) use ($setter2, $course) {
+            return $mail->hasTo($setter2->email) && $mail->course->is($course);
+        });
     }
 }

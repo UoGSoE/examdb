@@ -2,28 +2,30 @@
 
 namespace App\Jobs;
 
-use App\User;
-use App\Course;
-use App\Discipline;
-use App\AcademicSession;
+use App\Models\AcademicSession;
+use App\Models\Course;
+use App\Models\Discipline;
+use App\Mail\DataWasCopiedToNewSession;
+use App\Scopes\CurrentAcademicSessionScope;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Queue\SerializesModels;
-use App\Mail\DataWasCopiedToNewSession;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Queue\InteractsWithQueue;
-use App\Scopes\CurrentAcademicSessionScope;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 
 class CopyDataToNewAcademicSession implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $sourceSession;
+
     public $targetSession;
+
     public $user;
 
     /**
@@ -57,7 +59,7 @@ class CopyDataToNewAcademicSession implements ShouldQueue
                                         ->where('academic_session_id', '=', $this->targetSession->id)
                                         ->first();
                 }
-                $newCourse = $this->replicateForNewSession($course, ['discipline_id' => optional($newDiscipline)->id]);
+                $newCourse = $this->replicateForNewSession($course, ['discipline_id' => $newDiscipline?->id]);
                 foreach ($newCourse->flagsToClearOnDuplication as $flag) {
                     $newCourse->$flag = false;
                 }

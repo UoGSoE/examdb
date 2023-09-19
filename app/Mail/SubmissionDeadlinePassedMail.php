@@ -14,6 +14,7 @@ class SubmissionDeadlinePassedMail extends Mailable
     use Queueable, SerializesModels;
 
     public $deadline;
+
     public $courses = [];
 
     /**

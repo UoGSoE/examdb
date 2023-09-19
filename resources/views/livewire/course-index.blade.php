@@ -3,8 +3,9 @@
         <div class="level-left">
             <div class="level-item">
                 <div class="field is-grouped">
+                    <p class="control"><button class="button is-success" disabled>Discipline</button></p>
                     <p class="control">
-                        <button class="button" wire:click.prevent="$set('disciplineFilter', null)">
+                        <button wire:click.prevent="$set('disciplineFilter', null)" class="button @if (!$disciplineFilter) is-info @endif" @if (!$disciplineFilter) disabled @endif>
                             All
                         </button>
                     </p>
@@ -16,6 +17,16 @@
                         </button>
                     </p>
                     @endforeach
+                    <p class="control"><button class="button is-success" disabled>Semester</button></p>
+                    <div class="control">
+                        <div class="select">
+                          <select wire:model="semesterFilter">
+                            <option value="">All</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                          </select>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -83,7 +94,7 @@
                     @livewire('semester-edit-box', ['course' => $course], key($course->id))
                 </td>
                 <td>{{ $course->title }}</td>
-                <td>{{ optional($course->discipline)->title }}</td>
+                <td>{{ $course->discipline?->title }}</td>
                 <td>
                     <span class="icon {{ $course->hasSetterChecklist('main') ? 'has-text-info' : 'has-text-grey-light' }}" title="Setter has filled checklist?">
                         <i class="fas fa-user-tie"></i>

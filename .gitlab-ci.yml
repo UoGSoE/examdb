@@ -35,7 +35,8 @@ cache:
   # - vendor/
   # - node_modules/
 
-test:
+php-checks:
+  stage: test
   image: $QA_IMAGE_NAME
 
   services:
@@ -70,12 +71,22 @@ test:
   - if [[ -f /root/.composer/vendor/bin/security-checker ]]; then php /root/.composer/vendor/bin/security-checker security:check ./composer.lock ; fi
   - if [[ -f /usr/local/bin/phpcs ]]; then php /usr/local/bin/phpcs --config-set ignore_warnings_on_exit 1 ; php /usr/local/bin/phpcs --standard=PSR2 app ; fi
 
+dotenv-check:
+  stage: test
+  script:
+    - echo "Checking PROD_DOTENV for keys not in .env.example"
+    - echo "$PROD_DOTENV" > .env
+    - diff --new-line-format='' --unchanged-line-format='' <(sort .env | grep -vE '^\s*$' | egrep -v '^#' | sed -e 's/=.*//') <(sort .env.example | grep -vE '^\s*$' | egrep -v '^#' | sed -e 's/=.*//')
+    - echo "Checking QA_DOTENV for keys not in .env.example"
+    - echo "$QA_DOTENV" > .env
+    - diff --new-line-format='' --unchanged-line-format='' <(sort .env | grep -vE '^\s*$' | egrep -v '^#' | sed -e 's/=.*//') <(sort .env.example | grep -vE '^\s*$' | egrep -v '^#' | sed -e 's/=.*//')
+
 build-qa-tagged:
   stage: build-qa
   image: docker:stable
   script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-  - DOCKER_BUILDKIT=1 docker build --build-arg PHP_VERSION=${PHP_VERSION} --target=ci -t $QA_IMAGE_NAME .
+  - DOCKER_BUILDKIT=1 docker build --build-arg PHP_VERSION=8.1 --target=ci -t $QA_IMAGE_NAME .
   - docker push $QA_IMAGE_NAME
 
 build-prod-tagged:

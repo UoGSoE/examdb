@@ -2,18 +2,18 @@
 
 namespace Tests\Feature;
 
-use App\User;
-use App\Paper;
-use Tests\TestCase;
-use App\AcademicSession;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Models\AcademicSession;
+use App\Models\Paper;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class GdprTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         AcademicSession::createFirstSession();
@@ -48,7 +48,7 @@ class GdprTest extends TestCase
                                 'comment' => 'hello there',
                             ],
                         ],
-                            ],
+                    ],
                     [
                         'category' => $paper2->category,
                         'subcategory' => $paper2->subcategory,
