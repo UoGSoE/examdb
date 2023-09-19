@@ -45,6 +45,13 @@ class OptionsEditor extends Component
 
         return Option::all()->flatMap(function ($option) use ($defaultDateOptionKeys) {
             if ($defaultDateOptionKeys->contains($option['key'])) {
+                if (! $option->value) {
+                    // this is a hacky fix for a change to the 'options' package
+                    // at some point between versions it started casting the values as json
+                    // which breaks the existing data in the db
+                    // this... might fix it...
+                    $option->value = $option->getRawOriginal('value');
+                }
                 return [$option->key => Carbon::createFromFormat('Y-m-d', $option->value)->format('d/m/Y')];
             }
 
