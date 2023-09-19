@@ -50,6 +50,7 @@ class OptionsEditor extends Component
                     // at some point between versions it started casting the values as json
                     // which breaks the existing data in the db
                     // this... might fix it...
+                    // -- sept 2023
                     $option->value = $option->getRawOriginal('value');
                 }
                 return [$option->key => Carbon::createFromFormat('Y-m-d', $option->value)->format('d/m/Y')];
