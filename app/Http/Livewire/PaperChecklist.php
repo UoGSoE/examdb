@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\Models\Course;
 use App\Models\PaperChecklist as Checklist;
+use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use Tests\Feature\LivewirePaperChecklistTest;
@@ -40,6 +41,7 @@ class PaperChecklist extends Component
         if (auth()->user()->isSetterFor($course)) {
             $setters = $setters->reject(fn ($setter) => $setter->id == auth()->id())->prepend(auth()->user());
         }
+        $setters = $setters->concat(User::orderBy('surname')->get());
         $this->setters = $setters;
     }
 
