@@ -41,6 +41,27 @@ class LivewirePaperChecklistTest extends TestCase
     }
 
     /** @test */
+    public function the_list_of_setters_is_the_course_setters_followed_by_all_other_staff()
+    {
+        $setter1 = User::factory()->create(['surname' => 'aaaa']);
+        $setter2 = User::factory()->create(['surname' => 'bbbb']);
+        $setter3 = User::factory()->create(['surname' => 'cccc']);
+        $otherStaff1 = User::factory()->create(['surname' => 'dddd']);
+        $otherStaff2 = User::factory()->create(['surname' => 'eeee']);
+        $course = create(Course::class);
+        $course->setters()->attach([$setter1->id, $setter2->id, $setter3->id]);
+        $paper = create(Paper::class, ['course_id' => $course->id, 'category' => 'main', 'user_id' => $setter1->id]);
+
+        Livewire::actingAs($setter1)->test('paper-checklist', ['course' => $course])
+            ->assertSet('setters.0.id', $setter1->id)
+            ->assertSet('setters.1.id', $setter2->id)
+            ->assertSet('setters.2.id', $setter3->id)
+            ->assertSet('setters.3.id', $otherStaff1->id)
+            ->assertSet('setters.4.id', $otherStaff2->id)
+        ;
+    }
+
+    /** @test */
     public function when_the_number_of_questions_is_updated_the_correct_dynamic_fields_are_created()
     {
         $this->withoutExceptionHandling();
