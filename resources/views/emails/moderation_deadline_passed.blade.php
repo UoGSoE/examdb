@@ -1,9 +1,7 @@
 @component('mail::message')
 # Moderation deadline has passed.
 
-Dear exam paper moderator,  This is a reminder to moderate the exam papers for the upcoming exam
-diet and the resit paper by {{ $deadline->format('d/m/Y') }}. Please remember to complete and upload the
-checklist as without the checklist, the moderation process will not be triggered.
+Dear exam paper moderator, your exam paper moderation is overdue and will impede the timely execution of our exam paper schedule, including External Examiner review.  A short in person meeting will be scheduled with the Head of School and appropriate Head of Discipline to understand the delay.
 
 @if (count($courses))
 @component('mail::panel')
