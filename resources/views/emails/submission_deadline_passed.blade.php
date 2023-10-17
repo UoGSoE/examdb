@@ -1,9 +1,7 @@
 @component('mail::message')
 # Exam paper submission deadline has passed
 
-Dear exam paper question setter,  This is a reminder to upload your exam paper for the upcoming
-exam diet and the resit paper by {{ $deadline->format('d/m/Y') }}. Please remember to complete and upload the checklist
-as without the checklist, the moderation process will not be triggered
+Dear exam paper question setter, your exam paper is overdue and will impede the timely execution of our exam paper schedule, including moderation.  A short in person meeting will be scheduled with the Head of School and appropriate Head of Discipline to understand the delay.
 
 @if (count($courses))
 @component('mail::panel')
