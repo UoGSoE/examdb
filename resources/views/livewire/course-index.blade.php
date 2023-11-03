@@ -91,7 +91,7 @@
                     </a>
                 </td>
                 <td>
-                    @livewire('semester-edit-box', ['course' => $course], key($course->id))
+                    {{ $course->semester }}
                 </td>
                 <td>{{ $course->title }}</td>
                 <td>{{ $course->discipline?->title }}</td>
