@@ -127,10 +127,15 @@ class TimedNotifications extends Command
 
             return;
         }
-
-        if ($date->dayOfYear > now()->dayOfYear) {
+        if (! $date->isToday()) {
             return;
         }
+        // changed to ^^ Nov 2023.  The code below was a safety net (also why flags are set) so if, for instance,
+        // the power was off when the email should be sent, it would be sent when the power came back on even if
+        // it wasn't the 'right' date.
+        // if ($date->dayOfYear > now()->dayOfYear) {
+        //     return;
+        // }
 
         $currentSemester = $this->getCurrentSemester();
 
