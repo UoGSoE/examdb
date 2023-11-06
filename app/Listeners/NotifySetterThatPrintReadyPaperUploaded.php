@@ -2,12 +2,10 @@
 
 namespace App\Listeners;
 
-use App\Models\Paper;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Mail\NotifySetterAboutPrintReadyPaper;
+use App\Models\Paper;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class NotifySetterThatPrintReadyPaperUploaded
 {

@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Course;
 use App\Events\PaperAdded;
+use App\Models\Course;
 use App\Models\Paper;
 use App\Scopes\CurrentAcademicSessionScope;
 use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rule;
 
 class PaperController extends Controller
 {
@@ -23,13 +21,13 @@ class PaperController extends Controller
 
         $allSessionCourses = Course::withoutGlobalScope(CurrentAcademicSessionScope::class)->where('code', '=', $course->code)->get();
         $papers = Paper::withoutGlobalScope(CurrentAcademicSessionScope::class)
-                    ->with([
-                        'user' => fn ($query) => $query->withoutGlobalScope(CurrentAcademicSessionScope::class),
-                        'comments',
-                    ])
-                    ->whereIn('course_id', $allSessionCourses->pluck('id')->values())
-                    ->orderByDesc('created_at')
-                    ->get();
+            ->with([
+                'user' => fn ($query) => $query->withoutGlobalScope(CurrentAcademicSessionScope::class),
+                'comments',
+            ])
+            ->whereIn('course_id', $allSessionCourses->pluck('id')->values())
+            ->orderByDesc('created_at')
+            ->get();
 
         return view('course.all.index', [
             'course' => $course,
@@ -72,8 +70,8 @@ class PaperController extends Controller
         // then we can check if they can view the paper from past 'versions' of the course in the
         // PaperPolicy::view() method which they might not have had anything to do with.
         $paper = Paper::withoutGlobalScope(CurrentAcademicSessionScope::class)
-                    ->with(['course' => fn ($query) => $query->withoutGlobalScope(CurrentAcademicSessionScope::class)])
-                    ->findOrFail($paperId);
+            ->with(['course' => fn ($query) => $query->withoutGlobalScope(CurrentAcademicSessionScope::class)])
+            ->findOrFail($paperId);
         $currentVersionOfCourse = Course::where('code', '=', $paper->course->code)->firstOrFail();
         $paper->setRelation('course', $currentVersionOfCourse);
 

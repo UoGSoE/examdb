@@ -63,7 +63,7 @@ class Course extends Model
     public function staff()
     {
         return $this->belongsToMany(User::class, 'course_user', 'course_id', 'user_id')
-                    ->withPivot('is_moderator', 'is_setter', 'is_external');
+            ->withPivot('is_moderator', 'is_setter', 'is_external');
     }
 
     public function moderators()
@@ -109,8 +109,8 @@ class Course extends Model
     public function latestPrintReadyPaper()
     {
         return $this->hasOne(Paper::class)->ofMany([
-            'created_at' => 'max'
-        ], fn ($query) => $query->where('subcategory', 'like', '%'. Paper::ADMIN_PRINT_READY_VERSION . '%'));
+            'created_at' => 'max',
+        ], fn ($query) => $query->where('subcategory', 'like', '%'.Paper::ADMIN_PRINT_READY_VERSION.'%'));
     }
 
     public function resitPapers()
@@ -168,11 +168,11 @@ class Course extends Model
             // }
             $fields['number_questions'] = $fields['number_questions'] ?? 1;
             foreach (range(1, $fields['number_questions']) as $questionNumber) {
-                if (array_key_exists('question_setter_' . ($questionNumber - 1), $fields)) {
-                    $fieldsToUpdate[] = 'question_setter_' . ($questionNumber - 1);
+                if (array_key_exists('question_setter_'.($questionNumber - 1), $fields)) {
+                    $fieldsToUpdate[] = 'question_setter_'.($questionNumber - 1);
                 }
-                if (array_key_exists('question_datasheet_' . ($questionNumber - 1), $fields)) {
-                    $fieldsToUpdate[] = 'question_datasheet_' . ($questionNumber - 1);
+                if (array_key_exists('question_datasheet_'.($questionNumber - 1), $fields)) {
+                    $fieldsToUpdate[] = 'question_datasheet_'.($questionNumber - 1);
                 }
             }
         }
@@ -316,7 +316,7 @@ class Course extends Model
                     Mail::to($email)->queue(new SetterHasUpdatedTheChecklist($this, $deadline));
                 });
 
-                $flashMessage = $flashMessage . ' - moderators notified';
+                $flashMessage = $flashMessage.' - moderators notified';
             }
         }
 

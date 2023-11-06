@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\GdprPaperResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class GdprUserResource extends JsonResource

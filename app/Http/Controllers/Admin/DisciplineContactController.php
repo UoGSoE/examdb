@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Discipline;
 use App\Http\Controllers\Controller;
+use App\Models\Discipline;
 use Illuminate\Http\Request;
 
 class DisciplineContactController extends Controller

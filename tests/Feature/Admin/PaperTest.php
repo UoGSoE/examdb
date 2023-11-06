@@ -7,7 +7,6 @@ use App\Models\Course;
 use App\Models\Discipline;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -90,9 +89,9 @@ class PaperTest extends TestCase
         $printReadyPaper = create(
             \App\Models\Paper::class,
             [
-            'course_id' => $course1->id,
-            'subcategory' => \App\Models\Paper::ADMIN_PRINT_READY_VERSION,
-            'category' => 'main']
+                'course_id' => $course1->id,
+                'subcategory' => \App\Models\Paper::ADMIN_PRINT_READY_VERSION,
+                'category' => 'main']
         );
 
         $response = $this->actingAs($admin)->get(route('paper.index'));

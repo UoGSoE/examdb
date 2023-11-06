@@ -35,7 +35,7 @@ return [
 
     'pdf' => [
         'enabled' => true,
-        'binary'  => env('WKHTML_PDF_BINARY', '/usr/local/bin/wkhtmltopdf'),
+        'binary' => env('WKHTML_PDF_BINARY', '/usr/local/bin/wkhtmltopdf'),
         'timeout' => false,
         'options' => [
             'enable-local-file-access' => true,
@@ -43,15 +43,15 @@ return [
             'javascript-delay' => 500,
             'enable-javascript' => true,
         ],
-        'env'     => [],
+        'env' => [],
     ],
 
     'image' => [
         'enabled' => false,
-        'binary'  => env('WKHTML_IMG_BINARY', '/usr/local/bin/wkhtmltoimage'),
+        'binary' => env('WKHTML_IMG_BINARY', '/usr/local/bin/wkhtmltoimage'),
         'timeout' => false,
         'options' => [],
-        'env'     => [],
+        'env' => [],
     ],
 
 ];

@@ -3,9 +3,9 @@
 namespace App\Providers;
 
 use App\Models\AcademicSession;
+use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Foundation\Console\AboutCommand;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,10 +22,11 @@ class AppServiceProvider extends ServiceProvider
             });
         });
 
-        AboutCommand::add("Academic Sessions", function () {
+        AboutCommand::add('Academic Sessions', function () {
             foreach (AcademicSession::all() as $session) {
-                $sessionOutput[$session->id] = ($session->is_default ? '(Default) ' : '') . $session->session;
+                $sessionOutput[$session->id] = ($session->is_default ? '(Default) ' : '').$session->session;
             }
+
             return $sessionOutput;
         });
     }

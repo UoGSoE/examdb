@@ -2,20 +2,19 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use App\Models\User;
-use App\Models\Paper;
-use App\Models\Course;
-use App\Models\Discipline;
-use App\Models\AcademicSession;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
 use App\Mail\PrintReadyPaperApprovedMail;
 use App\Mail\PrintReadyPaperRejectedMail;
 use App\Mail\PrintReadyPaperReminderMail;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Models\AcademicSession;
+use App\Models\Course;
+use App\Models\Discipline;
+use App\Models\Paper;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+use Tests\TestCase;
 
 class PrintReadyApprovalTest extends TestCase
 {
@@ -224,12 +223,12 @@ class PrintReadyApprovalTest extends TestCase
         $newPaper = Paper::factory()->create([
             'subcategory' => Paper::ADMIN_PRINT_READY_VERSION,
             'course_id' => $course1->id,
-            'created_at' => now()->subHours(3)
+            'created_at' => now()->subHours(3),
         ]);
         $oldPaper = Paper::factory()->create([
             'subcategory' => Paper::ADMIN_PRINT_READY_VERSION,
             'course_id' => $course2->id,
-            'created_at' => now()->subHours(49)
+            'created_at' => now()->subHours(49),
         ]);
         $oldPaperAlreadyRemindedAbout = Paper::factory()->create([
             'subcategory' => Paper::ADMIN_PRINT_READY_VERSION,

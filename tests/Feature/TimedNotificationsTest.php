@@ -2,8 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\AcademicSession;
-use App\Models\Course;
 use App\Exceptions\TimedNotificationException;
 use App\Mail\CallForPapersMail;
 use App\Mail\ExternalModerationDeadlineMail;
@@ -14,11 +12,12 @@ use App\Mail\PrintReadyDeadlineMail;
 use App\Mail\PrintReadyDeadlinePassedMail;
 use App\Mail\SubmissionDeadlineMail;
 use App\Mail\SubmissionDeadlinePassedMail;
+use App\Models\AcademicSession;
+use App\Models\Course;
 use App\Models\Paper;
 use App\Models\PaperChecklist;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 

@@ -2,28 +2,21 @@
 
 namespace Tests\Feature;
 
-use App\Models\AcademicSession;
-use App\Models\Course;
 use App\Jobs\ImportCourseDataBatch;
 use App\Jobs\ImportCourseRow;
 use App\Mail\CourseImportProcessComplete;
-use App\Scopes\CurrentAcademicSessionScope;
+use App\Models\AcademicSession;
+use App\Models\Course;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Scopes\CurrentAcademicSessionScope;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Redis;
-use Ldap;
-use Mockery\MockInterface;
 use Ohffs\Ldap\FakeLdapConnection;
-use Ohffs\Ldap\LdapConnection;
 use Ohffs\Ldap\LdapConnectionInterface;
 use Ohffs\Ldap\LdapUser;
 use Ohffs\SimpleSpout\ExcelSheet;
-use Tests\TenantTestCase;
 use Tests\TestCase;
 
 class ImportCourseDataSpreadsheetTest extends TestCase

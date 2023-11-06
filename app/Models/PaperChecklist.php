@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use App\Scopes\CurrentScope;
-use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 /*
  <select name="previous_id" id="previous_id" wire:model="previousId">
@@ -69,6 +69,7 @@ class PaperChecklist extends Model
         'moderators',
         'passed_to_moderator',
     ];
+
     public const SECTION_B_FIELDS = [
         'overall_quality_appropriate',
         'why_innapropriate',
@@ -79,6 +80,7 @@ class PaperChecklist extends Model
         'moderator_esignature',
         'setter_comments_to_moderator',
     ];
+
     public const SECTION_C_FIELDS = [
         'solution_marks_appropriate',
         'moderator_solution_innapropriate_comments',
@@ -89,6 +91,7 @@ class PaperChecklist extends Model
         'moderator_esignature',
         'solution_setter_comments',
     ];
+
     public const SECTION_D_FIELDS = [
         'external_examiner_name',
         'external_agrees_with_moderator',
@@ -97,6 +100,7 @@ class PaperChecklist extends Model
         'external_signed_at',
         'external_esignature',
     ];
+
     public const SETTER_FIELDS = [
         'course_code',
         'course_title',
@@ -205,9 +209,9 @@ class PaperChecklist extends Model
     public function getPreviousChecklist()
     {
         return $this->where('id', '<', $this->id)
-                ->where('course_id', '=', $this->course_id)
-                ->where('category', '=', $this->category)
-                ->max('id');
+            ->where('course_id', '=', $this->course_id)
+            ->where('category', '=', $this->category)
+            ->max('id');
     }
 
     public function getNextChecklist()

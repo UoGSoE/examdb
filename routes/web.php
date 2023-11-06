@@ -1,9 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\CourseController;
-use App\Http\Controllers\Admin\PaperController;
-use App\Http\Controllers\Admin\UserController;
-
 Auth::routes();
 Route::post('/external-login', [\App\Http\Controllers\Auth\ExternalLoginController::class, 'sendLoginEmail'])->name('external-generate-login');
 Route::get('/external-login/{user}', [\App\Http\Controllers\Auth\ExternalLoginController::class, 'login'])->name('external-login')->middleware('signed');
@@ -79,7 +75,7 @@ Route::middleware('auth', 'academicsession')->group(function () {
         Route::post('options', [\App\Http\Controllers\Admin\OptionsController::class, 'update'])->name('admin.options.update');
 
         Route::get('/notify/externals', [\App\Http\Controllers\Admin\NotifyExternalsController::class, 'show'])
-                ->name('admin.notify.externals.show');
+            ->name('admin.notify.externals.show');
         Route::post('notify/externals', [\App\Http\Controllers\Admin\NotifyExternalsController::class, 'store'])->name('admin.notify.externals');
         Route::post('notify/{course}/externals', [\App\Http\Controllers\Admin\NotifyExternalsController::class, 'course'])->name('admin.notify.externals_course');
 

@@ -2,18 +2,15 @@
 
 namespace Tests\Feature;
 
-use App\Models\AcademicSession;
-use App\Models\Course;
 use App\Http\Livewire\PaperChecklist as LivewirePaperChecklist;
-use App\Mail\ChecklistUpdated;
 use App\Mail\ExternalHasUpdatedTheChecklist;
 use App\Mail\ModeratorHasUpdatedTheChecklist;
 use App\Mail\SetterHasUpdatedTheChecklist;
+use App\Models\AcademicSession;
+use App\Models\Course;
 use App\Models\PaperChecklist;
 use App\Models\User;
-use Database\Factories\PaperChecklistFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Livewire;
@@ -144,8 +141,7 @@ class ChecklistFormTest extends TestCase
             ->set('checklist.fields.number_questions', 3)
             ->assertSee('question_setter_0')
             ->assertSee('question_setter_1')
-            ->assertSee('question_setter_2')
-        ;
+            ->assertSee('question_setter_2');
     }
 
     /** @test */
@@ -409,7 +405,6 @@ class ChecklistFormTest extends TestCase
             ->assertHasErrors(['comments' => 'required'])
             ->assertSee('The comments field is required.');
 
-
         Mail::assertNothingQueued();
 
         Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
@@ -417,7 +412,6 @@ class ChecklistFormTest extends TestCase
             ->call('save', 'C')
             ->assertHasErrors(['solution_comments' => 'required'])
             ->assertSee('The solution comments field is required.');
-
 
         Mail::assertNothingQueued();
     }
@@ -506,10 +500,10 @@ class ChecklistFormTest extends TestCase
         $checklist->fields = array_merge(
             $checklist->fields,
             [
-                'overall_quality_appropriate' => "1",
-                'should_revise_questions' => "0",
-                'solution_marks_appropriate' => "1",
-                'solutions_marks_adjusted' => "0",
+                'overall_quality_appropriate' => '1',
+                'should_revise_questions' => '0',
+                'solution_marks_appropriate' => '1',
+                'solutions_marks_adjusted' => '0',
             ]
         );
 
@@ -538,16 +532,16 @@ class ChecklistFormTest extends TestCase
         $checklist->fields = array_merge(
             $checklist->fields,
             [
-                'overall_quality_appropriate' => "1",
-                'should_revise_questions' => "1",
+                'overall_quality_appropriate' => '1',
+                'should_revise_questions' => '1',
             ]
         );
 
         $course->fresh()->addChecklist($checklist->fields, 'main', 'B');
 
         $fields = $checklist->fields;
-        $fields['solution_marks_appropriate'] = "0";
-        $fields['solutions_marks_adjusted'] = "1";
+        $fields['solution_marks_appropriate'] = '0';
+        $fields['solutions_marks_adjusted'] = '1';
 
         $course->addChecklist($checklist->fields, 'main', 'B');
 
@@ -685,7 +679,7 @@ class ChecklistFormTest extends TestCase
         $this->actingAs($moderator);
         Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
             ->set('checklist.fields.course_title', 'Some other title')
-            ->set('checklist.fields.overall_quality_appropriate', "1")
+            ->set('checklist.fields.overall_quality_appropriate', '1')
             ->set('checklist.fields.moderator_comments', 'Cool story, bro')
             ->set('checklist.fields.external_comments', 'The external totes agrees with me')
             ->set('checklist.fields.moderator_esignature', $moderator->full_name)

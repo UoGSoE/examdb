@@ -2,17 +2,15 @@
 
 namespace Tests\Feature;
 
-use App\Models\AcademicSession;
-use App\Models\Course;
 use App\Exporters\PaperExporter;
-use App\Http\Controllers\Admin\ExportPapersForRegistryController;
 use App\Jobs\ExportPapersForRegistry;
 use App\Jobs\RemoveRegistryZip;
 use App\Mail\RegistryPapersExported;
+use App\Models\AcademicSession;
+use App\Models\Course;
 use App\Models\Paper;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;

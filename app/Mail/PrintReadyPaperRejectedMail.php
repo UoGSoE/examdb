@@ -6,9 +6,8 @@ use App\Models\Course;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\SerializesModels;
 
 class PrintReadyPaperRejectedMail extends Mailable
 {
@@ -32,7 +31,7 @@ class PrintReadyPaperRejectedMail extends Mailable
     public function envelope()
     {
         return new Envelope(
-            subject: 'Print Ready Paper Rejected for ' . $this->course->code,
+            subject: 'Print Ready Paper Rejected for '.$this->course->code,
         );
     }
 

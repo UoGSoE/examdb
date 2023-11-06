@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\Exporters\PaperExporter;
-use App\Jobs\RemoveRegistryZip;
 use App\Mail\RegistryPapersExported;
 use App\Models\Paper;
 use App\Models\User;

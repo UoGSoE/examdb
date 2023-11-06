@@ -2,16 +2,15 @@
 
 namespace Tests\Feature;
 
+use App\Jobs\CopyDataToNewAcademicSession;
+use App\Mail\DataWasCopiedToNewSession;
 use App\Models\AcademicSession;
 use App\Models\Course;
 use App\Models\Discipline;
-use App\Jobs\CopyDataToNewAcademicSession;
-use App\Mail\DataWasCopiedToNewSession;
-use App\Scopes\CurrentAcademicSessionScope;
 use App\Models\User;
+use App\Scopes\CurrentAcademicSessionScope;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
@@ -261,9 +260,9 @@ class AcademicSessionTest extends TestCase
         CopyDataToNewAcademicSession::dispatchSync($oldSession, $newSession, $admin);
 
         $copyOfCourse = Course::withoutGlobalScope(CurrentAcademicSessionScope::class)
-                ->where('code', '=', $course1->code)
-                ->where('academic_session_id', '=', $newSession->id)
-                ->firstOrFail();
+            ->where('code', '=', $course1->code)
+            ->where('academic_session_id', '=', $newSession->id)
+            ->firstOrFail();
         foreach ($copyOfCourse->flagsToClearOnDuplication as $flag) {
             $this->assertFalse($copyOfCourse->$flag);
         }

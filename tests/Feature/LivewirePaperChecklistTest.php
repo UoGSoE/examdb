@@ -7,7 +7,6 @@ use App\Models\Course;
 use App\Models\Paper;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -57,8 +56,7 @@ class LivewirePaperChecklistTest extends TestCase
             ->assertSet('setters.1.id', $setter2->id)
             ->assertSet('setters.2.id', $setter3->id)
             ->assertSet('setters.3.id', $otherStaff1->id)
-            ->assertSet('setters.4.id', $otherStaff2->id)
-        ;
+            ->assertSet('setters.4.id', $otherStaff2->id);
     }
 
     /** @test */
@@ -79,8 +77,7 @@ class LivewirePaperChecklistTest extends TestCase
             ->assertSet('checklist.fields.question_setter_0', $user->full_name)
             ->assertSet('checklist.fields.question_setter_1', $user->full_name)
             ->assertSet('checklist.fields.question_datasheet_0', '')
-            ->assertSet('checklist.fields.question_datasheet_1', '', strict: true)
-        ;
+            ->assertSet('checklist.fields.question_datasheet_1', '', strict: true);
     }
 
     /** @test */
@@ -106,8 +103,7 @@ class LivewirePaperChecklistTest extends TestCase
             ->set('checklist.fields.question_datasheet_1', 'no')
             ->set('checklist.fields.passed_to_moderator', now()->format('d/m/Y'))
             ->call('save', 'A')
-            ->assertHasNoErrors()
-        ;
+            ->assertHasNoErrors();
 
         tap($paper->course->checklists->first(), function ($checklist) use ($user) {
             $this->assertEquals($user->full_name, $checklist->fields['question_setter_0']);

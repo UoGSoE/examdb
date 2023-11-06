@@ -2,11 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Models\AcademicSession;
 use App\Mail\ExternalLoginUrl;
+use App\Models\AcademicSession;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Activitylog\Models\Activity;
 use Tests\TestCase;
@@ -118,7 +117,7 @@ class ExternalUsersLoginTest extends TestCase
         $this->assertFalse(\Auth::check());
 
         // and check we recorded this in the activity/audit log
-        tap(Activity::all()->last(), function ($log) use ($external) {
+        tap(Activity::all()->last(), function ($log) {
             $this->assertEquals('External tried to use a expired or invalid login url from IP 127.0.0.1', $log->description);
         });
     }
@@ -134,7 +133,7 @@ class ExternalUsersLoginTest extends TestCase
         $this->assertFalse(\Auth::check());
 
         // and check we recorded this in the activity/audit log
-        tap(Activity::all()->last(), function ($log) use ($external) {
+        tap(Activity::all()->last(), function ($log) {
             $this->assertEquals('External tried to use a expired or invalid login url from IP 127.0.0.1', $log->description);
         });
     }

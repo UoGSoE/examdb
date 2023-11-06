@@ -3,11 +3,9 @@
 namespace Tests\Unit;
 
 use App\Models\AcademicSession;
-use App\Models\Comment;
 use App\Models\Paper;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class CommentTest extends TestCase

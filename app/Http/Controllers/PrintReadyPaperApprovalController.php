@@ -34,7 +34,7 @@ class PrintReadyPaperApprovalController extends Controller
             activity()->causedBy($request->user())->performedOn($paper->course)->log('Approved print ready paper');
         } else {
             Mail::to($paper->getDisciplineContact())->queue(new \App\Mail\PrintReadyPaperRejectedMail($paper->course, $request->comment ?? ''));
-            activity()->causedBy($request->user())->performedOn($paper->course)->log('Rejected print ready paper saying : ' . $request->comment);
+            activity()->causedBy($request->user())->performedOn($paper->course)->log('Rejected print ready paper saying : '.$request->comment);
         }
 
         return response()->json([

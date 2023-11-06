@@ -6,7 +6,6 @@ use App\Models\AcademicSession;
 use App\Models\Course;
 use App\Models\Paper;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class CoursePapersTest extends TestCase

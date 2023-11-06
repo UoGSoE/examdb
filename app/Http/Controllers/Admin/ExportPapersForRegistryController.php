@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\ExportPapersForRegistry;
-use Illuminate\Http\Request;
 
 class ExportPapersForRegistryController extends Controller
 {
