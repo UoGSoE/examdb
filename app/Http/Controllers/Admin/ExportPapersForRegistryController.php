@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Jobs\ExportPapersForRegistry;
+use Illuminate\Http\JsonResponse;
 
 class ExportPapersForRegistryController extends Controller
 {

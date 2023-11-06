@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\View\View;
-use Symfony\Component\HttpFoundation\StreamedResponse;
-use Illuminate\Http\JsonResponse;
 use App\Events\PaperAdded;
 use App\Models\Course;
 use App\Models\Paper;
 use App\Scopes\CurrentAcademicSessionScope;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PaperController extends Controller
 {

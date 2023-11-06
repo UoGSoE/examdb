@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\View\View;
 use App\Models\Course;
 use App\Models\PaperChecklist;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use Illuminate\View\View;
 
 class ChecklistController extends Controller
 {

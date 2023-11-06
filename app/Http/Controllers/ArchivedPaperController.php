@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Models\Paper;
 use App\Scopes\CurrentScope;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ArchivedPaperController extends Controller
 {

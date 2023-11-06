@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\View\View;
 use App\Http\Controllers\Controller;
 use App\Scopes\CurrentAcademicSessionScope;
+use Illuminate\View\View;
 use Spatie\Activitylog\Models\Activity;
 
 class ActivityLogController extends Controller

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\View\View;
 use App\Http\Controllers\Controller;
 use App\Jobs\NotifyExternals;
 use App\Mail\NotifyExternalSpecificCourse;
@@ -10,6 +9,7 @@ use App\Models\Course;
 use App\Models\Discipline;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\View\View;
 
 class NotifyExternalsController extends Controller
 {

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\View\View;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Discipline;
+use Illuminate\View\View;
 
 class PaperController extends Controller
 {

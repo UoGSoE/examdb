@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\JsonResponse;
 use App\Models\Course;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class PaperForRegistryApprovalController extends Controller

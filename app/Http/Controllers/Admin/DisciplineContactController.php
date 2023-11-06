@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Discipline;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class DisciplineContactController extends Controller

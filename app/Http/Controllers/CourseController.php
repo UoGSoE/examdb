@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\View\View;
 use App\Models\Course;
 use App\Models\User;
+use Illuminate\View\View;
 
 class CourseController extends Controller
 {

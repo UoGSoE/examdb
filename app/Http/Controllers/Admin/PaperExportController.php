@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use Ohffs\SimpleSpout\ExcelSheet;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class PaperExportController extends Controller
 {

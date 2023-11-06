@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
+use Illuminate\Http\JsonResponse;
 
 class CourseStaffController extends Controller
 {

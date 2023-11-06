@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
 use App\Jobs\BulkExportChecklists;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class ExportChecklistsController extends Controller
