@@ -19,7 +19,7 @@ class OptionsTest extends TestCase
     }
 
     /** @test */
-    public function regular_users_cant_see_the_admin_options_page()
+    public function regular_users_cant_see_the_admin_options_page(): void
     {
         $user = create(User::class);
 
@@ -29,7 +29,7 @@ class OptionsTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_see_the_admin_options_page()
+    public function admins_can_see_the_admin_options_page(): void
     {
         $admin = create(User::class, ['is_admin' => true]);
 
@@ -41,7 +41,7 @@ class OptionsTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_set_the_system_options()
+    public function admins_can_set_the_system_options(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
@@ -86,7 +86,7 @@ class OptionsTest extends TestCase
     }
 
     /** @test */
-    public function options_have_to_be_in_valid_formats()
+    public function options_have_to_be_in_valid_formats(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
@@ -114,7 +114,7 @@ class OptionsTest extends TestCase
     }
 
     /** @test */
-    public function changing_a_deadline_clears_the_teaching_office_notification_flag()
+    public function changing_a_deadline_clears_the_teaching_office_notification_flag(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);

@@ -29,7 +29,7 @@ class ChecklistBulkDownloadTest extends TestCase
     }
 
     /** @test */
-    public function regular_users_cant_request_the_bulk_download_of_all_checklists()
+    public function regular_users_cant_request_the_bulk_download_of_all_checklists(): void
     {
         Queue::fake();
         $user = create(User::class, ['is_admin' => false]);
@@ -41,7 +41,7 @@ class ChecklistBulkDownloadTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_request_the_bulk_download_of_all_checklists()
+    public function admins_can_request_the_bulk_download_of_all_checklists(): void
     {
         $this->withoutExceptionHandling();
         Queue::fake();
@@ -54,7 +54,7 @@ class ChecklistBulkDownloadTest extends TestCase
     }
 
     /** @test */
-    public function the_bulk_export_job_creates_a_zip_file_and_emails_the_person_who_requested_it()
+    public function the_bulk_export_job_creates_a_zip_file_and_emails_the_person_who_requested_it(): void
     {
         Mail::fake();
         Http::fake([
@@ -84,7 +84,7 @@ class ChecklistBulkDownloadTest extends TestCase
     }
 
     /** @test */
-    public function only_the_person_who_requested_the_download_can_access_it()
+    public function only_the_person_who_requested_the_download_can_access_it(): void
     {
         $this->markTestSkipped('TODO - fix this up as the ChecklistExporter isnt used any more');
 
@@ -105,7 +105,7 @@ class ChecklistBulkDownloadTest extends TestCase
     }
 
     /** @test */
-    public function a_job_is_queued_which_will_remove_the_zip_file()
+    public function a_job_is_queued_which_will_remove_the_zip_file(): void
     {
         Mail::fake();
         Http::fake([
@@ -127,7 +127,7 @@ class ChecklistBulkDownloadTest extends TestCase
     }
 
     /** @test */
-    public function the_remove_checklist_zip_job_does_remove_the_zip()
+    public function the_remove_checklist_zip_job_does_remove_the_zip(): void
     {
         Mail::fake();
         Http::fake([

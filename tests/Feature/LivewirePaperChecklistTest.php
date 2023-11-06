@@ -21,7 +21,7 @@ class LivewirePaperChecklistTest extends TestCase
     }
 
     /** @test */
-    public function we_can_see_the_paper_checklist_page_for_a_course()
+    public function we_can_see_the_paper_checklist_page_for_a_course(): void
     {
         $this->withoutExceptionHandling();
         $course = create(Course::class);
@@ -40,7 +40,7 @@ class LivewirePaperChecklistTest extends TestCase
     }
 
     /** @test */
-    public function the_list_of_setters_is_the_course_setters_followed_by_all_other_staff()
+    public function the_list_of_setters_is_the_course_setters_followed_by_all_other_staff(): void
     {
         $setter1 = User::factory()->create(['surname' => 'aaaa']);
         $setter2 = User::factory()->create(['surname' => 'bbbb']);
@@ -60,7 +60,7 @@ class LivewirePaperChecklistTest extends TestCase
     }
 
     /** @test */
-    public function when_the_number_of_questions_is_updated_the_correct_dynamic_fields_are_created()
+    public function when_the_number_of_questions_is_updated_the_correct_dynamic_fields_are_created(): void
     {
         $this->withoutExceptionHandling();
         $course = create(Course::class);
@@ -81,7 +81,7 @@ class LivewirePaperChecklistTest extends TestCase
     }
 
     /** @test */
-    public function when_section_A_is_saved_the_dynamic_fields_are_correctly_stored()
+    public function when_section_A_is_saved_the_dynamic_fields_are_correctly_stored(): void
     {
         $this->withoutExceptionHandling();
         $course = create(Course::class);

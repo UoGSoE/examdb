@@ -24,7 +24,7 @@ class NotifyTechingOfficePaperForRegistryUploaded
      *
      * @return void
      */
-    public function handle(PaperAdded $event)
+    public function handle(PaperAdded $event): void
     {
         if ($event->paper->subcategory != Paper::PAPER_FOR_REGISTRY) {
             return;

@@ -9,7 +9,7 @@ return new class() extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         \Illuminate\Support\Facades\DB::raw('UPDATE comments SET commentable_type = "App\Models\Paper" WHERE commentable_type = "App\Paper"');
     }
@@ -19,7 +19,7 @@ return new class() extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         \Illuminate\Support\Facades\DB::raw('UPDATE comments SET commentable_type = "App\Paper" WHERE commentable_type = "App\Models\Paper"');
     }

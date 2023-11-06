@@ -40,7 +40,7 @@ class CheckPasswordQuality implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $validator = Validator::make([
             'password' => $this->password,

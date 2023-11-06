@@ -34,7 +34,7 @@ class ExportPapersForRegistry implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $link = (new PaperExporter(Paper::PAPER_FOR_REGISTRY, $this->user))->export();
 

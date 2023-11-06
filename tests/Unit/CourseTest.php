@@ -21,7 +21,7 @@ class CourseTest extends TestCase
     }
 
     /** @test */
-    public function a_course_can_have_many_main_papers_added()
+    public function a_course_can_have_many_main_papers_added(): void
     {
         Storage::fake('exampapers');
         $user = create(User::class);
@@ -37,7 +37,7 @@ class CourseTest extends TestCase
     }
 
     /** @test */
-    public function a_course_can_have_many_resit_papers_added()
+    public function a_course_can_have_many_resit_papers_added(): void
     {
         Storage::fake('exampapers');
         $user = create(User::class);

@@ -19,7 +19,7 @@ class CommentTest extends TestCase
     }
 
     /** @test */
-    public function a_paper_can_have_comments_added_to_it()
+    public function a_paper_can_have_comments_added_to_it(): void
     {
         $user = create(User::class);
         login($user);

@@ -37,7 +37,7 @@ class DuplicateCourse extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $existingCode = strtoupper($this->argument('code'));
         $newCode = strtoupper($this->argument('newcode'));

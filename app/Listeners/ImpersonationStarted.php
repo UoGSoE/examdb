@@ -21,7 +21,7 @@ class ImpersonationStarted
      *
      * @return void
      */
-    public function handle(TakeImpersonation $event)
+    public function handle(TakeImpersonation $event): void
     {
         activity()
             ->causedBy($event->impersonator)

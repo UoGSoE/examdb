@@ -35,7 +35,7 @@ class TimedNotifications extends Command
         parent::__construct();
     }
 
-    public function handle()
+    public function handle(): void
     {
         $this->semester = $this->getCurrentSemester();
 

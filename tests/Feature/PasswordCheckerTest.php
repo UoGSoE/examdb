@@ -18,7 +18,7 @@ class PasswordCheckerTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function when_an_admin_logs_in_a_job_is_dispatched_to_check_their_password_against_nist_guidelines_and_p0wned_if_so_configured()
+    public function when_an_admin_logs_in_a_job_is_dispatched_to_check_their_password_against_nist_guidelines_and_p0wned_if_so_configured(): void
     {
         if (env('CI')) {
             $this->markTestSkipped('Skipping in CI');
@@ -38,7 +38,7 @@ class PasswordCheckerTest extends TestCase
     }
 
     /** @test */
-    public function when_an_admin_logs_in_a_job_is_not_dispatched_if_so_configured()
+    public function when_an_admin_logs_in_a_job_is_not_dispatched_if_so_configured(): void
     {
         if (env('CI')) {
             $this->markTestSkipped('Skipping in CI');
@@ -56,7 +56,7 @@ class PasswordCheckerTest extends TestCase
     }
 
     /** @test */
-    public function when_an_admin_logs_in_a_job_is_dispatched_to_check_their_password_against_nist_guidelines_and_p0wned()
+    public function when_an_admin_logs_in_a_job_is_dispatched_to_check_their_password_against_nist_guidelines_and_p0wned(): void
     {
         if (env('CI')) {
             $this->markTestSkipped('Skipping in CI');
@@ -76,7 +76,7 @@ class PasswordCheckerTest extends TestCase
     }
 
     /** @test */
-    public function a_bad_password_triggers_an_activity_log_entry_and_a_mail_to_a_sysadmin()
+    public function a_bad_password_triggers_an_activity_log_entry_and_a_mail_to_a_sysadmin(): void
     {
         if (env('CI')) {
             $this->markTestSkipped('Skipping in CI');
@@ -99,7 +99,7 @@ class PasswordCheckerTest extends TestCase
     }
 
     /** @test */
-    public function a_strong_password_does_not_trigger_an_exception_inside_the_dispatched_job()
+    public function a_strong_password_does_not_trigger_an_exception_inside_the_dispatched_job(): void
     {
         if (env('CI')) {
             $this->markTestSkipped('Skipping in CI');

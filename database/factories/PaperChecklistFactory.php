@@ -14,7 +14,7 @@ class PaperChecklistFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         $fields = make(Course::class)->getDefaultChecklistFields();
 

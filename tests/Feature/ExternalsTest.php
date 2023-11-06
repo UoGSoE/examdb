@@ -22,7 +22,7 @@ class ExternalsTest extends TestCase
     }
 
     /** @test */
-    public function a_user_can_see_all_the_courses_they_are_an_external_for()
+    public function a_user_can_see_all_the_courses_they_are_an_external_for(): void
     {
         $staff = User::factory()->external()->create();
         $course1 = create(Course::class);
@@ -46,7 +46,7 @@ class ExternalsTest extends TestCase
     }
 
     /** @test */
-    public function a_user_can_see_the_page_for_an_individual_course_they_are_external_for()
+    public function a_user_can_see_the_page_for_an_individual_course_they_are_external_for(): void
     {
         $this->withoutExceptionHandling();
         $staff = User::factory()->external()->create();
@@ -62,7 +62,7 @@ class ExternalsTest extends TestCase
     }
 
     /** @test */
-    public function a_user_cant_see_the_page_for_a_course_they_arent_involved_with()
+    public function a_user_cant_see_the_page_for_a_course_they_arent_involved_with(): void
     {
         $staff = User::factory()->external()->create();
         $course1 = create(Course::class);
@@ -73,7 +73,7 @@ class ExternalsTest extends TestCase
     }
 
     /** @test */
-    public function an_external_cant_delete_any_papers()
+    public function an_external_cant_delete_any_papers(): void
     {
         Storage::fake('exampapers');
         $staff = User::factory()->external()->create();
@@ -90,7 +90,7 @@ class ExternalsTest extends TestCase
     }
 
     /** @test */
-    public function an_external_can_download_any_paper_for_a_course_they_are_on()
+    public function an_external_can_download_any_paper_for_a_course_they_are_on(): void
     {
         $this->withoutExceptionHandling();
         Storage::fake('exampapers');
@@ -114,7 +114,7 @@ class ExternalsTest extends TestCase
     }
 
     /** @test */
-    public function an_external_cant_download_any_paper_for_a_course_they_are_not_on()
+    public function an_external_cant_download_any_paper_for_a_course_they_are_not_on(): void
     {
         Storage::fake('exampapers');
         $user = create(User::class);

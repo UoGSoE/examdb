@@ -14,7 +14,7 @@ class PaperFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'filename' => $this->faker->unique()->word().'.pdf',

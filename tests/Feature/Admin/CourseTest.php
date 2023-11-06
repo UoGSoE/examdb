@@ -21,7 +21,7 @@ class CourseTest extends TestCase
     }
 
     /** @test */
-    public function an_admin_can_see_the_list_of_all_courses()
+    public function an_admin_can_see_the_list_of_all_courses(): void
     {
         $admin = create(User::class, ['is_admin' => true]);
         $course1 = Course::factory()->create();
@@ -37,7 +37,7 @@ class CourseTest extends TestCase
     }
 
     /** @test */
-    public function an_admin_can_filter_the_list_of_courses_in_various_ways()
+    public function an_admin_can_filter_the_list_of_courses_in_various_ways(): void
     {
         $admin = create(User::class, ['is_admin' => true]);
         $discipline1 = create(Discipline::class);
@@ -72,7 +72,7 @@ class CourseTest extends TestCase
     }
 
     /** @test */
-    public function an_admin_can_export_the_list_of_courses_as_an_excel_sheet()
+    public function an_admin_can_export_the_list_of_courses_as_an_excel_sheet(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
@@ -86,7 +86,7 @@ class CourseTest extends TestCase
     }
 
     /** @test */
-    public function an_admin_can_disable_a_course()
+    public function an_admin_can_disable_a_course(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
@@ -101,7 +101,7 @@ class CourseTest extends TestCase
     }
 
     /** @test */
-    public function an_admin_can_enable_a_course()
+    public function an_admin_can_enable_a_course(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
@@ -118,7 +118,7 @@ class CourseTest extends TestCase
     }
 
     /** @test */
-    public function an_admin_can_edit_a_course()
+    public function an_admin_can_edit_a_course(): void
     {
         $this->withoutExceptionHandling();
         $admin = User::factory()->admin()->create();
@@ -150,7 +150,7 @@ class CourseTest extends TestCase
     }
 
     /** @test */
-    public function we_can_call_an_artisan_command_to_make_a_deep_clone_of_an_existing_course_with_a_new_course_code()
+    public function we_can_call_an_artisan_command_to_make_a_deep_clone_of_an_existing_course_with_a_new_course_code(): void
     {
         $discipline1 = Discipline::factory()->create();
         $discipline2 = Discipline::factory()->create();

@@ -24,7 +24,7 @@ class UserFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'surname' => str_replace("'", '', $this->faker->lastName()),

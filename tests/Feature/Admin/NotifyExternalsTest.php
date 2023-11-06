@@ -27,7 +27,7 @@ class NotifyExternalsTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_trigger_a_job_to_notify_externals_to_look_at_the_system()
+    public function admins_can_trigger_a_job_to_notify_externals_to_look_at_the_system(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
@@ -47,7 +47,7 @@ class NotifyExternalsTest extends TestCase
     }
 
     /** @test */
-    public function non_admins_cant_trigger_a_job_to_notify_externals()
+    public function non_admins_cant_trigger_a_job_to_notify_externals(): void
     {
         $user = create(User::class);
         $discipline = create(Discipline::class);
@@ -64,7 +64,7 @@ class NotifyExternalsTest extends TestCase
     }
 
     /** @test */
-    public function external_notifications_only_go_to_externals_about_courses_in_the_current_semester()
+    public function external_notifications_only_go_to_externals_about_courses_in_the_current_semester(): void
     {
         Mail::fake();
         Storage::fake('exampapers');
@@ -94,7 +94,7 @@ class NotifyExternalsTest extends TestCase
     }
 
     /** @test */
-    public function external_notifications_only_go_to_externals_about_courses_that_have_papers()
+    public function external_notifications_only_go_to_externals_about_courses_that_have_papers(): void
     {
         Mail::fake();
         Storage::fake('exampapers');
@@ -123,7 +123,7 @@ class NotifyExternalsTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_manually_notify_the_externals_for_a_given_course()
+    public function admins_can_manually_notify_the_externals_for_a_given_course(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
@@ -150,7 +150,7 @@ class NotifyExternalsTest extends TestCase
     }
 
     /** @test */
-    public function manually_notifying_the_externals_for_a_course_marks_the_course_as_having_notified_the_externals()
+    public function manually_notifying_the_externals_for_a_course_marks_the_course_as_having_notified_the_externals(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);

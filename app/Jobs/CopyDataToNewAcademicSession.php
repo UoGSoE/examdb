@@ -44,7 +44,7 @@ class CopyDataToNewAcademicSession implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         DB::transaction(function () {
             Discipline::withoutGlobalScope(CurrentAcademicSessionScope::class)->where('academic_session_id', '=', $this->sourceSession->id)->get()->each(fn ($discipline) => $this->replicateForNewSession($discipline)->save());

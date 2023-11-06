@@ -28,7 +28,7 @@ class SendPrintReadyReminderEmails extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $courses = Course::has('latestPrintReadyPaper')
             ->with(['latestPrintReadyPaper', 'setters'])

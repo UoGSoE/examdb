@@ -22,7 +22,7 @@ class CommentTest extends TestCase
     }
 
     /** @test */
-    public function users_can_add_a_comment_to_courses_they_are_involved_with_without_needing_a_paper()
+    public function users_can_add_a_comment_to_courses_they_are_involved_with_without_needing_a_paper(): void
     {
         Mail::fake();
         $this->withoutExceptionHandling();

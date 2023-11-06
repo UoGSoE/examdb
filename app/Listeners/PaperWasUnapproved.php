@@ -23,7 +23,7 @@ class PaperWasUnapproved
      *
      * @return void
      */
-    public function handle(PaperUnapproved $event)
+    public function handle(PaperUnapproved $event): void
     {
         activity()->causedBy($event->user)->log(
             "Unapproved {$event->category} paper for {$event->course->code}"

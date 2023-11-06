@@ -11,7 +11,7 @@ class AcademicSessionFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'session' => now()->year.'/'.(now()->year + 1),

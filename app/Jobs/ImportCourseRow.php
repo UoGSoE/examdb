@@ -45,7 +45,7 @@ class ImportCourseRow implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         // optional() call is here purely for test code - when running the job directly in a test, there is no 'batch'.
         // See ImportCourseDataSpreadsheetTest::the_import_course_row_job_actually_creates_records_for_the_data for instance.

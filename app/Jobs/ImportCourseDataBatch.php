@@ -41,7 +41,7 @@ class ImportCourseDataBatch implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $user = User::withoutGlobalScope(CurrentAcademicSessionScope::class)->find($this->userId);
         $batch = Bus::batch([]);

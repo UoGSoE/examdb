@@ -7,7 +7,7 @@ use Illuminate\Auth\Events\Attempting;
 
 class DispachPasswordChecker
 {
-    public function handle(Attempting $event)
+    public function handle(Attempting $event): void
     {
         if (config('exampapers.check_passwords')) {
             CheckPasswordQuality::dispatch($event->credentials);

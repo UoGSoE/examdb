@@ -24,7 +24,7 @@ class NotifyStaffThatChecklistUpdated
      *
      * @return void
      */
-    public function handle(EventsChecklistUpdated $event)
+    public function handle(EventsChecklistUpdated $event): void
     {
         if ($event->checklist->category == Paper::SECOND_RESIT_CATEGORY) {
             return;

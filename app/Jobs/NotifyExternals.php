@@ -34,7 +34,7 @@ class NotifyExternals implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         if (! Discipline::all()->pluck('title')->contains($this->area)) {
             abort(500, 'Invalid area given : '.$this->area);

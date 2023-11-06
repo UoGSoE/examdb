@@ -25,7 +25,7 @@ class PaperForRegistryTest extends TestCase
     }
 
     /** @test */
-    public function when_an_admin_uploads_the_paper_for_registy_an_email_is_sent_to_the_setters()
+    public function when_an_admin_uploads_the_paper_for_registy_an_email_is_sent_to_the_setters(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();
@@ -60,7 +60,7 @@ class PaperForRegistryTest extends TestCase
     }
 
     /** @test */
-    public function a_setter_can_mark_the_paper_for_registry_as_approved()
+    public function a_setter_can_mark_the_paper_for_registry_as_approved(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();

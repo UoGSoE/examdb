@@ -28,7 +28,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_see_the_import_page()
+    public function admins_can_see_the_import_page(): void
     {
         $admin = User::factory()->admin()->create();
 
@@ -39,7 +39,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_import_course_info_using_a_spreadsheet_which_fires_a_queued_job_to_do_the_actual_work()
+    public function admins_can_import_course_info_using_a_spreadsheet_which_fires_a_queued_job_to_do_the_actual_work(): void
     {
         $this->withoutExceptionHandling();
         $admin = User::factory()->admin()->create();
@@ -75,7 +75,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
     }
 
     /** @test */
-    public function when_the_main_data_batch_job_is_dispatched_it_spawns_a_sub_job_for_each_row_in_the_spreadsheet_data()
+    public function when_the_main_data_batch_job_is_dispatched_it_spawns_a_sub_job_for_each_row_in_the_spreadsheet_data(): void
     {
         $this->withoutExceptionHandling();
         $admin = User::factory()->admin()->create();
@@ -92,7 +92,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
     }
 
     /** @test */
-    public function the_import_course_row_job_actually_creates_records_for_the_data()
+    public function the_import_course_row_job_actually_creates_records_for_the_data(): void
     {
         $this->withoutExceptionHandling();
         $admin = User::factory()->admin()->create();
@@ -197,7 +197,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
     }
 
     /** @test */
-    public function the_import_sets_all_created_records_academic_session_id_to_the_correct_academic_session()
+    public function the_import_sets_all_created_records_academic_session_id_to_the_correct_academic_session(): void
     {
         $this->withoutExceptionHandling();
         $admin = User::factory()->admin()->create();
@@ -280,7 +280,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
     }
 
     /** @test */
-    public function if_a_row_is_missing_key_data_an_error_is_recorded()
+    public function if_a_row_is_missing_key_data_an_error_is_recorded(): void
     {
         Redis::shouldReceive('sadd')
             ->once()
@@ -294,7 +294,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
     }
 
     /** @test */
-    public function importing_duplicates_or_already_existing_data_updates_it_rather_than_creating_duplicates()
+    public function importing_duplicates_or_already_existing_data_updates_it_rather_than_creating_duplicates(): void
     {
         $this->withoutExceptionHandling();
         $admin = User::factory()->admin()->create();
@@ -366,7 +366,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
     }
 
     /** @test */
-    public function once_the_data_has_been_imported_an_email_is_sent_to_the_original_user_to_let_them_know()
+    public function once_the_data_has_been_imported_an_email_is_sent_to_the_original_user_to_let_them_know(): void
     {
         Mail::fake();
         $admin = User::factory()->admin()->create();
@@ -387,7 +387,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
     }
 
     /** @test */
-    public function any_errors_during_the_import_are_stored_in_redis()
+    public function any_errors_during_the_import_are_stored_in_redis(): void
     {
         Mail::fake();
         $admin = User::factory()->admin()->create();
@@ -409,7 +409,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
     }
 
     /** @test */
-    public function any_errors_are_pulled_from_redis_and_passed_to_the_email()
+    public function any_errors_are_pulled_from_redis_and_passed_to_the_email(): void
     {
         Mail::fake();
         $admin = User::factory()->admin()->create();

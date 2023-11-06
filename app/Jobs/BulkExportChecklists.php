@@ -38,7 +38,7 @@ class BulkExportChecklists implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         Course::examined()->get()->each(function ($course) {
             $this->generatePdf($course, 'main');

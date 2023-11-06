@@ -30,7 +30,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
     }
 
     /** @test */
-    public function regular_users_cant_do_the_export()
+    public function regular_users_cant_do_the_export(): void
     {
         Queue::fake();
         Storage::fake('exampapers');
@@ -43,7 +43,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
     }
 
     /** @test */
-    public function an_admin_can_kick_off_an_export_of_the_papers_for_registry()
+    public function an_admin_can_kick_off_an_export_of_the_papers_for_registry(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();
@@ -62,7 +62,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
     }
 
     /** @test */
-    public function the_admin_is_emailed_a_link_to_download_the_zip_of_papers_once_they_are_ready()
+    public function the_admin_is_emailed_a_link_to_download_the_zip_of_papers_once_they_are_ready(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();
@@ -78,7 +78,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
     }
 
     /** @test */
-    public function running_the_export_job_creates_a_zip_on_the_exampapers_disk_and_leaves_no_temp_files_around()
+    public function running_the_export_job_creates_a_zip_on_the_exampapers_disk_and_leaves_no_temp_files_around(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();
@@ -98,7 +98,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
     }
 
     /** @test */
-    public function the_download_link_will_let_the_admin_get_the_zip_of_all_registry_papers()
+    public function the_download_link_will_let_the_admin_get_the_zip_of_all_registry_papers(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();
@@ -139,7 +139,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
     }
 
     /** @test */
-    public function tampered_download_links_dont_work()
+    public function tampered_download_links_dont_work(): void
     {
         Mail::fake();
         Storage::fake('exampapers');
@@ -161,7 +161,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
     }
 
     /** @test */
-    public function only_the_user_who_requested_the_download_can_access_it()
+    public function only_the_user_who_requested_the_download_can_access_it(): void
     {
         Mail::fake();
         Storage::fake('exampapers');
@@ -184,7 +184,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
     }
 
     /** @test */
-    public function when_the_zip_is_generated_a_job_is_queued_to_remove_it_again()
+    public function when_the_zip_is_generated_a_job_is_queued_to_remove_it_again(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();
@@ -203,7 +203,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
     }
 
     /** @test */
-    public function the_queued_job_does_remove_the_file()
+    public function the_queued_job_does_remove_the_file(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();

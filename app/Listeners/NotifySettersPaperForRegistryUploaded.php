@@ -23,7 +23,7 @@ class NotifySettersPaperForRegistryUploaded
      * @param  object  $event
      * @return void
      */
-    public function handle($event)
+    public function handle($event): void
     {
         if ($event->paper->subcategory != Paper::PAPER_FOR_REGISTRY) {
             return;

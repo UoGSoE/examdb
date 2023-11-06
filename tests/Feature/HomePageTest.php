@@ -20,7 +20,7 @@ class HomePageTest extends TestCase
     }
 
     /** @test */
-    public function users_see_courses_they_are_setting_moderator_external_and_all_papers_they_have_uploaded()
+    public function users_see_courses_they_are_setting_moderator_external_and_all_papers_they_have_uploaded(): void
     {
         $staff = create(User::class);
         $course1 = create(Course::class);

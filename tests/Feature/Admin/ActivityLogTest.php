@@ -18,7 +18,7 @@ class ActivityLogTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_see_the_activity_log_page()
+    public function admins_can_see_the_activity_log_page(): void
     {
         $admin = create(User::class, ['is_admin' => true]);
         activity()->log('Ate some crisps');
@@ -33,7 +33,7 @@ class ActivityLogTest extends TestCase
     }
 
     /** @test */
-    public function regular_users_cant_see_the_activity_log_page()
+    public function regular_users_cant_see_the_activity_log_page(): void
     {
         $admin = create(User::class, ['is_admin' => false]);
 

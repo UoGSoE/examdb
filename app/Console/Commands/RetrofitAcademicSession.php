@@ -41,7 +41,7 @@ class RetrofitAcademicSession extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         DB::transaction(function () {
             $newSession = AcademicSession::where('session', '=', $this->argument('new_session'))->firstOrFail();

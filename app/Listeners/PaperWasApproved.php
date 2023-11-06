@@ -23,7 +23,7 @@ class PaperWasApproved
      *
      * @return void
      */
-    public function handle(PaperApproved $event)
+    public function handle(PaperApproved $event): void
     {
         activity()->causedBy($event->user)->log(
             "Approved {$event->category} paper for {$event->course->code}"

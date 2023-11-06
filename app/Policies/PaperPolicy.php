@@ -16,7 +16,7 @@ class PaperPolicy
      *
      * @return mixed
      */
-    public function view(User $user, Paper $paper)
+    public function view(User $user, Paper $paper): bool
     {
         return
             $user->isAdmin() or
@@ -30,7 +30,7 @@ class PaperPolicy
      *
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         return true;
     }
@@ -40,7 +40,7 @@ class PaperPolicy
      *
      * @return mixed
      */
-    public function update(User $user, Paper $paper)
+    public function update(User $user, Paper $paper): bool
     {
         return false;
     }
@@ -50,7 +50,7 @@ class PaperPolicy
      *
      * @return mixed
      */
-    public function delete(User $user, Paper $paper)
+    public function delete(User $user, Paper $paper): bool
     {
         if (Auth::user()->isAdmin()) {
             return true;
@@ -68,7 +68,7 @@ class PaperPolicy
      *
      * @return mixed
      */
-    public function restore(User $user, Paper $paper)
+    public function restore(User $user, Paper $paper): bool
     {
         //
     }
@@ -78,7 +78,7 @@ class PaperPolicy
      *
      * @return mixed
      */
-    public function forceDelete(User $user, Paper $paper)
+    public function forceDelete(User $user, Paper $paper): bool
     {
         //
     }

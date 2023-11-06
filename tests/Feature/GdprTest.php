@@ -19,7 +19,7 @@ class GdprTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_export_all_data_about_a_user()
+    public function admins_can_export_all_data_about_a_user(): void
     {
         $admin = create(User::class, ['is_admin' => true]);
         $user = create(User::class);
@@ -59,7 +59,7 @@ class GdprTest extends TestCase
     }
 
     /** @test */
-    public function admin_staff_can_anonymise_an_external_user()
+    public function admin_staff_can_anonymise_an_external_user(): void
     {
         $admin = create(User::class, ['is_admin' => true]);
         $user = create(User::class, ['is_external' => true, 'username' => 'blah@example.com']);

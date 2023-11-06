@@ -23,7 +23,7 @@ class NotifySetterThatExternalHasCommented
      *
      * @return void
      */
-    public function handle(PaperAdded $event)
+    public function handle(PaperAdded $event): void
     {
         if (! request()->user()->isExternalFor($event->paper->course)) {
             return;

@@ -22,7 +22,7 @@ class ModeratorTest extends TestCase
     }
 
     /** @test */
-    public function a_user_can_see_all_the_courses_they_are_a_moderator_for()
+    public function a_user_can_see_all_the_courses_they_are_a_moderator_for(): void
     {
         $staff = create(User::class);
         $course1 = create(Course::class);
@@ -46,7 +46,7 @@ class ModeratorTest extends TestCase
     }
 
     /** @test */
-    public function a_user_can_see_the_page_for_an_individual_course_they_are_moderator_for()
+    public function a_user_can_see_the_page_for_an_individual_course_they_are_moderator_for(): void
     {
         $this->withoutExceptionHandling();
         $staff = create(User::class);
@@ -62,7 +62,7 @@ class ModeratorTest extends TestCase
     }
 
     /** @test */
-    public function a_user_cant_see_the_page_for_a_course_they_arent_involved_with()
+    public function a_user_cant_see_the_page_for_a_course_they_arent_involved_with(): void
     {
         $staff = create(User::class);
         $course1 = create(Course::class);
@@ -73,7 +73,7 @@ class ModeratorTest extends TestCase
     }
 
     /** @test */
-    public function a_moderator_can_delete_their_own_paper()
+    public function a_moderator_can_delete_their_own_paper(): void
     {
         Storage::fake('exampapers');
         $user = create(User::class);
@@ -98,7 +98,7 @@ class ModeratorTest extends TestCase
     }
 
     /** @test */
-    public function a_moderator_cant_delete_someone_elses_paper()
+    public function a_moderator_cant_delete_someone_elses_paper(): void
     {
         $user = create(User::class);
         $paper = create(Paper::class);
@@ -110,7 +110,7 @@ class ModeratorTest extends TestCase
     }
 
     /** @test */
-    public function a_moderator_can_download_any_paper_for_a_course_they_are_on()
+    public function a_moderator_can_download_any_paper_for_a_course_they_are_on(): void
     {
         $this->withoutExceptionHandling();
         Storage::fake('exampapers');
@@ -134,7 +134,7 @@ class ModeratorTest extends TestCase
     }
 
     /** @test */
-    public function a_moderator_cant_download_any_paper_for_a_course_they_are_not_on()
+    public function a_moderator_cant_download_any_paper_for_a_course_they_are_not_on(): void
     {
         Storage::fake('exampapers');
         $user = create(User::class);
