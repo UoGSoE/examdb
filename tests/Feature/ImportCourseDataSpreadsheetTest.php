@@ -86,7 +86,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
             ['ENG5678', 'Helicopters', 'Bio', '2', 'cde1x,pop80y', 'Carol Exmouth, Poppy Flower', ' bob1q,trs80y', 'Bob Jones, Tina Smith', 'fran@example.com', 'Fran Smith', 'Y'],
         ];
 
-        ImportCourseDataBatch::dispatchNow($data, $admin->id, $admin->getCurrentAcademicSession()->id);
+        ImportCourseDataBatch::dispatchSync($data, $admin->id, $admin->getCurrentAcademicSession()->id);
 
         Queue::assertPushed(ImportCourseRow::class, 3);
     }
