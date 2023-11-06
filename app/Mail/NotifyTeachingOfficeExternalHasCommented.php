@@ -26,8 +26,6 @@ class NotifyTeachingOfficeExternalHasCommented extends Mailable implements Shoul
 
     /**
      * Build the message.
-     *
-     * @return $this
      */
     public function build(): static
     {

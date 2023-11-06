@@ -13,8 +13,6 @@ class PaperPolicy
 
     /**
      * Determine whether the user can view the paper.
-     *
-     * @return mixed
      */
     public function view(User $user, Paper $paper): bool
     {
@@ -27,8 +25,6 @@ class PaperPolicy
 
     /**
      * Determine whether the user can create papers.
-     *
-     * @return mixed
      */
     public function create(User $user): bool
     {
@@ -37,8 +33,6 @@ class PaperPolicy
 
     /**
      * Determine whether the user can update the paper.
-     *
-     * @return mixed
      */
     public function update(User $user, Paper $paper): bool
     {
@@ -47,8 +41,6 @@ class PaperPolicy
 
     /**
      * Determine whether the user can delete the paper.
-     *
-     * @return mixed
      */
     public function delete(User $user, Paper $paper): bool
     {
@@ -65,8 +57,6 @@ class PaperPolicy
 
     /**
      * Determine whether the user can restore the paper.
-     *
-     * @return mixed
      */
     public function restore(User $user, Paper $paper): bool
     {
@@ -75,8 +65,6 @@ class PaperPolicy
 
     /**
      * Determine whether the user can permanently delete the paper.
-     *
-     * @return mixed
      */
     public function forceDelete(User $user, Paper $paper): bool
     {

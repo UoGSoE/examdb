@@ -20,8 +20,6 @@ class PaperWasApproved
 
     /**
      * Handle the event.
-     *
-     * @return void
      */
     public function handle(PaperApproved $event): void
     {

@@ -20,8 +20,6 @@ class NotifyTeachingOfficeThatExternalHasCommented
 
     /**
      * Handle the event.
-     *
-     * @return void
      */
     public function handle(PaperAdded $event): void
     {
