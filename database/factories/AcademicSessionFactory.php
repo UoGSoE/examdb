@@ -2,17 +2,14 @@
 
 namespace Database\Factories;
 
-use App\Models\AcademicSession;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AcademicSessionFactory extends Factory
 {
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'session' => now()->year.'/'.(now()->year + 1),

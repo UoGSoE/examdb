@@ -6,7 +6,6 @@ use App\Models\AcademicSession;
 use App\Models\Course;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class CourseUserTest extends TestCase
@@ -20,7 +19,7 @@ class CourseUserTest extends TestCase
     }
 
     /** @test */
-    public function an_admin_can_update_the_staff_associated_with_a_course()
+    public function an_admin_can_update_the_staff_associated_with_a_course(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
@@ -65,7 +64,7 @@ class CourseUserTest extends TestCase
     }
 
     /** @test */
-    public function someone_can_be_marked_as_a_setter_and_subsequently_be_added_as_a_moderator()
+    public function someone_can_be_marked_as_a_setter_and_subsequently_be_added_as_a_moderator(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
@@ -104,7 +103,7 @@ class CourseUserTest extends TestCase
     }
 
     /** @test */
-    public function someone_can_be_marked_as_a_moderator_and_subsequently_be_added_as_a_setter()
+    public function someone_can_be_marked_as_a_moderator_and_subsequently_be_added_as_a_setter(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
@@ -147,7 +146,7 @@ class CourseUserTest extends TestCase
     }
 
     /** @test */
-    public function an_admin_can_remove_staff_already_associated_with_a_course()
+    public function an_admin_can_remove_staff_already_associated_with_a_course(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
@@ -188,7 +187,7 @@ class CourseUserTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_remove_all_staff_from_all_courses()
+    public function admins_can_remove_all_staff_from_all_courses(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
@@ -219,7 +218,7 @@ class CourseUserTest extends TestCase
     }
 
     /** @test */
-    public function all_users_show_up_in_the_staff_list_admins_can_use_to_choose_who_are_setters_and_moderatorss()
+    public function all_users_show_up_in_the_staff_list_admins_can_use_to_choose_who_are_setters_and_moderatorss(): void
     {
         $admin = create(User::class, ['is_admin' => true]);
         $course = create(Course::class);

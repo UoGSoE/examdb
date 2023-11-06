@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Exceptions\PasswordQualityException;
 use App\Mail\PasswordQualityFailure;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -38,10 +37,8 @@ class CheckPasswordQuality implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $validator = Validator::make([
             'password' => $this->password,

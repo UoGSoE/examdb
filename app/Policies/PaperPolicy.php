@@ -13,12 +13,8 @@ class PaperPolicy
 
     /**
      * Determine whether the user can view the paper.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Paper  $paper
-     * @return mixed
      */
-    public function view(User $user, Paper $paper)
+    public function view(User $user, Paper $paper): bool
     {
         return
             $user->isAdmin() or
@@ -29,35 +25,24 @@ class PaperPolicy
 
     /**
      * Determine whether the user can create papers.
-     *
-     * @param  \App\Models\User  $user
-     * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         return true;
     }
 
     /**
      * Determine whether the user can update the paper.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Paper  $paper
-     * @return mixed
      */
-    public function update(User $user, Paper $paper)
+    public function update(User $user, Paper $paper): bool
     {
         return false;
     }
 
     /**
      * Determine whether the user can delete the paper.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Paper  $paper
-     * @return mixed
      */
-    public function delete(User $user, Paper $paper)
+    public function delete(User $user, Paper $paper): bool
     {
         if (Auth::user()->isAdmin()) {
             return true;
@@ -72,24 +57,16 @@ class PaperPolicy
 
     /**
      * Determine whether the user can restore the paper.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Paper  $paper
-     * @return mixed
      */
-    public function restore(User $user, Paper $paper)
+    public function restore(User $user, Paper $paper): bool
     {
         //
     }
 
     /**
      * Determine whether the user can permanently delete the paper.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Paper  $paper
-     * @return mixed
      */
-    public function forceDelete(User $user, Paper $paper)
+    public function forceDelete(User $user, Paper $paper): bool
     {
         //
     }

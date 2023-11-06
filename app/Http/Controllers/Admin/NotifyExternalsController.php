@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Course;
-use App\Models\Discipline;
 use App\Http\Controllers\Controller;
 use App\Jobs\NotifyExternals;
-use App\Mail\ExternalHasPapersToLookAt;
 use App\Mail\NotifyExternalSpecificCourse;
+use App\Models\Course;
+use App\Models\Discipline;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\View\View;
 
 class NotifyExternalsController extends Controller
 {
-    public function show()
+    public function show(): View
     {
         return view('admin.email_externals', [
             'disciplines' => Discipline::orderBy('title')->get(),

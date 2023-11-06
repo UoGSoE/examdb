@@ -8,7 +8,6 @@ use App\Models\Discipline;
 use App\Models\Paper;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class DisciplineContactsTest extends TestCase
@@ -22,7 +21,7 @@ class DisciplineContactsTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_update_the_contacts_for_each_discipline()
+    public function admins_can_update_the_contacts_for_each_discipline(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
@@ -42,7 +41,7 @@ class DisciplineContactsTest extends TestCase
     }
 
     /** @test */
-    public function we_can_get_the_discipline_contact_for_a_paper()
+    public function we_can_get_the_discipline_contact_for_a_paper(): void
     {
         $disc1 = create(Discipline::class, ['contact' => 'jenny@example.com']);
         $course1 = create(Course::class, ['discipline_id' => $disc1->id]);
@@ -52,7 +51,7 @@ class DisciplineContactsTest extends TestCase
     }
 
     /** @test */
-    public function if_there_is_no_contact_for_the_discipline_we_fall_back_to_a_default()
+    public function if_there_is_no_contact_for_the_discipline_we_fall_back_to_a_default(): void
     {
         config(['exampapers.fallback_email' => 'jimmy@example.com']);
         $disc1 = create(Discipline::class, ['contact' => null]);

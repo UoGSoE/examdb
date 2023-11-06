@@ -3,10 +3,8 @@
 namespace App\Mail;
 
 use App\Models\Course;
-use App\Models\Paper;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -37,10 +35,8 @@ class NotifySetterAboutApproval extends Mailable
 
     /**
      * Build the message.
-     *
-     * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->markdown('emails.notify_moderator_approved');
     }

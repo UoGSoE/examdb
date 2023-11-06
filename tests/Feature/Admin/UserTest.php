@@ -5,8 +5,8 @@ namespace Tests\Feature\Admin;
 use App\Models\AcademicSession;
 use App\Models\Course;
 use App\Models\Paper;
-use App\Scopes\CurrentAcademicSessionScope;
 use App\Models\User;
+use App\Scopes\CurrentAcademicSessionScope;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
@@ -25,7 +25,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_see_a_list_of_all_users()
+    public function admins_can_see_a_list_of_all_users(): void
     {
         $admin = create(User::class, ['is_admin' => true]);
         $internal1 = create(User::class);
@@ -44,7 +44,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function regular_users_cant_see_a_list_of_all_users()
+    public function regular_users_cant_see_a_list_of_all_users(): void
     {
         $user = create(User::class, ['is_admin' => false]);
 
@@ -54,7 +54,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_see_a_list_of_all_users_including_soft_deleted_ones()
+    public function admins_can_see_a_list_of_all_users_including_soft_deleted_ones(): void
     {
         $admin = create(User::class, ['is_admin' => true]);
         $internal1 = create(User::class);
@@ -76,7 +76,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_see_the_details_for_a_given_user()
+    public function admins_can_see_the_details_for_a_given_user(): void
     {
         $admin = create(User::class, ['is_admin' => true]);
         $internalUser = create(User::class);
@@ -106,7 +106,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function regular_users_cant_see_the_details_for_users()
+    public function regular_users_cant_see_the_details_for_users(): void
     {
         $user = create(User::class);
 
@@ -116,7 +116,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_search_for_a_guid()
+    public function admins_can_search_for_a_guid(): void
     {
         $this->withoutExceptionHandling();
         $this->app->bind('Ohffs\Ldap\LdapConnectionInterface', function ($app) {
@@ -135,7 +135,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function invalid_guid_searches_return_a_404()
+    public function invalid_guid_searches_return_a_404(): void
     {
         $this->app->bind('Ohffs\Ldap\LdapConnectionInterface', function ($app) {
             return new FakeLdapConnection('a', 'b');
@@ -148,7 +148,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_create_a_new_local_user()
+    public function admins_can_create_a_new_local_user(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
@@ -189,7 +189,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_create_a_new_external_user()
+    public function admins_can_create_a_new_external_user(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
@@ -229,7 +229,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function when_admins_create_a_user_it_uses_the_admins_current_academic_session()
+    public function when_admins_create_a_user_it_uses_the_admins_current_academic_session(): void
     {
         $this->withoutExceptionHandling();
         $session2 = AcademicSession::factory()->create(['session' => '1990/1991']);
@@ -265,7 +265,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_edit_a_users_name_and_email()
+    public function admins_can_edit_a_users_name_and_email(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
@@ -292,7 +292,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function when_editing_a_user_their_email_has_to_be_unique()
+    public function when_editing_a_user_their_email_has_to_be_unique(): void
     {
         $admin = create(User::class, ['is_admin' => true]);
         $user = create(User::class, ['email' => 'jenny@example.com']);
@@ -327,7 +327,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function when_editing_a_user_if_the_are_external_updating_their_email_also_updates_their_username()
+    public function when_editing_a_user_if_the_are_external_updating_their_email_also_updates_their_username(): void
     {
         // externals username is the same as their email, but they are seperate fields in the db
         $admin = create(User::class, ['is_admin' => true]);
@@ -353,7 +353,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function regular_users_cant_create_users()
+    public function regular_users_cant_create_users(): void
     {
         $user = create(User::class);
 
@@ -371,7 +371,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function emails_and_usernames_are_converted_to_lowercase_when_creating_new_users()
+    public function emails_and_usernames_are_converted_to_lowercase_when_creating_new_users(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
@@ -403,7 +403,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_soft_delete_users()
+    public function admins_can_soft_delete_users(): void
     {
         $admin = create(User::class, ['is_admin' => true]);
         $user = create(User::class, ['is_admin' => false]);
@@ -416,7 +416,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_un_soft_delete_users()
+    public function admins_can_un_soft_delete_users(): void
     {
         $admin = create(User::class, ['is_admin' => true]);
         $user = create(User::class, ['is_admin' => false]);
@@ -429,7 +429,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_toggle_admin_status_of_other_users()
+    public function admins_can_toggle_admin_status_of_other_users(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
@@ -476,7 +476,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function when_the_admin_status_is_toggled_it_is_updated_in_all_academic_sessions()
+    public function when_the_admin_status_is_toggled_it_is_updated_in_all_academic_sessions(): void
     {
         $this->withoutExceptionHandling();
         $session1 = AcademicSession::factory()->create(['session' => '1990/1991']);
@@ -530,7 +530,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function regular_users_cant_toggle_admin_status_of_users()
+    public function regular_users_cant_toggle_admin_status_of_users(): void
     {
         $user1 = create(User::class, ['is_admin' => false]);
         $user2 = create(User::class, ['is_admin' => false]);
@@ -542,7 +542,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function admins_cant_toggle_their_own_admin_status()
+    public function admins_cant_toggle_their_own_admin_status(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
@@ -554,7 +554,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function there_is_an_artisan_command_to_make_a_user_an_admin()
+    public function there_is_an_artisan_command_to_make_a_user_an_admin(): void
     {
         $user = create(User::class, ['username' => 'jenny']);
 
@@ -566,7 +566,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function admin_can_delete_a_paper_but_its_only_hidden()
+    public function admin_can_delete_a_paper_but_its_only_hidden(): void
     {
         $this->withoutExceptionHandling();
         Storage::fake('exampapers');

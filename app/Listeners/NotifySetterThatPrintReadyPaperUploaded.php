@@ -2,12 +2,10 @@
 
 namespace App\Listeners;
 
-use App\Models\Paper;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Mail\NotifySetterAboutPrintReadyPaper;
+use App\Models\Paper;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class NotifySetterThatPrintReadyPaperUploaded
 {
@@ -23,11 +21,8 @@ class NotifySetterThatPrintReadyPaperUploaded
 
     /**
      * Handle the event.
-     *
-     * @param  object  $event
-     * @return void
      */
-    public function handle($event)
+    public function handle(object $event): void
     {
         if (! Str::startsWith($event->paper->subcategory, Paper::ADMIN_PRINT_READY_VERSION)) {
             return;

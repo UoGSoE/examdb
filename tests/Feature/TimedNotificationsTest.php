@@ -2,8 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\AcademicSession;
-use App\Models\Course;
 use App\Exceptions\TimedNotificationException;
 use App\Mail\CallForPapersMail;
 use App\Mail\ExternalModerationDeadlineMail;
@@ -14,11 +12,12 @@ use App\Mail\PrintReadyDeadlineMail;
 use App\Mail\PrintReadyDeadlinePassedMail;
 use App\Mail\SubmissionDeadlineMail;
 use App\Mail\SubmissionDeadlinePassedMail;
+use App\Models\AcademicSession;
+use App\Models\Course;
 use App\Models\Paper;
 use App\Models\PaperChecklist;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
@@ -33,13 +32,13 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function the_scheduled_command_to_run_the_timed_notifications_is_registered()
+    public function the_scheduled_command_to_run_the_timed_notifications_is_registered(): void
     {
         $this->assertCommandIsScheduled('examdb:timed-notifications');
     }
 
     /** @test */
-    public function emails_are_sent_for_the_date_receive_call_for_papers_option_when_it_is_the_correct_day()
+    public function emails_are_sent_for_the_date_receive_call_for_papers_option_when_it_is_the_correct_day(): void
     {
         Mail::fake();
         $course1 = create(Course::class);
@@ -80,7 +79,7 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function check_that_the_call_for_papers_email_shows_the_correct_dates()
+    public function check_that_the_call_for_papers_email_shows_the_correct_dates(): void
     {
         $deadlineGlasgow = now()->addWeeks(2);
         $deadlineUestc = now()->addWeeks(4);
@@ -92,7 +91,7 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function emails_are_not_sent_for_the_date_receive_call_for_papers_option_when_it_is_not_the_correct_day()
+    public function emails_are_not_sent_for_the_date_receive_call_for_papers_option_when_it_is_not_the_correct_day(): void
     {
         Mail::fake();
         $course1 = create(Course::class);
@@ -116,7 +115,7 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function emails_for_call_for_papers_are_only_sent_about_courses_in_the_current_semester()
+    public function emails_for_call_for_papers_are_only_sent_about_courses_in_the_current_semester(): void
     {
         Mail::fake();
         $course1 = create(Course::class, ['semester' => 1]);
@@ -146,7 +145,7 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function emails_are_not_sent_twice_for_the_date_receive_call_for_papers_option_even_when_it_is_the_correct_day()
+    public function emails_are_not_sent_twice_for_the_date_receive_call_for_papers_option_even_when_it_is_the_correct_day(): void
     {
         Mail::fake();
         $course1 = create(Course::class);
@@ -178,7 +177,7 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function emails_are_sent_for_the_glasgow_staff_submission_deadline_option_when_the_date_matches_a_reminder_date()
+    public function emails_are_sent_for_the_glasgow_staff_submission_deadline_option_when_the_date_matches_a_reminder_date(): void
     {
         Mail::fake();
         $course1 = create(Course::class, ['code' => 'ENG1234']);
@@ -265,7 +264,7 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function emails_are_sent_for_the_uestc_staff_submission_deadline_option_when_it_is_a_week_before_and_day_after()
+    public function emails_are_sent_for_the_uestc_staff_submission_deadline_option_when_it_is_a_week_before_and_day_after(): void
     {
         Mail::fake();
         $course1 = create(Course::class, ['code' => 'ENG1234']);
@@ -336,7 +335,7 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function emails_are_not_sent_for_any_staff_submission_deadline_option_when_it_is_not_a_reminder_day()
+    public function emails_are_not_sent_for_any_staff_submission_deadline_option_when_it_is_not_a_reminder_day(): void
     {
         Mail::fake();
         $course1 = create(Course::class, ['code' => 'ENG1234']);
@@ -381,7 +380,7 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function emails_are_not_sent_for_any_staff_submission_deadline_option_when_it_is_day_after_but_paperwork_is_complete()
+    public function emails_are_not_sent_for_any_staff_submission_deadline_option_when_it_is_day_after_but_paperwork_is_complete(): void
     {
         Mail::fake();
         $course1 = create(Course::class, ['code' => 'ENG1234']);
@@ -433,7 +432,7 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function submission_deadline_emails_are_only_sent_about_the_current_semester()
+    public function submission_deadline_emails_are_only_sent_about_the_current_semester(): void
     {
         Mail::fake();
         $course1 = create(Course::class, ['semester' => 1]);
@@ -479,7 +478,7 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function emails_are_sent_to_glasgow_staff_about_glasgow_internal_moderation_deadline_when_it_is_a_reminder_day()
+    public function emails_are_sent_to_glasgow_staff_about_glasgow_internal_moderation_deadline_when_it_is_a_reminder_day(): void
     {
         Mail::fake();
         $course1 = create(Course::class, ['code' => 'ENG1234']);
@@ -550,7 +549,7 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function emails_are_not_sent_for_any_staff_moderation_deadline_option_when_it_is_not_a_reminder_day()
+    public function emails_are_not_sent_for_any_staff_moderation_deadline_option_when_it_is_not_a_reminder_day(): void
     {
         Mail::fake();
         $course1 = create(Course::class, ['code' => 'ENG1234']);
@@ -593,7 +592,7 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function emails_are_not_sent_for_any_staff_moderation_deadline_option_when_it_is_day_after_but_paperwork_is_complete()
+    public function emails_are_not_sent_for_any_staff_moderation_deadline_option_when_it_is_day_after_but_paperwork_is_complete(): void
     {
         Mail::fake();
         $course1 = create(Course::class, [
@@ -626,7 +625,7 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function staff_moderation_emails_are_only_sent_about_the_current_semester()
+    public function staff_moderation_emails_are_only_sent_about_the_current_semester(): void
     {
         Mail::fake();
         $course1 = create(Course::class, ['code' => 'ENG1234', 'semester' => 1]);
@@ -669,7 +668,7 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function email_is_sent_to_glasgow_teaching_office_about_notifying_externals()
+    public function email_is_sent_to_glasgow_teaching_office_about_notifying_externals(): void
     {
         Mail::fake();
         option(['start_semester_1' => now()->format('Y-m-d')]);
@@ -691,7 +690,7 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function email_is_sent_to_uestc_teaching_office_about_notifying_externals()
+    public function email_is_sent_to_uestc_teaching_office_about_notifying_externals(): void
     {
         Mail::fake();
         option(['start_semester_1' => now()->format('Y-m-d')]);
@@ -713,7 +712,7 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function email_is_not_sent_to_any_teaching_office_about_notifying_externals_if_it_is_not_the_right_day()
+    public function email_is_not_sent_to_any_teaching_office_about_notifying_externals_if_it_is_not_the_right_day(): void
     {
         Mail::fake();
         option(['start_semester_1' => now()->format('Y-m-d')]);
@@ -732,7 +731,7 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function emails_are_sent_to_the_glasgow_teaching_office_one_day_before_and_one_day_after_the_print_deadline()
+    public function emails_are_sent_to_the_glasgow_teaching_office_one_day_before_and_one_day_after_the_print_deadline(): void
     {
         Mail::fake();
         $course1 = create(Course::class);
@@ -772,7 +771,7 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function emails_are_sent_to_the_uestc_teaching_office_one_day_before_and_one_day_after_the_print_deadline()
+    public function emails_are_sent_to_the_uestc_teaching_office_one_day_before_and_one_day_after_the_print_deadline(): void
     {
         Mail::fake();
         option(['start_semester_1' => now()->format('Y-m-d')]);
@@ -805,7 +804,7 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function emails_are_not_sent_to_the_teaching_office_about_the_print_deadline_if_it_is_not_one_day_before_or_after_the_deadline()
+    public function emails_are_not_sent_to_the_teaching_office_about_the_print_deadline_if_it_is_not_one_day_before_or_after_the_deadline(): void
     {
         Mail::fake();
         option(['start_semester_1' => now()->format('Y-m-d')]);
@@ -828,7 +827,7 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function emails_about_the_print_deadline_passing_are_only_sent_once()
+    public function emails_about_the_print_deadline_passing_are_only_sent_once(): void
     {
         Mail::fake();
         option(['start_semester_1' => now()->format('Y-m-d')]);
@@ -849,7 +848,7 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function email_is_sent_to_glasgow_teaching_office_about_externals_deadline()
+    public function email_is_sent_to_glasgow_teaching_office_about_externals_deadline(): void
     {
         Mail::fake();
         option(['start_semester_1' => now()->format('Y-m-d')]);
@@ -871,7 +870,7 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function email_is_sent_to_uestc_teaching_office_about_externals_deadline()
+    public function email_is_sent_to_uestc_teaching_office_about_externals_deadline(): void
     {
         Mail::fake();
         option(['start_semester_1' => now()->format('Y-m-d')]);
@@ -893,7 +892,7 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function email_are_not_sent_to_teaching_office_about_externals_deadline_if_not_the_right_day()
+    public function email_are_not_sent_to_teaching_office_about_externals_deadline_if_not_the_right_day(): void
     {
         Mail::fake();
         option(['start_semester_1' => now()->format('Y-m-d')]);
@@ -912,7 +911,7 @@ class TimedNotificationsTest extends TestCase
     }
 
     /** @test */
-    public function if_something_goes_wrong_sending_a_notification_we_get_a_timed_notification_exception()
+    public function if_something_goes_wrong_sending_a_notification_we_get_a_timed_notification_exception(): void
     {
         $this->expectException(TimedNotificationException::class);
         option(['start_semester_1' => now()->format('Y-m-d')]);

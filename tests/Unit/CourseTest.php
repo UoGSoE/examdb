@@ -6,7 +6,6 @@ use App\Models\AcademicSession;
 use App\Models\Course;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
@@ -22,7 +21,7 @@ class CourseTest extends TestCase
     }
 
     /** @test */
-    public function a_course_can_have_many_main_papers_added()
+    public function a_course_can_have_many_main_papers_added(): void
     {
         Storage::fake('exampapers');
         $user = create(User::class);
@@ -38,7 +37,7 @@ class CourseTest extends TestCase
     }
 
     /** @test */
-    public function a_course_can_have_many_resit_papers_added()
+    public function a_course_can_have_many_resit_papers_added(): void
     {
         Storage::fake('exampapers');
         $user = create(User::class);

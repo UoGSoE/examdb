@@ -6,7 +6,6 @@ use App\Models\AcademicSession;
 use App\Models\Course;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
@@ -23,7 +22,7 @@ class CommentTest extends TestCase
     }
 
     /** @test */
-    public function users_can_add_a_comment_to_courses_they_are_involved_with_without_needing_a_paper()
+    public function users_can_add_a_comment_to_courses_they_are_involved_with_without_needing_a_paper(): void
     {
         Mail::fake();
         $this->withoutExceptionHandling();

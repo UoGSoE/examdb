@@ -2,9 +2,9 @@
 
 namespace App\Jobs;
 
+use App\Mail\ExternalHasPapersToLookAt;
 use App\Models\Course;
 use App\Models\Discipline;
-use App\Mail\ExternalHasPapersToLookAt;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -31,10 +31,8 @@ class NotifyExternals implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         if (! Discipline::all()->pluck('title')->contains($this->area)) {
             abort(500, 'Invalid area given : '.$this->area);
@@ -42,17 +40,17 @@ class NotifyExternals implements ShouldQueue
 
         $discipline = Discipline::where('title', '=', $this->area)->first();
         $emails = Course::forDiscipline($discipline)
-                    ->forSemester($this->getCurrentSemester())
-                    ->externalsNotNotified()
-                    ->whereHas('papers')
-                    ->get()
-                    ->map(function ($course) {
-                        $course->markExternalNotified();
+            ->forSemester($this->getCurrentSemester())
+            ->externalsNotNotified()
+            ->whereHas('papers')
+            ->get()
+            ->map(function ($course) {
+                $course->markExternalNotified();
 
-                        return $course->externals->pluck('email');
-                    })
-                    ->flatten()
-                    ->unique();
+                return $course->externals->pluck('email');
+            })
+            ->flatten()
+            ->unique();
 
         $emails->each(function ($email) {
             Mail::to($email)->later(now()->addSeconds(rand(1, 180)), new ExternalHasPapersToLookAt);

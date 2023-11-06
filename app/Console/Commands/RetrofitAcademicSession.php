@@ -5,8 +5,8 @@ namespace App\Console\Commands;
 use App\Models\AcademicSession;
 use App\Models\Course;
 use App\Models\Discipline;
-use App\Scopes\CurrentAcademicSessionScope;
 use App\Models\User;
+use App\Scopes\CurrentAcademicSessionScope;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -38,10 +38,8 @@ class RetrofitAcademicSession extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         DB::transaction(function () {
             $newSession = AcademicSession::where('session', '=', $this->argument('new_session'))->firstOrFail();

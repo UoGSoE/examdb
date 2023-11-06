@@ -2,21 +2,18 @@
 
 namespace App\Jobs;
 
-use App\Models\Course;
-use App\Exporters\ChecklistExporter;
 use App\Mail\ChecklistsReadyToDownload;
+use App\Models\Course;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
-use ZipArchive;
 
 class BulkExportChecklists implements ShouldQueue
 {
@@ -38,10 +35,8 @@ class BulkExportChecklists implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         Course::examined()->get()->each(function ($course) {
             $this->generatePdf($course, 'main');

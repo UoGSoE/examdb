@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\PaperChecklist;
-use Illuminate\Http\Request;
 
 class ChecklistPdfController extends Controller
 {

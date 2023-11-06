@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Models\AcademicSession;
 use App\Models\Course;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class RemoveAllApprovalFlagsTest extends TestCase
@@ -19,7 +18,7 @@ class RemoveAllApprovalFlagsTest extends TestCase
     }
 
     /** @test */
-    public function we_can_remove_all_approval_flags_from_all_courses()
+    public function we_can_remove_all_approval_flags_from_all_courses(): void
     {
         $course1 = create(Course::class, [
             'moderator_approved_main' => true,

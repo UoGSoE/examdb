@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Course;
 use App\Mail\ChecklistUploaded;
 use App\Mail\ExternalHasPapersToLookAt;
 use App\Mail\ExternalLoginUrl;
@@ -8,7 +7,6 @@ use App\Mail\NotifyModeratorAboutApproval;
 use App\Mail\NotifyModeratorAboutUnapproval;
 use App\Mail\NotifySetterAboutApproval;
 use App\Mail\NotifySetterAboutExternalComments;
-use App\Mail\NotifySetterAboutModeratorComments;
 use App\Mail\NotifySetterAboutUnapproval;
 use App\Mail\NotifyTeachingOfficeExternalDeadline;
 use App\Mail\NotifyTeachingOfficeExternalHasCommented;
@@ -17,6 +15,7 @@ use App\Mail\PaperworkIncomplete;
 use App\Mail\RegistryPapersExported;
 use App\Mail\WlmImportComplete;
 use App\Mail\WlmImportProblem;
+use App\Models\Course;
 use App\Models\Paper;
 use App\Models\User;
 

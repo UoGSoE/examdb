@@ -7,7 +7,6 @@ use App\Models\Course;
 use App\Models\Discipline;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -22,7 +21,7 @@ class PaperTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_see_all_the_paper_statuses_for_all_the_courses()
+    public function admins_can_see_all_the_paper_statuses_for_all_the_courses(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
@@ -41,7 +40,7 @@ class PaperTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_see_all_the_paper_statuses_for_all_the_courses_on_a_specifc_discipline()
+    public function admins_can_see_all_the_paper_statuses_for_all_the_courses_on_a_specifc_discipline(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
@@ -67,7 +66,7 @@ class PaperTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_export_the_list_of_papers()
+    public function admins_can_export_the_list_of_papers(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
@@ -81,7 +80,7 @@ class PaperTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_see_all_the_correct_information_about_the_print_ready_paper_status()
+    public function admins_can_see_all_the_correct_information_about_the_print_ready_paper_status(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
@@ -90,9 +89,9 @@ class PaperTest extends TestCase
         $printReadyPaper = create(
             \App\Models\Paper::class,
             [
-            'course_id' => $course1->id,
-            'subcategory' => \App\Models\Paper::ADMIN_PRINT_READY_VERSION,
-            'category' => 'main']
+                'course_id' => $course1->id,
+                'subcategory' => \App\Models\Paper::ADMIN_PRINT_READY_VERSION,
+                'category' => 'main']
         );
 
         $response = $this->actingAs($admin)->get(route('paper.index'));

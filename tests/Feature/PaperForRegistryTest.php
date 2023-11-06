@@ -2,14 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Mail\PaperForRegistryUploaded;
 use App\Models\AcademicSession;
 use App\Models\Course;
 use App\Models\Discipline;
-use App\Mail\PaperForRegistryUploaded;
 use App\Models\Paper;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -26,7 +25,7 @@ class PaperForRegistryTest extends TestCase
     }
 
     /** @test */
-    public function when_an_admin_uploads_the_paper_for_registy_an_email_is_sent_to_the_setters()
+    public function when_an_admin_uploads_the_paper_for_registy_an_email_is_sent_to_the_setters(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();
@@ -61,7 +60,7 @@ class PaperForRegistryTest extends TestCase
     }
 
     /** @test */
-    public function a_setter_can_mark_the_paper_for_registry_as_approved()
+    public function a_setter_can_mark_the_paper_for_registry_as_approved(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();

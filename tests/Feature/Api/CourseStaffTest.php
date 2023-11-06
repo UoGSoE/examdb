@@ -6,7 +6,6 @@ use App\Models\AcademicSession;
 use App\Models\Course;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class CourseStaffTest extends TestCase
@@ -20,7 +19,7 @@ class CourseStaffTest extends TestCase
     }
 
     /** @test */
-    public function we_can_get_the_staff_associated_with_a_course()
+    public function we_can_get_the_staff_associated_with_a_course(): void
     {
         config(['exampapers.api_key' => 'secret']);
         $course = create(Course::class);
@@ -63,7 +62,7 @@ class CourseStaffTest extends TestCase
     }
 
     /** @test */
-    public function trying_to_get_info_for_an_invalid_course_returns_a_404()
+    public function trying_to_get_info_for_an_invalid_course_returns_a_404(): void
     {
         config(['exampapers.api_key' => 'secret']);
 
@@ -73,7 +72,7 @@ class CourseStaffTest extends TestCase
     }
 
     /** @test */
-    public function an_invalid_api_key_is_denied_access()
+    public function an_invalid_api_key_is_denied_access(): void
     {
         config(['exampapers.api_key' => 'secret']);
         $course = create(Course::class);

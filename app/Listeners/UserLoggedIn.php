@@ -2,9 +2,6 @@
 
 namespace App\Listeners;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
-
 class UserLoggedIn
 {
     /**
@@ -19,11 +16,8 @@ class UserLoggedIn
 
     /**
      * Handle the event.
-     *
-     * @param  object  $event
-     * @return void
      */
-    public function handle($event)
+    public function handle(object $event): void
     {
         activity()->causedBy(auth()->user())->log('Logged in from IP '.request()->ip());
     }

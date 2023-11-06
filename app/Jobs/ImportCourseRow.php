@@ -2,15 +2,12 @@
 
 namespace App\Jobs;
 
-use App\Models\AcademicSession;
 use App\Models\Course;
 use App\Models\Discipline;
-use App\Scopes\CurrentAcademicSessionScope;
 use App\Models\User;
-use Exception;
+use App\Scopes\CurrentAcademicSessionScope;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -45,10 +42,8 @@ class ImportCourseRow implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         // optional() call is here purely for test code - when running the job directly in a test, there is no 'batch'.
         // See ImportCourseDataSpreadsheetTest::the_import_course_row_job_actually_creates_records_for_the_data for instance.

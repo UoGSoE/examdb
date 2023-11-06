@@ -3,10 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\PaperUnapproved;
-use App\Mail\NotifyModeratorAboutUnapproval;
 use App\Mail\NotifySetterAboutUnapproval;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
 
 class PaperWasUnapproved
@@ -23,11 +20,8 @@ class PaperWasUnapproved
 
     /**
      * Handle the event.
-     *
-     * @param  PaperUnapproved  $event
-     * @return void
      */
-    public function handle(PaperUnapproved $event)
+    public function handle(PaperUnapproved $event): void
     {
         activity()->causedBy($event->user)->log(
             "Unapproved {$event->category} paper for {$event->course->code}"

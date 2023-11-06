@@ -21,10 +21,8 @@ class UserFactory extends Factory
 {
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'surname' => str_replace("'", '', $this->faker->lastName()),

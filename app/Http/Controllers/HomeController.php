@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Paper;
-use Auth;
-use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class HomeController extends Controller
 {
@@ -20,10 +18,8 @@ class HomeController extends Controller
 
     /**
      * Show the application dashboard.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): View
     {
         return view('home', [
             'moderatedCourses' => auth()->user()->getCourses('is_moderator'),

@@ -3,11 +3,9 @@
 namespace App\Http\Livewire;
 
 use App\Models\Course;
-use App\Models\PaperChecklist as Checklist;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
-use Tests\Feature\LivewirePaperChecklistTest;
 
 class PaperChecklist extends Component
 {
@@ -50,7 +48,7 @@ class PaperChecklist extends Component
         return view('livewire.paper-checklist');
     }
 
-    public function save(?string $sectionName = null)
+    public function save(string $sectionName = null)
     {
         Validator::make(['section' => $sectionName], [
             'section' => ['string', 'in:A,B,C,D'],
@@ -79,16 +77,16 @@ class PaperChecklist extends Component
 
             if (! ($this->checklist['fields']['overall_quality_appropriate'] ?? false)) {
                 Validator::make(
-                    [ 'comments' => $this->checklist['fields']['why_innapropriate'] ?? null ],
-                    [ 'comments' => 'required' ]
+                    ['comments' => $this->checklist['fields']['why_innapropriate'] ?? null],
+                    ['comments' => 'required']
                 )->validate();
             }
         }
         if ($sectionName == 'C') {
             if (! ($this->checklist['fields']['solution_marks_appropriate'] ?? false)) {
                 Validator::make(
-                    [ 'solution_comments' => $this->checklist['fields']['moderator_solution_innapropriate_comments'] ?? null ],
-                    [ 'solution_comments' => 'required' ]
+                    ['solution_comments' => $this->checklist['fields']['moderator_solution_innapropriate_comments'] ?? null],
+                    ['solution_comments' => 'required']
                 )->validate();
             }
         }
@@ -121,13 +119,13 @@ class PaperChecklist extends Component
         if ($name != 'checklist.fields.number_questions') {
             return;
         }
-        $validator = Validator::make([ 'number_questions' => $value ], [ 'number_questions' => 'required|integer|min:1' ])->validate();
+        $validator = Validator::make(['number_questions' => $value], ['number_questions' => 'required|integer|min:1'])->validate();
         foreach (range(1, $value) as $i) {
-            if (! array_key_exists('question_setter_' . ($i - 1), $this->checklist['fields'])) {
-                $this->checklist['fields']['question_setter_' . ($i - 1)] = auth()->user()->full_name;
+            if (! array_key_exists('question_setter_'.($i - 1), $this->checklist['fields'])) {
+                $this->checklist['fields']['question_setter_'.($i - 1)] = auth()->user()->full_name;
             }
-            if (! array_key_exists('question_datasheet_' . ($i - 1), $this->checklist['fields'])) {
-                $this->checklist['fields']['question_datasheet_' . ($i - 1)] = '';
+            if (! array_key_exists('question_datasheet_'.($i - 1), $this->checklist['fields'])) {
+                $this->checklist['fields']['question_datasheet_'.($i - 1)] = '';
             }
         }
     }

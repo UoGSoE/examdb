@@ -7,7 +7,6 @@ use App\Models\Course;
 use App\Models\Paper;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class CourseTest extends TestCase
@@ -21,7 +20,7 @@ class CourseTest extends TestCase
     }
 
     /** @test */
-    public function we_can_get_a_list_of_all_courses()
+    public function we_can_get_a_list_of_all_courses(): void
     {
         $this->withoutExceptionHandling();
         config(['exampapers.api_key' => 'secret']);
@@ -40,7 +39,7 @@ class CourseTest extends TestCase
     }
 
     /** @test */
-    public function we_can_get_the_details_for_one_course()
+    public function we_can_get_the_details_for_one_course(): void
     {
         $this->withoutExceptionHandling();
         config(['exampapers.api_key' => 'secret']);
@@ -58,7 +57,7 @@ class CourseTest extends TestCase
     }
 
     /** @test */
-    public function we_can_get_a_list_of_applicable_drop_down_options_for_setters_add_paper_button()
+    public function we_can_get_a_list_of_applicable_drop_down_options_for_setters_add_paper_button(): void
     {
         $this->withoutExceptionHandling();
         config(['exampapers.api_key' => 'secret']);
@@ -126,7 +125,7 @@ class CourseTest extends TestCase
     }
 
     /** @test */
-    public function we_can_get_a_list_of_applicable_drop_down_options_for_moderators_add_paper_button()
+    public function we_can_get_a_list_of_applicable_drop_down_options_for_moderators_add_paper_button(): void
     {
         $this->withoutExceptionHandling();
         config(['exampapers.api_key' => 'secret']);
@@ -173,7 +172,7 @@ class CourseTest extends TestCase
     }
 
     /** @test */
-    public function we_can_get_a_list_of_applicable_drop_down_options_for_externals_add_paper_button()
+    public function we_can_get_a_list_of_applicable_drop_down_options_for_externals_add_paper_button(): void
     {
         $this->withoutExceptionHandling();
         config(['exampapers.api_key' => 'secret']);
@@ -220,7 +219,7 @@ class CourseTest extends TestCase
     }
 
     /** @test */
-    public function if_someone_is_a_setter_and_moderator_for_the_same_course_they_see_the_right_add_paper_options()
+    public function if_someone_is_a_setter_and_moderator_for_the_same_course_they_see_the_right_add_paper_options(): void
     {
         $this->withoutExceptionHandling();
         config(['exampapers.api_key' => 'secret']);

@@ -9,10 +9,8 @@ class CourseFactory extends Factory
 {
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'code' => 'ENG'.$this->faker->numberBetween(1000, 8999),

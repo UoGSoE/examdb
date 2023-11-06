@@ -3,11 +3,9 @@
 namespace Tests\Unit;
 
 use App\Models\AcademicSession;
-use App\Models\Comment;
 use App\Models\Paper;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class CommentTest extends TestCase
@@ -21,7 +19,7 @@ class CommentTest extends TestCase
     }
 
     /** @test */
-    public function a_paper_can_have_comments_added_to_it()
+    public function a_paper_can_have_comments_added_to_it(): void
     {
         $user = create(User::class);
         login($user);

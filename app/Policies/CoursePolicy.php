@@ -28,7 +28,7 @@ class CoursePolicy
             $user->isExternalFor($course);
     }
 
-    public function update(User $user, Course $course)
+    public function update(User $user, Course $course): bool
     {
         return $user->isSetterFor($course) or
             $user->isModeratorFor($course);

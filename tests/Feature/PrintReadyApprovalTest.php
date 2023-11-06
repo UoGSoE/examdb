@@ -2,20 +2,19 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use App\Models\User;
-use App\Models\Paper;
-use App\Models\Course;
-use App\Models\Discipline;
-use App\Models\AcademicSession;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
 use App\Mail\PrintReadyPaperApprovedMail;
 use App\Mail\PrintReadyPaperRejectedMail;
 use App\Mail\PrintReadyPaperReminderMail;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Models\AcademicSession;
+use App\Models\Course;
+use App\Models\Discipline;
+use App\Models\Paper;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+use Tests\TestCase;
 
 class PrintReadyApprovalTest extends TestCase
 {
@@ -28,7 +27,7 @@ class PrintReadyApprovalTest extends TestCase
     }
 
     /** @test */
-    public function if_the_print_ready_paper_has_been_uploaded_setters_see_an_approval_button()
+    public function if_the_print_ready_paper_has_been_uploaded_setters_see_an_approval_button(): void
     {
         $this->markTestSkipped('This is all done via vue so we need to test it there... one day');
         Storage::fake('exampapers');
@@ -46,7 +45,7 @@ class PrintReadyApprovalTest extends TestCase
     }
 
     /** @test */
-    public function a_setter_can_mark_the_print_ready_paper_as_approved()
+    public function a_setter_can_mark_the_print_ready_paper_as_approved(): void
     {
         Storage::fake('exampapers');
         Mail::fake();
@@ -82,7 +81,7 @@ class PrintReadyApprovalTest extends TestCase
     }
 
     /** @test */
-    public function a_setter_can_mark_the_print_ready_paper_as_not_approved()
+    public function a_setter_can_mark_the_print_ready_paper_as_not_approved(): void
     {
         Storage::fake('exampapers');
         Mail::fake();
@@ -120,7 +119,7 @@ class PrintReadyApprovalTest extends TestCase
     }
 
     /** @test */
-    public function if_a_setter_marks_the_paper_as_not_approved_they_must_provide_a_comment()
+    public function if_a_setter_marks_the_paper_as_not_approved_they_must_provide_a_comment(): void
     {
         Storage::fake('exampapers');
         Mail::fake();
@@ -142,7 +141,7 @@ class PrintReadyApprovalTest extends TestCase
     }
 
     /** @test */
-    public function if_a_setter_marks_the_paper_as_approved_they_dont_need_to_provide_a_comment()
+    public function if_a_setter_marks_the_paper_as_approved_they_dont_need_to_provide_a_comment(): void
     {
         Storage::fake('exampapers');
         Mail::fake();
@@ -173,7 +172,7 @@ class PrintReadyApprovalTest extends TestCase
     }
 
     /** @test */
-    public function moderators_and_externals_cant_mark_the_print_ready_paper_as_approved_or_not()
+    public function moderators_and_externals_cant_mark_the_print_ready_paper_as_approved_or_not(): void
     {
         Storage::fake('exampapers');
         Mail::fake();
@@ -207,7 +206,7 @@ class PrintReadyApprovalTest extends TestCase
     }
 
     /** @test */
-    public function staff_who_havent_approved_or_rejected_the_print_ready_papers_after_48hrs_get_a_reminder_email()
+    public function staff_who_havent_approved_or_rejected_the_print_ready_papers_after_48hrs_get_a_reminder_email(): void
     {
         Storage::fake('exampapers');
         Mail::fake();
@@ -224,12 +223,12 @@ class PrintReadyApprovalTest extends TestCase
         $newPaper = Paper::factory()->create([
             'subcategory' => Paper::ADMIN_PRINT_READY_VERSION,
             'course_id' => $course1->id,
-            'created_at' => now()->subHours(3)
+            'created_at' => now()->subHours(3),
         ]);
         $oldPaper = Paper::factory()->create([
             'subcategory' => Paper::ADMIN_PRINT_READY_VERSION,
             'course_id' => $course2->id,
-            'created_at' => now()->subHours(49)
+            'created_at' => now()->subHours(49),
         ]);
         $oldPaperAlreadyRemindedAbout = Paper::factory()->create([
             'subcategory' => Paper::ADMIN_PRINT_READY_VERSION,
@@ -259,7 +258,7 @@ class PrintReadyApprovalTest extends TestCase
     }
 
     /** @test */
-    public function the_reminder_command_is_enabled_in_the_schedular()
+    public function the_reminder_command_is_enabled_in_the_schedular(): void
     {
         $this->assertCommandIsScheduled('examdb:send-print-ready-reminder-emails');
     }

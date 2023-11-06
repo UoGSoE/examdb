@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 
 class GdprAnonymiseController extends Controller
 {
-    public function store(User $user)
+    public function store(User $user): RedirectResponse
     {
         if ($user->isInternal()) {
             return redirect()->route('user.show', $user->id);

@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Course;
 use App\Events\PaperAdded;
+use App\Models\Course;
 use App\Models\Paper;
 use App\Scopes\CurrentAcademicSessionScope;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rule;
+use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PaperController extends Controller
 {
-    public function index(int $id)
+    public function index(int $id): View
     {
         $course = Course::findOrFail($id);
 
@@ -23,13 +24,13 @@ class PaperController extends Controller
 
         $allSessionCourses = Course::withoutGlobalScope(CurrentAcademicSessionScope::class)->where('code', '=', $course->code)->get();
         $papers = Paper::withoutGlobalScope(CurrentAcademicSessionScope::class)
-                    ->with([
-                        'user' => fn ($query) => $query->withoutGlobalScope(CurrentAcademicSessionScope::class),
-                        'comments',
-                    ])
-                    ->whereIn('course_id', $allSessionCourses->pluck('id')->values())
-                    ->orderByDesc('created_at')
-                    ->get();
+            ->with([
+                'user' => fn ($query) => $query->withoutGlobalScope(CurrentAcademicSessionScope::class),
+                'comments',
+            ])
+            ->whereIn('course_id', $allSessionCourses->pluck('id')->values())
+            ->orderByDesc('created_at')
+            ->get();
 
         return view('course.all.index', [
             'course' => $course,
@@ -65,15 +66,15 @@ class PaperController extends Controller
         return redirect()->route('course.show', $course);
     }
 
-    public function show(int $paperId)
+    public function show(int $paperId): StreamedResponse
     {
         // in order to check if the user can view this paper, we need to find the associated course in the
         // _current_ academic session to see if they are the setter/moderator/external for it.
         // then we can check if they can view the paper from past 'versions' of the course in the
         // PaperPolicy::view() method which they might not have had anything to do with.
         $paper = Paper::withoutGlobalScope(CurrentAcademicSessionScope::class)
-                    ->with(['course' => fn ($query) => $query->withoutGlobalScope(CurrentAcademicSessionScope::class)])
-                    ->findOrFail($paperId);
+            ->with(['course' => fn ($query) => $query->withoutGlobalScope(CurrentAcademicSessionScope::class)])
+            ->findOrFail($paperId);
         $currentVersionOfCourse = Course::where('code', '=', $paper->course->code)->firstOrFail();
         $paper->setRelation('course', $currentVersionOfCourse);
 
@@ -93,7 +94,7 @@ class PaperController extends Controller
         }, $paper->original_filename, ['Content-Type', $paper->mimetype]);
     }
 
-    public function destroy(Paper $paper)
+    public function destroy(Paper $paper): JsonResponse
     {
         $this->authorize('delete', $paper);
 

@@ -7,7 +7,6 @@ use App\Models\Course;
 use App\Models\Paper;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class HomePageTest extends TestCase
@@ -21,7 +20,7 @@ class HomePageTest extends TestCase
     }
 
     /** @test */
-    public function users_see_courses_they_are_setting_moderator_external_and_all_papers_they_have_uploaded()
+    public function users_see_courses_they_are_setting_moderator_external_and_all_papers_they_have_uploaded(): void
     {
         $staff = create(User::class);
         $course1 = create(Course::class);

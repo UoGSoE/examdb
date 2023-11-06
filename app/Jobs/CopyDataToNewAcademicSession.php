@@ -2,14 +2,13 @@
 
 namespace App\Jobs;
 
+use App\Mail\DataWasCopiedToNewSession;
 use App\Models\AcademicSession;
 use App\Models\Course;
 use App\Models\Discipline;
-use App\Mail\DataWasCopiedToNewSession;
-use App\Scopes\CurrentAcademicSessionScope;
 use App\Models\User;
+use App\Scopes\CurrentAcademicSessionScope;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -42,10 +41,8 @@ class CopyDataToNewAcademicSession implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         DB::transaction(function () {
             Discipline::withoutGlobalScope(CurrentAcademicSessionScope::class)->where('academic_session_id', '=', $this->sourceSession->id)->get()->each(fn ($discipline) => $this->replicateForNewSession($discipline)->save());
@@ -56,8 +53,8 @@ class CopyDataToNewAcademicSession implements ShouldQueue
                 $newDiscipline = new Discipline();
                 if ($course->discipline_id) {
                     $newDiscipline = Discipline::withoutGlobalScope(CurrentAcademicSessionScope::class)->where('title', '=', $course->discipline->title)
-                                        ->where('academic_session_id', '=', $this->targetSession->id)
-                                        ->first();
+                        ->where('academic_session_id', '=', $this->targetSession->id)
+                        ->first();
                 }
                 $newCourse = $this->replicateForNewSession($course, ['discipline_id' => $newDiscipline?->id]);
                 foreach ($newCourse->flagsToClearOnDuplication as $flag) {

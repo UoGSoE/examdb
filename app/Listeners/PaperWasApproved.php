@@ -3,10 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\PaperApproved;
-use App\Mail\NotifyModeratorAboutApproval;
 use App\Mail\NotifySetterAboutApproval;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
 
 class PaperWasApproved
@@ -23,11 +20,8 @@ class PaperWasApproved
 
     /**
      * Handle the event.
-     *
-     * @param  PaperApproved  $event
-     * @return void
      */
-    public function handle(PaperApproved $event)
+    public function handle(PaperApproved $event): void
     {
         activity()->causedBy($event->user)->log(
             "Approved {$event->category} paper for {$event->course->code}"

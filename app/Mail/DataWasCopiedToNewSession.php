@@ -4,7 +4,6 @@ namespace App\Mail;
 
 use App\Models\AcademicSession;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -26,10 +25,8 @@ class DataWasCopiedToNewSession extends Mailable
 
     /**
      * Build the message.
-     *
-     * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->markdown('emails.data_was_copied_to_new_session');
     }

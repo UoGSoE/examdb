@@ -26,10 +26,8 @@ class NotifyExternalSpecificCourse extends Mailable implements ShouldQueue
 
     /**
      * Build the message.
-     *
-     * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->markdown('emails.notify_external_specific_course');
     }

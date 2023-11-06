@@ -6,7 +6,6 @@ use App\Models\AcademicSession;
 use App\Models\Course;
 use App\Models\Paper;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class CoursePapersTest extends TestCase
@@ -20,7 +19,7 @@ class CoursePapersTest extends TestCase
     }
 
     /** @test */
-    public function we_can_get_a_list_of_papers_for_a_course()
+    public function we_can_get_a_list_of_papers_for_a_course(): void
     {
         $this->withoutExceptionHandling();
         config(['exampapers.api_key' => 'secret']);

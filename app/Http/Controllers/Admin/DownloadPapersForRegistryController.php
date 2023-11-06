@@ -7,10 +7,11 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DownloadPapersForRegistryController extends Controller
 {
-    public function show(User $user, Request $request)
+    public function show(User $user, Request $request): StreamedResponse
     {
         if (! $request->hasValidSignature()) {
             abort(401);

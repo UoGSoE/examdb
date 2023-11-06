@@ -6,7 +6,6 @@ use App\Models\Course;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class NotifySetterAboutPrintReadyPaper extends Mailable
 {
@@ -26,11 +25,9 @@ class NotifySetterAboutPrintReadyPaper extends Mailable
 
     /**
      * Build the message.
-     *
-     * @return $this
      */
-    public function build()
+    public function build(): static
     {
-        return $this->subject('Print Ready paper for ' . $this->course->code)->markdown('notify_setter_about_print_ready_paper');
+        return $this->subject('Print Ready paper for '.$this->course->code)->markdown('notify_setter_about_print_ready_paper');
     }
 }

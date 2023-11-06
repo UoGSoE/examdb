@@ -33,10 +33,8 @@ class MakeUserAnAdmin extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $user = User::where('username', '=', $this->argument('username'))->firstOrFail();
         $user->makeAdmin();

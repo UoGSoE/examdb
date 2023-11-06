@@ -18,11 +18,8 @@ class ImpersonationStopped
 
     /**
      * Handle the event.
-     *
-     * @param  LeaveImpersonation  $event
-     * @return void
      */
-    public function handle(LeaveImpersonation $event)
+    public function handle(LeaveImpersonation $event): void
     {
         activity()
             ->causedBy($event->impersonator)

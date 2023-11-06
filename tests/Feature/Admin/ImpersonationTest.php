@@ -19,7 +19,7 @@ class ImpersonationTest extends TestCase
     }
 
     /** @test */
-    public function an_admin_can_impersonate_other_users()
+    public function an_admin_can_impersonate_other_users(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);
@@ -47,7 +47,7 @@ class ImpersonationTest extends TestCase
     }
 
     /** @test */
-    public function regular_users_cant_impersonate_other_users()
+    public function regular_users_cant_impersonate_other_users(): void
     {
         $user1 = create(User::class);
         $user2 = create(User::class);
@@ -60,7 +60,7 @@ class ImpersonationTest extends TestCase
     }
 
     /** @test */
-    public function an_admin_can_stop_impersonating_other_users()
+    public function an_admin_can_stop_impersonating_other_users(): void
     {
         $this->withoutExceptionHandling();
         $admin = create(User::class, ['is_admin' => true]);

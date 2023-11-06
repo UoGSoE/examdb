@@ -2,13 +2,10 @@
 
 namespace App\Jobs;
 
-use App\Jobs\ImportCourseRow;
 use App\Mail\CourseImportProcessComplete;
-use App\Scopes\CurrentAcademicSessionScope;
 use App\Models\User;
-use Illuminate\Bus\Batchable;
+use App\Scopes\CurrentAcademicSessionScope;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -41,10 +38,8 @@ class ImportCourseDataBatch implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $user = User::withoutGlobalScope(CurrentAcademicSessionScope::class)->find($this->userId);
         $batch = Bus::batch([]);

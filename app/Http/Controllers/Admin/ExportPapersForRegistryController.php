@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\ExportPapersForRegistry;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class ExportPapersForRegistryController extends Controller
 {
-    public function store()
+    public function store(): JsonResponse
     {
         ExportPapersForRegistry::dispatch(request()->user())->onQueue('long-running-queue');
 

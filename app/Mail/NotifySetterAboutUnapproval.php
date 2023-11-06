@@ -3,9 +3,7 @@
 namespace App\Mail;
 
 use App\Models\Course;
-use App\Models\Paper;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -30,10 +28,8 @@ class NotifySetterAboutUnapproval extends Mailable
 
     /**
      * Build the message.
-     *
-     * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->markdown('emails.notify_setter_unapproved');
     }

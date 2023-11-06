@@ -3,8 +3,6 @@
 namespace App\Listeners;
 
 use App\Models\Paper;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
 class LogThatPaperWasAdded
 {
@@ -19,11 +17,8 @@ class LogThatPaperWasAdded
 
     /**
      * Handle the event.
-     *
-     * @param  object  $event
-     * @return void
      */
-    public function handle($event)
+    public function handle(object $event): void
     {
         $prefix = 'Uploaded a paper';
         if ($event->paper->subcategory == Paper::COMMENT_SUBCATEGORY) {

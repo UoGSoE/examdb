@@ -10,20 +10,16 @@ class ViewServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         //
     }
 
     /**
      * Bootstrap services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         View::composer('layouts.navbar', function ($view) {
             $view->with('navbarAcademicSessions', cache()->rememberForever('navbarAcademicSessions', function () {

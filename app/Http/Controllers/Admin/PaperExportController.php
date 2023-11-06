@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Course;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Course;
 use Ohffs\SimpleSpout\ExcelSheet;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class PaperExportController extends Controller
 {
-    public function show()
+    public function show(): BinaryFileResponse
     {
         $courses = Course::with([
             'papers',

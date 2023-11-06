@@ -7,7 +7,6 @@ use App\Models\Course;
 use App\Models\Paper;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class PreviousYearsPapersTest extends TestCase
@@ -21,7 +20,7 @@ class PreviousYearsPapersTest extends TestCase
     }
 
     /** @test */
-    public function users_associated_with_a_course_can_see_all_previous_papers_and_comments_associated_with_it()
+    public function users_associated_with_a_course_can_see_all_previous_papers_and_comments_associated_with_it(): void
     {
         $this->withoutExceptionHandling();
         $session1 = AcademicSession::factory()->create(['session' => '1980/1981']);
@@ -45,7 +44,7 @@ class PreviousYearsPapersTest extends TestCase
     }
 
     /** @test */
-    public function users_not_associated_with_a_course_cant_view_the_previous_papers()
+    public function users_not_associated_with_a_course_cant_view_the_previous_papers(): void
     {
         $session1 = AcademicSession::factory()->create(['session' => '1980/1981']);
         $session2 = AcademicSession::factory()->create(['session' => '1981/1982']);

@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Course;
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\Course;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class CourseUsersController extends Controller
 {
-    public function update(Course $course, Request $request)
+    public function update(Course $course, Request $request): JsonResponse
     {
         $request->validate([
             'setters' => 'present|array',
@@ -24,7 +25,7 @@ class CourseUsersController extends Controller
         ], 200);
     }
 
-    public function destroy()
+    public function destroy(): RedirectResponse
     {
         Course::all()->each(function ($course) {
             $course->staff()->sync([]);

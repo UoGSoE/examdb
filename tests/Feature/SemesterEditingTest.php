@@ -6,7 +6,6 @@ use App\Models\AcademicSession;
 use App\Models\Course;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -21,7 +20,7 @@ class SemesterEditingTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_see_the_semester_edit_box_on_the_course_index_page()
+    public function admins_can_see_the_semester_edit_box_on_the_course_index_page(): void
     {
         $this->markTestSkipped('Admin edit box is disabled for now due to livewire funkyness');
         $course = Course::factory()->create();
@@ -34,7 +33,7 @@ class SemesterEditingTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_change_the_semester_for_a_course()
+    public function admins_can_change_the_semester_for_a_course(): void
     {
         $course = Course::factory()->create(['semester' => 1]);
         $admin = User::factory()->admin()->create();
@@ -46,7 +45,7 @@ class SemesterEditingTest extends TestCase
     }
 
     /** @test */
-    public function the_semester_has_to_be_a_number_between_one_and_three()
+    public function the_semester_has_to_be_a_number_between_one_and_three(): void
     {
         $course = Course::factory()->create(['semester' => 1]);
         $admin = User::factory()->admin()->create();

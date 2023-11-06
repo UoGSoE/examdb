@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\Exporters\PaperExporter;
-use App\Jobs\RemoveRegistryZip;
 use App\Mail\RegistryPapersExported;
 use App\Models\Paper;
 use App\Models\User;
@@ -32,10 +31,8 @@ class ExportPapersForRegistry implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $link = (new PaperExporter(Paper::PAPER_FOR_REGISTRY, $this->user))->export();
 

@@ -34,10 +34,8 @@ class CopyUserToSession extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $user = User::where('username', '=', $this->argument('username'))->firstOrFail();
         $sessionName = $this->argument('session');

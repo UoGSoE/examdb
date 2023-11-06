@@ -3,18 +3,16 @@
 namespace App\Providers;
 
 use App\Models\AcademicSession;
+use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Foundation\Console\AboutCommand;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         Collection::macro('userLinks', function () {
             return $this->map(function ($user) {
@@ -22,20 +20,19 @@ class AppServiceProvider extends ServiceProvider
             });
         });
 
-        AboutCommand::add("Academic Sessions", function () {
+        AboutCommand::add('Academic Sessions', function () {
             foreach (AcademicSession::all() as $session) {
-                $sessionOutput[$session->id] = ($session->is_default ? '(Default) ' : '') . $session->session;
+                $sessionOutput[$session->id] = ($session->is_default ? '(Default) ' : '').$session->session;
             }
+
             return $sessionOutput;
         });
     }
 
     /**
      * Register any application services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         //
     }

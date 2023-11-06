@@ -2,16 +2,15 @@
 
 namespace Tests\Feature;
 
+use App\Jobs\CopyDataToNewAcademicSession;
+use App\Mail\DataWasCopiedToNewSession;
 use App\Models\AcademicSession;
 use App\Models\Course;
 use App\Models\Discipline;
-use App\Jobs\CopyDataToNewAcademicSession;
-use App\Mail\DataWasCopiedToNewSession;
-use App\Scopes\CurrentAcademicSessionScope;
 use App\Models\User;
+use App\Scopes\CurrentAcademicSessionScope;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
@@ -22,7 +21,7 @@ class AcademicSessionTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function logged_in_users_default_to_the_default_academic_session()
+    public function logged_in_users_default_to_the_default_academic_session(): void
     {
         $oldSession = AcademicSession::factory()->create(['session' => '1904/1905', 'is_default' => false]);
         $newSession = AcademicSession::factory()->create(['session' => '2020/2021', 'is_default' => true]);
@@ -36,7 +35,7 @@ class AcademicSessionTest extends TestCase
     }
 
     /** @test */
-    public function when_users_login_their_records_are_fetched_from_the_default_session()
+    public function when_users_login_their_records_are_fetched_from_the_default_session(): void
     {
         $this->withoutExceptionHandling();
         $oldSession = AcademicSession::factory()->create(['session' => '1904/1905', 'is_default' => false]);
@@ -57,7 +56,7 @@ class AcademicSessionTest extends TestCase
     }
 
     /** @test */
-    public function admin_users_who_have_chosen_a_specific_academic_session_dont_have_it_replaced_by_the_default()
+    public function admin_users_who_have_chosen_a_specific_academic_session_dont_have_it_replaced_by_the_default(): void
     {
         $oldSession = AcademicSession::factory()->create(['session' => '1904/1905', 'created_at' => '2018-01-01']);
         $newSession = AcademicSession::factory()->create(['session' => '2020/2021', 'created_at' => '2020-01-01']);
@@ -71,7 +70,7 @@ class AcademicSessionTest extends TestCase
     }
 
     /** @test */
-    public function if_there_are_no_existing_academic_sessions_then_one_is_created()
+    public function if_there_are_no_existing_academic_sessions_then_one_is_created(): void
     {
         $user = User::factory()->create(['academic_session_id' => null]); // stop the factory creating a new academic session
 
@@ -88,7 +87,7 @@ class AcademicSessionTest extends TestCase
     }
 
     /** @test */
-    public function admin_users_can_change_their_academic_session()
+    public function admin_users_can_change_their_academic_session(): void
     {
         $this->withoutExceptionHandling();
         $defaultSession = AcademicSession::createFirstSession();
@@ -115,7 +114,7 @@ class AcademicSessionTest extends TestCase
     }
 
     /** @test */
-    public function regular_users_cant_change_their_academic_session()
+    public function regular_users_cant_change_their_academic_session(): void
     {
         $user = User::factory()->create();
         $session1 = AcademicSession::factory()->create(['session' => '1990/1991', 'is_default' => true]);
@@ -128,7 +127,7 @@ class AcademicSessionTest extends TestCase
     }
 
     /** @test */
-    public function regular_users_cant_see_the_manage_sessions_form()
+    public function regular_users_cant_see_the_manage_sessions_form(): void
     {
         AcademicSession::createFirstSession();
         $user = User::factory()->create();
@@ -139,7 +138,7 @@ class AcademicSessionTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_see_the_manage_sessions_form()
+    public function admins_can_see_the_manage_sessions_form(): void
     {
         AcademicSession::createFirstSession();
         $admin = User::factory()->admin()->create();
@@ -151,7 +150,7 @@ class AcademicSessionTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_create_a_new_academic_session()
+    public function admins_can_create_a_new_academic_session(): void
     {
         $this->withoutExceptionHandling();
         Queue::fake();
@@ -171,7 +170,7 @@ class AcademicSessionTest extends TestCase
     }
 
     /** @test */
-    public function when_a_new_session_is_created_the_cached_navbar_academic_sessions_are_flushed()
+    public function when_a_new_session_is_created_the_cached_navbar_academic_sessions_are_flushed(): void
     {
         $this->withoutExceptionHandling();
         Queue::fake();
@@ -187,7 +186,7 @@ class AcademicSessionTest extends TestCase
     }
 
     /** @test */
-    public function when_the_new_session_is_created_the_existing_session_data_is_copied_and_updated_with_the_right_session_info()
+    public function when_the_new_session_is_created_the_existing_session_data_is_copied_and_updated_with_the_right_session_info(): void
     {
         $admin = User::factory()->admin()->create();
         $oldSession = AcademicSession::factory()->create(['session' => '1980/1981', 'is_default' => true]);
@@ -246,7 +245,7 @@ class AcademicSessionTest extends TestCase
     }
 
     /** @test */
-    public function when_course_data_is_copied_to_a_new_session_all_of_the_flags_on_it_are_cleared()
+    public function when_course_data_is_copied_to_a_new_session_all_of_the_flags_on_it_are_cleared(): void
     {
         Mail::fake();
         $admin = User::factory()->admin()->create();
@@ -261,16 +260,16 @@ class AcademicSessionTest extends TestCase
         CopyDataToNewAcademicSession::dispatchSync($oldSession, $newSession, $admin);
 
         $copyOfCourse = Course::withoutGlobalScope(CurrentAcademicSessionScope::class)
-                ->where('code', '=', $course1->code)
-                ->where('academic_session_id', '=', $newSession->id)
-                ->firstOrFail();
+            ->where('code', '=', $course1->code)
+            ->where('academic_session_id', '=', $newSession->id)
+            ->firstOrFail();
         foreach ($copyOfCourse->flagsToClearOnDuplication as $flag) {
             $this->assertFalse($copyOfCourse->$flag);
         }
     }
 
     /** @test */
-    public function once_the_data_is_copied_an_email_is_sent_to_the_user_who_requested_the_new_session()
+    public function once_the_data_is_copied_an_email_is_sent_to_the_user_who_requested_the_new_session(): void
     {
         Mail::fake();
         $admin = User::factory()->admin()->create();
@@ -286,7 +285,7 @@ class AcademicSessionTest extends TestCase
     }
 
     /** @test */
-    public function regular_users_cant_change_the_default_session()
+    public function regular_users_cant_change_the_default_session(): void
     {
         $user = User::factory()->create();
         $session1 = AcademicSession::factory()->create(['session' => '1980/1981', 'is_default' => true]);
@@ -300,7 +299,7 @@ class AcademicSessionTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_change_the_default_session()
+    public function admins_can_change_the_default_session(): void
     {
         $admin = User::factory()->admin()->create();
         $session1 = AcademicSession::factory()->create(['session' => '1980/1981', 'is_default' => true]);
@@ -314,7 +313,7 @@ class AcademicSessionTest extends TestCase
     }
 
     /** @test */
-    public function there_is_an_artisan_command_to_retrofit_academic_sessions_into_the_old_engineering_only_database()
+    public function there_is_an_artisan_command_to_retrofit_academic_sessions_into_the_old_engineering_only_database(): void
     {
         AcademicSession::createFirstSession();
         $session = AcademicSession::first();
@@ -334,7 +333,7 @@ class AcademicSessionTest extends TestCase
     }
 
     /** @test */
-    public function courses_and_disciplines_are_globally_scoped_to_the_current_session_and_users_can_use_a_local_scope()
+    public function courses_and_disciplines_are_globally_scoped_to_the_current_session_and_users_can_use_a_local_scope(): void
     {
         $oldSession = AcademicSession::factory()->create(['session' => '1980/1981', 'is_default' => true]);
         $newSession = AcademicSession::factory()->create(['session' => '1990/1991', 'is_default' => false]);
@@ -370,7 +369,7 @@ class AcademicSessionTest extends TestCase
     }
 
     /** @test */
-    public function there_is_an_artisan_command_to_copy_a_user_from_the_current_session_into_a_previous_one()
+    public function there_is_an_artisan_command_to_copy_a_user_from_the_current_session_into_a_previous_one(): void
     {
         $oldSession = AcademicSession::factory()->create(['session' => '1980/1981', 'is_default' => false]);
         $newSession = AcademicSession::factory()->create(['session' => '1990/1991', 'is_default' => true]);

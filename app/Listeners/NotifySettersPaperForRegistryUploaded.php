@@ -2,11 +2,8 @@
 
 namespace App\Listeners;
 
-use App\Models\Course;
 use App\Mail\PaperForRegistryUploaded;
 use App\Models\Paper;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
 
 class NotifySettersPaperForRegistryUploaded
@@ -22,11 +19,8 @@ class NotifySettersPaperForRegistryUploaded
 
     /**
      * Handle the event.
-     *
-     * @param  object  $event
-     * @return void
      */
-    public function handle($event)
+    public function handle(object $event): void
     {
         if ($event->paper->subcategory != Paper::PAPER_FOR_REGISTRY) {
             return;

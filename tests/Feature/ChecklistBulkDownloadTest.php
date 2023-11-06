@@ -2,17 +2,15 @@
 
 namespace Tests\Feature;
 
-use App\Models\AcademicSession;
-use App\Models\Course;
 use App\Exporters\ChecklistExporter;
 use App\Jobs\BulkExportChecklists;
 use App\Jobs\RemoveChecklistZip;
 use App\Mail\ChecklistsReadyToDownload;
+use App\Models\AcademicSession;
+use App\Models\Course;
 use App\Models\PaperChecklist;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
@@ -31,7 +29,7 @@ class ChecklistBulkDownloadTest extends TestCase
     }
 
     /** @test */
-    public function regular_users_cant_request_the_bulk_download_of_all_checklists()
+    public function regular_users_cant_request_the_bulk_download_of_all_checklists(): void
     {
         Queue::fake();
         $user = create(User::class, ['is_admin' => false]);
@@ -43,7 +41,7 @@ class ChecklistBulkDownloadTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_request_the_bulk_download_of_all_checklists()
+    public function admins_can_request_the_bulk_download_of_all_checklists(): void
     {
         $this->withoutExceptionHandling();
         Queue::fake();
@@ -56,7 +54,7 @@ class ChecklistBulkDownloadTest extends TestCase
     }
 
     /** @test */
-    public function the_bulk_export_job_creates_a_zip_file_and_emails_the_person_who_requested_it()
+    public function the_bulk_export_job_creates_a_zip_file_and_emails_the_person_who_requested_it(): void
     {
         Mail::fake();
         Http::fake([
@@ -73,7 +71,7 @@ class ChecklistBulkDownloadTest extends TestCase
         $checklist2 = create(PaperChecklist::class, ['course_id' => $glaCourse2->id, 'category' => 'resit']);
         $checklist3 = create(PaperChecklist::class, ['course_id' => $uestcCourse1->id, 'category' => 'resit']);
 
-        BulkExportChecklists::dispatchNow($admin);
+        BulkExportChecklists::dispatchSync($admin);
 
         Mail::assertQueued(ChecklistsReadyToDownload::class, 1);
         Mail::assertQueued(ChecklistsReadyToDownload::class, function ($mail) use ($admin) {
@@ -86,7 +84,7 @@ class ChecklistBulkDownloadTest extends TestCase
     }
 
     /** @test */
-    public function only_the_person_who_requested_the_download_can_access_it()
+    public function only_the_person_who_requested_the_download_can_access_it(): void
     {
         $this->markTestSkipped('TODO - fix this up as the ChecklistExporter isnt used any more');
 
@@ -107,7 +105,7 @@ class ChecklistBulkDownloadTest extends TestCase
     }
 
     /** @test */
-    public function a_job_is_queued_which_will_remove_the_zip_file()
+    public function a_job_is_queued_which_will_remove_the_zip_file(): void
     {
         Mail::fake();
         Http::fake([
@@ -123,13 +121,13 @@ class ChecklistBulkDownloadTest extends TestCase
         $checklist2 = create(PaperChecklist::class, ['course_id' => $glaCourse2->id, 'category' => 'resit']);
         $checklist3 = create(PaperChecklist::class, ['course_id' => $uestcCourse1->id, 'category' => 'resit']);
 
-        BulkExportChecklists::dispatchNow($admin);
+        BulkExportChecklists::dispatchSync($admin);
 
         Queue::assertPushed(RemoveChecklistZip::class);
     }
 
     /** @test */
-    public function the_remove_checklist_zip_job_does_remove_the_zip()
+    public function the_remove_checklist_zip_job_does_remove_the_zip(): void
     {
         Mail::fake();
         Http::fake([
@@ -144,7 +142,7 @@ class ChecklistBulkDownloadTest extends TestCase
         $checklist2 = create(PaperChecklist::class, ['course_id' => $glaCourse2->id, 'category' => 'resit']);
         $checklist3 = create(PaperChecklist::class, ['course_id' => $uestcCourse1->id, 'category' => 'resit']);
 
-        BulkExportChecklists::dispatchNow($admin);
+        BulkExportChecklists::dispatchSync($admin);
 
         Storage::disk('exampapers')->assertMissing('checklists/checklists_'.$admin->id.'.zip');
     }

@@ -26,10 +26,8 @@ class NotifyTeachingOfficeExternalHasCommented extends Mailable implements Shoul
 
     /**
      * Build the message.
-     *
-     * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->markdown('emails.notify_teaching_office_external_comments');
     }

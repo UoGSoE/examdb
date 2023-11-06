@@ -23,10 +23,8 @@ class ExternalHasPapersToLookAt extends Mailable implements ShouldQueue
 
     /**
      * Build the message.
-     *
-     * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->markdown('emails.external_papers');
     }

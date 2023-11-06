@@ -2,22 +2,23 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Discipline;
-use App\Http\Controllers\Controller;
 use App\Scopes\CurrentAcademicSessionScope;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 class CourseController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         return view('admin.courses.index');
     }
 
-    public function edit(Course $course)
+    public function edit(Course $course): View
     {
         return view('admin.courses.edit', [
             'course' => $course,
@@ -25,7 +26,7 @@ class CourseController extends Controller
         ]);
     }
 
-    public function update(Course $course, Request $request)
+    public function update(Course $course, Request $request): RedirectResponse
     {
         $request->validate([
             'code' => [
@@ -38,9 +39,9 @@ class CourseController extends Controller
         ]);
 
         $existingCourse = Course::withoutGlobalScope(CurrentAcademicSessionScope::class)
-                ->where('code', '=', $request->code)
-                ->where('academic_session_id', '=', $request->user()->getCurrentAcademicSession()->id)
-                ->first();
+            ->where('code', '=', $request->code)
+            ->where('academic_session_id', '=', $request->user()->getCurrentAcademicSession()->id)
+            ->first();
         if ($existingCourse && $existingCourse->id != $course->id) {
             $error = ValidationException::withMessages([
                 'code' => ['Course with this code already exists.'],

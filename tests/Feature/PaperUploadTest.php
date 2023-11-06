@@ -2,24 +2,21 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use App\Models\User;
-use App\Models\Paper;
+use App\Mail\NotifySetterAboutExternalComments;
+use App\Mail\NotifySetterAboutPrintReadyPaper;
+use App\Mail\NotifyTeachingOfficeExternalHasCommented;
+use App\Mail\PaperForRegistry;
+use App\Models\AcademicSession;
 use App\Models\Course;
 use App\Models\Discipline;
-use App\Mail\PaperForRegistry;
-use App\Mail\ChecklistUploaded;
-use App\Models\AcademicSession;
+use App\Models\Paper;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Mail\NotifySetterAboutPrintReadyPaper;
-use App\Mail\NotifySetterAboutExternalComments;
-use App\Mail\NotifySetterAboutModeratorComments;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Mail\NotifyTeachingOfficeExternalHasCommented;
+use Tests\TestCase;
 
 class PaperUploadTest extends TestCase
 {
@@ -32,7 +29,7 @@ class PaperUploadTest extends TestCase
     }
 
     /** @test */
-    public function a_setter_can_upload_a_paper()
+    public function a_setter_can_upload_a_paper(): void
     {
         Mail::fake();
         $this->withoutExceptionHandling();
@@ -83,7 +80,7 @@ class PaperUploadTest extends TestCase
     }
 
     /** @test */
-    public function an_external_can_upload_thier_comments_which_triggers_an_email_to_the_setter_and_teaching_office_contact()
+    public function an_external_can_upload_thier_comments_which_triggers_an_email_to_the_setter_and_teaching_office_contact(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();
@@ -128,7 +125,7 @@ class PaperUploadTest extends TestCase
     }
 
     /** @test */
-    public function an_external_can_upload_thier_solution_comments_which_triggers_an_email_to_the_setter_and_teaching_office_contact()
+    public function an_external_can_upload_thier_solution_comments_which_triggers_an_email_to_the_setter_and_teaching_office_contact(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();
@@ -173,7 +170,7 @@ class PaperUploadTest extends TestCase
     }
 
     /** @test */
-    public function when_the_setter_uploads_the_paper_for_registry_an_email_is_sent_to_teaching_office_contact()
+    public function when_the_setter_uploads_the_paper_for_registry_an_email_is_sent_to_teaching_office_contact(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();
@@ -204,7 +201,7 @@ class PaperUploadTest extends TestCase
     }
 
     /** @test */
-    public function uestc_courses_have_an_extra_category_of_uploads_of_resit2_which_doesnt_trigger_emails_even_if_it_was_set_to_the_paper_checklist()
+    public function uestc_courses_have_an_extra_category_of_uploads_of_resit2_which_doesnt_trigger_emails_even_if_it_was_set_to_the_paper_checklist(): void
     {
         Mail::fake();
         $this->withoutExceptionHandling();
@@ -237,7 +234,7 @@ class PaperUploadTest extends TestCase
     }
 
     /** @test */
-    public function people_not_associated_with_a_course_cant_upload_papers_for_it()
+    public function people_not_associated_with_a_course_cant_upload_papers_for_it(): void
     {
         Mail::fake();
         Storage::fake('exampapers');
@@ -260,7 +257,7 @@ class PaperUploadTest extends TestCase
     }
 
     /** @test */
-    public function admins_can_upload_papers_to_any_course()
+    public function admins_can_upload_papers_to_any_course(): void
     {
         Mail::fake();
         Storage::fake('exampapers');
@@ -281,7 +278,7 @@ class PaperUploadTest extends TestCase
     }
 
     /** @test */
-    public function if_an_admin_uploads_the_print_ready_paper_an_email_is_sent_to_the_setters_to_let_them_know()
+    public function if_an_admin_uploads_the_print_ready_paper_an_email_is_sent_to_the_setters_to_let_them_know(): void
     {
         Mail::fake();
         Storage::fake('exampapers');

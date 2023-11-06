@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Paper;
 use App\Scopes\CurrentScope;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ArchivedPaperController extends Controller
 {
-    public function show($id)
+    public function show($id): StreamedResponse
     {
         $paper = Paper::withoutGlobalScope(CurrentScope::class)->findOrFail($id);
         $this->authorize('view', $paper);

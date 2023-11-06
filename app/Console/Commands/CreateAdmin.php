@@ -35,10 +35,8 @@ class CreateAdmin extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $session = AcademicSession::getDefault();
         if (! $session) {

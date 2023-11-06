@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\AcademicSession;
 use App\Http\Controllers\Controller;
 use App\Jobs\CopyDataToNewAcademicSession;
-use App\Scopes\CurrentAcademicSessionScope;
+use App\Models\AcademicSession;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\View\View;
 
 class AcademicSessionController extends Controller
 {
-    public function set(AcademicSession $session, Request $request)
+    public function set(AcademicSession $session, Request $request): RedirectResponse
     {
         $username = $request->user()->username;
 
@@ -28,14 +29,14 @@ class AcademicSessionController extends Controller
         return redirect('/home')->with('success', 'Session changed to '.$session->session);
     }
 
-    public function edit()
+    public function edit(): View
     {
         return view('admin.academicsessions.edit', [
             'academicSessions' => AcademicSession::orderBy('session')->get(),
         ]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $session = $request->new_session_year_1.'/'.$request->new_session_year_2;
         $request->merge(['session_name' => $session]);
@@ -56,7 +57,7 @@ class AcademicSessionController extends Controller
         return redirect('/home')->with('success', 'Session '.$newSession->session.' created.  You will get an email once all the data is copied.');
     }
 
-    public function setDefault(AcademicSession $session, Request $request)
+    public function setDefault(AcademicSession $session, Request $request): RedirectResponse
     {
         $session->setAsDefault();
 

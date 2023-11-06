@@ -2,11 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Models\AcademicSession;
 use App\Mail\ExternalLoginUrl;
+use App\Models\AcademicSession;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Activitylog\Models\Activity;
 use Tests\TestCase;
@@ -22,7 +21,7 @@ class ExternalUsersLoginTest extends TestCase
     }
 
     /** @test */
-    public function an_external_can_be_emailed_a_time_limited_signed_login_url()
+    public function an_external_can_be_emailed_a_time_limited_signed_login_url(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();
@@ -45,7 +44,7 @@ class ExternalUsersLoginTest extends TestCase
     }
 
     /** @test */
-    public function when_an_external_asks_for_a_login_url_the_email_address_is_case_insensitive()
+    public function when_an_external_asks_for_a_login_url_the_email_address_is_case_insensitive(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();
@@ -68,7 +67,7 @@ class ExternalUsersLoginTest extends TestCase
     }
 
     /** @test */
-    public function when_an_email_is_entered_that_doesnt_match_an_external_then_no_email_is_sent()
+    public function when_an_email_is_entered_that_doesnt_match_an_external_then_no_email_is_sent(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();
@@ -88,7 +87,7 @@ class ExternalUsersLoginTest extends TestCase
     }
 
     /** @test */
-    public function when_an_external_visits_a_valid_signed_login_url_they_are_logged_in()
+    public function when_an_external_visits_a_valid_signed_login_url_they_are_logged_in(): void
     {
         $this->withoutExceptionHandling();
         $external = User::factory()->external()->create();
@@ -106,7 +105,7 @@ class ExternalUsersLoginTest extends TestCase
     }
 
     /** @test */
-    public function when_an_external_visits_a_valid_signed_login_url_that_has_expired_they_are_not_logged_in()
+    public function when_an_external_visits_a_valid_signed_login_url_that_has_expired_they_are_not_logged_in(): void
     {
         $external = User::factory()->external()->create();
         // set the url signature timeout in the past...
@@ -118,13 +117,13 @@ class ExternalUsersLoginTest extends TestCase
         $this->assertFalse(\Auth::check());
 
         // and check we recorded this in the activity/audit log
-        tap(Activity::all()->last(), function ($log) use ($external) {
+        tap(Activity::all()->last(), function ($log) {
             $this->assertEquals('External tried to use a expired or invalid login url from IP 127.0.0.1', $log->description);
         });
     }
 
     /** @test */
-    public function when_an_external_visits_an_invalid_login_url_they_are_not_logged_in()
+    public function when_an_external_visits_an_invalid_login_url_they_are_not_logged_in(): void
     {
         $external = User::factory()->external()->create();
 
@@ -134,7 +133,7 @@ class ExternalUsersLoginTest extends TestCase
         $this->assertFalse(\Auth::check());
 
         // and check we recorded this in the activity/audit log
-        tap(Activity::all()->last(), function ($log) use ($external) {
+        tap(Activity::all()->last(), function ($log) {
             $this->assertEquals('External tried to use a expired or invalid login url from IP 127.0.0.1', $log->description);
         });
     }

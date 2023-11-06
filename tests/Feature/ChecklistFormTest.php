@@ -2,18 +2,15 @@
 
 namespace Tests\Feature;
 
-use App\Models\AcademicSession;
-use App\Models\Course;
 use App\Http\Livewire\PaperChecklist as LivewirePaperChecklist;
-use App\Mail\ChecklistUpdated;
 use App\Mail\ExternalHasUpdatedTheChecklist;
 use App\Mail\ModeratorHasUpdatedTheChecklist;
 use App\Mail\SetterHasUpdatedTheChecklist;
+use App\Models\AcademicSession;
+use App\Models\Course;
 use App\Models\PaperChecklist;
 use App\Models\User;
-use Database\Factories\PaperChecklistFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Livewire;
@@ -30,7 +27,7 @@ class ChecklistFormTest extends TestCase
     }
 
     /** @test */
-    public function people_associated_with_a_course_can_see_the_form_to_create_a_checklist()
+    public function people_associated_with_a_course_can_see_the_form_to_create_a_checklist(): void
     {
         $this->withoutExceptionHandling();
         $user = create(User::class);
@@ -47,7 +44,7 @@ class ChecklistFormTest extends TestCase
     }
 
     /** @test */
-    public function people_not_associated_with_a_course_cant_see_create_a_checklist()
+    public function people_not_associated_with_a_course_cant_see_create_a_checklist(): void
     {
         $user = create(User::class);
         $course = create(Course::class);
@@ -61,7 +58,7 @@ class ChecklistFormTest extends TestCase
     }
 
     /** @test */
-    public function people_associated_with_a_course_can_create_a_new_checklist()
+    public function people_associated_with_a_course_can_create_a_new_checklist(): void
     {
         $this->withoutExceptionHandling();
         $user = create(User::class);
@@ -92,7 +89,7 @@ class ChecklistFormTest extends TestCase
     }
 
     /** @test */
-    public function people_associated_with_a_course_can_create_a_new_checklist_with_a_specific_number_of_questions()
+    public function people_associated_with_a_course_can_create_a_new_checklist_with_a_specific_number_of_questions(): void
     {
         $this->withoutExceptionHandling();
         $user = create(User::class);
@@ -129,7 +126,7 @@ class ChecklistFormTest extends TestCase
     }
 
     /** @test */
-    public function when_the_setter_puts_in_the_number_of_questions_on_a_paper_they_see_extra_fields_for_who_is_setting_them()
+    public function when_the_setter_puts_in_the_number_of_questions_on_a_paper_they_see_extra_fields_for_who_is_setting_them(): void
     {
         $this->withoutExceptionHandling();
         $user = create(User::class);
@@ -144,12 +141,11 @@ class ChecklistFormTest extends TestCase
             ->set('checklist.fields.number_questions', 3)
             ->assertSee('question_setter_0')
             ->assertSee('question_setter_1')
-            ->assertSee('question_setter_2')
-        ;
+            ->assertSee('question_setter_2');
     }
 
     /** @test */
-    public function various_date_fields_are_required_depending_who_the_person_is_filling_in_the_checklist()
+    public function various_date_fields_are_required_depending_who_the_person_is_filling_in_the_checklist(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();
@@ -185,7 +181,7 @@ class ChecklistFormTest extends TestCase
     }
 
     /** @test */
-    public function if_there_is_already_a_checklist_for_this_course_and_user_and_category_its_values_are_used_in_the_form()
+    public function if_there_is_already_a_checklist_for_this_course_and_user_and_category_its_values_are_used_in_the_form(): void
     {
         $this->withoutExceptionHandling();
         $user = create(User::class);
@@ -215,7 +211,7 @@ class ChecklistFormTest extends TestCase
     }
 
     /** @test */
-    public function users_can_see_previous_read_only_versions_of_checklists()
+    public function users_can_see_previous_read_only_versions_of_checklists(): void
     {
         $this->withoutExceptionHandling();
         $user = create(User::class);
@@ -242,7 +238,7 @@ class ChecklistFormTest extends TestCase
     }
 
     /** @test */
-    public function test_we_can_get_previous_and_next_checklists()
+    public function test_we_can_get_previous_and_next_checklists(): void
     {
         $course1 = create(Course::class);
         $course2 = create(Course::class);
@@ -272,7 +268,7 @@ class ChecklistFormTest extends TestCase
     }
 
     /** @test */
-    public function we_can_download_a_pdf_of_the_paper_checklist()
+    public function we_can_download_a_pdf_of_the_paper_checklist(): void
     {
         $this->markTestSkipped('TODO fix up after removing wkhtmltopdf');
         $this->withoutExceptionHandling();
@@ -296,7 +292,7 @@ class ChecklistFormTest extends TestCase
     }
 
     /** @test */
-    public function when_a_setter_updates_the_checklist_passed_to_moderator_date_an_email_is_sent_to_the_moderators()
+    public function when_a_setter_updates_the_checklist_passed_to_moderator_date_an_email_is_sent_to_the_moderators(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();
@@ -325,7 +321,7 @@ class ChecklistFormTest extends TestCase
     }
 
     /** @test */
-    public function if_a_setter_who_is_also_a_moderator_updates_the_checklist_passed_to_moderator_an_email_is_sent_to_the_moderators_except_the_setter()
+    public function if_a_setter_who_is_also_a_moderator_updates_the_checklist_passed_to_moderator_an_email_is_sent_to_the_moderators_except_the_setter(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();
@@ -355,7 +351,7 @@ class ChecklistFormTest extends TestCase
     }
 
     /** @test */
-    public function when_a_moderator_updates_the_checklist_an_email_is_sent_to_the_setters()
+    public function when_a_moderator_updates_the_checklist_an_email_is_sent_to_the_setters(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();
@@ -387,7 +383,7 @@ class ChecklistFormTest extends TestCase
     }
 
     /** @test */
-    public function when_a_moderator_updates_the_checklist_and_says_its_not_acceptable_they_must_provide_a_reason()
+    public function when_a_moderator_updates_the_checklist_and_says_its_not_acceptable_they_must_provide_a_reason(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();
@@ -409,7 +405,6 @@ class ChecklistFormTest extends TestCase
             ->assertHasErrors(['comments' => 'required'])
             ->assertSee('The comments field is required.');
 
-
         Mail::assertNothingQueued();
 
         Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
@@ -418,12 +413,11 @@ class ChecklistFormTest extends TestCase
             ->assertHasErrors(['solution_comments' => 'required'])
             ->assertSee('The solution comments field is required.');
 
-
         Mail::assertNothingQueued();
     }
 
     /** @test */
-    public function when_a_moderator_who_is_also_a_setter_updates_the_checklist_an_email_is_sent_to_the_setters_except_the_moderator()
+    public function when_a_moderator_who_is_also_a_setter_updates_the_checklist_an_email_is_sent_to_the_setters_except_the_moderator(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();
@@ -456,7 +450,7 @@ class ChecklistFormTest extends TestCase
     }
 
     /** @test */
-    public function when_an_external_updates_the_checklist_an_email_is_sent_to_the_setters()
+    public function when_an_external_updates_the_checklist_an_email_is_sent_to_the_setters(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();
@@ -488,7 +482,7 @@ class ChecklistFormTest extends TestCase
     }
 
     /** @test */
-    public function when_a_checklist_is_marked_as_ok_by_the_moderator_the_course_is_flagged_appropriately()
+    public function when_a_checklist_is_marked_as_ok_by_the_moderator_the_course_is_flagged_appropriately(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();
@@ -506,10 +500,10 @@ class ChecklistFormTest extends TestCase
         $checklist->fields = array_merge(
             $checklist->fields,
             [
-                'overall_quality_appropriate' => "1",
-                'should_revise_questions' => "0",
-                'solution_marks_appropriate' => "1",
-                'solutions_marks_adjusted' => "0",
+                'overall_quality_appropriate' => '1',
+                'should_revise_questions' => '0',
+                'solution_marks_appropriate' => '1',
+                'solutions_marks_adjusted' => '0',
             ]
         );
 
@@ -520,7 +514,7 @@ class ChecklistFormTest extends TestCase
     }
 
     /** @test */
-    public function when_a_checklist_is_not_marked_as_ok_by_the_moderator_the_course_is_flagged_appropriately()
+    public function when_a_checklist_is_not_marked_as_ok_by_the_moderator_the_course_is_flagged_appropriately(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();
@@ -538,16 +532,16 @@ class ChecklistFormTest extends TestCase
         $checklist->fields = array_merge(
             $checklist->fields,
             [
-                'overall_quality_appropriate' => "1",
-                'should_revise_questions' => "1",
+                'overall_quality_appropriate' => '1',
+                'should_revise_questions' => '1',
             ]
         );
 
         $course->fresh()->addChecklist($checklist->fields, 'main', 'B');
 
         $fields = $checklist->fields;
-        $fields['solution_marks_appropriate'] = "0";
-        $fields['solutions_marks_adjusted'] = "1";
+        $fields['solution_marks_appropriate'] = '0';
+        $fields['solutions_marks_adjusted'] = '1';
 
         $course->addChecklist($checklist->fields, 'main', 'B');
 
@@ -555,7 +549,7 @@ class ChecklistFormTest extends TestCase
     }
 
     /** @test */
-    public function when_a_checklist_is_marked_as_ok_by_the_external_the_course_is_flagged_appropriately()
+    public function when_a_checklist_is_marked_as_ok_by_the_external_the_course_is_flagged_appropriately(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();
@@ -585,7 +579,7 @@ class ChecklistFormTest extends TestCase
     }
 
     /** @test */
-    public function when_a_checklist_is_not_marked_as_ok_by_the_external_the_course_is_flagged_appropriately()
+    public function when_a_checklist_is_not_marked_as_ok_by_the_external_the_course_is_flagged_appropriately(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();
@@ -614,7 +608,7 @@ class ChecklistFormTest extends TestCase
     }
 
     /** @test */
-    public function we_can_make_an_assessment_checklist()
+    public function we_can_make_an_assessment_checklist(): void
     {
         $this->withoutExceptionHandling();
         $user = create(User::class);
@@ -636,7 +630,7 @@ class ChecklistFormTest extends TestCase
     }
 
     /** @test */
-    public function when_a_checklist_is_submitted_only_the_fields_appropriate_to_the_users_role_are_changed()
+    public function when_a_checklist_is_submitted_only_the_fields_appropriate_to_the_users_role_are_changed(): void
     {
         $this->withoutExceptionHandling();
         Mail::fake();
@@ -685,7 +679,7 @@ class ChecklistFormTest extends TestCase
         $this->actingAs($moderator);
         Livewire::test(LivewirePaperChecklist::class, ['course' => $course, 'category' => 'main'])
             ->set('checklist.fields.course_title', 'Some other title')
-            ->set('checklist.fields.overall_quality_appropriate', "1")
+            ->set('checklist.fields.overall_quality_appropriate', '1')
             ->set('checklist.fields.moderator_comments', 'Cool story, bro')
             ->set('checklist.fields.external_comments', 'The external totes agrees with me')
             ->set('checklist.fields.moderator_esignature', $moderator->full_name)
@@ -753,7 +747,7 @@ class ChecklistFormTest extends TestCase
     }
 
     /** @test */
-    public function a_paper_is_approved_by_the_moderator_by_just_setting_one_field_for_the_paper_and_solutions()
+    public function a_paper_is_approved_by_the_moderator_by_just_setting_one_field_for_the_paper_and_solutions(): void
     {
         // this is just to test that post Nov 2022, we can approve a paper by just setting one checklist field
         // for the paper and one field for the solutions.  before then we needed to set two fields to
