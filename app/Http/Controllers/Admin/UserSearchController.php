@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Ohffs\Ldap\LdapService;
 
 class UserSearchController extends Controller
 {
-    public function show(Request $request, LdapService $ldap)
+    public function show(Request $request, LdapService $ldap): JsonResponse
     {
         $request->validate([
             'guid' => 'required',

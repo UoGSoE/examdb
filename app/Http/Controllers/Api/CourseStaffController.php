@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 
 class CourseStaffController extends Controller
 {
-    public function show($code)
+    public function show($code): JsonResponse
     {
         $course = Course::where('code', '=', $code)->firstOrFail();
         $course->load('setters');

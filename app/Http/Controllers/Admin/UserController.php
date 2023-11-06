@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Scopes\CurrentAcademicSessionScope;
@@ -12,7 +15,7 @@ use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $query = User::orderBy('surname');
         if (request()->withtrashed) {
@@ -24,7 +27,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function show(User $user)
+    public function show(User $user): View
     {
         $user->load('logs.causer');
 
@@ -33,7 +36,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
             'username' => 'required|string',
@@ -88,14 +91,14 @@ class UserController extends Controller
         ], 201);
     }
 
-    public function edit(User $user)
+    public function edit(User $user): View
     {
         return view('admin.users.edit', [
             'user' => $user,
         ]);
     }
 
-    public function update(User $user, Request $request)
+    public function update(User $user, Request $request): RedirectResponse
     {
         $data = $request->validate([
             'email' => [
@@ -123,7 +126,7 @@ class UserController extends Controller
         return redirect()->route('user.show', $user->id);
     }
 
-    public function destroy(User $user)
+    public function destroy(User $user): JsonResponse
     {
         $user->delete();
 
@@ -136,7 +139,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function reenable($id)
+    public function reenable($id): JsonResponse
     {
         $user = User::withTrashed()->findOrFail($id);
         $user->restore();

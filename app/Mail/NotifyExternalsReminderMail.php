@@ -25,7 +25,7 @@ class NotifyExternalsReminderMail extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->markdown('emails.notify_externals_reminder');
     }

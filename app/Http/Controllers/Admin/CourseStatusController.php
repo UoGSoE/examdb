@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 
 class CourseStatusController extends Controller
 {
-    public function disable(Course $course)
+    public function disable(Course $course): JsonResponse
     {
         $course->disable();
 

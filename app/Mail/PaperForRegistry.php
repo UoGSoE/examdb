@@ -28,7 +28,7 @@ class PaperForRegistry extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->subject('Paper for registry '.$this->course->code)
             ->markdown('emails.notify_teaching_office');

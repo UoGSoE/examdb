@@ -28,7 +28,7 @@ class PrintReadyPaperReminderMail extends Mailable
      *
      * @return \Illuminate\Mail\Mailables\Envelope
      */
-    public function envelope()
+    public function envelope(): Envelope
     {
         return new Envelope(
             subject: 'Print Ready Paper Reminder',
@@ -40,7 +40,7 @@ class PrintReadyPaperReminderMail extends Mailable
      *
      * @return \Illuminate\Mail\Mailables\Content
      */
-    public function content()
+    public function content(): Content
     {
         return new Content(
             markdown: 'emails.print_ready_paper_reminder',
@@ -52,7 +52,7 @@ class PrintReadyPaperReminderMail extends Mailable
      *
      * @return array
      */
-    public function attachments()
+    public function attachments(): array
     {
         return [];
     }

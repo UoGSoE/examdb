@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
 use App\Mail\ExternalLoginUrl;
 use App\Models\User;
@@ -35,7 +36,7 @@ class ExternalLoginController extends Controller
         return redirect()->route('home')->with('success', 'Login email has been sent. Please check your email for your login URL.');
     }
 
-    public function login(User $user)
+    public function login(User $user): RedirectResponse
     {
         Auth::login($user);
 

@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Illuminate\Http\JsonResponse;
 use App\Events\PaperAdded;
 use App\Models\Course;
 use App\Models\Paper;
@@ -13,7 +16,7 @@ use Illuminate\Support\Facades\Storage;
 
 class PaperController extends Controller
 {
-    public function index(int $id)
+    public function index(int $id): View
     {
         $course = Course::findOrFail($id);
 
@@ -63,7 +66,7 @@ class PaperController extends Controller
         return redirect()->route('course.show', $course);
     }
 
-    public function show(int $paperId)
+    public function show(int $paperId): StreamedResponse
     {
         // in order to check if the user can view this paper, we need to find the associated course in the
         // _current_ academic session to see if they are the setter/moderator/external for it.
@@ -91,7 +94,7 @@ class PaperController extends Controller
         }, $paper->original_filename, ['Content-Type', $paper->mimetype]);
     }
 
-    public function destroy(Paper $paper)
+    public function destroy(Paper $paper): JsonResponse
     {
         $this->authorize('delete', $paper);
 

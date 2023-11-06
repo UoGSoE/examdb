@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Discipline;
 use Appstract\Options\Option;
@@ -20,7 +21,7 @@ class OptionsController extends Controller
         ]);
     }
 
-    public function update(Request $request)
+    public function update(Request $request): JsonResponse
     {
         $request->validate([
             'external_deadline_glasgow' => 'nullable|date_format:d/m/Y',

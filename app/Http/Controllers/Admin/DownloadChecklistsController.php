@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\Storage;
 
 class DownloadChecklistsController extends Controller
 {
-    public function show(User $user, Request $request)
+    public function show(User $user, Request $request): StreamedResponse
     {
         if (! $request->hasValidSignature()) {
             abort(401);

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
 use App\Jobs\ImportCourseDataBatch;
 use Illuminate\Http\Request;
@@ -9,12 +11,12 @@ use Ohffs\SimpleSpout\ExcelSheet;
 
 class CourseImportController extends Controller
 {
-    public function show()
+    public function show(): View
     {
         return view('admin.courses.import');
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'sheet' => 'required|file',

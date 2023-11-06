@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 
 class AdminPermissionController extends Controller
 {
-    public function update(User $user)
+    public function update(User $user): JsonResponse
     {
         if ($user->id == request()->user()->id) {
             return response()->json([

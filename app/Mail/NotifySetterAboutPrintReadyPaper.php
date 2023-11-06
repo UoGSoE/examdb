@@ -28,7 +28,7 @@ class NotifySetterAboutPrintReadyPaper extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->subject('Print Ready paper for '.$this->course->code)->markdown('notify_setter_about_print_ready_paper');
     }

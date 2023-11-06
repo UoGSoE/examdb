@@ -28,7 +28,7 @@ class IncompleteCourses extends Mailable implements ShouldQueue
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->markdown('emails.incomplete_courses');
     }

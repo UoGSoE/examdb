@@ -31,7 +31,7 @@ class SubmissionDeadlinePassedMail extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->markdown('emails.submission_deadline_passed');
     }

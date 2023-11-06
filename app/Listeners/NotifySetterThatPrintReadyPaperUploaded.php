@@ -25,7 +25,7 @@ class NotifySetterThatPrintReadyPaperUploaded
      * @param  object  $event
      * @return void
      */
-    public function handle($event): void
+    public function handle(object $event): void
     {
         if (! Str::startsWith($event->paper->subcategory, Paper::ADMIN_PRINT_READY_VERSION)) {
             return;

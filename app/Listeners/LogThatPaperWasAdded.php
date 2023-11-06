@@ -21,7 +21,7 @@ class LogThatPaperWasAdded
      * @param  object  $event
      * @return void
      */
-    public function handle($event): void
+    public function handle(object $event): void
     {
         $prefix = 'Uploaded a paper';
         if ($event->paper->subcategory == Paper::COMMENT_SUBCATEGORY) {

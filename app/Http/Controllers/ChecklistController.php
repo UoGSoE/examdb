@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\View\View;
 use App\Models\Course;
 use App\Models\PaperChecklist;
 use App\Models\User;
@@ -9,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 
 class ChecklistController extends Controller
 {
-    public function show(PaperChecklist $checklist)
+    public function show(PaperChecklist $checklist): View
     {
         // $this->authorize('show', $checklist->course);
         if (Route::currentRouteName() == 'api.course.checklist.show') {
@@ -23,7 +24,7 @@ class ChecklistController extends Controller
         ]);
     }
 
-    public function create(Course $course)
+    public function create(Course $course): View
     {
         $this->authorize('show', $course);
 
@@ -38,7 +39,7 @@ class ChecklistController extends Controller
         ]);
     }
 
-    public function showForPdfPrinter(PaperChecklist $checklist)
+    public function showForPdfPrinter(PaperChecklist $checklist): View
     {
         auth()->login(User::first());
 

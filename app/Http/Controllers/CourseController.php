@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\View\View;
 use App\Models\Course;
 use App\Models\User;
 
 class CourseController extends Controller
 {
-    public function show(Course $course)
+    public function show(Course $course): View
     {
         $this->authorize('show', $course);
 

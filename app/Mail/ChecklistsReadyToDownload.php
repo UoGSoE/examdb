@@ -27,7 +27,7 @@ class ChecklistsReadyToDownload extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->markdown('emails.checklists_ready_to_download');
     }

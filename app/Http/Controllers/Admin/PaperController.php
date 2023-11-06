@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\View\View;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Discipline;
 
 class PaperController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $query = Course::with(['papers', 'setters', 'moderators', 'checklists', 'discipline'])->orderBy('code');
         if (request()->discipline) {

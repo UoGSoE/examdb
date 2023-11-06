@@ -29,7 +29,7 @@ class PaperForRegistryUploaded extends Mailable implements ShouldQueue
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->markdown('emails.paper_for_registry_uploaded');
     }

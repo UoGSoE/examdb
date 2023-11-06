@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use App\Models\Paper;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -10,7 +11,7 @@ use Illuminate\Validation\Rule;
 
 class PrintReadyPaperApprovalController extends Controller
 {
-    public function update(Paper $paper, Request $request)
+    public function update(Paper $paper, Request $request): JsonResponse
     {
         $request->validate([
             'is_approved' => 'required|in:Y,N',

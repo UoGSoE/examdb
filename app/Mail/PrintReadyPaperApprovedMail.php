@@ -28,7 +28,7 @@ class PrintReadyPaperApprovedMail extends Mailable
      *
      * @return \Illuminate\Mail\Mailables\Envelope
      */
-    public function envelope()
+    public function envelope(): Envelope
     {
         return new Envelope(
             subject: '[ExamDB] Print Ready Paper Approved for '.$this->course->code,
@@ -40,7 +40,7 @@ class PrintReadyPaperApprovedMail extends Mailable
      *
      * @return \Illuminate\Mail\Mailables\Content
      */
-    public function content()
+    public function content(): Content
     {
         return new Content(
             markdown: 'emails.print_ready_paper_approved',
@@ -52,7 +52,7 @@ class PrintReadyPaperApprovedMail extends Mailable
      *
      * @return array
      */
-    public function attachments()
+    public function attachments(): array
     {
         return [];
     }

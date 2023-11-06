@@ -28,7 +28,7 @@ class DataWasCopiedToNewSession extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->markdown('emails.data_was_copied_to_new_session');
     }

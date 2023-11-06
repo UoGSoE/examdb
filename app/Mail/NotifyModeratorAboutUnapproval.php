@@ -27,7 +27,7 @@ class NotifyModeratorAboutUnapproval extends Mailable implements ShouldQueue
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->markdown('emails.notify_moderator_unapproved');
     }

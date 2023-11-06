@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\View\View;
 use App\Http\Controllers\Controller;
 use App\Jobs\NotifyExternals;
 use App\Mail\NotifyExternalSpecificCourse;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Mail;
 
 class NotifyExternalsController extends Controller
 {
-    public function show()
+    public function show(): View
     {
         return view('admin.email_externals', [
             'disciplines' => Discipline::orderBy('title')->get(),

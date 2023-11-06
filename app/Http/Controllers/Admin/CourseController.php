@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Discipline;
@@ -11,12 +13,12 @@ use Illuminate\Validation\ValidationException;
 
 class CourseController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         return view('admin.courses.index');
     }
 
-    public function edit(Course $course)
+    public function edit(Course $course): View
     {
         return view('admin.courses.edit', [
             'course' => $course,
@@ -24,7 +26,7 @@ class CourseController extends Controller
         ]);
     }
 
-    public function update(Course $course, Request $request)
+    public function update(Course $course, Request $request): RedirectResponse
     {
         $request->validate([
             'code' => [
