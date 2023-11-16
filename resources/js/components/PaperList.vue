@@ -152,6 +152,7 @@ export default {
       this.paperToDelete = null;
     },
     approvePrintReady(paper) {
+        console.log('PRINT READY APPROVED', this.approvePaperChoice, this.approvePaperComment, paper);
         if (this.approvePaperChoice == 'N' && !this.approvePaperComment) {
             alert('Please provide a comment if you are not approving the print-ready paper.');
             return;
