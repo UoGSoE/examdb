@@ -13250,6 +13250,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ["course", "papers", "subcategories", "user", "staff", "externals"],
   data: function data() {
@@ -13320,6 +13321,7 @@ __webpack_require__.r(__webpack_exports__);
     approvePrintReady: function approvePrintReady(paper, choice, comment) {
       var _this3 = this;
 
+      console.log('PRINT READY APPROVED - AXIOS TIME', choice, comment, paper);
       axios.post(route('paper.approve_print_ready', paper.id), {
         'is_approved': choice,
         'comment': comment
@@ -13815,7 +13817,7 @@ __webpack_require__.r(__webpack_exports__);
       failed: false,
       errorMessage: '',
       dropdownOptions: [],
-      fileName: ''
+      fileName: 'No file selected'
     };
   },
   computed: {
@@ -14666,6 +14668,8 @@ __webpack_require__.r(__webpack_exports__);
       this.paperToDelete = null;
     },
     approvePrintReady: function approvePrintReady(paper) {
+      console.log('PRINT READY APPROVED', this.approvePaperChoice, this.approvePaperComment, paper);
+
       if (this.approvePaperChoice == 'N' && !this.approvePaperComment) {
         alert('Please provide a comment if you are not approving the print-ready paper.');
         return;
@@ -42338,10 +42342,7 @@ var render = function () {
               "can-upload": _vm.canUploadPapers,
               category: "resit",
             },
-            on: {
-              "paper-added": _vm.paperAdded,
-              "approval-toggled": _vm.approvalToggled,
-            },
+            on: { "paper-added": _vm.paperAdded },
           }),
           _vm._v(" "),
           _c("paper-list", {
@@ -42350,7 +42351,10 @@ var render = function () {
               papers: _vm.thePapers.resit,
               category: "resit",
             },
-            on: { "paper-removed": _vm.paperRemoved },
+            on: {
+              "paper-removed": _vm.paperRemoved,
+              "approve-print-ready": _vm.approvePrintReady,
+            },
           }),
         ],
         1
@@ -42377,7 +42381,10 @@ var render = function () {
                   papers: _vm.thePapers.resit2,
                   category: "resit2",
                 },
-                on: { "paper-removed": _vm.paperRemoved },
+                on: {
+                  "paper-removed": _vm.paperRemoved,
+                  "approve-print-ready": _vm.approvePrintReady,
+                },
               }),
             ],
             1

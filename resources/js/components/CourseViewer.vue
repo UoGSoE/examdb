@@ -96,7 +96,6 @@
           :can-upload="canUploadPapers"
           category="resit"
           @paper-added="paperAdded"
-          @approval-toggled="approvalToggled"
         ></paper-heading>
 
         <paper-list
@@ -104,6 +103,7 @@
           :papers="thePapers.resit"
           category="resit"
           @paper-removed="paperRemoved"
+          @approve-print-ready="approvePrintReady"
         ></paper-list>
       </div>
       <!-- /resit-papers-heading -->
@@ -122,6 +122,7 @@
           :papers="thePapers.resit2"
           category="resit2"
           @paper-removed="paperRemoved"
+          @approve-print-ready="approvePrintReady"
         ></paper-list>
       </div>
     </div>
@@ -203,6 +204,7 @@ export default {
         });
     },
     approvePrintReady(paper, choice, comment) {
+        console.log('PRINT READY APPROVED - AXIOS TIME', choice, comment, paper);
         axios.post(route('paper.approve_print_ready', paper.id), {
             'is_approved': choice,
             'comment': comment
