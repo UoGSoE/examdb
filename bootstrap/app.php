@@ -14,7 +14,18 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->redirectGuestsTo(fn () => route('login'));
+        $middleware->redirectUsersTo(RouteServiceProvider::HOME);
+
+        $middleware->throttleApi('60,1');
+
+        $middleware->replace(\Illuminate\Http\Middleware\TrustProxies::class, \App\Http\Middleware\TrustProxies::class);
+
+        $middleware->alias([
+            'academicsession' => \App\Http\Middleware\AcademicSessionMiddleware::class,
+            'admin' => \App\Http\Middleware\IsAdmin::class,
+            'api.token' => \App\Http\Middleware\ApiToken::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
