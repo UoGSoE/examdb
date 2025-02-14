@@ -57,7 +57,7 @@ class Course extends Model
     {
         parent::boot();
 
-        static::addGlobalScope(new CurrentAcademicSessionScope());
+        static::addGlobalScope(new CurrentAcademicSessionScope);
     }
 
     public function staff()

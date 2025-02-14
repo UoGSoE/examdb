@@ -147,7 +147,7 @@ class PaperChecklist extends Model
     {
         parent::boot();
 
-        static::addGlobalScope(new CurrentScope());
+        static::addGlobalScope(new CurrentScope);
     }
 
     public function course()

@@ -347,7 +347,7 @@ class TimedNotifications extends Command
         }
 
         Mail::to(option("teaching_office_contact_{$area}"))
-            ->later(now()->addSeconds(rand(1, 200)), new NotifyExternalsReminderMail());
+            ->later(now()->addSeconds(rand(1, 200)), new NotifyExternalsReminderMail);
 
         option(["{$optionName}_email_sent" => now()->format('Y-m-d')]);
     }
@@ -420,7 +420,7 @@ class TimedNotifications extends Command
         }
 
         Mail::to(option("teaching_office_contact_{$area}"))
-            ->later(now()->addSeconds(rand(1, 200)), new ExternalModerationDeadlineMail());
+            ->later(now()->addSeconds(rand(1, 200)), new ExternalModerationDeadlineMail);
 
         option(["{$optionName}_email_sent" => now()->format('Y-m-d')]);
     }

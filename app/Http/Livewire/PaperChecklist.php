@@ -48,7 +48,7 @@ class PaperChecklist extends Component
         return view('livewire.paper-checklist');
     }
 
-    public function save(string $sectionName = null)
+    public function save(?string $sectionName = null)
     {
         Validator::make(['section' => $sectionName], [
             'section' => ['string', 'in:A,B,C,D'],

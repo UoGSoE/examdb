@@ -50,7 +50,7 @@ class CopyDataToNewAcademicSession implements ShouldQueue
             User::withTrashed()->withoutGlobalScope(CurrentAcademicSessionScope::class)->where('academic_session_id', '=', $this->sourceSession->id)->get()->each(fn ($user) => $this->replicateForNewSession($user)->save());
 
             Course::withTrashed()->withoutGlobalScope(CurrentAcademicSessionScope::class)->where('academic_session_id', '=', $this->sourceSession->id)->get()->each(function ($course) {
-                $newDiscipline = new Discipline();
+                $newDiscipline = new Discipline;
                 if ($course->discipline_id) {
                     $newDiscipline = Discipline::withoutGlobalScope(CurrentAcademicSessionScope::class)->where('title', '=', $course->discipline->title)
                         ->where('academic_session_id', '=', $this->targetSession->id)

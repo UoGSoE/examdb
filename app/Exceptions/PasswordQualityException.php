@@ -2,6 +2,4 @@
 
 namespace App\Exceptions;
 
-class PasswordQualityException extends \Exception
-{
-}
+class PasswordQualityException extends \Exception {}
