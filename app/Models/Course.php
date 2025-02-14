@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Events\PaperApproved;
 use App\Events\PaperUnapproved;
 use App\Mail\ExternalHasUpdatedTheChecklist;
@@ -63,43 +67,43 @@ class Course extends Model
         ];
     }
 
-    public function staff()
+    public function staff(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'course_user', 'course_id', 'user_id')
             ->withPivot('is_moderator', 'is_setter', 'is_external');
     }
 
-    public function moderators()
+    public function moderators(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'course_user')->wherePivot('is_moderator', true);
     }
 
-    public function setters()
+    public function setters(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'course_user')->wherePivot('is_setter', true);
     }
 
-    public function externals()
+    public function externals(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'course_user')->wherePivot('is_external', true);
     }
 
-    public function discipline()
+    public function discipline(): BelongsTo
     {
         return $this->belongsTo(Discipline::class);
     }
 
-    public function checklists()
+    public function checklists(): HasMany
     {
         return $this->hasMany(PaperChecklist::class);
     }
 
-    public function papers()
+    public function papers(): HasMany
     {
         return $this->hasMany(Paper::class);
     }
 
-    public function archivedPapers()
+    public function archivedPapers(): HasMany
     {
         return $this->hasMany(Paper::class)->withoutGlobalScope(CurrentScope::class)->archived();
     }
@@ -109,7 +113,7 @@ class Course extends Model
         return $this->papers()->main();
     }
 
-    public function latestPrintReadyPaper()
+    public function latestPrintReadyPaper(): HasOne
     {
         return $this->hasOne(Paper::class)->ofMany([
             'created_at' => 'max',

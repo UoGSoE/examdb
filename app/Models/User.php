@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\CanBeCreatedFromOutsideSources;
 use App\Scopes\CurrentAcademicSessionScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -43,17 +45,17 @@ class User extends Authenticatable
         static::addGlobalScope(new CurrentAcademicSessionScope);
     }
 
-    public function courses()
+    public function courses(): BelongsToMany
     {
         return $this->belongsToMany(Course::class)->withPivot('is_setter', 'is_moderator', 'is_external');
     }
 
-    public function logs()
+    public function logs(): HasMany
     {
         return $this->hasMany(Activity::class, 'causer_id')->orderByDesc('created_at');
     }
 
-    public function papers()
+    public function papers(): HasMany
     {
         return $this->hasMany(Paper::class);
     }
