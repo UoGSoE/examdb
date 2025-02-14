@@ -21,8 +21,8 @@ x-env:
     APP_DEBUG: 1
     APP_URL: http://examdb.test
     LOG_CHANNEL: stack
-    BROADCAST_DRIVER: log
-    CACHE_DRIVER: file
+    BROADCAST_CONNECTION: log
+    CACHE_STORE: file
     SESSION_LIFETIME: 120
     MAIL_FROM_ADDRESS: someone@example.com
     MAIL_FROM_NAME: "Exam Database"

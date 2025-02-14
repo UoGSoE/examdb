@@ -6,6 +6,8 @@ use App\Scopes\CurrentScope;
 use App\Scopes\NotHiddenScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Paper extends Model
 {
@@ -35,33 +37,36 @@ class Paper extends Model
 
     protected $touches = ['course'];
 
-    protected $casts = [
-        'approved_setter' => 'boolean',
-        'archived_at' => 'datetime',
-        'is_hidden' => 'boolean',
-    ];
-
     protected $appends = ['icon', 'formatted_date', 'diff_for_humans', 'formatted_size'];
 
     protected static function boot()
     {
         parent::boot();
 
-        static::addGlobalScope(new CurrentScope());
-        static::addGlobalScope(new NotHiddenScope());
+        static::addGlobalScope(new CurrentScope);
+        static::addGlobalScope(new NotHiddenScope);
     }
 
-    public function user()
+    protected function casts(): array
+    {
+        return [
+            'approved_setter' => 'boolean',
+            'archived_at' => 'datetime',
+            'is_hidden' => 'boolean',
+        ];
+    }
+
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function course()
+    public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
     }
 
-    public function comments()
+    public function comments(): MorphMany
     {
         return $this->morphMany(Comment::class, 'commentable');
     }

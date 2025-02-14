@@ -19,9 +19,7 @@ class PrintReadyPaperApprovedMail extends Mailable
      *
      * @return void
      */
-    public function __construct(public Course $course)
-    {
-    }
+    public function __construct(public Course $course) {}
 
     /**
      * Get the message envelope.

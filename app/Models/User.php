@@ -5,6 +5,8 @@ namespace App\Models;
 use App\CanBeCreatedFromOutsideSources;
 use App\Scopes\CurrentAcademicSessionScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -15,10 +17,10 @@ use Spatie\Activitylog\Models\Activity;
 
 class User extends Authenticatable
 {
-    use HasFactory;
-    use Notifiable;
     use CanBeCreatedFromOutsideSources;
+    use HasFactory;
     use Impersonate;
+    use Notifiable;
     use SoftDeletes;
 
     protected $guarded = [];
@@ -27,30 +29,33 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    protected $casts = [
-        'is_admin' => 'boolean',
-        'is_staff' => 'boolean',
-        'is_external' => 'boolean',
-    ];
-
     protected $appends = ['full_name'];
+
+    protected function casts(): array
+    {
+        return [
+            'is_admin' => 'boolean',
+            'is_staff' => 'boolean',
+            'is_external' => 'boolean',
+        ];
+    }
 
     protected static function booted()
     {
         static::addGlobalScope(new CurrentAcademicSessionScope);
     }
 
-    public function courses()
+    public function courses(): BelongsToMany
     {
         return $this->belongsToMany(Course::class)->withPivot('is_setter', 'is_moderator', 'is_external');
     }
 
-    public function logs()
+    public function logs(): HasMany
     {
         return $this->hasMany(Activity::class, 'causer_id')->orderByDesc('created_at');
     }
 
-    public function papers()
+    public function papers(): HasMany
     {
         return $this->hasMany(Paper::class);
     }
@@ -85,7 +90,7 @@ class User extends Authenticatable
             });
     }
 
-    public function getCourses(string $userTypeField = null)
+    public function getCourses(?string $userTypeField = null)
     {
         $query = $this->courses();
         if ($userTypeField) {

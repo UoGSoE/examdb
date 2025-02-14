@@ -120,7 +120,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
         $response->assertOk();
         $response->assertHeader('Content-Type', 'application/zip');
         Storage::put('temp.zip', $response->streamedContent());
-        $zip = new ZipArchive();
+        $zip = new ZipArchive;
         $res = $zip->open(Storage::path('temp.zip'));
         $filenames = collect([]);
         for ($i = 0; $i < $zip->numFiles; $i++) {

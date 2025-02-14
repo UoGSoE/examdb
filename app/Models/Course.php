@@ -12,6 +12,10 @@ use App\Scopes\CurrentScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
@@ -27,19 +31,6 @@ class Course extends Model
     use SoftDeletes;
 
     protected $guarded = [];
-
-    protected $casts = [
-        'is_examined' => 'boolean',
-        'moderator_approved_main' => 'boolean',
-        'moderator_approved_resit' => 'boolean',
-        'moderator_approved_assessment' => 'boolean',
-        'external_approved_main' => 'boolean',
-        'external_approved_resit' => 'boolean',
-        'external_approved_assessment' => 'boolean',
-        'external_notified' => 'boolean',
-        'registry_approved_main' => 'boolean',
-        'registry_approved_resit' => 'boolean',
-    ];
 
     public $flagsToClearOnDuplication = [
         'moderator_approved_main',
@@ -57,46 +48,62 @@ class Course extends Model
     {
         parent::boot();
 
-        static::addGlobalScope(new CurrentAcademicSessionScope());
+        static::addGlobalScope(new CurrentAcademicSessionScope);
     }
 
-    public function staff()
+    protected function casts(): array
+    {
+        return [
+            'is_examined' => 'boolean',
+            'moderator_approved_main' => 'boolean',
+            'moderator_approved_resit' => 'boolean',
+            'moderator_approved_assessment' => 'boolean',
+            'external_approved_main' => 'boolean',
+            'external_approved_resit' => 'boolean',
+            'external_approved_assessment' => 'boolean',
+            'external_notified' => 'boolean',
+            'registry_approved_main' => 'boolean',
+            'registry_approved_resit' => 'boolean',
+        ];
+    }
+
+    public function staff(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'course_user', 'course_id', 'user_id')
             ->withPivot('is_moderator', 'is_setter', 'is_external');
     }
 
-    public function moderators()
+    public function moderators(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'course_user')->wherePivot('is_moderator', true);
     }
 
-    public function setters()
+    public function setters(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'course_user')->wherePivot('is_setter', true);
     }
 
-    public function externals()
+    public function externals(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'course_user')->wherePivot('is_external', true);
     }
 
-    public function discipline()
+    public function discipline(): BelongsTo
     {
         return $this->belongsTo(Discipline::class);
     }
 
-    public function checklists()
+    public function checklists(): HasMany
     {
         return $this->hasMany(PaperChecklist::class);
     }
 
-    public function papers()
+    public function papers(): HasMany
     {
         return $this->hasMany(Paper::class);
     }
 
-    public function archivedPapers()
+    public function archivedPapers(): HasMany
     {
         return $this->hasMany(Paper::class)->withoutGlobalScope(CurrentScope::class)->archived();
     }
@@ -106,7 +113,7 @@ class Course extends Model
         return $this->papers()->main();
     }
 
-    public function latestPrintReadyPaper()
+    public function latestPrintReadyPaper(): HasOne
     {
         return $this->hasOne(Paper::class)->ofMany([
             'created_at' => 'max',

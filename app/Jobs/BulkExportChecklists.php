@@ -77,7 +77,7 @@ class BulkExportChecklists implements ShouldQueue
     protected function zipAllPdfs(): string
     {
         $localZipname = tempnam(sys_get_temp_dir(), '/'.config('exampapers.checklist_temp_file_prefix'));
-        $zip = new \ZipArchive();
+        $zip = new \ZipArchive;
         $zip->open($localZipname, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
         foreach ($this->paths as $filename) {
             $pdfName = basename($filename);

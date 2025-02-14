@@ -19,9 +19,7 @@ class PrintReadyPaperReminderMail extends Mailable
      *
      * @return void
      */
-    public function __construct(public Collection $courseCodes)
-    {
-    }
+    public function __construct(public Collection $courseCodes) {}
 
     /**
      * Get the message envelope.

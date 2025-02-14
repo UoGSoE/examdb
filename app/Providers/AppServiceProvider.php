@@ -5,10 +5,14 @@ namespace App\Providers;
 use App\Models\AcademicSession;
 use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+    public const HOME = '/home';
+
     /**
      * Bootstrap any application services.
      */
@@ -27,6 +31,8 @@ class AppServiceProvider extends ServiceProvider
 
             return $sessionOutput;
         });
+
+        $this->bootAuth();
     }
 
     /**
@@ -35,5 +41,20 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         //
+    }
+
+    public function bootAuth(): void
+    {
+        Blade::if('admin', function () {
+            return auth()->check() and auth()->user()->isAdmin();
+        });
+
+        Gate::define('download_registry', function ($user, $routeUser) {
+            return $routeUser->is($user);
+        });
+
+        Gate::define('upload_paper', function ($user, $course) {
+            return $user->isAdmin() || $user->isSetterFor($course) || $user->isModeratorFor($course) || $user->isExternalFor($course);
+        });
     }
 }

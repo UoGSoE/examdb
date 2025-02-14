@@ -6,6 +6,7 @@ use App\Scopes\CurrentScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /*
  <select name="previous_id" id="previous_id" wire:model="previousId">
@@ -49,11 +50,6 @@ class PaperChecklist extends Model
     protected $guarded = [];
 
     protected $touches = ['course'];
-
-    protected $casts = [
-        'archived_at' => 'datetime',
-        'fields' => 'array',
-    ];
 
     public const SECTION_A_FIELDS = [
         'course_code',
@@ -147,15 +143,23 @@ class PaperChecklist extends Model
     {
         parent::boot();
 
-        static::addGlobalScope(new CurrentScope());
+        static::addGlobalScope(new CurrentScope);
     }
 
-    public function course()
+    protected function casts(): array
+    {
+        return [
+            'archived_at' => 'datetime',
+            'fields' => 'array',
+        ];
+    }
+
+    public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
