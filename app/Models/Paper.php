@@ -35,12 +35,6 @@ class Paper extends Model
 
     protected $touches = ['course'];
 
-    protected $casts = [
-        'approved_setter' => 'boolean',
-        'archived_at' => 'datetime',
-        'is_hidden' => 'boolean',
-    ];
-
     protected $appends = ['icon', 'formatted_date', 'diff_for_humans', 'formatted_size'];
 
     protected static function boot()
@@ -49,6 +43,15 @@ class Paper extends Model
 
         static::addGlobalScope(new CurrentScope);
         static::addGlobalScope(new NotHiddenScope);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'approved_setter' => 'boolean',
+            'archived_at' => 'datetime',
+            'is_hidden' => 'boolean',
+        ];
     }
 
     public function user()

@@ -27,13 +27,16 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    protected $casts = [
-        'is_admin' => 'boolean',
-        'is_staff' => 'boolean',
-        'is_external' => 'boolean',
-    ];
-
     protected $appends = ['full_name'];
+
+    protected function casts(): array
+    {
+        return [
+            'is_admin' => 'boolean',
+            'is_staff' => 'boolean',
+            'is_external' => 'boolean',
+        ];
+    }
 
     protected static function booted()
     {

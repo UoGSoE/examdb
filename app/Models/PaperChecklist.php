@@ -50,11 +50,6 @@ class PaperChecklist extends Model
 
     protected $touches = ['course'];
 
-    protected $casts = [
-        'archived_at' => 'datetime',
-        'fields' => 'array',
-    ];
-
     public const SECTION_A_FIELDS = [
         'course_code',
         'course_title',
@@ -148,6 +143,14 @@ class PaperChecklist extends Model
         parent::boot();
 
         static::addGlobalScope(new CurrentScope);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'archived_at' => 'datetime',
+            'fields' => 'array',
+        ];
     }
 
     public function course()

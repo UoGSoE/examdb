@@ -28,19 +28,6 @@ class Course extends Model
 
     protected $guarded = [];
 
-    protected $casts = [
-        'is_examined' => 'boolean',
-        'moderator_approved_main' => 'boolean',
-        'moderator_approved_resit' => 'boolean',
-        'moderator_approved_assessment' => 'boolean',
-        'external_approved_main' => 'boolean',
-        'external_approved_resit' => 'boolean',
-        'external_approved_assessment' => 'boolean',
-        'external_notified' => 'boolean',
-        'registry_approved_main' => 'boolean',
-        'registry_approved_resit' => 'boolean',
-    ];
-
     public $flagsToClearOnDuplication = [
         'moderator_approved_main',
         'moderator_approved_resit',
@@ -58,6 +45,22 @@ class Course extends Model
         parent::boot();
 
         static::addGlobalScope(new CurrentAcademicSessionScope);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'is_examined' => 'boolean',
+            'moderator_approved_main' => 'boolean',
+            'moderator_approved_resit' => 'boolean',
+            'moderator_approved_assessment' => 'boolean',
+            'external_approved_main' => 'boolean',
+            'external_approved_resit' => 'boolean',
+            'external_approved_assessment' => 'boolean',
+            'external_notified' => 'boolean',
+            'registry_approved_main' => 'boolean',
+            'registry_approved_resit' => 'boolean',
+        ];
     }
 
     public function staff()
