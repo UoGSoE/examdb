@@ -153,7 +153,7 @@
   </div>
 </template>
 <script>
-import CommentBox from "./CommentBox";
+import CommentBox from "./CommentBox.vue";
 export default {
   props: ["course", "subcategories", "category", "canUpload"],
   components: {
