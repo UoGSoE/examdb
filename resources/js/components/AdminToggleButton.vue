@@ -17,7 +17,7 @@ export default {
         .post(route("admin.toggle", this.value.id))
         .then(response => {
           console.log(response.data);
-          this.$emit("update", response.data.user);
+          this.$dispatch("update", response.data.user);
         })
         .catch(error => {
           console.error(error);

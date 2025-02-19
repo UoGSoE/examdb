@@ -79,7 +79,7 @@ export default {
           this.show = false;
           this.comment = "";
           this.failed = false;
-          this.$emit("added", response.data);
+          this.$dispatch("added", response.data);
         })
         .catch(error => {
           this.failed = true;

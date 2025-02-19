@@ -45,5 +45,7 @@ class RemoveAllApprovalFlags extends Command
             'external_approved_assessment' => false,
             'external_notified' => false,
         ]));
+
+        return Command::SUCCESS;
     }
 }

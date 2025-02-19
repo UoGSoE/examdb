@@ -12,6 +12,7 @@ use App\Models\Paper;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
@@ -83,17 +84,24 @@ class PapersForRegistryBulkDownloadTest extends TestCase
         $this->withoutExceptionHandling();
         Mail::fake();
         Storage::fake('exampapers');
-        Queue::fake();
-        // pre-remove any temp files left if this test fails
+
+        // Pre-remove any temp files left over from previous runs.
         $tempFiles = glob(sys_get_temp_dir().'/'.config('exampapers.registry_temp_file_prefix').'*');
         foreach ($tempFiles as $filename) {
             unlink($filename);
         }
+
         $admin = create(User::class, ['is_admin' => true]);
 
+        // Fake only the RemoveRegistryZip job so it never actually runs.
+        Bus::fake([ \App\Jobs\RemoveRegistryZip::class ]);
+
+        // Dispatch the export job synchronously.
         ExportPapersForRegistry::dispatchSync($admin);
 
+        // Assert that the file exists on the 'exampapers' disk.
         Storage::disk('exampapers')->assertExists('registry/papers_'.$admin->id.'.zip');
+        // And that no temp files remain.
         $this->assertEmpty(glob(sys_get_temp_dir().'/'.config('exampapers.registry_temp_file_prefix').'*'));
     }
 
@@ -208,7 +216,6 @@ class PapersForRegistryBulkDownloadTest extends TestCase
         $this->withoutExceptionHandling();
         Mail::fake();
         Storage::fake('exampapers');
-        Queue::fake();
         config(['exampapers.zip_expire_hours' => 8]);
         $admin = create(User::class, ['is_admin' => true]);
         Storage::disk('exampapers')->put('test.zip', 'hello');

@@ -25,12 +25,11 @@
         "sentry/sentry-laravel": "^4.3",
         "spatie/laravel-activitylog": "^4.8",
         "spatie/laravel-ray": "^1.35",
-        "tightenco/ziggy": "dev-next",
+        "tightenco/ziggy": "^2.5",
         "uogsoe/ldap-laravel": "^3.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.10",
-        "brianium/paratest": "^7.5",
         "fakerphp/faker": "^1.23",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.0",

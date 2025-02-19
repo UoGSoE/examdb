@@ -165,7 +165,7 @@ export default {
           this.comment = "";
           this.subcategory = "";
           this.failed = false;
-          this.$emit("added", response.data);
+          this.$dispatch("added", response.data);
         })
         .catch(error => {
           this.failed = true;

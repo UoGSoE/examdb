@@ -144,10 +144,10 @@ export default {
       return paper.user ? paper.user.full_name : '<span class="tag">Disabled</span>'
     },
     paperAdded(paper) {
-      this.$emit("paper-added", paper);
+      this.$dispatch("paper-added", paper);
     },
     paperRemoved() {
-      this.$emit("paper-removed", this.paperToDelete);
+      this.$dispatch("paper-removed", this.paperToDelete);
       this.showModal = false;
       this.paperToDelete = null;
     },
@@ -156,7 +156,7 @@ export default {
             alert('Please provide a comment if you are not approving the print-ready paper.');
             return;
         }
-      this.$emit("approve-print-ready", paper, this.approvePaperChoice, this.approvePaperComment);
+      this.$dispatch("approve-print-ready", paper, this.approvePaperChoice, this.approvePaperComment);
     },
     getDownloadRoute(paper) {
       if (paper.subcategory == 'comment' || paper.subcategory == 'Updated Checklist') {

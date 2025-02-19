@@ -223,14 +223,14 @@ export default {
           })
         )
         .then((response) => {
-          this.$emit("approval-toggled", response.data.course);
+          this.$dispatch("approval-toggled", response.data.course);
         })
         .catch((error) => {
           console.log(error);
         });
     },
     paperAdded(paper) {
-      this.$emit("paper-added", paper);
+      this.$dispatch("paper-added", paper);
     },
     approvePaperForRegistry(category) {
         axios.post(route('registry.approve', this.course.id), {

@@ -39,7 +39,7 @@ class SemesterEditingTest extends TestCase
         $admin = User::factory()->admin()->create();
 
         Livewire::actingAs($admin)->test('semester-edit-box', ['course' => $course])
-            ->set('course.semester', 2);
+            ->set('courseData.semester', 2);
 
         $this->assertEquals(2, $course->fresh()->semester);
     }
@@ -51,12 +51,12 @@ class SemesterEditingTest extends TestCase
         $admin = User::factory()->admin()->create();
 
         Livewire::actingAs($admin)->test('semester-edit-box', ['course' => $course])
-            ->set('course.semester', 0)
-            ->assertHasErrors('course.semester')
-            ->set('course.semester', 4)
-            ->assertHasErrors('course.semester')
-            ->set('course.semester', 'hello')
-            ->assertHasErrors('course.semester');
+            ->set('courseData.semester', 0)
+            ->assertHasErrors('courseData.semester')
+            ->set('courseData.semester', 4)
+            ->assertHasErrors('courseData.semester')
+            ->set('courseData.semester', 'hello')
+            ->assertHasErrors('courseData.semester');
 
         $this->assertEquals(1, $course->fresh()->semester);
     }

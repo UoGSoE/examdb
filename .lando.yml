@@ -2,7 +2,7 @@ name: examdb
 recipe: laravel
 config:
   webroot: public
-  php: '8.1'
+  php: '8.2'
   cache: redis
 services:
   appserver:
@@ -29,6 +29,12 @@ services:
         # MINIO_REGION: "us-east-1"
         # MINIO_BUCKET: "exampapers"
         # MINIO_ENDPOINT: "${MINIO_QA_ENDPOINT}"
+  node:
+    type: node:22
+    ports:
+      - 3009:3009
+    build:
+      - npm install
 excludes:
   - vendor
   - node_modules
@@ -50,18 +56,18 @@ tooling:
     description: "Run phpunit with --filter"
     cmd: php artisan test --filter
   npm:
-    service: appserver
+    service: node
     description: "Run npm command"
     cmd: npm
   npmd:
-    service: appserver
+    service: node
     description: "Run npm run dev"
     cmd: npm run dev
   npmp:
-    service: appserver
+    service: node
     description: "Run npm run prod"
     cmd: npm run prod
   npmw:
-    service: appserver
+    service: node
     description: "Run npm run watch"
     cmd: npm run watch

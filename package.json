@@ -20,7 +20,6 @@
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.12.1",
         "@sentry/browser": "^4.6.6",
-        "alpinejs": "^2.7.0",
         "axios": "^0.25",
         "babel-plugin-syntax-dynamic-import": "^6.18.0",
         "babel-preset-stage-2": "^6.24.1",

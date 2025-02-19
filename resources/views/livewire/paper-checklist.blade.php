@@ -4,7 +4,7 @@
         <div class="field has-addons">
             <p class="control is-expanded">
                 <div class="select is-fullwidth">
-                    <select name="previous_id" id="previous_id" wire:model="previousId">
+                    <select name="previous_id" id="previous_id" wire:model.live="previousId">
                         @foreach ($course->checklists as $previousChecklist)
                             <option value="{{ $previousChecklist->id }}">{{ $previousChecklist->created_at->format('d/m/Y H:i') }}</option>
                         @endforeach
@@ -32,14 +32,14 @@
                     <div class="field">
                         <label for="" class="label">Course Code</label>
                         <p class="control">
-                            <input class="input" type="text" wire:model="checklist.fields.course_code">
+                            <input class="input" type="text" wire:model.live="checklist.fields.course_code">
                         </p>
                     </div>
                 </div>
                 <div class="column">
                     <label for="" class="label">Course Title</label>
                     <p class="control is-expanded">
-                        <input class="input" type="text" wire:model.lazy="checklist.fields.course_title">
+                        <input class="input" type="text" wire:model.blur="checklist.fields.course_title">
                     </p>
                 </div>
             </div>
@@ -48,20 +48,20 @@
                     <div class="field">
                         <label for="" class="label">Academic Year</label>
                         <p class="control">
-                            <input class="input" type="text" wire:model.lazy="checklist.fields.year">
+                            <input class="input" type="text" wire:model.blur="checklist.fields.year">
                         </p>
                     </div>
                 </div>
                 <div class="column">
                     <label for="" class="label">SCQF Level (UESTC only)</label>
                     <p class="control">
-                        <input class="input" type="text" wire:model.lazy="checklist.fields.scqf_level">
+                        <input class="input" type="text" wire:model.blur="checklist.fields.scqf_level">
                     </p>
                 </div>
                 <div class="column">
                     <label for="" class="label">Course Credits (UESTC only)</label>
                     <p class="control is-expanded">
-                        <input class="input" type="text" wire:model.lazy="checklist.fields.course_credits">
+                        <input class="input" type="text" wire:model.blur="checklist.fields.course_credits">
                     </p>
                 </div>
             </div>
@@ -71,7 +71,7 @@
     <label for="" class="label">Please confirm that you have reviewed the Exam Assessment and Continuous Assessment Handbooks for this task.</label>
     <p class="control is-expanded">
         <div class="select is-fullwidth">
-            <select wire:model="checklist.fields.setter_reviews">
+            <select wire:model.live="checklist.fields.setter_reviews">
                 <option value="1">Yes</option>
                 <option value="0">No</option>
             </select>
@@ -83,7 +83,7 @@
 <div class="field">
     <label for="" class="label">Assessment title and number (UESTC only)</label>
     <p class="control is-expanded">
-        <input class="input" type="text" wire:model="checklist.fields.assessment_title">
+        <input class="input" type="text" wire:model.live="checklist.fields.assessment_title">
     </p>
 </div>
 <div class="columns">
@@ -91,7 +91,7 @@
         <div class="field">
             <label for="" class="label">Assessment weighting</label>
             <p class="control">
-                <input class="input" type="text" wire:model="checklist.fields.assignment_weighting">
+                <input class="input" type="text" wire:model.live="checklist.fields.assignment_weighting">
             </p>
         </div>
 
@@ -100,7 +100,7 @@
         <div class="field">
             <label for="" class="label">No. of markers</label>
             <p class="control is-expanded">
-                <input class="input" type="number" wire:model="checklist.fields.number_markers" min="1">
+                <input class="input" type="number" wire:model.live="checklist.fields.number_markers" min="1">
             </p>
         </div>
         @error('number_markers') <p class="help has-text-danger has-text-weight-bold">{{ $message }}</p> @enderror
@@ -113,7 +113,7 @@
             <div class="field">
                 <label for="" class="label">No. of questions</label>
                 <p class="control is-expanded">
-                    <input class="input" type="number" wire:model="checklist.fields.number_questions" min="1" max="100">
+                    <input class="input" type="number" wire:model.live="checklist.fields.number_questions" min="1" max="100">
                 </p>
                 @error('number_questions') <p class="help has-text-danger has-text-weight-bold">{{ $message }}</p> @enderror
             </div>
@@ -129,7 +129,7 @@
                                 <div class="field has-addons">
                                     <div class="control">
                                         <div class="select">
-                                            <select wire:model="checklist.fields.question_setter_{{ $questionCount - 1 }}"  wire:key="setter-select-q{{ $questionCount }}">
+                                            <select wire:model.live="checklist.fields.question_setter_{{ $questionCount - 1 }}"  wire:key="setter-select-q{{ $questionCount }}">
                                                 @foreach ($setters as $setter)
                                                     <option value="{{ $setter->full_name }}">{{ $setter->full_name }}</option>
                                                 @endforeach
@@ -138,7 +138,7 @@
                                     </div>
                                     <div class="control">
                                         <div class="select">
-                                            <select wire:model="checklist.fields.question_datasheet_{{ $questionCount - 1 }}"  wire:key="setter-select-ds{{ $questionCount }}">
+                                            <select wire:model.live="checklist.fields.question_datasheet_{{ $questionCount - 1 }}"  wire:key="setter-select-ds{{ $questionCount }}">
                                                 <option value="">Choose...</option>
                                                 <option value="yes">Yes</option>
                                                 <option value="no">No</option>
@@ -160,7 +160,7 @@
         <div class="field">
             <label for="" class="label">Name(s) of moderator(s)</label>
             <p class="control">
-                <input class="input" type="text" wire:model="checklist.fields.moderators">
+                <input class="input" type="text" wire:model.live="checklist.fields.moderators">
             </p>
         </div>
     </div>
@@ -172,7 +172,7 @@
                 x-data="{}"
                 x-init="new Pikaday({ field: $refs.passed_to_moderator, format: 'DD/MM/YYYY' })"
             >
-                <input class="input" x-ref="passed_to_moderator" type="text" wire:model.lazy="checklist.fields.passed_to_moderator">
+                <input class="input" x-ref="passed_to_moderator" type="text" wire:model.blur="checklist.fields.passed_to_moderator">
             </p>
         <span class="help">(Note: setting/changing this will email the @choice('moderator|moderators', $course->moderators))</span>
         @error('date_passed_to_moderator')
@@ -202,7 +202,7 @@
         <label for="" class="label">I agree that this assessment task can now be sent to the External Examiner</label>
         <p class="control is-expanded">
             <div class="select is-fullwidth">
-                <select wire:model="checklist.fields.overall_quality_appropriate" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
+                <select wire:model.live="checklist.fields.overall_quality_appropriate" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
                     <option value="0">No</option>
                     <option value="1">Yes</option>
                 </select>
@@ -217,7 +217,7 @@
             Please provide details: (MANDATORY)<br />
         </label>
         <p class="control is-expanded">
-            <textarea class="textarea"  @if (! auth()->user()->isModeratorFor($course)) disabled @endif wire:model="checklist.fields.why_innapropriate" id=""></textarea>
+            <textarea class="textarea"  @if (! auth()->user()->isModeratorFor($course)) disabled @endif wire:model.live="checklist.fields.why_innapropriate" id=""></textarea>
         </p>
         @error('comments') <p class="help is-danger">{{ $message }}</p> @enderror
     </div>
@@ -230,7 +230,7 @@
             </label>
             <p class="control is-expanded">
                 <div class="select is-fullwidth">
-                    <select wire:model="checklist.fields.should_revise_questions" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
+                    <select wire:model.live="checklist.fields.should_revise_questions" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
                         <option value="0">No</option>
                         <option value="1">Yes</option>
                     </select>
@@ -241,7 +241,7 @@
         <div class="field">
             <label class="label">Please indicate the recommended revisions:</label>
             <p class="control is-expanded">
-                <textarea class="textarea" @if (! auth()->user()->isModeratorFor($course)) disabled @endif wire:model="checklist.fields.recommended_revisions" id=""></textarea>
+                <textarea class="textarea" @if (! auth()->user()->isModeratorFor($course)) disabled @endif wire:model.live="checklist.fields.recommended_revisions" id=""></textarea>
             </p>
         </div>
     @endif
@@ -249,7 +249,7 @@
     <div class="field">
         <label class="label">Any other comments:</label>
         <p class="control is-expanded">
-            <textarea class="textarea" @if (! auth()->user()->isModeratorFor($course)) disabled @endif wire:model="checklist.fields.moderator_comments" id=""></textarea>
+            <textarea class="textarea" @if (! auth()->user()->isModeratorFor($course)) disabled @endif wire:model.live="checklist.fields.moderator_comments" id=""></textarea>
         </p>
     </div>
 
@@ -258,7 +258,7 @@
             <div class="field">
                 <label for="" class="label">Moderators Name</label>
                 <p class="control">
-                    <input class="input" type="text" wire:model="checklist.fields.moderator_esignature" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
+                    <input class="input" type="text" wire:model.live="checklist.fields.moderator_esignature" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
                 </p>
             </div>
             @error('moderator_name') <p id="moderator-name-error" class="help is-danger">{{ $message }}</p> @enderror
@@ -271,7 +271,7 @@
                     x-data="{}"
                     x-init="new Pikaday({ field: $refs.moderator_completed_at, format: 'DD/MM/YYYY' })"
                 >
-                    <input class="input" @if (! auth()->user()->isModeratorFor($course)) disabled @endif x-ref="moderator_completed_at" type="text" wire:model.lazy="checklist.fields.moderator_completed_at">
+                    <input class="input" @if (! auth()->user()->isModeratorFor($course)) disabled @endif x-ref="moderator_completed_at" type="text" wire:model.blur="checklist.fields.moderator_completed_at">
                 </p>
             </div>
             @error('moderator_date') <p id="moderator-date-error" class="help is-danger">{{ $message }}</p> @enderror
@@ -281,7 +281,7 @@
     <div class="field">
         <label class="label">Course Coordinator Comments</label>
         <p class="control is-expanded">
-            <textarea class="textarea" @if (! auth()->user()->isSetterFor($course) or ($course->isApprovedByModerator($checklist['category']))) disabled @endif wire:model="checklist.fields.setter_comments_to_moderator" id=""></textarea>
+            <textarea class="textarea" @if (! auth()->user()->isSetterFor($course) or ($course->isApprovedByModerator($checklist['category']))) disabled @endif wire:model.live="checklist.fields.setter_comments_to_moderator" id=""></textarea>
         </p>
     </div>
 
@@ -315,7 +315,7 @@
         <label for="" class="label">I agree that this assessment task can now be sent to the External Examiner</label>
         <p class="control is-expanded">
             <div class="select is-fullwidth">
-                <select wire:model="checklist.fields.solution_marks_appropriate" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
+                <select wire:model.live="checklist.fields.solution_marks_appropriate" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
                     <option value="0">No</option>
                     <option value="1">Yes</option>
                 </select>
@@ -330,7 +330,7 @@
             Please provide details: (MANDATORY)
         </label>
         <p class="control is-expanded">
-            <textarea class="textarea" @if (! auth()->user()->isModeratorFor($course)) disabled @endif wire:model="checklist.fields.moderator_solution_innapropriate_comments" id=""></textarea>
+            <textarea class="textarea" @if (! auth()->user()->isModeratorFor($course)) disabled @endif wire:model.live="checklist.fields.moderator_solution_innapropriate_comments" id=""></textarea>
         </p>
         @error('solution_comments') <p class="help is-danger">{{ $message }}</p> @enderror
     </div>
@@ -340,7 +340,7 @@
             <label for="" class="label">Do you recommend that marks should be adjusted?</label>
             <p class="control is-expanded">
                 <div class="select is-fullwidth">
-                    <select @if (! auth()->user()->isModeratorFor($course)) disabled @endif wire:model="checklist.fields.solutions_marks_adjusted">
+                    <select @if (! auth()->user()->isModeratorFor($course)) disabled @endif wire:model.live="checklist.fields.solutions_marks_adjusted">
                         <option value="1">Yes</option>
                         <option value="0">No</option>
                     </select>
@@ -351,7 +351,7 @@
         <div class="field">
             <label class="label">Please indicate the recommended adjustment:</label>
             <p class="control is-expanded">
-                <textarea @if (! auth()->user()->isModeratorFor($course)) disabled @endif class="textarea" wire:model="checklist.fields.solution_adjustment_comments" id=""></textarea>
+                <textarea @if (! auth()->user()->isModeratorFor($course)) disabled @endif class="textarea" wire:model.live="checklist.fields.solution_adjustment_comments" id=""></textarea>
             </p>
         </div>
     @endif
@@ -359,7 +359,7 @@
     <div class="field">
         <label class="label">Any further comments</label>
         <p class="control is-expanded">
-            <textarea @if (! auth()->user()->isModeratorFor($course)) disabled @endif class="textarea" wire:model="checklist.fields.solution_moderator_comments" id=""></textarea>
+            <textarea @if (! auth()->user()->isModeratorFor($course)) disabled @endif class="textarea" wire:model.live="checklist.fields.solution_moderator_comments" id=""></textarea>
         </p>
     </div>
 
@@ -368,7 +368,7 @@
             <div class="field">
                 <label for="" class="label">Moderators Name</label>
                 <p class="control">
-                    <input class="input" type="text" wire:model="checklist.fields.moderator_esignature" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
+                    <input class="input" type="text" wire:model.live="checklist.fields.moderator_esignature" @if (! auth()->user()->isModeratorFor($course)) disabled @endif>
                 </p>
             </div>
         </div>
@@ -380,7 +380,7 @@
                     x-data="{}"
                     x-init="new Pikaday({ field: $refs.moderator_solutions_at, format: 'DD/MM/YYYY' })"
                 >
-                    <input class="input" @if (! auth()->user()->isModeratorFor($course)) disabled @endif x-ref="moderator_solutions_at" type="text" wire:model.lazy="checklist.fields.moderator_solutions_at">
+                    <input class="input" @if (! auth()->user()->isModeratorFor($course)) disabled @endif x-ref="moderator_solutions_at" type="text" wire:model.blur="checklist.fields.moderator_solutions_at">
                 </p>
             </div>
         </div>
@@ -389,7 +389,7 @@
     <div class="field">
         <label class="label">Course Coordinator Comments</label>
         <p class="control is-expanded">
-            <textarea class="textarea" @if (! auth()->user()->isSetterFor($course) or ($course->isApprovedByModerator($checklist['category']))) disabled @endif wire:model="checklist.fields.solution_setter_comments" id=""></textarea>
+            <textarea class="textarea" @if (! auth()->user()->isSetterFor($course) or ($course->isApprovedByModerator($checklist['category']))) disabled @endif wire:model.live="checklist.fields.solution_setter_comments" id=""></textarea>
         </p>
     </div>
 
@@ -421,7 +421,7 @@
     <div class="field">
         <label for="" class="label">Name of External Examiner</label>
         <p class="control is-expanded">
-            <input type="text" @if (! auth()->user()->isExternalFor($course)) disabled @endif class="input" wire:model="checklist.fields.external_examiner_name">
+            <input type="text" @if (! auth()->user()->isExternalFor($course)) disabled @endif class="input" wire:model.live="checklist.fields.external_examiner_name">
         </p>
     </div>
 
@@ -429,7 +429,7 @@
         <label for="" class="label">Are you satisfied with this paper?</label>
         <p class="control is-expanded">
             <div class="select is-fullwidth">
-                <select @if (! auth()->user()->isExternalFor($course)) disabled @endif wire:model="checklist.fields.external_agrees_with_moderator">
+                <select @if (! auth()->user()->isExternalFor($course)) disabled @endif wire:model.live="checklist.fields.external_agrees_with_moderator">
                     <option value="1">Yes</option>
                     <option value="0">No</option>
                 </select>
@@ -440,14 +440,14 @@
     <div class="field">
         <label class="label">Please indicate the rationale for your decision:</label>
         <p class="control is-expanded">
-            <textarea @if (! auth()->user()->isExternalFor($course)) disabled @endif class="textarea" wire:model="checklist.fields.external_reason" id=""></textarea>
+            <textarea @if (! auth()->user()->isExternalFor($course)) disabled @endif class="textarea" wire:model.live="checklist.fields.external_reason" id=""></textarea>
         </p>
     </div>
 
     <div class="field">
         <label class="label">Any further comments</label>
         <p class="control is-expanded">
-            <textarea @if (! auth()->user()->isExternalFor($course)) disabled @endif class="textarea" wire:model="checklist.fields.external_comments" id=""></textarea>
+            <textarea @if (! auth()->user()->isExternalFor($course)) disabled @endif class="textarea" wire:model.live="checklist.fields.external_comments" id=""></textarea>
         </p>
     </div>
 
@@ -457,7 +457,7 @@
             <div class="field">
                 <label for="" class="label">Name</label>
                 <p class="control">
-                    <input class="input" type="text" wire:model="checklist.fields.external_esignature" @if (! auth()->user()->isExternalFor($course)) disabled @endif>
+                    <input class="input" type="text" wire:model.live="checklist.fields.external_esignature" @if (! auth()->user()->isExternalFor($course)) disabled @endif>
                 </p>
             </div>
         </div>
@@ -469,7 +469,7 @@
                     x-data="{}"
                     x-init="new Pikaday({ field: $refs.external_signed_at, format: 'DD/MM/YYYY' })"
                 >
-                    <input class="input" @if (! auth()->user()->isExternalFor($course)) disabled @endif x-ref="external_signed_at" type="text" wire:model.lazy="checklist.fields.external_signed_at">
+                    <input class="input" @if (! auth()->user()->isExternalFor($course)) disabled @endif x-ref="external_signed_at" type="text" wire:model.blur="checklist.fields.external_signed_at">
                 </p>
             </div>
         </div>

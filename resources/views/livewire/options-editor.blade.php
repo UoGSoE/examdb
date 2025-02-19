@@ -4,7 +4,7 @@
           <div class="field">
               <label class="label">Glasgow General Teaching Office Email</label>
               <div class="control">
-                  <input class="input" type="email" wire:model.lazy="options.teaching_office_contact_glasgow">
+                  <input class="input" type="email" wire:model.blur="options.teaching_office_contact_glasgow">
               </div>
           </div>
           @error('options.teaching_office_contact_glasgow')
@@ -14,7 +14,7 @@
           <div class="field">
               <label class="label">UESTC General Teaching Office Email</label>
               <div class="control">
-                  <input class="input" type="email" wire:model.lazy="options.teaching_office_contact_uestc">
+                  <input class="input" type="email" wire:model.blur="options.teaching_office_contact_uestc">
               </div>
           </div>
           @error('options.teaching_office_contact_uestc')
@@ -29,7 +29,7 @@
                       x-data="{}"
                       x-init="new Pikaday({ field: $refs.{{ $option['name'] }}, format: 'DD/MM/YYYY' })">
                       <input class="input" type="text" x-ref="{{ $option['name'] }}"
-                          wire:model.lazy="options.{{ $option['name'] }}">
+                          wire:model.blur="options.{{ $option['name'] }}">
                   </div>
               </div>
               @error('options.' . $option['name'])
@@ -43,7 +43,7 @@
                       submission deadline</label>
                   <div class="control">
                       <input class="input" type="number"
-                          wire:model.lazy="options.glasgow_staff_submission_deadline_reminder_{{ $i }}">
+                          wire:model.blur="options.glasgow_staff_submission_deadline_reminder_{{ $i }}">
                   </div>
               </div>
               @error('options.glasgow_staff_submission_deadline_reminder_' . $i)
@@ -56,7 +56,7 @@
                   submission deadline</label>
               <div class="control">
                   <input class="input" type="number"
-                      wire:model.lazy="options.glasgow_staff_submission_deadline_overdue_reminder">
+                      wire:model.blur="options.glasgow_staff_submission_deadline_overdue_reminder">
               </div>
           </div>
           @error('options.glasgow_staff_submission_deadline_overdue_reminder')
@@ -69,7 +69,7 @@
                       submission deadline</label>
                   <div class="control">
                       <input class="input" type="number"
-                          wire:model.lazy="options.uestc_staff_submission_deadline_reminder_{{ $i }}">
+                          wire:model.blur="options.uestc_staff_submission_deadline_reminder_{{ $i }}">
                   </div>
               </div>
               @error('options.uestc_staff_submission_deadline_reminder_' . $i)
@@ -82,7 +82,7 @@
                   submission deadline</label>
               <div class="control">
                   <input class="input" type="number"
-                      wire:model.lazy="options.uestc_staff_submission_deadline_overdue_reminder">
+                      wire:model.blur="options.uestc_staff_submission_deadline_overdue_reminder">
               </div>
           </div>
           @error('options.uestc_staff_submission_deadline_overdue_reminder')
