@@ -32,7 +32,7 @@ COPY --chown=node:node resources/js* /home/node/resources/js
 COPY --chown=node:node resources/css* /home/node/resources/css
 
 RUN npm install && \
-    npm run production && \
+    npm run build && \
     npm cache clean --force
 
 ### Prod php dependencies

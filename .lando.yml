@@ -65,9 +65,9 @@ tooling:
     cmd: npm run dev
   npmp:
     service: node
-    description: "Run npm run prod"
-    cmd: npm run prod
+    description: "Run npm run build"
+    cmd: npm run build
   npmw:
     service: node
-    description: "Run npm run watch"
-    cmd: npm run watch
+    description: "Run npm run dev"
+    cmd: npm run dev
