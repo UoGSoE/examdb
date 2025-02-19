@@ -15064,7 +15064,7 @@ window.Pikaday = (pikaday__WEBPACK_IMPORTED_MODULE_5___default());
 
 
 _sentry_browser__WEBPACK_IMPORTED_MODULE_7__.init({
-  dsn: process.env.MIX_SENTRY_DSN,
+  dsn: import.meta.env.VITE_SENTRY_DSN,
   integrations: [new _sentry_browser__WEBPACK_IMPORTED_MODULE_7__.Integrations.Vue({
     Vue: vue__WEBPACK_IMPORTED_MODULE_0__["default"]
   })]

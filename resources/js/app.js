@@ -52,7 +52,7 @@ import 'pikaday/css/pikaday.css';
 import * as Sentry from '@sentry/browser'
 
 Sentry.init({
-    dsn: process.env.MIX_SENTRY_DSN,
+    dsn: import.meta.env.VITE_SENTRY_DSN,
     integrations: [new Sentry.Integrations.Vue({ Vue })]
 })
 // import 'livewire-vue';
