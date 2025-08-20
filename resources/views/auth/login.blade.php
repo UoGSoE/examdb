@@ -20,7 +20,7 @@
 </head>
 <body>
     <div id="app">
-        <login-form></login-form>
+        <login-form sso-enabled="{{ config('sso.enabled', true) }}"></login-form>
     </div>
     <footer style="position: fixed; bottom: 0px; width: 100%;" class="footer">
         <div class="content has-text-centered">

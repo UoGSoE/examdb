@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\AcademicSession;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Foundation\Console\AboutCommand;
 
@@ -27,6 +28,10 @@ class AppServiceProvider extends ServiceProvider
                 $sessionOutput[$session->id] = ($session->is_default ? '(Default) ' : '') . $session->session;
             }
             return $sessionOutput;
+        });
+
+        Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
+            $event->extendSocialite('keycloak', \SocialiteProviders\Keycloak\Provider::class);
         });
     }
 

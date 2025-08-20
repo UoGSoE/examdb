@@ -7,6 +7,7 @@
                 <div class="shadow-lg login-form">
                     <div class="login-header">
                         <h1 class="title is-1">ExamDB Login</h1>
+                        <p v-text="ssoEnabled"></p>
                     </div>
                     <article style="background: #FF7777; color: white; text-align: center;" class="p-8" v-show="errorMessage">
                         <b>{{ errorMessage }}</b>
@@ -45,6 +46,7 @@
 </template>
 <script>
 export default {
+  props: ['ssoEnabled'],
   data() {
     return {
       username: "",

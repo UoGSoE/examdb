@@ -13654,7 +13654,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  props: ['ssoEnabled'],
   data: function data() {
     return {
       username: "",
@@ -42676,7 +42678,11 @@ var render = function () {
           "div",
           { staticClass: "shadow-lg login-form" },
           [
-            _vm._m(0),
+            _c("div", { staticClass: "login-header" }, [
+              _c("h1", { staticClass: "title is-1" }, [_vm._v("ExamDB Login")]),
+              _vm._v(" "),
+              _c("p", { domProps: { textContent: _vm._s(_vm.ssoEnabled) } }),
+            ]),
             _vm._v(" "),
             _c(
               "article",
@@ -42846,16 +42852,7 @@ var render = function () {
     ]),
   ])
 }
-var staticRenderFns = [
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "login-header" }, [
-      _c("h1", { staticClass: "title is-1" }, [_vm._v("ExamDB Login")]),
-    ])
-  },
-]
+var staticRenderFns = []
 render._withStripped = true
 
 

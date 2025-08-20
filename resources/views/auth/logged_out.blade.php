@@ -20,7 +20,11 @@
 </head>
 <body>
     <div id="app">
-        <div class="title">You have been logged out</div>
+        <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+            <div class="box">
+                <div class="title">You have been logged out</div>
+            </div>
+        </div>
     </div>
     <footer style="position: fixed; bottom: 0px; width: 100%;" class="footer">
         <div class="content has-text-centered">
