@@ -3,8 +3,30 @@
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\PaperController;
 use App\Http\Controllers\Admin\UserController;
+use Illuminate\Support\Facades\Route;
 
-Auth::routes();
+// Login routes - shows login page with both local and SSO options
+Route::middleware('guest')->group(function () {
+    // Redirects to our login page if not authenticated
+    Route::get('/', function () {
+        return redirect()->route('login');
+    });
+
+    // This is our own log in page - ideally with an option to log in locally for local/dev - and of course the "Login with SSO" button
+    Route::get('/login', [\App\Http\Controllers\Auth\SSOController::class, 'login'])->name('login');
+    // Or as a Livewire component if you prefer
+    // Route::get('/login', App\Livewire\Login::class)->name('login');
+});
+
+// SSO specific routes
+Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login'])->name('login.local');
+Route::get('/login/sso', [\App\Http\Controllers\Auth\SSOController::class, 'ssoLogin'])->name('login.sso');
+Route::get('/auth/callback', [\App\Http\Controllers\Auth\SSOController::class, 'handleProviderCallback'])->name('sso.callback');
+Route::post('/logout', [\App\Http\Controllers\Auth\SSOController::class, 'logout'])->name('auth.logout');
+Route::get('/logged-out', [\App\Http\Controllers\Auth\SSOController::class, 'loggedOut'])->name('logged_out');
+
+
+// Auth::routes();
 Route::post('/external-login', [\App\Http\Controllers\Auth\ExternalLoginController::class, 'sendLoginEmail'])->name('external-generate-login');
 Route::get('/external-login/{user}', [\App\Http\Controllers\Auth\ExternalLoginController::class, 'login'])->name('external-login')->middleware('signed');
 
