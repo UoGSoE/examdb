@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Models\AcademicSession;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Facades\Socialite;
 use Livewire\Features\SupportRedirects\Redirector as LivewireRedirector;
 
@@ -25,7 +26,7 @@ class SSOController extends Controller
         return view('auth.logged_out');
     }
 
-    public function localLogin(Request $request) : RedirectResponse|LivewireRedirector
+    public function localLogin(Request $request) : RedirectResponse
     {
         if (config('sso.enabled', true)) {
             abort(403, 'SSO is enabled');
@@ -43,7 +44,7 @@ class SSOController extends Controller
         return redirect()->back()->withErrors(['username' => 'Invalid credentials']);
     }
 
-    public function ssoLogin() : RedirectResponse|LivewireRedirector
+    public function ssoLogin() : RedirectResponse
     {
         if (config('sso.enabled', true)) {
             $driver = Socialite::driver('keycloak');
@@ -59,7 +60,7 @@ class SSOController extends Controller
         return redirect()->route('login.local');
     }
 
-    public function handleProviderCallback(): RedirectResponse|LivewireRedirector
+    public function handleProviderCallback(): RedirectResponse
     {
         try {
             $ssoUser = Socialite::driver('keycloak')->user();
@@ -93,11 +94,12 @@ class SSOController extends Controller
 
         Auth::login($user, false);
         session()->regenerate();
+        session(['academic_session' => AcademicSession::getDefault()->session]);
 
         return $this->getSuccessRedirect();
     }
 
-    public function logout(Request $request): RedirectResponse|LivewireRedirector
+    public function logout(Request $request): RedirectResponse
     {
         Auth::logout();
         $request->session()->invalidate();
@@ -107,7 +109,7 @@ class SSOController extends Controller
         return redirect()->route('logged_out');
     }
 
-    private function getSuccessRedirect(): RedirectResponse|LivewireRedirector
+    private function getSuccessRedirect(): RedirectResponse
     {
         return redirect()->intended(route('home'));
     }
