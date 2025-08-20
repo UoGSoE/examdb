@@ -13655,6 +13655,26 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ['ssoEnabled'],
   data: function data() {
@@ -13671,11 +13691,7 @@ __webpack_require__.r(__webpack_exports__);
       return this.username.includes("@");
     },
     loginButtonText: function loginButtonText() {
-      if (this.isExternal) {
-        return "\n          <span class=\"icon\">\n            <i class=\"far fa-envelope-open\"></i>\n          </span>\n          <span>\n            Send me a login link\n          </span>\n        ";
-      }
-
-      return "Log In";
+      return "\n          <span class=\"icon\">\n            <i class=\"far fa-envelope-open\"></i>\n          </span>\n          <span>\n            Send me a login link\n          </span>\n        ";
     }
   },
   methods: {
@@ -42678,11 +42694,7 @@ var render = function () {
           "div",
           { staticClass: "shadow-lg login-form" },
           [
-            _c("div", { staticClass: "login-header" }, [
-              _c("h1", { staticClass: "title is-1" }, [_vm._v("ExamDB Login")]),
-              _vm._v(" "),
-              _c("p", { domProps: { textContent: _vm._s(_vm.ssoEnabled) } }),
-            ]),
+            _vm._m(0),
             _vm._v(" "),
             _c(
               "article",
@@ -42728,26 +42740,29 @@ var render = function () {
                   )
                 : _vm._e(),
               _vm._v(" "),
-              !_vm.successMessage
-                ? _c(
-                    "form",
-                    {
-                      key: "2",
-                      staticClass: " p-8 ",
-                      attrs: { method: "POST", action: "/login" },
-                    },
-                    [
+              _vm.ssoEnabled
+                ? _c("div", [
+                    _c("div", { staticClass: "p-8" }, [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "button is-info is-fullwidth",
+                          attrs: { href: "/login/sso" },
+                        },
+                        [
+                          _vm._v(
+                            "Current University of Glasgow staff - Login with SSO"
+                          ),
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c("hr"),
+                      _vm._v(" "),
                       _c("div", { staticClass: "field" }, [
                         _c("label", { staticClass: "label" }, [
-                          _vm._v("Username "),
-                          _c(
-                            "span",
-                            {
-                              staticClass:
-                                "has-text-grey has-text-weight-light",
-                            },
-                            [_vm._v("(or email for Externals)")]
-                          ),
+                          _vm._v("External Examiners:"),
+                          _c("br"),
+                          _vm._v("Please login using your email address"),
                         ]),
                         _vm._v(" "),
                         _c("p", { staticClass: "control" }, [
@@ -42779,52 +42794,6 @@ var render = function () {
                         ]),
                       ]),
                       _vm._v(" "),
-                      _c("transition", { attrs: { name: "fade" } }, [
-                        _c(
-                          "div",
-                          {
-                            directives: [
-                              {
-                                name: "show",
-                                rawName: "v-show",
-                                value: !_vm.isExternal,
-                                expression: "!isExternal",
-                              },
-                            ],
-                            staticClass: "field",
-                          },
-                          [
-                            _c("label", { staticClass: "label" }, [
-                              _vm._v("Password"),
-                            ]),
-                            _vm._v(" "),
-                            _c("p", { staticClass: "control" }, [
-                              _c("input", {
-                                directives: [
-                                  {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: _vm.password,
-                                    expression: "password",
-                                  },
-                                ],
-                                staticClass: "input",
-                                attrs: { type: "password", name: "password" },
-                                domProps: { value: _vm.password },
-                                on: {
-                                  input: function ($event) {
-                                    if ($event.target.composing) {
-                                      return
-                                    }
-                                    _vm.password = $event.target.value
-                                  },
-                                },
-                              }),
-                            ]),
-                          ]
-                        ),
-                      ]),
-                      _vm._v(" "),
                       _c("hr"),
                       _vm._v(" "),
                       _c("div", { staticClass: "field" }, [
@@ -42840,10 +42809,131 @@ var render = function () {
                           },
                         }),
                       ]),
-                    ],
-                    1
-                  )
-                : _vm._e(),
+                    ]),
+                  ])
+                : _c("div", [
+                    !_vm.successMessage
+                      ? _c(
+                          "form",
+                          {
+                            key: "2",
+                            staticClass: " p-8 ",
+                            attrs: { method: "POST", action: "/login" },
+                          },
+                          [
+                            _c("div", { staticClass: "field" }, [
+                              _c("label", { staticClass: "label" }, [
+                                _vm._v("Username "),
+                                _c(
+                                  "span",
+                                  {
+                                    staticClass:
+                                      "has-text-grey has-text-weight-light",
+                                  },
+                                  [_vm._v("(or email for Externals)")]
+                                ),
+                              ]),
+                              _vm._v(" "),
+                              _c("p", { staticClass: "control" }, [
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.username,
+                                      expression: "username",
+                                    },
+                                  ],
+                                  staticClass: "input",
+                                  attrs: {
+                                    type: "text",
+                                    name: "username",
+                                    autofocus: "",
+                                  },
+                                  domProps: { value: _vm.username },
+                                  on: {
+                                    input: function ($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.username = $event.target.value
+                                    },
+                                  },
+                                }),
+                              ]),
+                            ]),
+                            _vm._v(" "),
+                            _c("transition", { attrs: { name: "fade" } }, [
+                              _c(
+                                "div",
+                                {
+                                  directives: [
+                                    {
+                                      name: "show",
+                                      rawName: "v-show",
+                                      value: !_vm.isExternal,
+                                      expression: "!isExternal",
+                                    },
+                                  ],
+                                  staticClass: "field",
+                                },
+                                [
+                                  _c("label", { staticClass: "label" }, [
+                                    _vm._v("Password"),
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("p", { staticClass: "control" }, [
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.password,
+                                          expression: "password",
+                                        },
+                                      ],
+                                      staticClass: "input",
+                                      attrs: {
+                                        type: "password",
+                                        name: "password",
+                                      },
+                                      domProps: { value: _vm.password },
+                                      on: {
+                                        input: function ($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.password = $event.target.value
+                                        },
+                                      },
+                                    }),
+                                  ]),
+                                ]
+                              ),
+                            ]),
+                            _vm._v(" "),
+                            _c("hr"),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "field" }, [
+                              _c("button", {
+                                staticClass: "button is-info is-fullwidth",
+                                class: { "is-loading": _vm.busy },
+                                domProps: {
+                                  innerHTML: _vm._s(_vm.loginButtonText),
+                                },
+                                on: {
+                                  click: function ($event) {
+                                    $event.preventDefault()
+                                    return _vm.login($event)
+                                  },
+                                },
+                              }),
+                            ]),
+                          ],
+                          1
+                        )
+                      : _vm._e(),
+                  ]),
             ]),
           ],
           1
@@ -42852,7 +42942,16 @@ var render = function () {
     ]),
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "login-header" }, [
+      _c("h1", { staticClass: "title is-1" }, [_vm._v("ExamDB Login")]),
+    ])
+  },
+]
 render._withStripped = true
 
 
