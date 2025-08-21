@@ -127,4 +127,5 @@ COPY --from=qa-composer /var/www/html/vendor /var/www/html/vendor
 RUN composer global require enlightn/security-checker && \
     curl -OL -o /usr/local/bin/phpcs https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar && \
     php /var/www/html/artisan view:clear && \
-    php /var/www/html/artisan cache:clear
+    php /var/www/html/artisan cache:clear && \
+    php /var/www/html/artisan config:clear
