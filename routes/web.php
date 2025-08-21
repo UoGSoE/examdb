@@ -8,9 +8,7 @@ use Illuminate\Support\Facades\Route;
 // Login routes - shows login page with both local and SSO options
 Route::middleware('guest')->group(function () {
     // Redirects to our login page if not authenticated
-    Route::get('/', function () {
-        return redirect()->route('login');
-    });
+    Route::redirect('/', '/login');
 
     // This is our own log in page - ideally with an option to log in locally for local/dev - and of course the "Login with SSO" button
     Route::get('/login', [\App\Http\Controllers\Auth\SSOController::class, 'login'])->name('login');
