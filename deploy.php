@@ -13,7 +13,7 @@ add('writable_dirs', []);
 // Hosts
 host('bugblatter.cose.gla.ac.uk')
     ->set('remote_user', 'deployer')
-    ->set('deploy_path', '/var/www/exam.cose.gla.ac.uk/');
+    ->set('deploy_path', '/var/www/examdb.cose.gla.ac.uk/');
 
 // Tasks
 task('build', function () {
