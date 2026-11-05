@@ -4,9 +4,15 @@ namespace App\Models;
 
 use App\Scopes\CurrentScope;
 use App\Scopes\NotHiddenScope;
+use Illuminate\Database\Eloquent\Attributes\Appends;
+use Illuminate\Database\Eloquent\Attributes\Touches;
+use Illuminate\Database\Eloquent\Attributes\Unguarded;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+#[Unguarded]
+#[Touches('course')]
+#[Appends('icon', 'formatted_date', 'diff_for_humans', 'formatted_size')]
 class Paper extends Model
 {
     use HasFactory;
@@ -31,17 +37,11 @@ class Paper extends Model
 
     public const COMMENT_SUBCATEGORY = 'comment';
 
-    protected $guarded = [];
-
-    protected $touches = ['course'];
-
     protected $casts = [
         'approved_setter' => 'boolean',
         'archived_at' => 'datetime',
         'is_hidden' => 'boolean',
     ];
-
-    protected $appends = ['icon', 'formatted_date', 'diff_for_humans', 'formatted_size'];
 
     protected static function boot()
     {

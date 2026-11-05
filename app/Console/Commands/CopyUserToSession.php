@@ -4,24 +4,14 @@ namespace App\Console\Commands;
 
 use App\Models\AcademicSession;
 use App\Models\User;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
+#[Signature('examdb:copy-user-to-session {username} {session? : Eg, "2019/2020"}')]
+#[Description('Copy a user from the current session into a previous one')]
 class CopyUserToSession extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'examdb:copy-user-to-session {username} {session? : Eg, "2019/2020"}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Copy a user from the current session into a previous one';
-
     /**
      * Create a new command instance.
      *

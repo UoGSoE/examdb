@@ -10,6 +10,7 @@ use App\Mail\SetterHasUpdatedTheChecklist;
 use App\Scopes\CurrentAcademicSessionScope;
 use App\Scopes\CurrentScope;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Attributes\Unguarded;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -21,12 +22,11 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 
+#[Unguarded]
 class Course extends Model
 {
     use HasFactory;
     use SoftDeletes;
-
-    protected $guarded = [];
 
     protected $casts = [
         'is_examined' => 'boolean',

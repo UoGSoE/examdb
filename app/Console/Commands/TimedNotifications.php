@@ -16,16 +16,16 @@ use App\Models\Course;
 use App\Models\Paper;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 use RuntimeException;
 
+#[Signature('examdb:timed-notifications')]
+#[Description('Send any automatic notifications that are due')]
 class TimedNotifications extends Command
 {
-    protected $signature = 'examdb:timed-notifications';
-
-    protected $description = 'Send any automatic notifications that are due';
-
     protected $exceptions = [];
 
     protected $semester;

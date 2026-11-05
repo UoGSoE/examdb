@@ -3,24 +3,14 @@
 namespace App\Console\Commands;
 
 use App\Models\User;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
+#[Signature('exampapers:makeadmin {username}')]
+#[Description('Make a user an admin')]
 class MakeUserAnAdmin extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'exampapers:makeadmin {username}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Make a user an admin';
-
     /**
      * Create a new command instance.
      *

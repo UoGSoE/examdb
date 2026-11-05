@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Routing\Controllers\Middleware;
 use App\Http\Controllers\Controller;
 use App\Models\AcademicSession;
 use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Routing\Attributes\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
-class LoginController extends Controller implements HasMiddleware
+#[Middleware('guest', except: ['logout'])]
+class LoginController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
@@ -34,13 +34,6 @@ class LoginController extends Controller implements HasMiddleware
      * @var string
      */
     protected $redirectTo = '/';
-
-    public static function middleware(): array
-    {
-        return [
-            new Middleware('guest', except: ['logout']),
-        ];
-    }
 
     public function username()
     {

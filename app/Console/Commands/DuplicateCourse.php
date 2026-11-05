@@ -3,25 +3,15 @@
 namespace App\Console\Commands;
 
 use App\Models\Course;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use InvalidArgumentException;
 
+#[Signature('examdb:duplicate-course {code} {newcode}')]
+#[Description('Make a copy of an existing course but with a new course code')]
 class DuplicateCourse extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'examdb:duplicate-course {code} {newcode}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Make a copy of an existing course but with a new course code';
-
     /**
      * Create a new command instance.
      *

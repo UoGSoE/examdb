@@ -4,6 +4,9 @@ namespace App\Models;
 
 use App\CanBeCreatedFromOutsideSources;
 use App\Scopes\CurrentAcademicSessionScope;
+use Illuminate\Database\Eloquent\Attributes\Appends;
+use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Attributes\Unguarded;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -13,6 +16,9 @@ use Illuminate\Support\Facades\URL;
 use Lab404\Impersonate\Models\Impersonate;
 use Spatie\Activitylog\Models\Activity;
 
+#[Unguarded]
+#[Hidden('password', 'remember_token')]
+#[Appends('full_name')]
 class User extends Authenticatable
 {
     use CanBeCreatedFromOutsideSources;
@@ -21,19 +27,11 @@ class User extends Authenticatable
     use Notifiable;
     use SoftDeletes;
 
-    protected $guarded = [];
-
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
-
     protected $casts = [
         'is_admin' => 'boolean',
         'is_staff' => 'boolean',
         'is_external' => 'boolean',
     ];
-
-    protected $appends = ['full_name'];
 
     protected static function booted()
     {

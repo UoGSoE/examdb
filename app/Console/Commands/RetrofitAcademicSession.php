@@ -7,25 +7,15 @@ use App\Models\Course;
 use App\Models\Discipline;
 use App\Models\User;
 use App\Scopes\CurrentAcademicSessionScope;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
+#[Signature('examdb:retrofit-academic-session {new_session}')]
+#[Description('Add an academic session to all courses, users and disciplines if its currently null')]
 class RetrofitAcademicSession extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'examdb:retrofit-academic-session {new_session}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Add an academic session to all courses, users and disciplines if its currently null';
-
     /**
      * Create a new command instance.
      *

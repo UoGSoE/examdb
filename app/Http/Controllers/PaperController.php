@@ -7,8 +7,8 @@ use App\Models\Course;
 use App\Models\Paper;
 use App\Scopes\CurrentAcademicSessionScope;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Attributes\Controllers\Authorize;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 class PaperController extends Controller
@@ -35,10 +35,9 @@ class PaperController extends Controller
         ]);
     }
 
+    #[Authorize('upload_paper', 'course')]
     public function store(Course $course, Request $request)
     {
-        Gate::authorize('upload_paper', $course);
-
         $request->validate([
             'paper' => 'required|file|max:20000',
             'category' => 'required',

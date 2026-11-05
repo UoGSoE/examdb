@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Scopes\CurrentScope;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Attributes\Touches;
+use Illuminate\Database\Eloquent\Attributes\Unguarded;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -40,15 +42,13 @@ use Illuminate\Database\Eloquent\Model;
             <textarea class="textarea" wire:model="checklist.fields." id=""></textarea>
                     <input class="input" x-ref="external_signed_at" type="text" wire:model="checklist.fields.">
                     */
+#[Unguarded]
+#[Touches('course')]
 class PaperChecklist extends Model
 {
     use HasFactory;
 
     public const CURRENT_VERSION = 1;
-
-    protected $guarded = [];
-
-    protected $touches = ['course'];
 
     protected $casts = [
         'archived_at' => 'datetime',

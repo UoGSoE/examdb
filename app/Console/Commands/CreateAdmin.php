@@ -4,25 +4,15 @@ namespace App\Console\Commands;
 
 use App\Models\AcademicSession;
 use App\Models\User;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 
+#[Signature('examdb:createadmin {username} {email} {forename} {surname}')]
+#[Description('Create an admin account')]
 class CreateAdmin extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'examdb:createadmin {username} {email} {forename} {surname}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Create an admin account';
-
     /**
      * Create a new command instance.
      *
