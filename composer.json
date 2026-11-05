@@ -10,11 +10,11 @@
     "require": {
         "php": "^8.3",
         "appstract/laravel-options": "^8.0",
-        "barryvdh/laravel-dompdf": "^2.0",
+        "barryvdh/laravel-dompdf": "^3.0",
         "barryvdh/laravel-snappy": "^1.0",
         "guzzlehttp/guzzle": "^7.2",
         "lab404/laravel-impersonate": "^1.7.3",
-        "laravel/framework": "^11.0",
+        "laravel/framework": "^12.0",
         "laravel/horizon": "^5.9",
         "laravel/socialite": "^5.23",
         "laravel/tinker": "^2.7",
@@ -78,11 +78,6 @@
     "config": {
         "preferred-install": "dist",
         "sort-packages": true,
-        "policy": {
-            "advisories": {
-                "block": false
-            }
-        },
         "optimize-autoloader": true,
         "allow-plugins": {
             "php-http/discovery": true
