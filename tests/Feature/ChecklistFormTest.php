@@ -273,30 +273,6 @@ class ChecklistFormTest extends TestCase
     }
 
     #[Test]
-    public function we_can_download_a_pdf_of_the_paper_checklist()
-    {
-        $this->markTestSkipped('TODO fix up after removing wkhtmltopdf');
-        $this->withoutExceptionHandling();
-        $user = create(User::class);
-        $course = create(Course::class);
-        $user->markAsSetter($course);
-        $existingChecklist1 = create(PaperChecklist::class, [
-            'course_id' => $course->id,
-            'category' => 'main',
-        ]);
-
-        $response = $this->actingAs($user)->get(route('course.checklist.pdf', [
-            'checklist' => $existingChecklist1->id,
-        ]));
-
-        $response->assertOk();
-        $this->assertEquals(
-            $response->headers->get('content-disposition'),
-            'attachment; filename="'.$course->code.'_paper_checklist.pdf"'
-        );
-    }
-
-    #[Test]
     public function when_a_setter_updates_the_checklist_passed_to_moderator_date_an_email_is_sent_to_the_moderators()
     {
         $this->withoutExceptionHandling();

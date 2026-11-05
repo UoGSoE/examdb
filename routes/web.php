@@ -45,7 +45,6 @@ Route::middleware('auth', 'academicsession')->group(function () {
 
     Route::get('/course/{course}/checklist', [\App\Http\Controllers\ChecklistController::class, 'create'])->name('course.checklist.create');
     Route::get('/checklist/{checklist}', [\App\Http\Controllers\ChecklistController::class, 'show'])->name('course.checklist.show');
-    Route::get('/checklist/{checklist}/pdf', [\App\Http\Controllers\ChecklistPdfController::class, 'show'])->name('course.checklist.pdf');
 
     Route::get('/api/course/{course:code}/dropdown-options', [\App\Http\Controllers\Api\DropdownOptionsController::class, 'show'])->name('api.course.paper_options');
 
