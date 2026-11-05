@@ -27,7 +27,6 @@ class User extends Authenticatable
     use Notifiable;
     use SoftDeletes;
 
-
     protected function casts(): array
     {
         return [
