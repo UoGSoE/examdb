@@ -73,7 +73,7 @@ class ChecklistBulkDownloadTest extends TestCase
         $checklist2 = create(PaperChecklist::class, ['course_id' => $glaCourse2->id, 'category' => 'resit']);
         $checklist3 = create(PaperChecklist::class, ['course_id' => $uestcCourse1->id, 'category' => 'resit']);
 
-        BulkExportChecklists::dispatchNow($admin);
+        (new BulkExportChecklists($admin))->handle();
 
         Mail::assertQueued(ChecklistsReadyToDownload::class, 1);
         Mail::assertQueued(ChecklistsReadyToDownload::class, function ($mail) use ($admin) {
@@ -123,7 +123,7 @@ class ChecklistBulkDownloadTest extends TestCase
         $checklist2 = create(PaperChecklist::class, ['course_id' => $glaCourse2->id, 'category' => 'resit']);
         $checklist3 = create(PaperChecklist::class, ['course_id' => $uestcCourse1->id, 'category' => 'resit']);
 
-        BulkExportChecklists::dispatchNow($admin);
+        (new BulkExportChecklists($admin))->handle();
 
         Queue::assertPushed(RemoveChecklistZip::class);
     }
@@ -144,7 +144,7 @@ class ChecklistBulkDownloadTest extends TestCase
         $checklist2 = create(PaperChecklist::class, ['course_id' => $glaCourse2->id, 'category' => 'resit']);
         $checklist3 = create(PaperChecklist::class, ['course_id' => $uestcCourse1->id, 'category' => 'resit']);
 
-        BulkExportChecklists::dispatchNow($admin);
+        (new BulkExportChecklists($admin))->handle();
 
         Storage::disk('exampapers')->assertMissing('checklists/checklists_'.$admin->id.'.zip');
     }

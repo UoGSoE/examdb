@@ -93,7 +93,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
         }
         $admin = create(User::class, ['is_admin' => true]);
 
-        ExportPapersForRegistry::dispatchNow($admin);
+        (new ExportPapersForRegistry($admin))->handle();
 
         Storage::disk('exampapers')->assertExists('registry/papers_'.$admin->id.'.zip');
         $this->assertEmpty(glob(sys_get_temp_dir().'/'.config('exampapers.registry_temp_file_prefix').'*'));
@@ -216,7 +216,7 @@ class PapersForRegistryBulkDownloadTest extends TestCase
         Storage::disk('exampapers')->put('test.zip', 'hello');
         Storage::disk('exampapers')->assertExists('test.zip');
 
-        RemoveRegistryZip::dispatchNow('test.zip');
+        (new RemoveRegistryZip('test.zip'))->handle();
 
         Storage::disk('exampapers')->assertMissing('test.zip');
         tap(Activity::all()->last(), function ($log) {
