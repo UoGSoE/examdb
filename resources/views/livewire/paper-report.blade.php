@@ -17,7 +17,7 @@
         <p class="control"><button class="button is-success" disabled>Semester</button></p>
         <div class="control">
             <div class="select">
-              <select wire:model="semesterFilter">
+              <select wire:model.live="semesterFilter">
                 <option value="">All</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -27,7 +27,7 @@
         <p class="control"><button class="button is-success" disabled>Category</button></p>
         <div class="control">
             <div class="select">
-              <select wire:model="categoryFilter">
+              <select wire:model.live="categoryFilter">
                 <option value="">All</option>
                 <option value="main">Main</option>
                 <option value="resit">Resit</option>

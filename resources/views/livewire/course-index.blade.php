@@ -20,7 +20,7 @@
                     <p class="control"><button class="button is-success" disabled>Semester</button></p>
                     <div class="control">
                         <div class="select">
-                          <select wire:model="semesterFilter">
+                          <select wire:model.live="semesterFilter">
                             <option value="">All</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
@@ -37,7 +37,7 @@
             <div class="level-item">
                 <div class="field">
                     <p class="control">
-                        <input wire:model="searchTerm" type="text" class="input" placeholder="Search course code or title..." autofocus>
+                        <input wire:model.live="searchTerm" type="text" class="input" placeholder="Search course code or title..." autofocus>
                     </p>
                 </div>
             </div>
@@ -45,13 +45,13 @@
                 <div class="field is-grouped">
                     <div class="control">
                         <label class="checkbox">
-                            <input type="checkbox" wire:model="includeTrashed">
+                            <input type="checkbox" wire:model.live="includeTrashed">
                             Include disabled?
                         </label>
                     </div>
                     <div class="control">
                         <label class="checkbox">
-                        <input type="checkbox" wire:model="excludeNotExamined">
+                        <input type="checkbox" wire:model.live="excludeNotExamined">
                         Exclude non-examined?
                         </label>
                     </div>

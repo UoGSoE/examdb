@@ -16,7 +16,6 @@
     </div>
     <div class="level" v-if="user.is_admin">
       <div class="level-left">
-        <course-archive-papers-button :course="theCourse" class="level-item"></course-archive-papers-button>
         <a @click.prevent="disableCourse" class="button level-item">Disable Course</a>
         <a :href="editRoute" class="button level-item">Edit</a>
         <a
