@@ -20,3 +20,4 @@ dump.rdb
 .phpunit.result.cache
 /.phpunit.cache
 upgrade-guides
+.claude
