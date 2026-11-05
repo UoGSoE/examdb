@@ -16,7 +16,8 @@
         "sass": "^1.26.10",
         "sass-loader": "^8.0.2",
         "vue-loader": "^15.9.7",
-        "vue-template-compiler": "^2.6.12"
+        "vue-template-compiler": "^2.6.12",
+        "concurrently": "^9.0.1"
     },
     "optionalDependencies": {
         "@laravel/multiplex": "^0.4.1"
