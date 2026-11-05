@@ -20,3 +20,4 @@ dump.rdb
 .env
 .DS_Store
 .phpunit.result.cache
+upgrade-guides
