@@ -27,9 +27,6 @@ class EventServiceProvider extends ServiceProvider
         'Illuminate\Auth\Events\Login' => [
             \App\Listeners\UserLoggedIn::class,
         ],
-        'Illuminate\Auth\Events\Attempting' => [
-            \App\Listeners\DispachPasswordChecker::class,
-        ],
         \App\Events\PaperApproved::class => [
             \App\Listeners\PaperWasApproved::class,
         ],

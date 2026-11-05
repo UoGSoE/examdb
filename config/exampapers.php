@@ -2,7 +2,6 @@
 
 return [
     'login_link_minutes' => 60,
-    'check_passwords' => env('PASSWORD_CHECK', false),
     'sysadmin_email' => env('SYSADMIN_EMAIL'),
     'fallback_email' => env('FALLBACK_EMAIL'),
     'wlm_uri' => env('WLM_URI'),
