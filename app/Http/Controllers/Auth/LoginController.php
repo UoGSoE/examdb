@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Models\AcademicSession;
 use App\Http\Controllers\Controller;
+use App\Models\AcademicSession;
 use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Routing\Attributes\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
+#[Middleware('guest', except: ['logout'])]
 class LoginController extends Controller
 {
     /*
@@ -32,16 +34,6 @@ class LoginController extends Controller
      * @var string
      */
     protected $redirectTo = '/';
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('guest')->except('logout');
-    }
 
     public function username()
     {

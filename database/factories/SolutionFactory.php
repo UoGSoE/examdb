@@ -4,17 +4,12 @@ namespace Database\Factories;
 
 use App\Models\Course;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+#[UseModel(\App\Solution::class)]
 class SolutionFactory extends Factory
 {
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
-    protected $model = \App\Solution::class;
-
     /**
      * Define the model's default state.
      *

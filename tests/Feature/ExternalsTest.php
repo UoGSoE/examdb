@@ -4,20 +4,13 @@ namespace Tests\Feature;
 
 use App\Models\AcademicSession;
 use App\Models\Course;
-use App\Mail\NotifyLocalsAboutExternalComments;
-use App\Mail\NotifySetterAboutApproval;
-use App\Mail\NotifySetterAboutExternalComments;
-use App\Mail\NotifySetterAboutUnapproval;
 use App\Models\Paper;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use PHPUnit\Framework\Attributes\Test;
 use Spatie\Activitylog\Models\Activity;
 use Tests\TestCase;
-use PHPUnit\Framework\Attributes\Test;
 
 class ExternalsTest extends TestCase
 {

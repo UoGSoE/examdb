@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Course;
 use App\Events\PaperAdded;
+use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Routing\Attributes\Controllers\Authorize;
 
 class CommentController extends Controller
 {
+    #[Authorize('upload_paper', 'course')]
     public function store(Course $course, Request $request)
     {
-        Gate::authorize('upload_paper', $course);
-
         $request->validate([
             'category' => 'required',
             'comment' => 'required',

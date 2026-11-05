@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use App\Scopes\CurrentScope;
-use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Attributes\Touches;
+use Illuminate\Database\Eloquent\Attributes\Unguarded;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 /*
  <select name="previous_id" id="previous_id" wire:model="previousId">
@@ -40,20 +42,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
             <textarea class="textarea" wire:model="checklist.fields." id=""></textarea>
                     <input class="input" x-ref="external_signed_at" type="text" wire:model="checklist.fields.">
                     */
+#[Unguarded]
+#[Touches('course')]
 class PaperChecklist extends Model
 {
     use HasFactory;
 
     public const CURRENT_VERSION = 1;
-
-    protected $guarded = [];
-
-    protected $touches = ['course'];
-
-    protected $casts = [
-        'archived_at' => 'datetime',
-        'fields' => 'array',
-    ];
 
     public const SECTION_A_FIELDS = [
         'course_code',
@@ -69,6 +64,7 @@ class PaperChecklist extends Model
         'moderators',
         'passed_to_moderator',
     ];
+
     public const SECTION_B_FIELDS = [
         'overall_quality_appropriate',
         'why_innapropriate',
@@ -79,6 +75,7 @@ class PaperChecklist extends Model
         'moderator_esignature',
         'setter_comments_to_moderator',
     ];
+
     public const SECTION_C_FIELDS = [
         'solution_marks_appropriate',
         'moderator_solution_innapropriate_comments',
@@ -89,6 +86,7 @@ class PaperChecklist extends Model
         'moderator_esignature',
         'solution_setter_comments',
     ];
+
     public const SECTION_D_FIELDS = [
         'external_examiner_name',
         'external_agrees_with_moderator',
@@ -97,6 +95,7 @@ class PaperChecklist extends Model
         'external_signed_at',
         'external_esignature',
     ];
+
     public const SETTER_FIELDS = [
         'course_code',
         'course_title',
@@ -143,7 +142,15 @@ class PaperChecklist extends Model
     {
         parent::boot();
 
-        static::addGlobalScope(new CurrentScope());
+        static::addGlobalScope(new CurrentScope);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'archived_at' => 'datetime',
+            'fields' => 'array',
+        ];
     }
 
     public function course()
@@ -205,9 +212,9 @@ class PaperChecklist extends Model
     public function getPreviousChecklist()
     {
         return $this->where('id', '<', $this->id)
-                ->where('course_id', '=', $this->course_id)
-                ->where('category', '=', $this->category)
-                ->max('id');
+            ->where('course_id', '=', $this->course_id)
+            ->where('category', '=', $this->category)
+            ->max('id');
     }
 
     public function getNextChecklist()

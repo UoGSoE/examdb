@@ -10,6 +10,7 @@ use App\Mail\SetterHasUpdatedTheChecklist;
 use App\Scopes\CurrentAcademicSessionScope;
 use App\Scopes\CurrentScope;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Attributes\Unguarded;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -21,25 +22,11 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 
+#[Unguarded]
 class Course extends Model
 {
     use HasFactory;
     use SoftDeletes;
-
-    protected $guarded = [];
-
-    protected $casts = [
-        'is_examined' => 'boolean',
-        'moderator_approved_main' => 'boolean',
-        'moderator_approved_resit' => 'boolean',
-        'moderator_approved_assessment' => 'boolean',
-        'external_approved_main' => 'boolean',
-        'external_approved_resit' => 'boolean',
-        'external_approved_assessment' => 'boolean',
-        'external_notified' => 'boolean',
-        'registry_approved_main' => 'boolean',
-        'registry_approved_resit' => 'boolean',
-    ];
 
     public $flagsToClearOnDuplication = [
         'moderator_approved_main',
@@ -57,13 +44,29 @@ class Course extends Model
     {
         parent::boot();
 
-        static::addGlobalScope(new CurrentAcademicSessionScope());
+        static::addGlobalScope(new CurrentAcademicSessionScope);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'is_examined' => 'boolean',
+            'moderator_approved_main' => 'boolean',
+            'moderator_approved_resit' => 'boolean',
+            'moderator_approved_assessment' => 'boolean',
+            'external_approved_main' => 'boolean',
+            'external_approved_resit' => 'boolean',
+            'external_approved_assessment' => 'boolean',
+            'external_notified' => 'boolean',
+            'registry_approved_main' => 'boolean',
+            'registry_approved_resit' => 'boolean',
+        ];
     }
 
     public function staff()
     {
         return $this->belongsToMany(User::class, 'course_user', 'course_id', 'user_id')
-                    ->withPivot('is_moderator', 'is_setter', 'is_external');
+            ->withPivot('is_moderator', 'is_setter', 'is_external');
     }
 
     public function moderators()
@@ -109,8 +112,8 @@ class Course extends Model
     public function latestPrintReadyPaper()
     {
         return $this->hasOne(Paper::class)->ofMany([
-            'created_at' => 'max'
-        ], fn ($query) => $query->where('subcategory', 'like', '%'. Paper::ADMIN_PRINT_READY_VERSION . '%'));
+            'created_at' => 'max',
+        ], fn ($query) => $query->where('subcategory', 'like', '%'.Paper::ADMIN_PRINT_READY_VERSION.'%'));
     }
 
     public function resitPapers()
@@ -168,11 +171,11 @@ class Course extends Model
             // }
             $fields['number_questions'] = $fields['number_questions'] ?? 1;
             foreach (range(1, $fields['number_questions']) as $questionNumber) {
-                if (array_key_exists('question_setter_' . ($questionNumber - 1), $fields)) {
-                    $fieldsToUpdate[] = 'question_setter_' . ($questionNumber - 1);
+                if (array_key_exists('question_setter_'.($questionNumber - 1), $fields)) {
+                    $fieldsToUpdate[] = 'question_setter_'.($questionNumber - 1);
                 }
-                if (array_key_exists('question_datasheet_' . ($questionNumber - 1), $fields)) {
-                    $fieldsToUpdate[] = 'question_datasheet_' . ($questionNumber - 1);
+                if (array_key_exists('question_datasheet_'.($questionNumber - 1), $fields)) {
+                    $fieldsToUpdate[] = 'question_datasheet_'.($questionNumber - 1);
                 }
             }
         }
@@ -316,7 +319,7 @@ class Course extends Model
                     Mail::to($email)->queue(new SetterHasUpdatedTheChecklist($this, $deadline));
                 });
 
-                $flashMessage = $flashMessage . ' - moderators notified';
+                $flashMessage = $flashMessage.' - moderators notified';
             }
         }
 

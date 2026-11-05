@@ -3,24 +3,14 @@
 namespace App\Console\Commands;
 
 use App\Models\Course;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
+#[Signature('examdb:reset-all-approval-flags')]
+#[Description('Resets all approval flags to false')]
 class RemoveAllApprovalFlags extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'examdb:reset-all-approval-flags';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Resets all approval flags to false';
-
     /**
      * Create a new command instance.
      *

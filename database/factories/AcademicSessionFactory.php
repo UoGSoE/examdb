@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\AcademicSession;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AcademicSessionFactory extends Factory

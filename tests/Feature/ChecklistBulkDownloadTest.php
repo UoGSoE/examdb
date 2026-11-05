@@ -2,23 +2,21 @@
 
 namespace Tests\Feature;
 
-use App\Models\AcademicSession;
-use App\Models\Course;
 use App\Exporters\ChecklistExporter;
 use App\Jobs\BulkExportChecklists;
 use App\Jobs\RemoveChecklistZip;
 use App\Mail\ChecklistsReadyToDownload;
+use App\Models\AcademicSession;
+use App\Models\Course;
 use App\Models\PaperChecklist;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
-use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 // fake the HTTP calls to the pdf printer api
 class ChecklistBulkDownloadTest extends TestCase

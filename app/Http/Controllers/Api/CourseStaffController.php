@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Course;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Course;
 
 class CourseStaffController extends Controller
 {

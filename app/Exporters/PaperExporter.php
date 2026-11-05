@@ -28,7 +28,7 @@ class PaperExporter
         $papers = Paper::where('subcategory', 'like', $this->subcategory.'%')->get();
 
         $localZipname = tempnam(sys_get_temp_dir(), '/'.config('exampapers.registry_temp_file_prefix'));
-        $zip = new \ZipArchive();
+        $zip = new \ZipArchive;
         $zip->open($localZipname, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
         $papers->each(function ($paper) use ($zip) {
             $localFilename = sys_get_temp_dir().'/'.Str::random(64);

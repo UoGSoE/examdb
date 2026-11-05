@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Course;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PaperResource;
-use Illuminate\Http\Request;
+use App\Models\Course;
 
 class CoursePaperController extends Controller
 {

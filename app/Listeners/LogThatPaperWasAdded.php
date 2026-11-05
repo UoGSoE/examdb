@@ -3,8 +3,6 @@
 namespace App\Listeners;
 
 use App\Models\Paper;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
 class LogThatPaperWasAdded
 {
@@ -13,9 +11,7 @@ class LogThatPaperWasAdded
      *
      * @return void
      */
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     /**
      * Handle the event.

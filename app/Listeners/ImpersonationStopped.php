@@ -19,7 +19,6 @@ class ImpersonationStopped
     /**
      * Handle the event.
      *
-     * @param  LeaveImpersonation  $event
      * @return void
      */
     public function handle(LeaveImpersonation $event)

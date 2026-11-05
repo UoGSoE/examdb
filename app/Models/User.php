@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
-use App\Models\AcademicSession;
 use App\CanBeCreatedFromOutsideSources;
 use App\Scopes\CurrentAcademicSessionScope;
+use Illuminate\Database\Eloquent\Attributes\Appends;
+use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Attributes\Unguarded;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -14,27 +16,25 @@ use Illuminate\Support\Facades\URL;
 use Lab404\Impersonate\Models\Impersonate;
 use Spatie\Activitylog\Models\Activity;
 
+#[Unguarded]
+#[Hidden('password', 'remember_token')]
+#[Appends('full_name')]
 class User extends Authenticatable
 {
-    use HasFactory;
-    use Notifiable;
     use CanBeCreatedFromOutsideSources;
+    use HasFactory;
     use Impersonate;
+    use Notifiable;
     use SoftDeletes;
 
-    protected $guarded = [];
-
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
-
-    protected $casts = [
-        'is_admin' => 'boolean',
-        'is_staff' => 'boolean',
-        'is_external' => 'boolean',
-    ];
-
-    protected $appends = ['full_name'];
+    protected function casts(): array
+    {
+        return [
+            'is_admin' => 'boolean',
+            'is_staff' => 'boolean',
+            'is_external' => 'boolean',
+        ];
+    }
 
     protected static function booted()
     {
@@ -86,7 +86,7 @@ class User extends Authenticatable
             });
     }
 
-    public function getCourses(string $userTypeField = null)
+    public function getCourses(?string $userTypeField = null)
     {
         $query = $this->courses();
         if ($userTypeField) {
@@ -148,9 +148,9 @@ class User extends Authenticatable
         return Cache::remember(
             $cacheKey,
             5,
-            fn () =>  $this->courses()->where('course_user.course_id', '=', $course->id)
-            ->wherePivot('is_setter', true)
-            ->count() > 0
+            fn () => $this->courses()->where('course_user.course_id', '=', $course->id)
+                ->wherePivot('is_setter', true)
+                ->count() > 0
         );
 
         return $this->$cacheKey;
@@ -164,8 +164,8 @@ class User extends Authenticatable
             $cacheKey,
             5,
             fn () => $this->courses()->where('course_user.course_id', '=', $course->id)
-                        ->wherePivot('is_moderator', true)
-                        ->count() > 0
+                ->wherePivot('is_moderator', true)
+                ->count() > 0
         );
     }
 
@@ -176,9 +176,9 @@ class User extends Authenticatable
         return Cache::remember(
             $cacheKey,
             5,
-            fn () =>  $this->courses()->where('course_user.course_id', '=', $course->id)
-            ->wherePivot('is_external', true)
-            ->count() > 0
+            fn () => $this->courses()->where('course_user.course_id', '=', $course->id)
+                ->wherePivot('is_external', true)
+                ->count() > 0
         );
     }
 

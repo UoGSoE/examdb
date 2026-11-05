@@ -2,21 +2,20 @@
 
 namespace Tests\Feature\Admin;
 
-use App\Models\AcademicSession;
-use App\Models\Course;
-use App\Models\Discipline;
 use App\Jobs\NotifyExternals;
 use App\Mail\ExternalHasPapersToLookAt;
 use App\Mail\NotifyExternalSpecificCourse;
+use App\Models\AcademicSession;
+use App\Models\Course;
+use App\Models\Discipline;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class NotifyExternalsTest extends TestCase
 {

@@ -3,13 +3,15 @@
 namespace App\Http\Livewire;
 
 use App\Models\Course;
-use Livewire\Component;
 use App\Models\Discipline;
+use Livewire\Component;
 
 class PaperReport extends Component
 {
     public $disciplineFilter;
+
     public $semesterFilter;
+
     public $categoryFilter;
 
     protected $queryString = ['disciplineFilter', 'semesterFilter', 'categoryFilter'];
