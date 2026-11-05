@@ -15,10 +15,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // Disabled for now as we are deploying a new version of the app to a new server (Feb 2026)
-        // $schedule->command('activitylog:clean')->daily();
-        // $schedule->command('examdb:timed-notifications')->dailyAt('03:00');
-        // $schedule->command('examdb:send-print-ready-reminder-emails')->dailyAt('07:00');
+        $schedule->command('activitylog:clean')->daily();
+        $schedule->command('examdb:timed-notifications')->dailyAt('03:00');
+        $schedule->command('examdb:send-print-ready-reminder-emails')->dailyAt('07:00');
     }
 
     /**
