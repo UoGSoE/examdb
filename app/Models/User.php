@@ -27,11 +27,15 @@ class User extends Authenticatable
     use Notifiable;
     use SoftDeletes;
 
-    protected $casts = [
-        'is_admin' => 'boolean',
-        'is_staff' => 'boolean',
-        'is_external' => 'boolean',
-    ];
+
+    protected function casts(): array
+    {
+        return [
+            'is_admin' => 'boolean',
+            'is_staff' => 'boolean',
+            'is_external' => 'boolean',
+        ];
+    }
 
     protected static function booted()
     {

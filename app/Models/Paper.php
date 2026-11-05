@@ -37,18 +37,21 @@ class Paper extends Model
 
     public const COMMENT_SUBCATEGORY = 'comment';
 
-    protected $casts = [
-        'approved_setter' => 'boolean',
-        'archived_at' => 'datetime',
-        'is_hidden' => 'boolean',
-    ];
-
     protected static function boot()
     {
         parent::boot();
 
         static::addGlobalScope(new CurrentScope);
         static::addGlobalScope(new NotHiddenScope);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'approved_setter' => 'boolean',
+            'archived_at' => 'datetime',
+            'is_hidden' => 'boolean',
+        ];
     }
 
     public function user()
