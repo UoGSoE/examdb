@@ -16,9 +16,12 @@ host('bugblatter.cose.gla.ac.uk')
     ->set('deploy_path', '/var/www/examdb.cose.gla.ac.uk/');
 
 // Tasks
-task('build', function () {
-    run('cd {{release_path}} && npm install && npm run production');
-});
+// The build is disabled: the bundle committed in public/ is what ships, so
+// production runs the same assets that were tested locally. This hook ran
+// after the release went live, so a failed build would have gone unnoticed.
+// task('build', function () {
+//     run('cd {{release_path}} && npm install && npm run production');
+// });
 
 // Disable migrate for now (no .env on server yet)
 task('artisan:migrate', function () {
@@ -27,4 +30,4 @@ task('artisan:migrate', function () {
 
 // Hooks
 after('deploy:failed', 'deploy:unlock');
-after('deploy:success', 'build');
+// after('deploy:success', 'build');
