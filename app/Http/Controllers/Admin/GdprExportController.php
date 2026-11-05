@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GdprUserResource;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class GdprExportController extends Controller
 {

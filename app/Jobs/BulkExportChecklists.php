@@ -2,21 +2,18 @@
 
 namespace App\Jobs;
 
-use App\Models\Course;
-use App\Exporters\ChecklistExporter;
 use App\Mail\ChecklistsReadyToDownload;
+use App\Models\Course;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
-use ZipArchive;
 
 class BulkExportChecklists implements ShouldQueue
 {
@@ -82,7 +79,7 @@ class BulkExportChecklists implements ShouldQueue
     protected function zipAllPdfs(): string
     {
         $localZipname = tempnam(sys_get_temp_dir(), '/'.config('exampapers.checklist_temp_file_prefix'));
-        $zip = new \ZipArchive();
+        $zip = new \ZipArchive;
         $zip->open($localZipname, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
         foreach ($this->paths as $filename) {
             $pdfName = basename($filename);

@@ -6,9 +6,8 @@ use App\Models\Course;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\SerializesModels;
 
 class PrintReadyPaperApprovedMail extends Mailable
 {
@@ -20,9 +19,7 @@ class PrintReadyPaperApprovedMail extends Mailable
      *
      * @return void
      */
-    public function __construct(public Course $course)
-    {
-    }
+    public function __construct(public Course $course) {}
 
     /**
      * Get the message envelope.
@@ -32,7 +29,7 @@ class PrintReadyPaperApprovedMail extends Mailable
     public function envelope()
     {
         return new Envelope(
-            subject: '[ExamDB] Print Ready Paper Approved for ' . $this->course->code,
+            subject: '[ExamDB] Print Ready Paper Approved for '.$this->course->code,
         );
     }
 

@@ -2,11 +2,8 @@
 
 namespace App\Listeners;
 
-use App\Models\Course;
 use App\Mail\PaperForRegistryUploaded;
 use App\Models\Paper;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
 
 class NotifySettersPaperForRegistryUploaded
@@ -16,9 +13,7 @@ class NotifySettersPaperForRegistryUploaded
      *
      * @return void
      */
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     /**
      * Handle the event.

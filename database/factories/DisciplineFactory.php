@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\AcademicSession;
-use App\Models\Discipline;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class DisciplineFactory extends Factory

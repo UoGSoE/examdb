@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
-use App\Models\Paper;
 use Illuminate\Http\Request;
 
 class PaperApprovalController extends Controller

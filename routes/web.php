@@ -1,8 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\CourseController;
-use App\Http\Controllers\Admin\PaperController;
-use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Login routes - shows login page with both local and SSO options
@@ -22,7 +19,6 @@ Route::get('/login/sso', [\App\Http\Controllers\Auth\SSOController::class, 'ssoL
 Route::get('/auth/callback', [\App\Http\Controllers\Auth\SSOController::class, 'handleProviderCallback'])->name('sso.callback');
 Route::post('/logout', [\App\Http\Controllers\Auth\SSOController::class, 'logout'])->name('auth.logout');
 Route::get('/logged-out', [\App\Http\Controllers\Auth\SSOController::class, 'loggedOut'])->name('logged_out');
-
 
 // Auth::routes();
 Route::post('/external-login', [\App\Http\Controllers\Auth\ExternalLoginController::class, 'sendLoginEmail'])->name('external-generate-login');
@@ -98,7 +94,7 @@ Route::middleware('auth', 'academicsession')->group(function () {
         Route::post('options', [\App\Http\Controllers\Admin\OptionsController::class, 'update'])->name('admin.options.update');
 
         Route::get('/notify/externals', [\App\Http\Controllers\Admin\NotifyExternalsController::class, 'show'])
-                ->name('admin.notify.externals.show');
+            ->name('admin.notify.externals.show');
         Route::post('notify/externals', [\App\Http\Controllers\Admin\NotifyExternalsController::class, 'store'])->name('admin.notify.externals');
         Route::post('notify/{course}/externals', [\App\Http\Controllers\Admin\NotifyExternalsController::class, 'course'])->name('admin.notify.externals_course');
 

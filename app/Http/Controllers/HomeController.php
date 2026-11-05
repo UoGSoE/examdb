@@ -2,10 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Paper;
-use Auth;
-use Illuminate\Http\Request;
-
 class HomeController extends Controller
 {
     /**

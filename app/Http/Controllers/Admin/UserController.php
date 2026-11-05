@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\AcademicSession;
 use App\Http\Controllers\Controller;
-use App\Scopes\CurrentAcademicSessionScope;
 use App\Models\User;
+use App\Scopes\CurrentAcademicSessionScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;

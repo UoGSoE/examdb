@@ -7,9 +7,8 @@ use App\Models\Course;
 use App\Models\Paper;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class PreviousYearsPapersTest extends TestCase
 {

@@ -4,8 +4,6 @@ namespace App\Listeners;
 
 use App\Events\PaperAdded;
 use App\Mail\NotifyTeachingOfficeExternalHasCommented;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
 
 class NotifyTeachingOfficeThatExternalHasCommented
@@ -23,7 +21,6 @@ class NotifyTeachingOfficeThatExternalHasCommented
     /**
      * Handle the event.
      *
-     * @param  PaperAdded  $event
      * @return void
      */
     public function handle(PaperAdded $event)

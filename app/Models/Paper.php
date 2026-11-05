@@ -47,8 +47,8 @@ class Paper extends Model
     {
         parent::boot();
 
-        static::addGlobalScope(new CurrentScope());
-        static::addGlobalScope(new NotHiddenScope());
+        static::addGlobalScope(new CurrentScope);
+        static::addGlobalScope(new NotHiddenScope);
     }
 
     public function user()

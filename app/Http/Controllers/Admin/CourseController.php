@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Discipline;
-use App\Http\Controllers\Controller;
 use App\Scopes\CurrentAcademicSessionScope;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class CourseController extends Controller
@@ -38,9 +37,9 @@ class CourseController extends Controller
         ]);
 
         $existingCourse = Course::withoutGlobalScope(CurrentAcademicSessionScope::class)
-                ->where('code', '=', $request->code)
-                ->where('academic_session_id', '=', $request->user()->getCurrentAcademicSession()->id)
-                ->first();
+            ->where('code', '=', $request->code)
+            ->where('academic_session_id', '=', $request->user()->getCurrentAcademicSession()->id)
+            ->first();
         if ($existingCourse && $existingCourse->id != $course->id) {
             $error = ValidationException::withMessages([
                 'code' => ['Course with this code already exists.'],

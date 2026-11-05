@@ -6,4 +6,3 @@ return [
     'allow_students' => env('SSO_ALLOW_STUDENTS', true),
     'admins_only' => env('SSO_ADMINS_ONLY', false),
 ];
-

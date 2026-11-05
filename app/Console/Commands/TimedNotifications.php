@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Course;
 use App\Exceptions\TimedNotificationException;
 use App\Mail\CallForPapersMail;
 use App\Mail\ExternalModerationDeadlineMail;
@@ -13,11 +12,11 @@ use App\Mail\PrintReadyDeadlineMail;
 use App\Mail\PrintReadyDeadlinePassedMail;
 use App\Mail\SubmissionDeadlineMail;
 use App\Mail\SubmissionDeadlinePassedMail;
+use App\Models\Course;
 use App\Models\Paper;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use RuntimeException;
 
@@ -279,7 +278,6 @@ class TimedNotifications extends Command
         return $submissionDeadlineDate->clone()->addDays($reminderDays)->isToday();
     }
 
-
     protected function handleModerationDeadline(string $area)
     {
         $optionName = "{$area}_internal_moderation_deadline";
@@ -349,7 +347,7 @@ class TimedNotifications extends Command
         }
 
         Mail::to(option("teaching_office_contact_{$area}"))
-            ->later(now()->addSeconds(rand(1, 200)), new NotifyExternalsReminderMail());
+            ->later(now()->addSeconds(rand(1, 200)), new NotifyExternalsReminderMail);
 
         option(["{$optionName}_email_sent" => now()->format('Y-m-d')]);
     }
@@ -422,7 +420,7 @@ class TimedNotifications extends Command
         }
 
         Mail::to(option("teaching_office_contact_{$area}"))
-            ->later(now()->addSeconds(rand(1, 200)), new ExternalModerationDeadlineMail());
+            ->later(now()->addSeconds(rand(1, 200)), new ExternalModerationDeadlineMail);
 
         option(["{$optionName}_email_sent" => now()->format('Y-m-d')]);
     }

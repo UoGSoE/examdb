@@ -5,15 +5,15 @@ namespace Tests\Feature\Admin;
 use App\Models\AcademicSession;
 use App\Models\Course;
 use App\Models\Paper;
-use App\Scopes\CurrentAcademicSessionScope;
 use App\Models\User;
+use App\Scopes\CurrentAcademicSessionScope;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use Ohffs\Ldap\FakeLdapConnection;
+use PHPUnit\Framework\Attributes\Test;
 use Spatie\Activitylog\Models\Activity;
 use Tests\TestCase;
-use PHPUnit\Framework\Attributes\Test;
 
 class UserTest extends TestCase
 {

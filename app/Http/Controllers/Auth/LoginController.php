@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Models\AcademicSession;
 use App\Http\Controllers\Controller;
+use App\Models\AcademicSession;
 use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\AcademicSession;
 use App\CanBeCreatedFromOutsideSources;
 use App\Scopes\CurrentAcademicSessionScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,10 +15,10 @@ use Spatie\Activitylog\Models\Activity;
 
 class User extends Authenticatable
 {
-    use HasFactory;
-    use Notifiable;
     use CanBeCreatedFromOutsideSources;
+    use HasFactory;
     use Impersonate;
+    use Notifiable;
     use SoftDeletes;
 
     protected $guarded = [];
@@ -86,7 +85,7 @@ class User extends Authenticatable
             });
     }
 
-    public function getCourses(string $userTypeField = null)
+    public function getCourses(?string $userTypeField = null)
     {
         $query = $this->courses();
         if ($userTypeField) {
@@ -148,9 +147,9 @@ class User extends Authenticatable
         return Cache::remember(
             $cacheKey,
             5,
-            fn () =>  $this->courses()->where('course_user.course_id', '=', $course->id)
-            ->wherePivot('is_setter', true)
-            ->count() > 0
+            fn () => $this->courses()->where('course_user.course_id', '=', $course->id)
+                ->wherePivot('is_setter', true)
+                ->count() > 0
         );
 
         return $this->$cacheKey;
@@ -164,8 +163,8 @@ class User extends Authenticatable
             $cacheKey,
             5,
             fn () => $this->courses()->where('course_user.course_id', '=', $course->id)
-                        ->wherePivot('is_moderator', true)
-                        ->count() > 0
+                ->wherePivot('is_moderator', true)
+                ->count() > 0
         );
     }
 
@@ -176,9 +175,9 @@ class User extends Authenticatable
         return Cache::remember(
             $cacheKey,
             5,
-            fn () =>  $this->courses()->where('course_user.course_id', '=', $course->id)
-            ->wherePivot('is_external', true)
-            ->count() > 0
+            fn () => $this->courses()->where('course_user.course_id', '=', $course->id)
+                ->wherePivot('is_external', true)
+                ->count() > 0
         );
     }
 
