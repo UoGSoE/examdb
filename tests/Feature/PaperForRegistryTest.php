@@ -14,6 +14,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class PaperForRegistryTest extends TestCase
 {
@@ -25,7 +26,7 @@ class PaperForRegistryTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function when_an_admin_uploads_the_paper_for_registy_an_email_is_sent_to_the_setters()
     {
         $this->withoutExceptionHandling();
@@ -60,7 +61,7 @@ class PaperForRegistryTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function a_setter_can_mark_the_paper_for_registry_as_approved()
     {
         $this->withoutExceptionHandling();

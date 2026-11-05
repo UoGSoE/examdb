@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Activitylog\Models\Activity;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ImpersonationTest extends TestCase
 {
@@ -18,7 +19,7 @@ class ImpersonationTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function an_admin_can_impersonate_other_users()
     {
         $this->withoutExceptionHandling();
@@ -46,7 +47,7 @@ class ImpersonationTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function regular_users_cant_impersonate_other_users()
     {
         $user1 = create(User::class);
@@ -59,7 +60,7 @@ class ImpersonationTest extends TestCase
         $response->assertSessionMissing('impersonated_by');
     }
 
-    /** @test */
+    #[Test]
     public function an_admin_can_stop_impersonating_other_users()
     {
         $this->withoutExceptionHandling();

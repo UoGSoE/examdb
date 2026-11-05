@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class PreviousYearsPapersTest extends TestCase
 {
@@ -20,7 +21,7 @@ class PreviousYearsPapersTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function users_associated_with_a_course_can_see_all_previous_papers_and_comments_associated_with_it()
     {
         $this->withoutExceptionHandling();
@@ -44,7 +45,7 @@ class PreviousYearsPapersTest extends TestCase
         $response->assertDontSee($paper3->filename);
     }
 
-    /** @test */
+    #[Test]
     public function users_not_associated_with_a_course_cant_view_the_previous_papers()
     {
         $session1 = AcademicSession::factory()->create(['session' => '1980/1981']);

@@ -20,6 +20,7 @@ use App\Mail\NotifySetterAboutExternalComments;
 use App\Mail\NotifySetterAboutModeratorComments;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Mail\NotifyTeachingOfficeExternalHasCommented;
+use PHPUnit\Framework\Attributes\Test;
 
 class PaperUploadTest extends TestCase
 {
@@ -31,7 +32,7 @@ class PaperUploadTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function a_setter_can_upload_a_paper()
     {
         Mail::fake();
@@ -82,7 +83,7 @@ class PaperUploadTest extends TestCase
         Mail::assertNothingQueued();
     }
 
-    /** @test */
+    #[Test]
     public function an_external_can_upload_thier_comments_which_triggers_an_email_to_the_setter_and_teaching_office_contact()
     {
         $this->withoutExceptionHandling();
@@ -127,7 +128,7 @@ class PaperUploadTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function an_external_can_upload_thier_solution_comments_which_triggers_an_email_to_the_setter_and_teaching_office_contact()
     {
         $this->withoutExceptionHandling();
@@ -172,7 +173,7 @@ class PaperUploadTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function when_the_setter_uploads_the_paper_for_registry_an_email_is_sent_to_teaching_office_contact()
     {
         $this->withoutExceptionHandling();
@@ -203,7 +204,7 @@ class PaperUploadTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function uestc_courses_have_an_extra_category_of_uploads_of_resit2_which_doesnt_trigger_emails_even_if_it_was_set_to_the_paper_checklist()
     {
         Mail::fake();
@@ -236,7 +237,7 @@ class PaperUploadTest extends TestCase
         Mail::assertNothingQueued();
     }
 
-    /** @test */
+    #[Test]
     public function people_not_associated_with_a_course_cant_upload_papers_for_it()
     {
         Mail::fake();
@@ -259,7 +260,7 @@ class PaperUploadTest extends TestCase
         $this->assertCount(0, $course->fresh()->papers);
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_upload_papers_to_any_course()
     {
         Mail::fake();
@@ -280,7 +281,7 @@ class PaperUploadTest extends TestCase
         $this->assertCount(1, $course->fresh()->papers);
     }
 
-    /** @test */
+    #[Test]
     public function if_an_admin_uploads_the_print_ready_paper_an_email_is_sent_to_the_setters_to_let_them_know()
     {
         Mail::fake();

@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class HomePageTest extends TestCase
 {
@@ -20,7 +21,7 @@ class HomePageTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function users_see_courses_they_are_setting_moderator_external_and_all_papers_they_have_uploaded()
     {
         $staff = create(User::class);

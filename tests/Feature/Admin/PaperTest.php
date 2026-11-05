@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Livewire\Livewire;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class PaperTest extends TestCase
 {
@@ -21,7 +22,7 @@ class PaperTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_see_all_the_paper_statuses_for_all_the_courses()
     {
         $this->withoutExceptionHandling();
@@ -40,7 +41,7 @@ class PaperTest extends TestCase
         $response->assertViewHas('disciplineFilter');
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_see_all_the_paper_statuses_for_all_the_courses_on_a_specifc_discipline()
     {
         $this->withoutExceptionHandling();
@@ -66,7 +67,7 @@ class PaperTest extends TestCase
             ->assertSee($course2->code);
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_export_the_list_of_papers()
     {
         $this->withoutExceptionHandling();
@@ -80,7 +81,7 @@ class PaperTest extends TestCase
         $this->assertEquals($header, 'attachment; filename=examdb_papers_'.now()->format('d_m_Y_H_i').'.xlsx');
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_see_all_the_correct_information_about_the_print_ready_paper_status()
     {
         $this->withoutExceptionHandling();

@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Livewire\Livewire;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class CourseTest extends TestCase
 {
@@ -21,7 +22,7 @@ class CourseTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function an_admin_can_see_the_list_of_all_courses()
     {
         $admin = create(User::class, ['is_admin' => true]);
@@ -37,7 +38,7 @@ class CourseTest extends TestCase
         $response->assertSeeLivewire('course-index');
     }
 
-    /** @test */
+    #[Test]
     public function an_admin_can_filter_the_list_of_courses_in_various_ways()
     {
         $admin = create(User::class, ['is_admin' => true]);
@@ -72,7 +73,7 @@ class CourseTest extends TestCase
             ->assertDontSee($course4->code);
     }
 
-    /** @test */
+    #[Test]
     public function an_admin_can_export_the_list_of_courses_as_an_excel_sheet()
     {
         $this->withoutExceptionHandling();
@@ -86,7 +87,7 @@ class CourseTest extends TestCase
         $this->assertEquals($header, 'attachment; filename=examdb_courses_'.now()->format('d_m_Y_H_i').'.xlsx');
     }
 
-    /** @test */
+    #[Test]
     public function an_admin_can_disable_a_course()
     {
         $this->withoutExceptionHandling();
@@ -101,7 +102,7 @@ class CourseTest extends TestCase
         $this->assertFalse($course1->fresh()->isDisabled());
     }
 
-    /** @test */
+    #[Test]
     public function an_admin_can_enable_a_course()
     {
         $this->withoutExceptionHandling();
@@ -118,7 +119,7 @@ class CourseTest extends TestCase
         $this->assertFalse($course1->fresh()->isDisabled());
     }
 
-    /** @test */
+    #[Test]
     public function an_admin_can_edit_a_course()
     {
         $this->withoutExceptionHandling();
@@ -150,7 +151,7 @@ class CourseTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function we_can_call_an_artisan_command_to_make_a_deep_clone_of_an_existing_course_with_a_new_course_code()
     {
         $discipline1 = Discipline::factory()->create();

@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class CourseUserTest extends TestCase
 {
@@ -19,7 +20,7 @@ class CourseUserTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function an_admin_can_update_the_staff_associated_with_a_course()
     {
         $this->withoutExceptionHandling();
@@ -64,7 +65,7 @@ class CourseUserTest extends TestCase
         $this->assertTrue($course->externals->contains($external2));
     }
 
-    /** @test */
+    #[Test]
     public function someone_can_be_marked_as_a_setter_and_subsequently_be_added_as_a_moderator()
     {
         $this->withoutExceptionHandling();
@@ -103,7 +104,7 @@ class CourseUserTest extends TestCase
         $this->assertCount(0, $course->externals);
     }
 
-    /** @test */
+    #[Test]
     public function someone_can_be_marked_as_a_moderator_and_subsequently_be_added_as_a_setter()
     {
         $this->withoutExceptionHandling();
@@ -146,7 +147,7 @@ class CourseUserTest extends TestCase
         $this->assertCount(0, $course->externals);
     }
 
-    /** @test */
+    #[Test]
     public function an_admin_can_remove_staff_already_associated_with_a_course()
     {
         $this->withoutExceptionHandling();
@@ -187,7 +188,7 @@ class CourseUserTest extends TestCase
         $this->assertTrue($course->externals->contains($external2));
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_remove_all_staff_from_all_courses()
     {
         $this->withoutExceptionHandling();
@@ -218,7 +219,7 @@ class CourseUserTest extends TestCase
         $this->assertEquals(0, $course2->fresh()->staff()->count());
     }
 
-    /** @test */
+    #[Test]
     public function all_users_show_up_in_the_staff_list_admins_can_use_to_choose_who_are_setters_and_moderatorss()
     {
         $admin = create(User::class, ['is_admin' => true]);

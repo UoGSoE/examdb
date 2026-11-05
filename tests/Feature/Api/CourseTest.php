@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class CourseTest extends TestCase
 {
@@ -20,7 +21,7 @@ class CourseTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function we_can_get_a_list_of_all_courses()
     {
         $this->withoutExceptionHandling();
@@ -39,7 +40,7 @@ class CourseTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function we_can_get_the_details_for_one_course()
     {
         $this->withoutExceptionHandling();
@@ -57,7 +58,7 @@ class CourseTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function we_can_get_a_list_of_applicable_drop_down_options_for_setters_add_paper_button()
     {
         $this->withoutExceptionHandling();
@@ -125,7 +126,7 @@ class CourseTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function we_can_get_a_list_of_applicable_drop_down_options_for_moderators_add_paper_button()
     {
         $this->withoutExceptionHandling();
@@ -172,7 +173,7 @@ class CourseTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function we_can_get_a_list_of_applicable_drop_down_options_for_externals_add_paper_button()
     {
         $this->withoutExceptionHandling();
@@ -219,7 +220,7 @@ class CourseTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function if_someone_is_a_setter_and_moderator_for_the_same_course_they_see_the_right_add_paper_options()
     {
         $this->withoutExceptionHandling();

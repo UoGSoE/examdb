@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Livewire\Livewire;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class OptionsTest extends TestCase
 {
@@ -19,7 +20,7 @@ class OptionsTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function regular_users_cant_see_the_admin_options_page()
     {
         $user = create(User::class);
@@ -29,7 +30,7 @@ class OptionsTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_see_the_admin_options_page()
     {
         $admin = create(User::class, ['is_admin' => true]);
@@ -41,7 +42,7 @@ class OptionsTest extends TestCase
         $response->assertSeeLivewire('options-editor');
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_set_the_system_options()
     {
         $this->withoutExceptionHandling();
@@ -86,7 +87,7 @@ class OptionsTest extends TestCase
         $this->assertEquals(1, option('glasgow_staff_submission_deadline_overdue_reminder'));
     }
 
-    /** @test */
+    #[Test]
     public function options_have_to_be_in_valid_formats()
     {
         $this->withoutExceptionHandling();
@@ -114,7 +115,7 @@ class OptionsTest extends TestCase
             ->assertHasErrors();
     }
 
-    /** @test */
+    #[Test]
     public function changing_a_deadline_clears_the_teaching_office_notification_flag()
     {
         $this->withoutExceptionHandling();

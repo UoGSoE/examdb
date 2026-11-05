@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class NotifyExternalsTest extends TestCase
 {
@@ -27,7 +28,7 @@ class NotifyExternalsTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_trigger_a_job_to_notify_externals_to_look_at_the_system()
     {
         $this->withoutExceptionHandling();
@@ -47,7 +48,7 @@ class NotifyExternalsTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function non_admins_cant_trigger_a_job_to_notify_externals()
     {
         $user = create(User::class);
@@ -64,7 +65,7 @@ class NotifyExternalsTest extends TestCase
         Bus::assertNotDispatched(NotifyExternals::class);
     }
 
-    /** @test */
+    #[Test]
     public function external_notifications_only_go_to_externals_about_courses_in_the_current_semester()
     {
         Mail::fake();
@@ -94,7 +95,7 @@ class NotifyExternalsTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function external_notifications_only_go_to_externals_about_courses_that_have_papers()
     {
         Mail::fake();
@@ -123,7 +124,7 @@ class NotifyExternalsTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_manually_notify_the_externals_for_a_given_course()
     {
         $this->withoutExceptionHandling();
@@ -150,7 +151,7 @@ class NotifyExternalsTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function manually_notifying_the_externals_for_a_course_marks_the_course_as_having_notified_the_externals()
     {
         $this->withoutExceptionHandling();

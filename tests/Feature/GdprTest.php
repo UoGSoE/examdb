@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class GdprTest extends TestCase
 {
@@ -19,7 +20,7 @@ class GdprTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_export_all_data_about_a_user()
     {
         $admin = create(User::class, ['is_admin' => true]);
@@ -59,7 +60,7 @@ class GdprTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function admin_staff_can_anonymise_an_external_user()
     {
         $admin = create(User::class, ['is_admin' => true]);

@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class CourseStaffTest extends TestCase
 {
@@ -19,7 +20,7 @@ class CourseStaffTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function we_can_get_the_staff_associated_with_a_course()
     {
         config(['exampapers.api_key' => 'secret']);
@@ -62,7 +63,7 @@ class CourseStaffTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function trying_to_get_info_for_an_invalid_course_returns_a_404()
     {
         config(['exampapers.api_key' => 'secret']);
@@ -72,7 +73,7 @@ class CourseStaffTest extends TestCase
         $response->assertStatus(404);
     }
 
-    /** @test */
+    #[Test]
     public function an_invalid_api_key_is_denied_access()
     {
         config(['exampapers.api_key' => 'secret']);

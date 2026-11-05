@@ -8,6 +8,7 @@ use App\Models\Paper;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class CoursePapersTest extends TestCase
 {
@@ -19,7 +20,7 @@ class CoursePapersTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function we_can_get_a_list_of_papers_for_a_course()
     {
         $this->withoutExceptionHandling();

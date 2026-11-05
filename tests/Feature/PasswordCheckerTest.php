@@ -14,12 +14,13 @@ use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\Models\Activity;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class PasswordCheckerTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function when_an_admin_logs_in_a_job_is_dispatched_to_check_their_password_against_nist_guidelines_and_p0wned_if_so_configured()
     {
         if (env('CI')) {
@@ -39,7 +40,7 @@ class PasswordCheckerTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function when_an_admin_logs_in_a_job_is_not_dispatched_if_so_configured()
     {
         if (env('CI')) {
@@ -57,7 +58,7 @@ class PasswordCheckerTest extends TestCase
         Queue::assertNotPushed(CheckPasswordQuality::class);
     }
 
-    /** @test */
+    #[Test]
     public function when_an_admin_logs_in_a_job_is_dispatched_to_check_their_password_against_nist_guidelines_and_p0wned()
     {
         if (env('CI')) {
@@ -77,7 +78,7 @@ class PasswordCheckerTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function a_bad_password_triggers_an_activity_log_entry_and_a_mail_to_a_sysadmin()
     {
         if (env('CI')) {
@@ -100,7 +101,7 @@ class PasswordCheckerTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function a_strong_password_does_not_trigger_an_exception_inside_the_dispatched_job()
     {
         if (env('CI')) {

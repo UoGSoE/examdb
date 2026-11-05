@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class SetterTest extends TestCase
 {
@@ -25,7 +26,7 @@ class SetterTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function a_user_can_see_all_the_courses_they_are_a_setter_for()
     {
         $staff = create(User::class);
@@ -49,7 +50,7 @@ class SetterTest extends TestCase
         $response->assertDontSee($course3->code);
     }
 
-    /** @test */
+    #[Test]
     public function a_user_can_see_the_page_for_an_individual_course_they_are_setter_for()
     {
         $this->withoutExceptionHandling();
@@ -69,7 +70,7 @@ class SetterTest extends TestCase
         $this->assertFalse($response->data('course')->papers->contains($randomPaper));
     }
 
-    /** @test */
+    #[Test]
     public function hidden_papers_dont_show_up_in_the_course_view()
     {
         $this->withoutExceptionHandling();
@@ -89,7 +90,7 @@ class SetterTest extends TestCase
         $this->assertFalse($response->data('course')->papers->contains($hiddenPaper));
     }
 
-    /** @test */
+    #[Test]
     public function a_user_cant_see_the_page_for_a_course_they_arent_involved_with()
     {
         $staff = create(User::class);
@@ -100,7 +101,7 @@ class SetterTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
+    #[Test]
     public function a_setter_can_delete_their_own_paper()
     {
         Storage::fake('exampapers');
@@ -125,7 +126,7 @@ class SetterTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function a_setter_cant_delete_someone_elses_paper()
     {
         $user = create(User::class);
@@ -137,7 +138,7 @@ class SetterTest extends TestCase
         $this->assertDatabaseHas('papers', ['id' => $paper->id]);
     }
 
-    /** @test */
+    #[Test]
     public function a_setter_cant_delete_a_paper_after_some_limited_time()
     {
         Storage::fake('exampapers');
@@ -151,7 +152,7 @@ class SetterTest extends TestCase
         $this->assertDatabaseHas('papers', ['id' => $paper->id]);
     }
 
-    /** @test */
+    #[Test]
     public function a_setter_can_download_any_paper_for_a_course_they_are_on()
     {
         $this->withoutExceptionHandling();
@@ -175,7 +176,7 @@ class SetterTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function a_setter_cant_download_any_paper_for_a_course_they_are_not_on()
     {
         Storage::fake('exampapers');

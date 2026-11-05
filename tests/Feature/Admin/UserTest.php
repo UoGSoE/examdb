@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Ohffs\Ldap\FakeLdapConnection;
 use Spatie\Activitylog\Models\Activity;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class UserTest extends TestCase
 {
@@ -24,7 +25,7 @@ class UserTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_see_a_list_of_all_users()
     {
         $admin = create(User::class, ['is_admin' => true]);
@@ -43,7 +44,7 @@ class UserTest extends TestCase
         $response->assertSee($external2->surname);
     }
 
-    /** @test */
+    #[Test]
     public function regular_users_cant_see_a_list_of_all_users()
     {
         $user = create(User::class, ['is_admin' => false]);
@@ -53,7 +54,7 @@ class UserTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_see_a_list_of_all_users_including_soft_deleted_ones()
     {
         $admin = create(User::class, ['is_admin' => true]);
@@ -75,7 +76,7 @@ class UserTest extends TestCase
         $response->assertSee($deletedUser->surname);
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_see_the_details_for_a_given_user()
     {
         $admin = create(User::class, ['is_admin' => true]);
@@ -105,7 +106,7 @@ class UserTest extends TestCase
         $response->assertSee($course3->code);
     }
 
-    /** @test */
+    #[Test]
     public function regular_users_cant_see_the_details_for_users()
     {
         $user = create(User::class);
@@ -115,7 +116,7 @@ class UserTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_search_for_a_guid()
     {
         $this->withoutExceptionHandling();
@@ -134,7 +135,7 @@ class UserTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function invalid_guid_searches_return_a_404()
     {
         $this->app->bind('Ohffs\Ldap\LdapConnectionInterface', function ($app) {
@@ -147,7 +148,7 @@ class UserTest extends TestCase
         $response->assertStatus(404);
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_create_a_new_local_user()
     {
         $this->withoutExceptionHandling();
@@ -188,7 +189,7 @@ class UserTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_create_a_new_external_user()
     {
         $this->withoutExceptionHandling();
@@ -228,7 +229,7 @@ class UserTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function when_admins_create_a_user_it_uses_the_admins_current_academic_session()
     {
         $this->withoutExceptionHandling();
@@ -264,7 +265,7 @@ class UserTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_edit_a_users_name_and_email()
     {
         $this->withoutExceptionHandling();
@@ -291,7 +292,7 @@ class UserTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function when_editing_a_user_their_email_has_to_be_unique()
     {
         $admin = create(User::class, ['is_admin' => true]);
@@ -326,7 +327,7 @@ class UserTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function when_editing_a_user_if_the_are_external_updating_their_email_also_updates_their_username()
     {
         // externals username is the same as their email, but they are seperate fields in the db
@@ -352,7 +353,7 @@ class UserTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function regular_users_cant_create_users()
     {
         $user = create(User::class);
@@ -370,7 +371,7 @@ class UserTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function emails_and_usernames_are_converted_to_lowercase_when_creating_new_users()
     {
         $this->withoutExceptionHandling();
@@ -402,7 +403,7 @@ class UserTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_soft_delete_users()
     {
         $admin = create(User::class, ['is_admin' => true]);
@@ -415,7 +416,7 @@ class UserTest extends TestCase
         $this->assertTrue($user->fresh()->trashed());
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_un_soft_delete_users()
     {
         $admin = create(User::class, ['is_admin' => true]);
@@ -428,7 +429,7 @@ class UserTest extends TestCase
         $this->assertFalse($user->fresh()->trashed());
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_toggle_admin_status_of_other_users()
     {
         $this->withoutExceptionHandling();
@@ -475,7 +476,7 @@ class UserTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function when_the_admin_status_is_toggled_it_is_updated_in_all_academic_sessions()
     {
         $this->withoutExceptionHandling();
@@ -529,7 +530,7 @@ class UserTest extends TestCase
             ->each(fn ($user) => $this->assertTrue($user->isAdmin()));
     }
 
-    /** @test */
+    #[Test]
     public function regular_users_cant_toggle_admin_status_of_users()
     {
         $user1 = create(User::class, ['is_admin' => false]);
@@ -541,7 +542,7 @@ class UserTest extends TestCase
         $this->assertFalse($user2->fresh()->isAdmin());
     }
 
-    /** @test */
+    #[Test]
     public function admins_cant_toggle_their_own_admin_status()
     {
         $this->withoutExceptionHandling();
@@ -553,7 +554,7 @@ class UserTest extends TestCase
         $this->assertTrue($admin->fresh()->isAdmin());
     }
 
-    /** @test */
+    #[Test]
     public function there_is_an_artisan_command_to_make_a_user_an_admin()
     {
         $user = create(User::class, ['username' => 'jenny']);
@@ -565,7 +566,7 @@ class UserTest extends TestCase
         $this->assertTrue($user->fresh()->isAdmin());
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_delete_a_paper_but_its_only_hidden()
     {
         $this->withoutExceptionHandling();

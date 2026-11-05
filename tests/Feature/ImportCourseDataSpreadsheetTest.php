@@ -25,6 +25,7 @@ use Ohffs\Ldap\LdapUser;
 use Ohffs\SimpleSpout\ExcelSheet;
 use Tests\TenantTestCase;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ImportCourseDataSpreadsheetTest extends TestCase
 {
@@ -34,7 +35,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_see_the_import_page()
     {
         $admin = User::factory()->admin()->create();
@@ -45,7 +46,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
         $response->assertSee('Import Course Information');
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_import_course_info_using_a_spreadsheet_which_fires_a_queued_job_to_do_the_actual_work()
     {
         $this->withoutExceptionHandling();
@@ -81,7 +82,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function when_the_main_data_batch_job_is_dispatched_it_spawns_a_sub_job_for_each_row_in_the_spreadsheet_data()
     {
         $this->withoutExceptionHandling();
@@ -98,7 +99,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
         Queue::assertPushed(ImportCourseRow::class, 3);
     }
 
-    /** @test */
+    #[Test]
     public function the_import_course_row_job_actually_creates_records_for_the_data()
     {
         $this->withoutExceptionHandling();
@@ -203,7 +204,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
         \Mockery::close();
     }
 
-    /** @test */
+    #[Test]
     public function the_import_sets_all_created_records_academic_session_id_to_the_correct_academic_session()
     {
         $this->withoutExceptionHandling();
@@ -286,7 +287,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
         \Mockery::close();
     }
 
-    /** @test */
+    #[Test]
     public function if_a_row_is_missing_key_data_an_error_is_recorded()
     {
         Redis::shouldReceive('sadd')
@@ -300,7 +301,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
         \Mockery::close();
     }
 
-    /** @test */
+    #[Test]
     public function importing_duplicates_or_already_existing_data_updates_it_rather_than_creating_duplicates()
     {
         $this->withoutExceptionHandling();
@@ -372,7 +373,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
         \Mockery::close();
     }
 
-    /** @test */
+    #[Test]
     public function once_the_data_has_been_imported_an_email_is_sent_to_the_original_user_to_let_them_know()
     {
         Mail::fake();
@@ -393,7 +394,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
         \Mockery::close();
     }
 
-    /** @test */
+    #[Test]
     public function any_errors_during_the_import_are_stored_in_redis()
     {
         Mail::fake();
@@ -415,7 +416,7 @@ class ImportCourseDataSpreadsheetTest extends TestCase
         \Mockery::close();
     }
 
-    /** @test */
+    #[Test]
     public function any_errors_are_pulled_from_redis_and_passed_to_the_email()
     {
         Mail::fake();

@@ -16,12 +16,13 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class AcademicSessionTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function logged_in_users_default_to_the_default_academic_session()
     {
         $oldSession = AcademicSession::factory()->create(['session' => '1904/1905', 'is_default' => false]);
@@ -35,7 +36,7 @@ class AcademicSessionTest extends TestCase
         $response->assertSessionHas('academic_session', '2020/2021');
     }
 
-    /** @test */
+    #[Test]
     public function when_users_login_their_records_are_fetched_from_the_default_session()
     {
         $this->withoutExceptionHandling();
@@ -56,7 +57,7 @@ class AcademicSessionTest extends TestCase
         $this->assertEquals('nee smith', auth()->user()->surname);
     }
 
-    /** @test */
+    #[Test]
     public function admin_users_who_have_chosen_a_specific_academic_session_dont_have_it_replaced_by_the_default()
     {
         $oldSession = AcademicSession::factory()->create(['session' => '1904/1905', 'created_at' => '2018-01-01']);
@@ -70,7 +71,7 @@ class AcademicSessionTest extends TestCase
         $response->assertSessionHas('academic_session', '1904/1905');
     }
 
-    /** @test */
+    #[Test]
     public function if_there_are_no_existing_academic_sessions_then_one_is_created()
     {
         $user = User::factory()->create(['academic_session_id' => null]); // stop the factory creating a new academic session
@@ -87,7 +88,7 @@ class AcademicSessionTest extends TestCase
         $this->travelBack();
     }
 
-    /** @test */
+    #[Test]
     public function admin_users_can_change_their_academic_session()
     {
         $this->withoutExceptionHandling();
@@ -114,7 +115,7 @@ class AcademicSessionTest extends TestCase
         $this->assertTrue(auth()->user()->is($adminV1));
     }
 
-    /** @test */
+    #[Test]
     public function regular_users_cant_change_their_academic_session()
     {
         $user = User::factory()->create();
@@ -127,7 +128,7 @@ class AcademicSessionTest extends TestCase
         $response->assertSessionHas('academic_session', '1990/1991'); // it defaults to the latest created_at one
     }
 
-    /** @test */
+    #[Test]
     public function regular_users_cant_see_the_manage_sessions_form()
     {
         AcademicSession::createFirstSession();
@@ -138,7 +139,7 @@ class AcademicSessionTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_see_the_manage_sessions_form()
     {
         AcademicSession::createFirstSession();
@@ -150,7 +151,7 @@ class AcademicSessionTest extends TestCase
         $response->assertSee('Manage Academic Sessions');
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_create_a_new_academic_session()
     {
         $this->withoutExceptionHandling();
@@ -170,7 +171,7 @@ class AcademicSessionTest extends TestCase
         Queue::assertPushed(CopyDataToNewAcademicSession::class, fn ($job) => $job->targetSession->session === '2011/2012');
     }
 
-    /** @test */
+    #[Test]
     public function when_a_new_session_is_created_the_cached_navbar_academic_sessions_are_flushed()
     {
         $this->withoutExceptionHandling();
@@ -186,7 +187,7 @@ class AcademicSessionTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function when_the_new_session_is_created_the_existing_session_data_is_copied_and_updated_with_the_right_session_info()
     {
         $admin = User::factory()->admin()->create();
@@ -245,7 +246,7 @@ class AcademicSessionTest extends TestCase
         $this->assertEquals($newCourse2->externals->first()->username, $externaUser->username);
     }
 
-    /** @test */
+    #[Test]
     public function when_course_data_is_copied_to_a_new_session_all_of_the_flags_on_it_are_cleared()
     {
         Mail::fake();
@@ -269,7 +270,7 @@ class AcademicSessionTest extends TestCase
         }
     }
 
-    /** @test */
+    #[Test]
     public function once_the_data_is_copied_an_email_is_sent_to_the_user_who_requested_the_new_session()
     {
         Mail::fake();
@@ -285,7 +286,7 @@ class AcademicSessionTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function regular_users_cant_change_the_default_session()
     {
         $user = User::factory()->create();
@@ -299,7 +300,7 @@ class AcademicSessionTest extends TestCase
         $this->assertFalse($session2->fresh()->is_default);
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_change_the_default_session()
     {
         $admin = User::factory()->admin()->create();
@@ -313,7 +314,7 @@ class AcademicSessionTest extends TestCase
         $this->assertTrue($session2->fresh()->is_default);
     }
 
-    /** @test */
+    #[Test]
     public function there_is_an_artisan_command_to_retrofit_academic_sessions_into_the_old_engineering_only_database()
     {
         AcademicSession::createFirstSession();
@@ -333,7 +334,7 @@ class AcademicSessionTest extends TestCase
         $this->assertEquals($session->id, $discipline2->fresh()->academic_session_id);
     }
 
-    /** @test */
+    #[Test]
     public function courses_and_disciplines_are_globally_scoped_to_the_current_session_and_users_can_use_a_local_scope()
     {
         $oldSession = AcademicSession::factory()->create(['session' => '1980/1981', 'is_default' => true]);
@@ -369,7 +370,7 @@ class AcademicSessionTest extends TestCase
         $this->assertTrue($users->contains($user2));
     }
 
-    /** @test */
+    #[Test]
     public function there_is_an_artisan_command_to_copy_a_user_from_the_current_session_into_a_previous_one()
     {
         $oldSession = AcademicSession::factory()->create(['session' => '1980/1981', 'is_default' => false]);

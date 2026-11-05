@@ -16,6 +16,7 @@ use App\Mail\PrintReadyPaperRejectedMail;
 use App\Mail\PrintReadyPaperReminderMail;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class PrintReadyApprovalTest extends TestCase
 {
@@ -27,7 +28,7 @@ class PrintReadyApprovalTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function if_the_print_ready_paper_has_been_uploaded_setters_see_an_approval_button()
     {
         $this->markTestSkipped('This is all done via vue so we need to test it there... one day');
@@ -45,7 +46,7 @@ class PrintReadyApprovalTest extends TestCase
             ->assertSee('Approve Print Ready Paper?');
     }
 
-    /** @test */
+    #[Test]
     public function a_setter_can_mark_the_print_ready_paper_as_approved()
     {
         Storage::fake('exampapers');
@@ -81,7 +82,7 @@ class PrintReadyApprovalTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function a_setter_can_mark_the_print_ready_paper_as_not_approved()
     {
         Storage::fake('exampapers');
@@ -119,7 +120,7 @@ class PrintReadyApprovalTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function if_a_setter_marks_the_paper_as_not_approved_they_must_provide_a_comment()
     {
         Storage::fake('exampapers');
@@ -141,7 +142,7 @@ class PrintReadyApprovalTest extends TestCase
         $response->assertJsonValidationErrorFor('comment');
     }
 
-    /** @test */
+    #[Test]
     public function if_a_setter_marks_the_paper_as_approved_they_dont_need_to_provide_a_comment()
     {
         Storage::fake('exampapers');
@@ -172,7 +173,7 @@ class PrintReadyApprovalTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function moderators_and_externals_cant_mark_the_print_ready_paper_as_approved_or_not()
     {
         Storage::fake('exampapers');
@@ -206,7 +207,7 @@ class PrintReadyApprovalTest extends TestCase
         $this->assertNull($coursePaper->fresh()->print_ready_approved);
     }
 
-    /** @test */
+    #[Test]
     public function staff_who_havent_approved_or_rejected_the_print_ready_papers_after_48hrs_get_a_reminder_email()
     {
         Storage::fake('exampapers');
@@ -258,7 +259,7 @@ class PrintReadyApprovalTest extends TestCase
         $this->assertNull($paperAlreadyMarked->fresh()->print_ready_reminder_sent);
     }
 
-    /** @test */
+    #[Test]
     public function the_reminder_command_is_enabled_in_the_schedular()
     {
         $this->assertCommandIsScheduled('examdb:send-print-ready-reminder-emails');

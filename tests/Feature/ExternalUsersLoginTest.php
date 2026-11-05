@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Activitylog\Models\Activity;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ExternalUsersLoginTest extends TestCase
 {
@@ -21,7 +22,7 @@ class ExternalUsersLoginTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function an_external_can_be_emailed_a_time_limited_signed_login_url()
     {
         $this->withoutExceptionHandling();
@@ -44,7 +45,7 @@ class ExternalUsersLoginTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function when_an_external_asks_for_a_login_url_the_email_address_is_case_insensitive()
     {
         $this->withoutExceptionHandling();
@@ -67,7 +68,7 @@ class ExternalUsersLoginTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function when_an_email_is_entered_that_doesnt_match_an_external_then_no_email_is_sent()
     {
         $this->withoutExceptionHandling();
@@ -87,7 +88,7 @@ class ExternalUsersLoginTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function when_an_external_visits_a_valid_signed_login_url_they_are_logged_in()
     {
         $this->withoutExceptionHandling();
@@ -105,7 +106,7 @@ class ExternalUsersLoginTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function when_an_external_visits_a_valid_signed_login_url_that_has_expired_they_are_not_logged_in()
     {
         $external = User::factory()->external()->create();
@@ -123,7 +124,7 @@ class ExternalUsersLoginTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function when_an_external_visits_an_invalid_login_url_they_are_not_logged_in()
     {
         $external = User::factory()->external()->create();

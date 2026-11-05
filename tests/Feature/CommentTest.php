@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class CommentTest extends TestCase
 {
@@ -22,7 +23,7 @@ class CommentTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function users_can_add_a_comment_to_courses_they_are_involved_with_without_needing_a_paper()
     {
         Mail::fake();

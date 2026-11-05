@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ActivityLogTest extends TestCase
 {
@@ -18,7 +19,7 @@ class ActivityLogTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_see_the_activity_log_page()
     {
         $admin = create(User::class, ['is_admin' => true]);
@@ -33,7 +34,7 @@ class ActivityLogTest extends TestCase
         $response->assertSee('Had some juice');
     }
 
-    /** @test */
+    #[Test]
     public function regular_users_cant_see_the_activity_log_page()
     {
         $admin = create(User::class, ['is_admin' => false]);

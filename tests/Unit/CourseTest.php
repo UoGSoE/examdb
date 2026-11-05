@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class CourseTest extends TestCase
 {
@@ -21,7 +22,7 @@ class CourseTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function a_course_can_have_many_main_papers_added()
     {
         Storage::fake('exampapers');
@@ -37,7 +38,7 @@ class CourseTest extends TestCase
         Storage::disk('exampapers')->assertExists($course->mainPapers[1]->filename);
     }
 
-    /** @test */
+    #[Test]
     public function a_course_can_have_many_resit_papers_added()
     {
         Storage::fake('exampapers');

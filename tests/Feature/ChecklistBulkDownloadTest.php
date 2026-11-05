@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 // fake the HTTP calls to the pdf printer api
 class ChecklistBulkDownloadTest extends TestCase
@@ -30,7 +31,7 @@ class ChecklistBulkDownloadTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function regular_users_cant_request_the_bulk_download_of_all_checklists()
     {
         Queue::fake();
@@ -42,7 +43,7 @@ class ChecklistBulkDownloadTest extends TestCase
         Queue::assertNothingPushed();
     }
 
-    /** @test */
+    #[Test]
     public function admins_can_request_the_bulk_download_of_all_checklists()
     {
         $this->withoutExceptionHandling();
@@ -55,7 +56,7 @@ class ChecklistBulkDownloadTest extends TestCase
         Queue::assertPushed(BulkExportChecklists::class);
     }
 
-    /** @test */
+    #[Test]
     public function the_bulk_export_job_creates_a_zip_file_and_emails_the_person_who_requested_it()
     {
         Mail::fake();
@@ -85,7 +86,7 @@ class ChecklistBulkDownloadTest extends TestCase
         $this->assertCount(0, Storage::disk('local')->files('checklists/'.$admin->id));
     }
 
-    /** @test */
+    #[Test]
     public function only_the_person_who_requested_the_download_can_access_it()
     {
         $this->markTestSkipped('TODO - fix this up as the ChecklistExporter isnt used any more');
@@ -106,7 +107,7 @@ class ChecklistBulkDownloadTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
+    #[Test]
     public function a_job_is_queued_which_will_remove_the_zip_file()
     {
         Mail::fake();
@@ -128,7 +129,7 @@ class ChecklistBulkDownloadTest extends TestCase
         Queue::assertPushed(RemoveChecklistZip::class);
     }
 
-    /** @test */
+    #[Test]
     public function the_remove_checklist_zip_job_does_remove_the_zip()
     {
         Mail::fake();

@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ModeratorTest extends TestCase
 {
@@ -28,7 +29,7 @@ class ModeratorTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function a_user_can_see_all_the_courses_they_are_a_moderator_for()
     {
         $staff = create(User::class);
@@ -52,7 +53,7 @@ class ModeratorTest extends TestCase
         $response->assertDontSee($course3->code);
     }
 
-    /** @test */
+    #[Test]
     public function a_user_can_see_the_page_for_an_individual_course_they_are_moderator_for()
     {
         $this->withoutExceptionHandling();
@@ -68,7 +69,7 @@ class ModeratorTest extends TestCase
         $this->assertTrue($response->data('course')->is($course1));
     }
 
-    /** @test */
+    #[Test]
     public function a_user_cant_see_the_page_for_a_course_they_arent_involved_with()
     {
         $staff = create(User::class);
@@ -79,7 +80,7 @@ class ModeratorTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
+    #[Test]
     public function a_moderator_can_delete_their_own_paper()
     {
         Storage::fake('exampapers');
@@ -104,7 +105,7 @@ class ModeratorTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function a_moderator_cant_delete_someone_elses_paper()
     {
         $user = create(User::class);
@@ -116,7 +117,7 @@ class ModeratorTest extends TestCase
         $this->assertDatabaseHas('papers', ['id' => $paper->id]);
     }
 
-    /** @test */
+    #[Test]
     public function a_moderator_can_download_any_paper_for_a_course_they_are_on()
     {
         $this->withoutExceptionHandling();
@@ -140,7 +141,7 @@ class ModeratorTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function a_moderator_cant_download_any_paper_for_a_course_they_are_not_on()
     {
         Storage::fake('exampapers');

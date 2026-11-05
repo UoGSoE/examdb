@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ExternalsTest extends TestCase
 {
@@ -28,7 +29,7 @@ class ExternalsTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function a_user_can_see_all_the_courses_they_are_an_external_for()
     {
         $staff = User::factory()->external()->create();
@@ -52,7 +53,7 @@ class ExternalsTest extends TestCase
         $response->assertDontSee($course3->code);
     }
 
-    /** @test */
+    #[Test]
     public function a_user_can_see_the_page_for_an_individual_course_they_are_external_for()
     {
         $this->withoutExceptionHandling();
@@ -68,7 +69,7 @@ class ExternalsTest extends TestCase
         $this->assertTrue($response->data('course')->is($course1));
     }
 
-    /** @test */
+    #[Test]
     public function a_user_cant_see_the_page_for_a_course_they_arent_involved_with()
     {
         $staff = User::factory()->external()->create();
@@ -79,7 +80,7 @@ class ExternalsTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
+    #[Test]
     public function an_external_cant_delete_any_papers()
     {
         Storage::fake('exampapers');
@@ -96,7 +97,7 @@ class ExternalsTest extends TestCase
         $this->assertTrue(Storage::disk('exampapers')->exists($paper->filename));
     }
 
-    /** @test */
+    #[Test]
     public function an_external_can_download_any_paper_for_a_course_they_are_on()
     {
         $this->withoutExceptionHandling();
@@ -120,7 +121,7 @@ class ExternalsTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function an_external_cant_download_any_paper_for_a_course_they_are_not_on()
     {
         Storage::fake('exampapers');

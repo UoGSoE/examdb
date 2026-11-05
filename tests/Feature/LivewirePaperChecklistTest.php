@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Livewire\Livewire;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class LivewirePaperChecklistTest extends TestCase
 {
@@ -21,7 +22,7 @@ class LivewirePaperChecklistTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function we_can_see_the_paper_checklist_page_for_a_course()
     {
         $this->withoutExceptionHandling();
@@ -40,7 +41,7 @@ class LivewirePaperChecklistTest extends TestCase
         $response->assertSeeLivewire('paper-checklist');
     }
 
-    /** @test */
+    #[Test]
     public function the_list_of_setters_is_the_course_setters_followed_by_all_other_staff()
     {
         $setter1 = User::factory()->create(['surname' => 'aaaa']);
@@ -61,7 +62,7 @@ class LivewirePaperChecklistTest extends TestCase
         ;
     }
 
-    /** @test */
+    #[Test]
     public function when_the_number_of_questions_is_updated_the_correct_dynamic_fields_are_created()
     {
         $this->withoutExceptionHandling();
@@ -83,7 +84,7 @@ class LivewirePaperChecklistTest extends TestCase
         ;
     }
 
-    /** @test */
+    #[Test]
     public function when_section_A_is_saved_the_dynamic_fields_are_correctly_stored()
     {
         $this->withoutExceptionHandling();

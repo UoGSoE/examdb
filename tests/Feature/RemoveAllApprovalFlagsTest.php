@@ -7,6 +7,7 @@ use App\Models\Course;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class RemoveAllApprovalFlagsTest extends TestCase
 {
@@ -18,7 +19,7 @@ class RemoveAllApprovalFlagsTest extends TestCase
         AcademicSession::createFirstSession();
     }
 
-    /** @test */
+    #[Test]
     public function we_can_remove_all_approval_flags_from_all_courses()
     {
         $course1 = create(Course::class, [
