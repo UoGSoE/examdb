@@ -58,7 +58,13 @@ return [
             'throw' => false,
         ],
 
-        'exampapers' => [
+        // Set EXAMPAPERS_DRIVER=local for local dev without minio. The local
+        // 'root' must stay out of the s3 config: there it becomes a key prefix.
+        'exampapers' => env('EXAMPAPERS_DRIVER', 's3') === 'local' ? [
+            'driver' => 'local',
+            'root' => storage_path('app/exampapers'),
+            'throw' => false,
+        ] : [
             'driver' => 's3',
             'key' => env('MINIO_KEY'),
             'secret' => env('MINIO_SECRET'),
