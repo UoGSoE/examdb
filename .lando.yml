@@ -2,7 +2,7 @@ name: examdb
 recipe: laravel
 config:
   webroot: public
-  php: '8.1'
+  php: '8.3'
   cache: redis
 services:
   appserver:
@@ -15,17 +15,17 @@ services:
     portforward: true
     hogfrom:
       - appserver
-  minio:
-    type: compose
-    app_mount: false
-    services:
-      image: quay.io/minio/minio:RELEASE.2022-03-08T22-28-51Z
-      command: minio server /data --console-address ":9001"
-      volumes:
-        - ./storage/minio_dev:/data
-      environment:
-        MINIO_ROOT_USER: minioadmin
-        MINIO_ROOT_PASSWORD: minioadmin
+#  minio:
+#    type: compose
+#    app_mount: false
+#    services:
+#      image: quay.io/minio/minio:RELEASE.2022-03-08T22-28-51Z
+#      command: minio server /data --console-address ":9001"
+#      volumes:
+#        - ./storage/minio_dev:/data
+#      environment:
+#        MINIO_ROOT_USER: minioadmin
+#        MINIO_ROOT_PASSWORD: minioadmin
         # MINIO_REGION: "us-east-1"
         # MINIO_BUCKET: "exampapers"
         # MINIO_ENDPOINT: "${MINIO_QA_ENDPOINT}"
