@@ -2,7 +2,7 @@ name: examdb
 recipe: laravel
 config:
   webroot: public
-  php: '8.3'
+  php: '8.5'
   cache: redis
 services:
   appserver:
