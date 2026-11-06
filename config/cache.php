@@ -131,6 +131,9 @@ return [
     |
     */
 
-    'serializable_classes' => false,
+    'serializable_classes' => [
+        \Illuminate\Database\Eloquent\Collection::class,
+        \App\Models\AcademicSession::class,
+    ],
 
 ];
