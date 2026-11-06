@@ -23,3 +23,6 @@ dump.rdb
 upgrade-guides
 .claude
 .ant/
+.playwright-cli
+shift-*
+
